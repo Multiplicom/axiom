@@ -1,0 +1,89 @@
+/*************************** PopupWindow  **************************************************/
+
+.AXMBlockingBackGround {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color:rgba(200,200,200,0.5);
+}
+
+.AXMPopupWindowContainer {
+    left:90px;
+    top:70px;
+    position:absolute;
+    background-color: white;
+
+    border-width:1px;
+    border-style:solid;
+    border-color:rgb(110,110,110);
+    box-shadow: 2px 2px 20px 4px rgba(0,0,0,0.75);
+}
+
+.AXMPopupWindowHeader {
+    width:100%;
+    height:32px;
+    line-height: 32px;
+    padding-left:8px;
+    padding-right:8px;
+    box-sizing: border-box;
+
+    background: rgb(21,136,197);
+    background: -moz-linear-gradient(top,  rgb(21,136,197) 0%, rgb(16,116,169) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(21,136,197)), color-stop(100%,rgb(16,116,169)));
+    background: -webkit-linear-gradient(top,  rgb(21,136,197) 0%,rgb(16,116,169) 100%);
+    background: -o-linear-gradient(top,  rgb(21,136,197) 0%,rgb(16,116,169) 100%);
+    background: -ms-linear-gradient(top,  rgb(21,136,197) 0%,rgb(16,116,169) 100%);
+    background: linear-gradient(to bottom,  rgb(21,136,197) 0%,rgb(16,116,169) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1588c5', endColorstr='#1074a9',GradientType=0 );
+
+    color: white;
+    font-weight: bold;
+
+    cursor:pointer;
+}
+
+.SWXPopupWindowCloseBox {
+    position:absolute;
+    right:-10px;
+    top:-10px;
+    cursor:pointer;
+}
+
+.SWXPopupWindowCloseBox:hover {
+    filter: brightness(120%);
+    -webkit-filter: brightness(120%);
+    -moz-filter: brightness(120%);
+    -o-filter: brightness(120%);
+    -ms-filter: brightness(120%);
+}
+
+.AXMPopupWindowClient {
+    background-color: white;
+}
+
+.AXMPopupWindowGripSE, .AXMPopupWindowGripNW, .AXMPopupWindowGripSW, .AXMPopupWindowGripNE, .AXMPopupWindowGripSW, .AXMPopupWindowGripN, .AXMPopupWindowGripS, .AXMPopupWindowGripE, .AXMPopupWindowGripW {
+    position: absolute;
+    background-color: white;
+    opacity: 0;
+}
+
+.AXMPopupWindowGripSE, .AXMPopupWindowGripNW {
+    cursor:nwse-resize;
+}
+
+.AXMPopupWindowGripNE, .AXMPopupWindowGripSW {
+    cursor:nesw-resize;
+}
+
+
+.AXMPopupWindowGripN, .AXMPopupWindowGripS {
+    cursor:ns-resize;
+}
+
+.AXMPopupWindowGripE, .AXMPopupWindowGripW {
+    cursor:ew-resize;
+}
+
+

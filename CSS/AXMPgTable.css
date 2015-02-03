@@ -1,0 +1,141 @@
+
+
+
+.AXMPgTableRight, .AXMPgTableLeft {
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+    border-width: 0;
+    table-layout: fixed;
+    outline-width: 0;
+}
+
+
+.AXMPgTableRight {
+    width: 0;
+    max-width: none;
+    max-height: none;
+}
+
+
+.AXMPgTableRight th, .AXMPgTableRight td, .AXMPgTableLeft th, .AXMPgTableLeft td {
+    height: 22px;
+    empty-cells: show;
+    line-height: 21px;
+    padding: 0 4px 0 4px;
+    vertical-align: top;
+    outline-width: 0;
+
+    /*added pv*/
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+
+    border-right: 1px solid rgb(226,226,226);
+    border-bottom: 1px solid rgb(226,226,226);
+
+    background-color: #FFF;
+
+}
+
+
+.AXMPgTableRight th, .AXMPgTableLeft th {
+    height:27px;
+    padding-top: 4px;
+    padding-right: 17px;
+    text-align:left;
+
+}
+
+/************ Set colour for top & left headers ****************/
+
+.AXMPgTableRight th, .AXMPgTableLeft th, .AXMPgTableLeft td {
+    background-color: rgb(240,240,240);
+    border-right: 1px solid rgb(210,210,210);
+    border-bottom: 1px solid rgb(210,210,210);
+}
+
+
+
+
+.AXMPgTableRight th {
+    position: relative;
+}
+
+
+
+.AXMPgTableRightColDragger {
+    position:absolute;
+    right:0px;
+    top:0px;
+    width:4px;
+    height:100%;
+    /*background-color: rgb(160,160,160);*/
+    background-color: rgba(255,192,0,0.5);
+    opacity:0;
+    cursor: ew-resize;
+}
+
+.AXMPgTableRight th:hover .AXMPgTableRightColDragger {
+    opacity:1
+}
+
+
+.AXMPgTableLinkCell {
+    display: inline-block;
+    width:100%;
+    height:100%;
+    cursor:pointer;
+    text-align:center;
+}
+
+.AXMPgTableLinkIcon {
+    display: inline-block;
+    font-size: 13px;
+    vertical-align: middle;
+    color: rgb(0, 120, 230);
+    opacity: 0.5;
+    /*display:inline-block;font-size:13px;vertical-align:middle;color:rgba(0,120,230,0.6)    */
+}
+
+/*.AXMPgTableLinkCell:hover {*/
+    /*background-color: rgb(255,192,120);*/
+/*}*/
+
+.AXMPgTableLinkCell:hover .AXMPgTableLinkIcon {
+    opacity: 1;
+}
+
+.AXMPgTableRight tr:hover {
+    outline: 1px solid rgb(186, 186, 186);
+    outline-offset: 0px;
+}
+
+
+.AXMPgTableHightlightRow td {
+    background-color:rgb(210,240,255);
+    /*border-bottom: 1px solid rgb(255,0,0);*/
+    text-shadow: 0px 0px 1px rgba(50, 50, 50, 0.5);
+}
+
+.AXMPgTableColSortBox {
+    position:absolute;
+    right:5px;
+    bottom:0px;
+    color: rgb(172, 172, 172);
+    cursor: pointer;
+}
+
+.AXMPgTableColOpenBox {
+    position:absolute;
+    right:5px;
+    top:1px;
+    color: rgb(0, 120, 230);
+    opacity: 0.35;
+    cursor: pointer;
+}
+
+.AXMPgTableRight th:hover .AXMPgTableColOpenBox {
+    opacity: 1;
+}

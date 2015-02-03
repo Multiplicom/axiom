@@ -1,0 +1,206 @@
+@import "AXMPopupWindow.css";
+@import "AXMPgTable.css";
+
+html,body {
+    height:100%;
+    overflow: hidden;
+}
+
+body {
+    font-size:9pt;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.AXMContainer {
+    width:100%;
+    height:100%;
+    overflow: hidden;
+}
+
+
+/*************************** Frames  **************************************************/
+
+.AXMFrame, .AXMSplitter {
+    background-color: rgb(230,230,230); /* BCK1 */
+}
+
+.AXMSplitter {
+    width:20px;
+    height:20px;
+    position:absolute;
+}
+.AXMSplitterH {
+    cursor:ew-resize;
+}
+.AXMSplitterV {
+    cursor:ns-resize;
+}
+
+.AXMFrame {
+    position:absolute;
+    overflow: hidden;
+}
+
+.AXMFrameTitle {
+    padding: 4px;
+    padding-left:6px;
+    height:12px;
+    font-weight:bold;
+    color: rgb(100,100,100);
+    position:absolute;
+    background-color: rgb(190,190,190);
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    margin-top: 2px;
+}
+
+.AXMFrameClient {
+    position:absolute;
+    background-color: white;
+    overflow: hidden;
+}
+
+.AXMFrameFinalClientArea {
+    position:absolute;
+    background-color: white;
+    overflow: hidden;
+}
+
+
+.AXMFrameTitle, .AXMFrameTabElementActive {
+    background: rgb(200, 200, 200); /* Old browsers */
+    background: -moz-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(200, 200, 200)), color-stop(100%, rgb(230, 230, 230))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c8c8c8', endColorstr='#e6e6e6', GradientType=0); /* IE6-9 */
+}
+
+/*************************** Frames tabs  **************************************************/
+
+.AXMFrameTabContainer {
+    position:absolute;
+    border-bottom: 3px solid rgb(210,210,210); /* BCK2 */
+}
+
+.AXMFrameTabContainerInner {
+    white-space: nowrap;
+    overflow: hidden;
+    display:inline-block;
+    padding-right:2px;
+}
+
+.AXMFrameTabElement {
+    font-weight:bold;
+    height:20px;
+    padding-top:4px;
+    padding-left: 9px;
+    padding-right: 9px;
+    border: 1px solid rgb(180,180,180);
+    border-bottom: none;
+    display:inline-block;
+    background-color: rgb(240,240,240);
+    color: rgb(120,120,120);
+    overflow: hidden;
+    cursor:pointer;
+    margin-top:6px;
+    margin-right:1px;
+    margin-left:2px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+
+}
+
+.AXMFrameTabElementActive {
+    /*position: relative;*/
+    /*top: -2px;*/
+    /*padding-bottom: 2px;*/
+    /*background-color: rgb(210,210,210); *//* BCK2 */
+    border: 1px solid rgb(160,160,160);
+    border-bottom: none;
+    color: rgb(50,50,50);
+    box-shadow: 1px 0px 2px 0px rgba(0,0,0,0.2);
+
+}
+
+
+.AXMFrameTabElementInactive {
+
+}
+
+/*************************** Button Control  **************************************************/
+
+.AXMButton {
+    display: inline-block;
+    box-sizing: border-box;
+    margin-right:-1px;
+    margin-bottom:-1px;
+
+    border: 1px solid rgb(210,210,210);
+    width:150px;
+    height:30px;
+    cursor:pointer;
+
+    color: rgb(86, 86, 86);
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(top,  rgb(255,255,255) 0%, rgb(230,230,230) 62%, rgb(250,250,250) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(255,255,255)), color-stop(62%,rgb(230,230,230)), color-stop(100%,rgb(250,250,250)));
+    background: -webkit-linear-gradient(top,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
+    background: -o-linear-gradient(top,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
+    background: -ms-linear-gradient(top,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
+    background: linear-gradient(to bottom,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#fafafa',GradientType=0 );
+
+}
+
+
+.AXMButton:hover {
+    background: rgb(255,240,216);
+    background: -moz-linear-gradient(top,  rgb(255,240,216) 0%, rgb(255,225,173) 62%, rgb(249,236,212) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(255,240,216)), color-stop(62%,rgb(255,225,173)), color-stop(100%,rgb(249,236,212)));
+    background: -webkit-linear-gradient(top,  rgb(255,240,216) 0%,rgb(255,225,173) 62%,rgb(249,236,212) 100%);
+    background: -o-linear-gradient(top,  rgb(255,240,216) 0%,rgb(255,225,173) 62%,rgb(249,236,212) 100%);
+    background: -ms-linear-gradient(top,  rgb(255,240,216) 0%,rgb(255,225,173) 62%,rgb(249,236,212) 100%);
+    background: linear-gradient(to bottom,  rgb(255,240,216) 0%,rgb(255,225,173) 62%,rgb(249,236,212) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff0d8', endColorstr='#f9ecd4',GradientType=0 );
+}
+
+.AXMButtonIcon {
+    color: rgb(110, 110, 110);
+    text-shadow: 1px 1px 1px rgba(100, 100, 100, 0.25);
+}
+
+.AXMButton:hover .AXMButtonIcon {
+    color:rgb(60,60,60)
+}
+
+.AXMButtonCommandBar {
+    display: inline-block;
+    background-color: transparent;
+    color: rgb(137, 137, 137);
+    border: none;
+}
+
+.AXMButtonCommandBar:hover {
+    background-color: rgba(255,192,0,0.35);
+    color: rgb(50,50,50);
+}
+
+
+.AXMCommandBar {
+    width:100%;
+    height:100%;
+    color: rgb(113, 113, 113);
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(top,  rgb(255,255,255) 0%, rgb(230,230,230) 62%, rgb(250,250,250) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(255,255,255)), color-stop(62%,rgb(230,230,230)), color-stop(100%,rgb(250,250,250)));
+    background: -webkit-linear-gradient(top,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
+    background: -o-linear-gradient(top,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
+    background: -ms-linear-gradient(top,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
+    background: linear-gradient(to bottom,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#fafafa',GradientType=0 );
+}
+
+
