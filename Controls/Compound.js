@@ -72,12 +72,21 @@ define([
 
         Module.GroupHor = function(settings) {
             var compound = Module.CompoundControlBase();
+            compound._separator = 0;
+
+            compound.setSeparator = function(sep) {
+                compound._separator = sep;
+                return compound;
+            }
 
             compound.createHtml = function() {
                 var div = DOM.Div();
                 div.addStyle('white-space', 'nowrap');
                 $.each(compound._members, function(idx, member) {
-                    div.addElem(member.createHtml());
+                    var elemDiv = DOM.Div({parent:div});
+                    elemDiv.addStyle('display', 'inline-block');
+                    elemDiv.addStyle('margin-right', compound._separator+'px');
+                    elemDiv.addElem(member.createHtml());
                 });
                 return div.toString();
             };

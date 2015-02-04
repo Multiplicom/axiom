@@ -40,7 +40,8 @@ define([
         }
 
         Module.BmpFile = function(bmpId) {
-            return 'scripts/AXM/Bitmaps/'+bmpId+'.png';
+            var st = 'js/AXM/Bitmaps/'+bmpId+'.png';
+            return st;
         }
 
 

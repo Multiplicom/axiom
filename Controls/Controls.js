@@ -29,6 +29,7 @@ define([
         Module.SingleControlBase = function() {
             var control = AXMUtils.object('@Control');
             control._id = 'CT'+AXMUtils.getUniqueID();
+            control._hasDefaultFocus = false;
             control._notificationHandlers = [];
 
             control._getSubId = function (extension) {
@@ -43,6 +44,13 @@ define([
                 control._notificationHandlers.push(handlerFunc);
                 return control;
             };
+
+            //Defines this control to have the focus
+            control.setHasDefaultFocus = function () {
+                control._hasDefaultFocus = true;
+                return control;
+            }
+
 
             control.attachEventHandlers = function() {
             };
@@ -115,11 +123,14 @@ define([
 
                 if (settings.icon && settings.text) {
                     var iconWidth = Math.round(control._height*0.75);
+                    var iconSize = 17;
+                    if (settings.iconSizeFraction)
+                        iconSize = Math.round(iconSize * settings.iconSizeFraction);
                     if (settings.icon) {
                         var divIcon = DOM.Div({parent: div})
                             .addCssClass('fa').addCssClass(settings.icon).addCssClass('AXMButtonIcon')
                             .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle')
-                            .addStyle('font-size', 17 + 'px')
+                            .addStyle('font-size', iconSize + 'px')
                             .addStyle('width', iconWidth + 'px')
                             .addStyle('text-align','center');
                     }
@@ -194,6 +205,60 @@ define([
                 if (!preventNotify)
                     control.performNotify();
                 return true;
+            };
+
+            return control;
+        };
+
+
+
+
+        Module.Edit = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control._width = settings.width || 120;
+            //control._height = settings.height || 45;
+            control._buttonClass = settings.buttonClass || 'AXMEdit';
+            control._value = settings.value || '';
+            control._isPassWord = settings.passWord || false;
+
+
+            control.createHtml = function() {
+
+                var rootEl = DOM.Create("input", {id: control._getSubId('')});
+                if (!control._isPassWord)
+                    rootEl.addAttribute("type", 'text');
+                else
+                    rootEl.addAttribute("type", 'password');
+                //that.addAttribute("pattern", "[0-9]*");
+                rootEl.addAttribute("value", control._value);
+                if (settings.placeHolder)
+                    rootEl.addAttribute("placeholder", settings.placeHolder);
+
+                return rootEl.toString();
+            };
+
+            control.attachEventHandlers = function() {
+                control._getSub$El('').click(control._onClicked);
+                control._getSub$El('').bind("propertychange input paste", control._onModified);
+                control._getSub$El('').bind("keyup", control._onModified);
+                if (control._hasDefaultFocus)
+                    control._getSub$El('').select();
+            };
+
+            control._onModified = function(ev) {
+                control.performNotify();
+            };
+
+            control.getValue = function () {
+                if (control._getSub$El('').length>0)
+                    control._value = control._getSub$El('').val();
+                return control._value;
+            }
+
+
+            control.setValue = function(newVal, preventNotify) {
+                if (newVal == control.getValue()) return false;
+                control._getSub$El('').val(newVal);
             };
 
             return control;
