@@ -552,8 +552,8 @@ define([
 
             frame._updateMemberVisibility = function() {
                 $.each(frame._memberFrames, function(idx, memberFrame) {
-                    memberFrame.$ElContainer.css('display',
-                        (idx==frame._activeMemberNr) ? 'block' : 'none');
+                    memberFrame.$ElContainer.css('visibility',
+                        (idx==frame._activeMemberNr) ? 'visible' : 'hidden');
 
                 });
             };

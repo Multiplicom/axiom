@@ -364,8 +364,10 @@ define([
                 var $ElRightBody = $('#'+panel._divid_rightBody);
                 var rowHeight = $ElRightBody.height()*1.0/panel._tableLineCount;
                 var headerHeight = $ElRightHeadRow.height();
-                panel._tableLineCount = Math.max(1, Math.floor((yl-headerHeight)/rowHeight)-1);
-                panel.renderTableContent();
+                if (rowHeight>0) {
+                    panel._tableLineCount = Math.max(1, Math.floor((yl - headerHeight) / rowHeight) - 1);
+                    panel.renderTableContent();
+                }
             };
 
             return panel;
