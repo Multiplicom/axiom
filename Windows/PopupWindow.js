@@ -49,6 +49,8 @@ define([
             window.resizable = false;
             window._blocking = settings.blocking||false;
             window._autoCenter = settings.autoCenter||false;
+            window._canClose = !(settings.preventClose);
+
 
             window.setRootFrame = function(iFrame) {
                 window._rootFrame = iFrame;
@@ -57,6 +59,10 @@ define([
 
             window.setRootControl = function(iControl) {
                 window._rootControl = iControl;
+            };
+
+            window.setHandler_OnPressedEnter = function(hnd) {
+                window._onPressedEnter = hnd;
             };
 
             window.start = function() {
@@ -122,7 +128,8 @@ define([
                     DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowGripSW GripSW2');
                 }
 
-                rootDiv.addElem('<img class="SWXPopupWindowCloseBox" src="{bitmap}">'.AXMInterpolate({bitmap:AXMUtils.BmpFile('close')}));
+                if (window._canClose)
+                    rootDiv.addElem('<img class="SWXPopupWindowCloseBox" src="{bitmap}">'.AXMInterpolate({bitmap:AXMUtils.BmpFile('close')}));
 
                 $('.AXMContainer').append(rootDiv.toString());
                 window._$ElContainer = $('#' + window._id);
@@ -148,7 +155,8 @@ define([
                     window.autoCorrectAfterSize();
                 }
 
-                window._$ElContainer.find('.SWXPopupWindowCloseBox').click(window.close);
+                if (window._canClose)
+                    window._$ElContainer.find('.SWXPopupWindowCloseBox').click(window.close);
 
 
                 window._installMoveHandler();
@@ -157,8 +165,10 @@ define([
             };
 
             window._onKeyDown = function(ev) {
-                if (ev.isEscape)
+                if (ev.isEscape && (window._canClose))
                     window.close();
+                if (ev.isEnter && (window._onPressedEnter))
+                    window._onPressedEnter();
             };
 
 

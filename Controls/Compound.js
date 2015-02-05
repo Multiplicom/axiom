@@ -52,8 +52,10 @@ define([
             return compound;
         };
 
-        Module.GroupVert = function(settings) {
+        Module.GroupVert = function(settings, members) {
             var compound = Module.CompoundControlBase();
+            if (members)
+                compound.set(members);
 
             compound.createHtml = function() {
                 var div = DOM.Div();
@@ -70,9 +72,11 @@ define([
         };
 
 
-        Module.GroupHor = function(settings) {
+        Module.GroupHor = function(settings, members) {
             var compound = Module.CompoundControlBase();
             compound._separator = 0;
+            if (members)
+                compound.set(members);
 
             compound.setSeparator = function(sep) {
                 compound._separator = sep;

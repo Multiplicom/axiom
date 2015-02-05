@@ -45,10 +45,45 @@ define([
                 });
             grp.add(btOK);
 
+            window.setHandler_OnPressedEnter(window.close);
             window.setRootControl(Controls.Compound.StandardMargin(grp));
             window.start();
 
         };
+
+
+        Module.ErrorBox = function(content, title) {
+            if (!title)
+                title = "Error";
+
+            var window = PopupWindow.create({
+                title: title,
+                blocking:true,
+                autoCenter: true
+            });
+
+            var grp1 = Controls.Compound.GroupHor({}).setSeparator(20);
+            grp1.add(Controls.Static({text: '<div style="font-size: 44px;padding:15px;display: inline-block;color:rgb(200,0,0)"><i class="fa fa-exclamation-triangle"></i></div'}));
+
+            var grp2 = Controls.Compound.GroupVert({});
+            grp1.add(grp2);
+            grp2.add(Controls.Static({text: content+'<p/>'}));
+
+            var btOK = Controls.Button({
+                text: 'Close',
+//                icon: 'fa-check'
+            })
+                .addNotificationHandler(function() {
+                    window.close();
+                });
+            grp2.add(btOK);
+
+            window.setHandler_OnPressedEnter(window.close);
+            window.setRootControl(Controls.Compound.StandardMargin(grp1));
+            window.start();
+
+        };
+
 
         return Module;
     });

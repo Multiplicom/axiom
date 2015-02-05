@@ -177,6 +177,8 @@ define([
         var _onKeyDown = function(ev) {
             if (ev.keyCode == 27)
                 ev.isEscape = true;
+            if (ev.keyCode == 13)
+                ev.isEnter = true;
             if (_keyDownHandlerStack.length > 0) {
                 _keyDownHandlerStack[0](ev);
                 return;
