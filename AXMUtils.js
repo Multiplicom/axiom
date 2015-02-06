@@ -192,6 +192,58 @@ define([
 
         $(document).keydown(_onKeyDown);
 
+        // A class helping the scheduling of functions that execute asynchronously
+        Module.Scheduler = function() {
+            var sched = {};
+
+            sched.scheduledFunctions = [];
+            sched.completedTokens = {}
+
+            // Add a scheduled function. The execution will only start if all required tokens are marked as completed
+            sched.add = function(requiredTokens, func) {
+                sched.scheduledFunctions.push({
+                    requiredList: requiredTokens,
+                    func: func
+                });
+            };
+
+            // Call this function to mark a token as being completed
+            sched.setCompleted = function(token) {
+                sched.completedTokens[token] = true;
+            };
+
+            sched._tryNext = function() {
+                var nextAction = null;
+                var completed = true;
+                $.each(sched.scheduledFunctions, function(idx, item) {
+                    if (!item.started) {
+                        completed = false;
+                        var canExecute = true;
+                        $.each(item.requiredList, function(idx2, requiredToken) {
+                            if (!sched.completedTokens[requiredToken])
+                                canExecute = false;
+                        });
+                        if (canExecute)
+                            nextAction = item;
+                    }
+                });
+
+                if (nextAction) {
+                    nextAction.started = true;
+                    nextAction.func();
+                }
+                if (!completed)
+                    setTimeout(sched._tryNext, 50);
+            };
+
+            // Start the execution of the scheduled functions
+            sched.execute = function() {
+                sched._tryNext();
+            }
+
+            return sched;
+        }
+
 
         return Module;
     });

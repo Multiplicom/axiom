@@ -16,12 +16,12 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase",
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg",
         "AXM/Tables/TableInfo"
     ],
     function (
         require, $, _,
-        AXMUtils, DOM, Controls, Frame, PanelBase,
+        AXMUtils, DOM, Controls, Frame, PanelBase, Msg,
         TableInfo
     ) {
 
@@ -42,17 +42,27 @@ define([
 
             panel._columns = [];
 
-            if (tableInfo.canOpenRow()) {
-                var openerCol = TableInfo.colInfo('_opener_');
-                openerCol.isOpener = true;
-                openerCol._dispSize = 25;
-                openerCol.setName('');
-                panel._columns.push(openerCol);
-            }
 
-            $.each(tableInfo.getColumns(), function(idx, col) {
-                panel._columns.push(col);
-            });
+
+            panel.updateTableInfo = function() {
+
+                panel._columns = [];
+
+                if (tableInfo.canOpenRow()) {
+                    var openerCol = TableInfo.colInfo('_opener_');
+                    openerCol.isOpener = true;
+                    openerCol._dispSize = 25;
+                    openerCol.setName('');
+                    panel._columns.push(openerCol);
+                }
+
+                $.each(tableInfo.getColumns(), function (idx, col) {
+                    panel._columns.push(col);
+                });
+            };
+            panel.updateTableInfo();
+
+
 
             panel._colIsRightPart = function(colInfo) {
                 return (!colInfo.isOpener);
@@ -80,20 +90,26 @@ define([
                 panel._divid_rightHeadRow = panel._getSubId('rightheadrow');
                 panel._divid_rightBody = panel._getSubId('rightbody');
 
-                var divRoot = DOM.Div({})
-                    .addStyle('width','100%')
-                    .addStyle('height','100%')
-                    .addStyle('overflow-x','hidden')
-                    .addStyle('overflow-y','hidden')
-                    .addStyle('white-space','nowrap');
+                var divRoot = DOM.Div({id: 'tb' + panel._id})
+                    .addStyle('width', '100%')
+                    .addStyle('height', '100%')
+                    .addStyle('overflow-x', 'hidden')
+                    .addStyle('overflow-y', 'hidden')
+                    .addStyle('white-space', 'nowrap');
 
-                var divLeftTableContainer = DOM.Div({parent: divRoot, id: panel._getSubId('leftTableScrollContainer')})
+                divRoot.addElem(panel.createHtmlBody());
+
+                return divRoot.toString();
+            };
+
+            panel.createHtmlBody = function() {
+                var divLeftTableContainer = DOM.Div({ id: panel._getSubId('leftTableScrollContainer')})
                     //.addStyle('width','100px')
                     .addStyle('height','100%')
                     .addStyle('display', 'inline-block')
                     .addStyle('background-color','rgb(247,247,247)');
 
-                var divRightTableContainer = DOM.Div({parent: divRoot, id: panel._getSubId('rightTableScrollContainer')})
+                var divRightTableContainer = DOM.Div({ id: panel._getSubId('rightTableScrollContainer')})
                     //.addStyle('width','100%')
                     .addStyle('height','100%')
                     .addStyle('overflow-x','scroll')
@@ -134,7 +150,7 @@ define([
 
 
 
-                return divRoot.toString();
+                return divLeftTableContainer.toString() + divRightTableContainer.toString();
             };
 
             panel.attachEventHandlers = function() {
@@ -241,6 +257,9 @@ define([
                 panel._tableRowCount = panel._tableData.getRowCount();
                 var rowFirst = panel._tableOffset;
                 var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
+
+                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent))
+                    return;
 
                 var $ElRightBody = $('#'+panel._divid_rightBody);
                 var $ElLeftBody = $('#'+panel._divid_leftBody);
@@ -369,6 +388,17 @@ define([
                     panel.renderTableContent();
                 }
             };
+
+            //todo: tear down this event listener in the proper tear down function
+            Msg.listen('', 'UpdateTableInfo', function(tableid) {
+                if (tableid==panel._tableInfo.tableId) {
+                    panel.updateTableInfo();
+                    panel._tableData.resetBuffer();
+                    $('#tb'+panel._id).html(panel.createHtmlBody());
+                    panel.renderTableContent();
+                    panel.attachEventHandlers();
+                }
+            });
 
             return panel;
         } ;

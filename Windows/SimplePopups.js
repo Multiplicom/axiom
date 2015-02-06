@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/Windows/PopupWindow", "AXM/Controls/Controls"],
+        "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Controls/Controls"],
     function (
         require, $, _,
-        PopupWindow, Controls) {
+        Utils, PopupWindow, Controls) {
 
         var Module = {};
 
@@ -83,6 +83,36 @@ define([
             window.start();
 
         };
+
+        Module.blockingBusy_items = {};
+
+        Module.setBlockingBusy = function(msg) {
+            var win = PopupWindow.create({
+                title: 'Processing',
+                blocking:true,
+                autoCenter: true,
+                preventClose: true
+            });
+
+            var grp = Controls.Compound.GroupVert({});
+            grp.add(Controls.Static({text: msg+'<p/>'}));
+
+            win.setRootControl(Controls.Compound.StandardMargin(grp));
+            win.start();
+            var id = Utils.getUniqueID();
+            Module.blockingBusy_items[id] = win;
+            return id;
+        };
+
+        Module.stopBlockingBusy = function(id) {
+            if (id in Module.blockingBusy_items) {
+                Module.blockingBusy_items[id].close();
+                Module.blockingBusy_items[id] = null;
+                delete Module.blockingBusy_items[id];
+            }
+
+        };
+
 
 
         return Module;

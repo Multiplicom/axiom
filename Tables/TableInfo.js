@@ -77,8 +77,9 @@ define([
             return coldef;
         };
 
-        Module.tableInfo = function() {
+        Module.tableInfo = function(tableId) {
             var tabledef = AXMUtils.object('@TableInfo');
+            tabledef.tableId = tableId;
             tabledef._columns = [];
             tabledef._onOpenRow = null;
 
