@@ -135,6 +135,7 @@ define([
             wrapper.createHtml = function() {
                 var div = DOM.Div();
                 div.addStyle('margin', marginLeft+'px');
+                div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
                 return div.toString();
             };
@@ -146,6 +147,21 @@ define([
             return Module.Margin(ctrl,10);
         }
 
+        Module.AlignRight = function(ctrl) {
+            var wrapper = Module.WrapperControlBase(ctrl);
+
+            wrapper.createHtml = function() {
+                var div = DOM.Div();
+                div.addStyle('position', 'absolute');
+                div.addStyle('right', '0px');
+                div.addStyle('top', '0px');
+                div.addStyle('display', 'inline-block');
+                div.addElem(wrapper._member.createHtml());
+                return div.toString();
+            };
+
+            return wrapper;
+        }
 
 
         ///////////////////////////////////////////////////////////////////////////////////

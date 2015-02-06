@@ -41,6 +41,8 @@ define([
             };
 
             control.addNotificationHandler = function(handlerFunc) {
+                if (!handlerFunc)
+                    debugger;
                 control._notificationHandlers.push(handlerFunc);
                 return control;
             };
@@ -58,6 +60,8 @@ define([
 
             control.performNotify = function(msg) {
                 $.each(control._notificationHandlers, function(idx, fnc) {
+                    if (!fnc)
+                        debugger;
                     fnc(msg);
                 });
             }

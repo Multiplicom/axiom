@@ -41,10 +41,58 @@ define([
             return st;
         };
 
+        Module.create = function(primKey) {
+            var tableData = AXMUtils.object('@TableData');
+            tableData._primKey = primKey;
+
+            tableData._sortCol = null;
+            tableData._sortInverse = true;
+
+            //todo: build functionality for keeping map of selected items
+
+
+            tableData._toggleSortByField = function(colId) {
+                if (colId != tableData._sortCol) {
+                    tableData._sortCol = colId;
+                    tableData._sortInverse = false;
+                }
+                else {
+                    tableData._sortInverse = !tableData._sortInverse;
+                }
+                tableData.resetBuffer();
+            };
+
+            tableData.getSortColumn = function() {
+                return tableData._sortCol;
+            };
+
+            tableData.getSortInverse = function() {
+                return tableData._sortInverse;
+            };
+
+            tableData.resetBuffer = function() {
+                reportError('Not implemented');
+            };
+
+            tableData.getRowCount = function() {
+                reportError('Not implemented');
+            };
+
+            tableData.getRow = function(rowNr) {
+                reportError('Not implemented');
+            };
+
+            tableData.requireRowRange = function(rowFirst, rowLast, onAvailable) {
+                reportError('Not implemented');
+            };
+
+            return tableData;
+        };
+
 
         Module.DummyData = function(rowCount, iranseed) {
             ranseed = iranseed;
-            var tableData = AXMUtils.object('@TableData');
+            var tableData = Module.create();
             tableData._cols = [];
 
             tableData.addTextCol = function(id, len) {
