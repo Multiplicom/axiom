@@ -127,6 +127,10 @@
     cursor: pointer;
 }
 
+.AXMPgTableColSortBoxActive {
+    color: rgb(0, 0, 192); !important;
+}
+
 .AXMPgTableColOpenBox {
     position:absolute;
     right:5px;

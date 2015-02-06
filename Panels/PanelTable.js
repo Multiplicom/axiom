@@ -165,7 +165,7 @@ define([
                     var cell = DOM.Create('th', {id:panel._getColSubId('header',colNr)});
                     cell.addElem(colInfo.getName());
                     if (colInfo.canSort()) {
-                        DOM.Div({parent: cell}).addCssClass('AXMPgTableColSortBox').addElem('<i class="fa fa-arrow-down"></i>');
+                        DOM.Div({parent: cell}).addCssClass('AXMPgTableColSortBox');
                     }
                     if (colInfo.canOpen()) {
                         cell.addStyle('cursor','pointer');
@@ -191,6 +191,9 @@ define([
                             colInfo.callOnOpen();
                             return false;
                         });
+                    $ElColHeader.find('.AXMPgTableColSortBox').mousedown(function() {
+                        panel._toggleSortByField(colInfo._id);
+                    });
                     var dispSizeStart = 0;
                     AXMUtils.create$ElDragHandler($ElColDrag,
                         function() {
@@ -222,20 +225,8 @@ define([
                     event.preventDefault();
                     return false;
                 });
-                //$('#'+panel._divid_leftBody+'').dblclick(function(event) {
-                //    panel._handleCellDoubleClicked($(event.target));
-                //    event.stopPropagation();
-                //    event.preventDefault();
-                //    return false;
-                //});
-                //$('#'+panel._divid_rightBody+'').dblclick(function(event) {
-                //    panel._handleCellDoubleClicked($(event.target));
-                //    event.stopPropagation();
-                //    event.preventDefault();
-                //    return false;
-                //});
 
-
+                panel._updateSortStatus();
                 panel.renderTableContent();
             };
 
@@ -322,6 +313,30 @@ define([
                     panel.navigateLineDiff(+3);
                 if (params.deltaY > 0)
                     panel.navigateLineDiff(-3);
+            };
+
+            panel._toggleSortByField = function(colId) {
+                panel._tableData._toggleSortByField(colId);
+                panel._tableOffset = 0;
+                panel.renderTableContent();
+                panel._updateSortStatus();
+            };
+
+            panel._updateSortStatus = function() {
+                $.each(panel._columns, function(colNr, colInfo) {
+                    var $ElColHeader =panel._getColSub$El('header', colNr);
+                    if (colInfo.canSort()) {
+                        var sortInv = false;
+                        var sortBox = $ElColHeader.find('.AXMPgTableColSortBox');
+                        if (panel._tableData.getSortColumn() == colInfo._id) {
+                            sortBox.addClass('AXMPgTableColSortBoxActive');
+                            sortInv = panel._tableData.getSortInverse();
+                        }
+                        else
+                            sortBox.removeClass('AXMPgTableColSortBoxActive');
+                        sortBox.html('<i class="fa fa-arrow-{dir}"></i>'.AXMInterpolate({dir: sortInv?'up':'down' }));
+                    }
+                });
             };
 
             //panel._handleCellDoubleClicked = function($El) {
