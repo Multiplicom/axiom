@@ -52,6 +52,15 @@ define([
                 setTimeout(rootWindow._monitorResize, 100);
             };
 
+            rootWindow.forceResize = function() {
+                var myparent = $('#' + rootWindow._rootFrame.getId()).parent();
+                var sizeX = myparent.innerWidth();
+                var sizeY = myparent.innerHeight();
+                rootWindow._doResize(sizeX, sizeY, {});
+                rootWindow._prevSizeX = sizeX;
+                rootWindow._prevSizeY = sizeY;
+                Msg.broadcast('MsgBrowserResized', {sizeX: sizeX, sizeY: sizeY})
+            };
 
 
             rootWindow._doResize = function (sizeX, sizeY, params) {

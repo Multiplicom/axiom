@@ -59,6 +59,10 @@ define([
                 tableData._cols.push({ tpe:'float', id:id, minv:minv, maxv:maxv});
             };
 
+            tableData.requireRowRange = function() {
+                return true;
+            };
+
             tableData.getRow = function(rowNr) {
                 if ((rowNr<0) || (rowNr>=rowCount))
                     AXMUtils.reportBug('Invalid row number');

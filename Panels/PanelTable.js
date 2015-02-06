@@ -288,6 +288,9 @@ define([
                     stop:rowLast+1,
                     total:panel._tableRowCount
                 }));
+
+                if (!panel._sizeMeasured)
+                    panel._measureSize();
             };
 
             panel._renderHighlightRowNr = function() {
@@ -375,16 +378,26 @@ define([
 
             panel.resize = function(xl, yl) {
                 AXMUtils.Test.checkIsNumber(xl, yl);
+                panel._availableWidth = xl;
+                panel._availableHeight = yl;
+                panel._measureSize();
+            }
+
+            panel._measureSize = function() {
+                if (!panel._availableHeight)
+                    return;
 
                 var leftWidth = $('#'+panel._id+'_leftTableScrollContainer').width();
-                $('#'+panel._id+'_rightTableScrollContainer').width((xl-leftWidth)+'px');
+                $('#'+panel._id+'_rightTableScrollContainer').width((panel._availableWidth-leftWidth)+'px');
 
                 var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
                 var $ElRightBody = $('#'+panel._divid_rightBody);
-                var rowHeight = $ElRightBody.height()*1.0/panel._tableLineCount;
+                var tableHeight = $ElRightBody.height();
+                var rowHeight = tableHeight*1.0/panel._tableLineCount;
                 var headerHeight = $ElRightHeadRow.height();
                 if (rowHeight>0) {
-                    panel._tableLineCount = Math.max(1, Math.floor((yl - headerHeight) / rowHeight) - 1);
+                    panel._tableLineCount = Math.max(1, Math.floor((panel._availableHeight - headerHeight) / rowHeight) - 1);
+                    panel._sizeMeasured = true;
                     panel.renderTableContent();
                 }
             };
