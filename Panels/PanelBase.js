@@ -37,6 +37,10 @@ define([
                 return panel._id;
             };
 
+            panel.getTypeId = function() {
+                return panel._typeId;
+            };
+
             panel.createHtml = function() {
                 return '';
             };

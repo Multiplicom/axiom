@@ -210,6 +210,11 @@ define([
                     frame.setPositionClient(xl, yl-frame._clientVOffset, params);
             };
 
+            frame.activatePanelTypeId = function(panelTypeId) {
+                return false;
+            }; //in general: do nothing
+
+
             return frame;
         };
 
@@ -230,6 +235,15 @@ define([
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     memberFrame.attachEventHandlers(params);
                 });
+            };
+
+            frame.activatePanelTypeId = function(panelTypeId) {
+                var found = false;
+                $.each(frame._memberFrames, function(idx, memberFrame) {
+                    if (memberFrame.activatePanelTypeId(panelTypeId))
+                        found = true;
+                });
+                return found;
             };
 
             return frame;
@@ -558,6 +572,18 @@ define([
                 });
             };
 
+            frame.activatePanelTypeId = function(panelTypeId) { // returns true if the panel was found in this frame
+                var actFrameNr = -1;
+                $.each(frame._memberFrames, function(idx, memberFrame) {
+                    if (memberFrame.activatePanelTypeId(panelTypeId))
+                        actFrameNr = idx;
+                });
+                if (actFrameNr != -1)
+                    if (frame.activateStackNr)
+                        frame.activateStackNr(actFrameNr);
+            };
+
+
             return frame;
 
 
@@ -598,13 +624,13 @@ define([
                 $.each(frame._memberFrames, function(fnr, memberFrame) {
                     $('#'+frame._getTabId(fnr)).click(function() {
                         if (fnr != frame._activeMemberNr)
-                            frame.activateTabNr(fnr);
+                            frame.activateStackNr(fnr);
                     });
                 });
-                frame.activateTabNr(0);
+                frame.activateStackNr(0);
             };
 
-            frame.activateTabNr = function(fnr) {
+            frame.activateStackNr = function(fnr) {
                 if ((fnr<0) || (fnr>=frame._memberFrames.length))
                     AXMUtils.reportBug('Invalid TAB nr');
                 frame._activeMemberNr = fnr;
@@ -709,6 +735,10 @@ define([
 
             frame.getPanel = function() {
                 return frame._panel;
+            };
+
+            frame.activatePanelTypeId = function(panelTypeId) {
+                return frame._panel.getTypeId() == panelTypeId;
             };
 
 
