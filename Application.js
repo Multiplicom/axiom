@@ -33,6 +33,10 @@ define([
             theApp._rootFrame = iRootFrame;
         }
 
+        theApp.getRootFrame = function() {
+            return theApp._rootFrame;
+        }
+
         // Intialises the app
         theApp.init = function() {
             Test.checkDefined(theApp._rootFrame, "No root frame defined. Call Application.setRootFrame first.");
