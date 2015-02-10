@@ -45,6 +45,19 @@ define([
         }
 
 
+        // Returns a throttled function that wraps around the argument function fn, making sure it is called not more often than delay specifies
+        Module.debounce = function(fn, delay) {
+            var timer = null;
+            return function () {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    fn.apply(context, args);
+                }, delay);
+            };
+        };
+
+
 
         Module._uniqueID = 0;
 

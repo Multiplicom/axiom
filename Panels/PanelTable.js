@@ -363,6 +363,10 @@ define([
 
             };
 
+            panel.invalidate = function() {
+                panel.renderTableContent();
+            };
+
             panel.navigateFirstPage = function() {
                 panel._tableOffset = 0;
                 panel.renderTableContent();
@@ -469,6 +473,10 @@ define([
             theFrame.addSeparator();
 
             theFrame.addControl(thePanel._pagerInfo);
+
+            theFrame.getTablePanel = function() {
+                return thePanel;
+            }
 
             return theFrame;
         };

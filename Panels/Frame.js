@@ -755,7 +755,7 @@ define([
                 .setFixedDimSize(Module.dimY, controlsH);
             frame._frameFinal = frame.addMember(Module.FrameFinal(iPanel));
 
-            frame._controlGroup = ControlsCompound.GroupHor({});
+            frame._controlGroup = ControlsCompound.GroupHor({verticalAlignCenter: true});
             frame._panelControls.setRootControl(ControlsCompound.WrapperStyled(frame._controlGroup, 'AXMCommandBar'));
 
             frame.addCommand = function(settings, action) {

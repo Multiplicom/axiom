@@ -56,14 +56,25 @@ define([
 
         Module.GroupVert = function(settings, members) {
             var compound = Module.CompoundControlBase();
+            if (!settings)
+                settings = {};
+            compound._separator = settings.separator || 0;
             if (members)
                 compound.set(members);
+
+            compound.setSeparator = function(sep) {
+                compound._separator = sep;
+                return compound;
+            }
 
             compound.createHtml = function() {
                 var div = DOM.Div();
                 $.each(compound._members, function(idx, member) {
-                    if (idx>0)
+                    if (idx>0) {
                         div.addElem('<br/>');
+                        if (compound._separator)
+                            div.addElem('<div style="height:{h}px"/>'.AXMInterpolate({h:compound._separator}));
+                    }
                     div.addElem(member.createHtml());
                 });
                 return div.toString();
@@ -93,7 +104,7 @@ define([
                 $.each(compound._members, function(idx, member) {
                     var elemDiv = DOM.Div({parent:div});
                     elemDiv.addStyle('display', 'inline-block');
-                    elemDiv.addStyle('vertical-align', 'top');
+                    elemDiv.addStyle('vertical-align', (settings.verticalAlignCenter)?'center':'top');
                     div.addStyle('white-space', 'normal');
                     elemDiv.addStyle('margin-right', compound._separator+'px');
                     elemDiv.addElem(member.createHtml());
