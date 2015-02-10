@@ -94,14 +94,15 @@ define([
         };
 
 
-        Module.ErrorBox = function(content, title) {
+        Module.ErrorBox = function(content, title, onProceed) {
             if (!title)
                 title = "Error";
 
             var window = PopupWindow.create({
                 title: title,
                 blocking:true,
-                autoCenter: true
+                autoCenter: true,
+                preventClose: true
             });
 
             var grp1 = Controls.Compound.GroupHor({}).setSeparator(20);
@@ -117,6 +118,8 @@ define([
             })
                 .addNotificationHandler(function() {
                     window.close();
+                    if (onProceed)
+                        onProceed();
                 });
             grp2.add(btOK);
 

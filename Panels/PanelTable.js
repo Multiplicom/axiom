@@ -317,7 +317,6 @@ define([
 
             panel._toggleSortByField = function(colId) {
                 panel._tableData._toggleSortByField(colId);
-                panel._tableOffset = 0;
                 panel.renderTableContent();
                 panel._updateSortStatus();
             };
@@ -362,6 +361,12 @@ define([
                 return panel._findTableCell$El($El.parent());
 
             };
+
+            panel.resetView = function() {
+                panel._tableOffset = 0;
+                panel.invalidate();
+            };
+
 
             panel.invalidate = function() {
                 panel.renderTableContent();
