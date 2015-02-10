@@ -33,12 +33,14 @@ define([
             compound.set = function(ctrlSet) {
                 compound._members = [];
                 $.each(ctrlSet, function(idx, ctrl) {
+                    AXMUtils.Test.checkIsType(ctrl, '@Control');
                     compound.add(ctrl);
                 });
                 return compound;
             };
 
             compound.add = function(ctrl) {
+                AXMUtils.Test.checkIsType(ctrl, '@Control');
                 compound._members.push(ctrl);
                 return compound;
             };
@@ -74,7 +76,9 @@ define([
 
         Module.GroupHor = function(settings, members) {
             var compound = Module.CompoundControlBase();
-            compound._separator = 0;
+            if (!settings)
+                settings = {};
+            compound._separator = settings.separator || 0;
             if (members)
                 compound.set(members);
 
@@ -89,6 +93,8 @@ define([
                 $.each(compound._members, function(idx, member) {
                     var elemDiv = DOM.Div({parent:div});
                     elemDiv.addStyle('display', 'inline-block');
+                    elemDiv.addStyle('vertical-align', 'top');
+                    div.addStyle('white-space', 'normal');
                     elemDiv.addStyle('margin-right', compound._separator+'px');
                     elemDiv.addElem(member.createHtml());
                 });
@@ -99,12 +105,59 @@ define([
             return compound;
         };
 
+        Module.Grid = function(settings) {
+            var grid = Module.CompoundControlBase();
+            grid._rows = [];
+            grid.sepH = 12;
+            grid.sepV = 5;
+
+            grid.set = null; //not applicable here
+            grid._parentAdd = grid.add;
+            grid.add = null; //not applicable here
+
+            grid.setItem = function(rowNr, colNr, ctrl) {
+                grid._parentAdd(ctrl);
+                while (grid._rows.length <= rowNr)
+                    grid._rows.push([]);
+                while (grid._rows[rowNr].length <= colNr)
+                    grid._rows[rowNr].push(null);
+                grid._rows[rowNr][colNr] = ctrl;
+                return ctrl;
+            };
+
+            grid.createHtml = function() {
+                var div = DOM.Div();
+                div.addStyle('display','inline-block');
+
+                var st = '<table style="padding-top:{pt}px;">'.AXMInterpolate({ pt: grid.sepV });
+                $.each(grid._rows, function(rowNr, row) {
+                    st += '<tr>';
+                    $.each(row, function(colNr, item) {
+                        st += '<td style="padding-right:{sepH}px;padding-bottom:{sepV}px;">'.AXMInterpolate({ sepH: grid.sepH, sepV: grid.sepV });
+                        if (item != null)
+                            st += item.createHtml();
+                        st += '</td>';
+                    });
+                    st += '</tr>';
+                });
+                st += '</table>';
+                div.addElem(st);
+
+                return div.toString();
+            };
+
+
+            return grid;
+        };
+
+
 
 
         ///////////////////////////////////////////////////////////////////////////////////
 
         Module.WrapperControlBase = function(ctrl) {
             var wrapper = AXMUtils.object('@Control');
+            AXMUtils.Test.checkIsType(ctrl, '@Control');
             wrapper._id = 'CT'+AXMUtils.getUniqueID();
             wrapper._member = ctrl;
 
@@ -167,7 +220,7 @@ define([
         ///////////////////////////////////////////////////////////////////////////////////
 
         Module.DecoratorBase = function() {
-            var wrapper = {};
+            var wrapper = AXMUtils.object('@Control');
             wrapper._id = 'CT'+AXMUtils.getUniqueID();
 
             wrapper.attachEventHandlers = function() {
@@ -181,9 +234,28 @@ define([
             var wrapper = Module.DecoratorBase();
 
             wrapper.createHtml = function() {
-                var div = DOM.Div().addStyle('display','inline-block').addStyle('vertical-align','middle');
-                div.addStyle('width','3px').addStyle('height','25px').addStyle('background-color','rgb(0,0,0)').addStyle('opacity',0.15)
-                    .addStyle('margin-left','7px').addStyle('margin-right','7px');
+                var div = DOM.Div()
+                    .addStyle('display','inline-block')
+                    .addStyle('vertical-align','middle')
+                    .addStyle('width','3px')
+                    .addStyle('height','25px')
+                    .addStyle('background-color','rgb(0,0,0)')
+                    .addStyle('opacity',0.15)
+                    .addStyle('margin-left','7px')
+                    .addStyle('margin-right','7px');
+                return div.toString();
+            };
+
+            return wrapper;
+        };
+
+        Module.SeparatorV = function(h) {
+            var wrapper = Module.DecoratorBase();
+
+            wrapper.createHtml = function() {
+                var div = DOM.Div()
+                    .addStyle('width','1px')
+                    .addStyle('height',h + 'px')
                 return div.toString();
             };
 

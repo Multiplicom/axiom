@@ -93,6 +93,9 @@ define([
             control._width = settings.width || 120;
             control._height = settings.height || 45;
             control._buttonClass = settings.buttonClass || 'AXMButton';
+            control._enabled = true;
+            if (settings.enabled === false)
+                control._enabled = false;
 
 
             control.createHtml = function() {
@@ -148,11 +151,28 @@ define([
                 return div.toString();
             };
 
+            //enable / disable the button
+            control._updateEnabledState = function() {
+                if (control._enabled)
+                    control._getSub$El('').css('opacity', 1);
+                else
+                    control._getSub$El('').css('opacity', 0.4);
+            };
+
+            control.setEnabled = function(newStatus) {
+                control._enabled = newStatus;
+                control._updateEnabledState();
+            };
+
+
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
+                control._updateEnabledState();
             };
 
             control._onClicked = function(ev) {
+                if (!control._enabled)
+                    return;
                 control.performNotify();
                 ev.stopPropagation();
                 return false;

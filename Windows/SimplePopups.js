@@ -52,6 +52,48 @@ define([
         };
 
 
+        Module.ConfirmationBox = function(content, title, settings, onOK, onCancel) {
+            if (!title)
+                title = "Confirmation";
+
+            var window = PopupWindow.create({
+                title: title,
+                blocking:true,
+                autoCenter: true
+            });
+
+            var grp = Controls.Compound.GroupVert({});
+            grp.add(Controls.Static({text: content+'<p/>'}));
+
+            var btOK = Controls.Button({
+                text: 'OK',
+                icon: 'fa-check'
+            })
+                .addNotificationHandler(function() {
+                    window.close();
+                    if (onOK)
+                        onOK();
+                });
+
+            var btCancel = Controls.Button({
+                text: 'Cancel',
+                icon: 'fa-times'
+            })
+                .addNotificationHandler(function() {
+                    window.close();
+                    if (onCancel)
+                        onCancel();
+                });
+
+            grp.add(Controls.Compound.GroupHor({}, [btOK, btCancel]) );
+
+            window.setHandler_OnPressedEnter(window.close);
+            window.setRootControl(Controls.Compound.StandardMargin(grp));
+            window.start();
+
+        };
+
+
         Module.ErrorBox = function(content, title) {
             if (!title)
                 title = "Error";
