@@ -42,6 +42,17 @@ define([
             Test.checkDefined(theApp._rootFrame, "No root frame defined. Call Application.setRootFrame first.");
             theApp._rootWindow = RootWindow.create(theApp._rootFrame);
             theApp._rootWindow.render();
+
+            //Prevent drag & drop to app area
+            window.addEventListener("dragover",function(e){
+                e = e || event;
+                e.preventDefault();
+            },false);
+            window.addEventListener("drop",function(e){
+                e = e || event;
+                e.preventDefault();
+            },false);
+
         }
 
         // Returns the one and only app instance
