@@ -36,7 +36,7 @@ define([
                 var rootDiv = DOM.Div({});
                 rootDiv.addStyle('width', '100%');
                 rootDiv.addStyle('height', '100%');
-                rootDiv.addStyle('overflow', 'auto');
+                rootDiv.addStyle('overflow', 'hidden');
                 if (panel._rootControl)
                     rootDiv.addElem(panel._rootControl.createHtml());
                 return rootDiv.toString();

@@ -187,7 +187,7 @@ define([
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
             control._height = settings.height || 45;
-            control._buttonClass = settings.buttonClass || 'AXMCheck';
+            //control._buttonClass = settings.buttonClass || 'AXMCheck';
             control._value = false;
 
             control.createHtml = function() {
@@ -235,13 +235,108 @@ define([
         };
 
 
+        Module.DropList = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control._width = settings.width || 120;
+            control._height = settings.height || 45;
+            control._states = [];
+            control._value = '';
+
+            control.addState = function(id, name) {
+                control._states.push({id:id, name:name, group:null});
+                control._getSub$El('').html(control._buildSelectContent());
+            };
+
+            control.setValue = function(newVal, preventNotify) {
+                if (newVal == control.getValue()) return false;
+                control._value = newVal;
+                control._getSub$El('').html(control._buildSelectContent());
+                if (!preventNotify)
+                    control.performNotify();
+                return true;
+            };
+
+            control.getValue = function () {
+                var item = control._getSub$El('').find(":selected");
+                if (item.length>0)
+                    control._value = item.attr('value');
+                return control._value;
+            }
+
+            control.createHtml = function() {
+
+                var wrapper = DOM.Div();
+                wrapper.addStyle('display', 'inline-block');
+                //wrapper.setCssClass('DQXSelectWrapper');
+
+                var cmb = DOM.Create('select', { id: control._getSubId(''), parent: wrapper });
+                if (control._width)
+                    cmb.addStyle('width',control._width+'px');
+                //if (this._hint)
+                //    cmb.addHint(this._hint);
+                cmb.addElem(control._buildSelectContent());
+                //var label = DocEl.Label({ target: this.getFullID('Label') });
+                //label.addElem(this.myLabel);
+                //return label.toString() + ' ' + wrapper.toString();
+
+                return wrapper.toString();
+            };
+
+            control._buildSelectContent = function() {
+                var st = '';
+                var lastGroupName = '';
+                $.each(control._states, function(idx, state) {
+                    var groupName = state.group || '';
+                    if (groupName != lastGroupName) {
+                        if (lastGroupName)
+                            st += '</optgroup>';
+                        lastGroupName = groupName;
+                        if (groupName)
+                            st += '<optgroup = label="{name}">'.DQXformat({name: groupName});
+                    }
+                    st += '<option value="{id}" {selected}>{name}</option>'.AXMInterpolate({
+                        id: state.id,
+                        name: state.name,
+                        selected: (state.id == this._value) ? 'selected="selected"' : ''
+                    });
+                });
+
+                if (lastGroupName)
+                    st += '</optgroup>';
+                return st;
+            };
+
+            control.attachEventHandlers = function() {
+                control._getSub$El('').click(control._onClicked);
+            };
+
+            control._onClicked = function(ev) {
+                control.isChecked = control._getSub$El('').is(':checked');
+                control.performNotify();
+            };
+
+
+            control.setValue = function(newVal, preventNotify) {
+                if (newVal == control.getValue()) return false;
+                control._value = newVal;
+                if (control._value)
+                    control._getSub$El('').attr('checked', 'checked');
+                else
+                    control._getSub$El('').removeAttr('checked');
+                if (!preventNotify)
+                    control.performNotify();
+                return true;
+            };
+
+            return control;
+        };
 
 
         Module.Edit = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
             //control._height = settings.height || 45;
-            control._buttonClass = settings.buttonClass || 'AXMEdit';
+            //control._buttonClass = settings.buttonClass || 'AXMEdit';
             control._value = settings.value || '';
             control._isPassWord = settings.passWord || false;
 
@@ -249,6 +344,8 @@ define([
             control.createHtml = function() {
 
                 var rootEl = DOM.Create("input", {id: control._getSubId('')});
+                if (control._width)
+                    rootEl.addStyle('width',control._width+'px');
                 if (!control._isPassWord)
                     rootEl.addAttribute("type", 'text');
                 else

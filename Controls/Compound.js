@@ -42,7 +42,7 @@ define([
             compound.add = function(ctrl) {
                 AXMUtils.Test.checkIsType(ctrl, '@Control');
                 compound._members.push(ctrl);
-                return compound;
+                return ctrl;
             };
 
             compound.attachEventHandlers = function() {
@@ -70,12 +70,12 @@ define([
             compound.createHtml = function() {
                 var div = DOM.Div();
                 $.each(compound._members, function(idx, member) {
+                    var elemDiv = DOM.Div({parent:div});
                     if (idx>0) {
-                        div.addElem('<br/>');
                         if (compound._separator)
-                            div.addElem('<div style="height:{h}px"/>'.AXMInterpolate({h:compound._separator}));
+                            elemDiv.addElem('<div style="height:{h}px"/>'.AXMInterpolate({h:compound._separator}));
                     }
-                    div.addElem(member.createHtml());
+                    elemDiv.addElem(member.createHtml());
                 });
                 return div.toString();
             };
