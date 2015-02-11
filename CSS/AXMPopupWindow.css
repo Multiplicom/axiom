@@ -9,6 +9,11 @@
     background-color:rgba(200,200,200,0.5);
 }
 
+.AXMBlockingBackGroundTransp {
+    background-color:rgba(200,200,200,0.0) !important;
+    opacity: 0 !important;
+}
+
 .AXMPopupWindowContainer {
     left:90px;
     top:70px;

@@ -24,6 +24,15 @@ define([
 
         var Module = {};
 
+        Module._autoDecorateString = function(ctrl) {
+            if (typeof ctrl != 'string')
+                return ctrl;
+            else {
+                return require('AXM/Controls/Controls').Static({text: ctrl});
+            }
+        };
+
+
         Module.CompoundControlBase = function() {
             var compound = AXMUtils.object('@Control');
             compound._id = 'CT'+AXMUtils.getUniqueID();
@@ -33,6 +42,7 @@ define([
             compound.set = function(ctrlSet) {
                 compound._members = [];
                 $.each(ctrlSet, function(idx, ctrl) {
+                    ctrl = Module._autoDecorateString(ctrl);
                     AXMUtils.Test.checkIsType(ctrl, '@Control');
                     compound.add(ctrl);
                 });
@@ -40,6 +50,7 @@ define([
             };
 
             compound.add = function(ctrl) {
+                ctrl = Module._autoDecorateString(ctrl);
                 AXMUtils.Test.checkIsType(ctrl, '@Control');
                 compound._members.push(ctrl);
                 return ctrl;
@@ -127,6 +138,7 @@ define([
             grid.add = null; //not applicable here
 
             grid.setItem = function(rowNr, colNr, ctrl) {
+                ctrl = Module._autoDecorateString(ctrl);
                 grid._parentAdd(ctrl);
                 while (grid._rows.length <= rowNr)
                     grid._rows.push([]);

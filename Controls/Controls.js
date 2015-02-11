@@ -111,11 +111,14 @@ define([
                     .addStyle('width', '1px');
 
                 if (settings.icon && !settings.text) {
+                    var iconSize = 17;
+                    if (settings.iconSizeFraction)
+                        iconSize = Math.round(iconSize * settings.iconSizeFraction);
                     div.addStyle('text-align','center')
                     var divIcon = DOM.Div({parent: div})
                         .addCssClass('fa').addCssClass(settings.icon).addCssClass('AXMButtonIcon')
                         .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle')
-                        .addStyle('font-size', 17 + 'px');
+                        .addStyle('font-size', iconSize + 'px');
                 }
 
                 if (!settings.icon && settings.text) {

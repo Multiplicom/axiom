@@ -48,6 +48,7 @@ define([
             window._rootControl = null;
             window.resizable = false;
             window._blocking = settings.blocking||false;
+            window._transpBlocking = settings.blockingTransparent||false;
             window._autoCenter = settings.autoCenter||false;
             window._canClose = !(settings.preventClose);
 
@@ -71,6 +72,8 @@ define([
                     var blockerid = 'blocker_'+window._id;
                     var background = DOM.Div({id:blockerid});
                     background.addCssClass('AXMBlockingBackGround');
+                    if (window._transpBlocking)
+                        background.addCssClass('AXMBlockingBackGroundTransp');
                     background.addStyle('z-index', window.zIndex-1);
                     $('.AXMContainer').append(background.toString());
                     var blockerEl = $('#'+blockerid);
@@ -99,7 +102,8 @@ define([
                 if (window.resizable)
                     rootDiv.addStyle('width', window._defaultSizeX+'px').addStyle('height', window._defaultSizeY+'px');
 
-                headerDiv = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowHeader').addElem(window._title);
+                if (window._title)
+                    headerDiv = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowHeader').addElem(window._title);
 
                 var divClient = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowClient');
                 if (window._rootFrame)

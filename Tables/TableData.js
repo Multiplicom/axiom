@@ -62,6 +62,10 @@ define([
                 tableData.resetBuffer();
             };
 
+            tableData.getPrimKey = function() {
+                return tableData._primKey;
+            };
+
             tableData.getSortColumn = function() {
                 return tableData._sortCol;
             };

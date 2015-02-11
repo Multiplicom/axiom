@@ -133,14 +133,17 @@ define([
 
         Module.setBlockingBusy = function(msg) {
             var win = PopupWindow.create({
-                title: 'Processing',
                 blocking:true,
+                blockingTransparent: true,
                 autoCenter: true,
                 preventClose: true
             });
 
-            var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: msg+'<p/>'}));
+            var grp = Controls.Compound.GroupHor({});
+            var txt = '';
+            txt += '<div style="padding:15px;display:inline-block;vertical-align: middle"><i class="fa fa-spinner fa-spin fa-3x"></i></div>';
+            txt += '<div style="padding:15px;display:inline-block;vertical-align: middle">' + msg + '</div>';
+            grp.add(Controls.Static({text: txt}));
 
             win.setRootControl(Controls.Compound.StandardMargin(grp));
             win.start();
