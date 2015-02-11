@@ -51,7 +51,7 @@
 /************ Set colour for top & left headers ****************/
 
 .AXMPgTableRight th, .AXMPgTableLeft th, .AXMPgTableLeft td {
-    background-color: rgb(240,240,240);
+    background-color: rgb(245,245,245);
     border-right: 1px solid rgb(210,210,210);
     border-bottom: 1px solid rgb(210,210,210);
 }
@@ -82,7 +82,7 @@
 }
 
 
-.AXMPgTableLinkCell {
+.AXMPgTableLinkCell, .AXMPgTableSelectorCell {
     display: inline-block;
     width:100%;
     height:100%;
@@ -90,13 +90,23 @@
     text-align:center;
 }
 
-.AXMPgTableLinkIcon {
+.AXMPgTableLinkIcon, .AXMPgTableSelectorIcon, .AXMPgTableSelectorIconActive {
     display: inline-block;
     font-size: 13px;
     vertical-align: middle;
-    color: rgb(0, 120, 230);
     opacity: 0.5;
-    /*display:inline-block;font-size:13px;vertical-align:middle;color:rgba(0,120,230,0.6)    */
+}
+
+.AXMPgTableLinkIcon {
+    color: rgb(0, 120, 230);
+}
+
+.AXMPgTableSelectorIcon {
+    color: rgb(140, 140, 140);
+}
+
+.AXMPgTableSelectorIconActive {
+    color: rgb(255, 50, 0);
 }
 
 /*.AXMPgTableLinkCell:hover {*/

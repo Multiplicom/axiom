@@ -82,6 +82,7 @@ define([
             tabledef.tableId = tableId;
             tabledef._columns = [];
             tabledef._onOpenRow = null;
+            tabledef._canSelect = false;
 
             tabledef.addColumn = function(colId) {
                 AXMUtils.Test.checkIsString(colId);
@@ -94,12 +95,20 @@ define([
                 tabledef._onOpenRow = handler;
             };
 
+            tabledef.makeCanSelect = function() {
+                tabledef._canSelect = true;
+            };
+
             tabledef.getColumns = function() {
                 return tabledef._columns;
             };
 
             tabledef.canOpenRow = function() {
                 return !!tabledef._onOpenRow;
+            };
+
+            tabledef.canSelect = function() {
+                return tabledef._canSelect;
             };
 
             tabledef.callOnOpenRow = function(rowNr) {

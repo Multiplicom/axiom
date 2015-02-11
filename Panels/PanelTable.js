@@ -39,6 +39,7 @@ define([
             panel._tableLineCount = 20;
             panel._tableOffset = 0;
             panel._currentRowNr = 0;
+            panel._lastSelClickedRowNr = null;
 
             panel._columns = [];
 
@@ -56,6 +57,14 @@ define([
                     panel._columns.push(openerCol);
                 }
 
+                if (tableInfo.canOpenRow()) {
+                    var selectorCol = TableInfo.colInfo('_selector_');
+                    selectorCol.isSelector = true;
+                    selectorCol._dispSize = 25;
+                    selectorCol.setName('');
+                    panel._columns.push(selectorCol);
+                }
+
                 $.each(tableInfo.getColumns(), function (idx, col) {
                     panel._columns.push(col);
                 });
@@ -65,7 +74,7 @@ define([
 
 
             panel._colIsRightPart = function(colInfo) {
-                return (!colInfo.isOpener);
+                return (!colInfo.isOpener) && (!colInfo.isSelector);
             };
 
             panel._getSubId = function(ext) {
@@ -210,10 +219,20 @@ define([
                 });
 
                 $ElLeftBody.click(function(event) {
-                    panel._handleCellClicked($(event.target));
+                    panel._handleCellClicked($(event.target),
+                        {
+                            shiftPressed: event.shiftKey,
+                            controlPressed: event.ctrlKey
+                        }
+                    );
                 });
                 $ElRightBody.click(function(event) {
-                    panel._handleCellClicked($(event.target));
+                    panel._handleCellClicked($(event.target),
+                    {
+                        shiftPressed: event.shiftKey,
+                            controlPressed: event.ctrlKey
+                    }
+                    );
                 });
 
                 AXMUtils.create$ElScrollHandler(panel._getSub$El('leftTableScrollContainer'), panel._handleScrolled);
@@ -234,8 +253,18 @@ define([
             panel.renderCell = function(rowNr, colNr, rowData, colInfo) {
                 if (colInfo.isOpener) {
                     var cell = '<div class="AXMPgTableLinkCell">';
-                    //cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"/>';
                     cell += '<div class="AXMPgTableLinkIcon"><i class="fa fa-external-link-square"></i></div>';
+                    cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"/>';
+                    cell += '</div>';
+                    return cell;
+                }
+                if (colInfo.isSelector) {
+                    var rowId = rowData[panel._tableData.getPrimKey()];
+                    var cell = '<div class="AXMPgTableSelectorCell">';
+                    if (!panel._tableData.isItemSelected(rowId))
+                        cell += '<div class="AXMPgTableSelectorIcon"><i class="fa fa-circle-thin"></i></div>';
+                    else
+                        cell += '<div class="AXMPgTableSelectorIconActive"><i class="fa fa-check-circle"></i></div>';
                     cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"/>';
                     cell += '</div>';
                     return cell;
@@ -294,7 +323,7 @@ define([
 
             };
 
-            panel._handleCellClicked = function($El) {
+            panel._handleCellClicked = function($El, settings) {
                 var cellInfo = panel._findTableCell$El($El);
                 if (cellInfo) {
                     panel._currentRowNr = cellInfo.rowNr;
@@ -302,10 +331,30 @@ define([
                     if (cellInfo.colNr != null) {
                         var colInfo = panel._columns[cellInfo.colNr];
                         if (colInfo.isOpener)
-                            panel._tableInfo.callOnOpenRow(cellInfo.rowNr);
+                            panel._tableInfo.callOnOpenRow(cellInfo.rowNr, settings);
+                        if (colInfo.isSelector)
+                            panel._handleSelectorClicked(cellInfo.rowNr, settings);
                     }
                     //alert('Clicked '+cellInfo.rowNr+' '+cellInfo.colNr);
                 }
+            };
+
+            panel._handleSelectorClicked = function(rowNr, settings) {
+                var rowId = panel._tableData.getRowId(rowNr);
+                if (rowId === null)
+                    return;
+                var prevState = panel._tableData.isItemSelected(rowId);
+                if ((!settings.shiftPressed) || (panel._lastSelClickedRowNr == null))
+                    panel._tableData.setItemSelected(rowId, !prevState);
+                else {
+                    for (var i=Math.min(rowNr,panel._lastSelClickedRowNr); i<=Math.max(rowNr,panel._lastSelClickedRowNr); i++) {
+                        var t_rowId = panel._tableData.getRowId(i);
+                        if (t_rowId !== null)
+                            panel._tableData.setItemSelected(t_rowId, !prevState);
+                    }
+                }
+                panel._lastSelClickedRowNr = rowNr;
+                panel.renderTableContent();
             };
 
             panel._handleScrolled = function(params) {
@@ -364,6 +413,8 @@ define([
 
             panel.resetView = function() {
                 panel._tableOffset = 0;
+                panel._lastSelClickedRowNr = null;
+                panel._currentRowNr = 0;
                 panel.invalidate();
             };
 
@@ -374,22 +425,26 @@ define([
 
             panel.navigateFirstPage = function() {
                 panel._tableOffset = 0;
+                panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
 
             panel.navigatePreviousPage = function() {
                 panel._tableOffset = Math.max(0, panel._tableOffset-panel._tableLineCount);
+                panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
 
 
             panel.navigateNextPage = function() {
                 panel._tableOffset = Math.min(Math.max(0, panel._tableRowCount-panel._tableLineCount+2), panel._tableOffset+panel._tableLineCount);
+                panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
 
             panel.navigateLastPage = function() {
                 panel._tableOffset = Math.max(0, panel._tableRowCount-panel._tableLineCount+2);
+                panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
 
@@ -397,6 +452,7 @@ define([
                 panel._tableOffset += diff;
                 panel._tableOffset = Math.min(Math.max(0, panel._tableRowCount-panel._tableLineCount+2), panel._tableOffset);
                 panel._tableOffset = Math.max(0, panel._tableOffset);
+                panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
 
