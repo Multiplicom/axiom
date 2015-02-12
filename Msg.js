@@ -39,17 +39,17 @@ define(
         Msg.send = function (msgId, content) {
             var receiverCount = Msg.broadcast(msgId, content);
             if (receiverCount > 1)
-                DQX.reportError("Message was processed by more than one recipient");
+                AXMreportError("Message was processed by more than one recipient");
             if (receiverCount == 0)
-                DQX.reportError("Message was not processed by any recipient");
+                AXMreportError("Message was not processed by any recipient");
         };
 
         //eventid: optional unique identifier to avoid duplicate entry of the same listener
         Msg.listen = function (eventid, msgId, callbackFunction) {
             if (typeof (eventid) != 'string')
-                DQX.reportError('Listener event id not provided');
+                AXMreportError('Listener event id not provided');
             if (!callbackFunction)
-                DQX.reportError('No callback function provided for event listener');
+                AXMreportError('No callback function provided for event listener');
             if ((eventid != '') && (eventid in Msg._listeneridmap)) {
                 var idx = Msg._listeneridmap[eventid];
                 Msg._listeners[idx].msgId = msgId;

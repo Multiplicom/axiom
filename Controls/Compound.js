@@ -211,7 +211,7 @@ define([
             wrapper.createHtml = function() {
                 var div = DOM.Div();
                 div.addStyle('margin', marginLeft+'px');
-                div.addStyle('display', 'inline-block');
+                //div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
                 return div.toString();
             };
@@ -220,7 +220,18 @@ define([
         };
 
         Module.StandardMargin = function(ctrl) {
-            return Module.Margin(ctrl,10);
+            var wrapper = Module.WrapperControlBase(ctrl);
+
+            wrapper.createHtml = function() {
+                var div = DOM.Div();
+                div.addCssClass('AXMFormStandardMargin')
+                //div.addStyle('margin-left', marginLeft+'px');
+                //div.addStyle('display', 'inline-block');
+                div.addElem(wrapper._member.createHtml());
+                return div.toString();
+            };
+
+            return wrapper;
         }
 
         Module.AlignRight = function(ctrl) {
@@ -237,7 +248,24 @@ define([
             };
 
             return wrapper;
-        }
+        };
+
+        Module.Section = function(ctrl, title) {
+            var wrapper = Module.WrapperControlBase(ctrl);
+            wrapper._title = title;
+
+            wrapper.createHtml = function() {
+                var divContainer = DOM.Div();
+                var divTitle = DOM.Div({parent: divContainer});
+                divTitle.addCssClass('AXMFormSectionHeader');
+                divTitle.addElem(wrapper._title);
+                var divBody = DOM.Div({parent: divContainer});
+                divBody.addElem(wrapper._member.createHtml());
+                return divContainer.toString();
+            };
+
+            return wrapper;
+        };
 
 
         ///////////////////////////////////////////////////////////////////////////////////

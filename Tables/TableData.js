@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Msg"],
     function (
         require, $, _,
-        AXMUtils, DOM) {
+        AXMUtils, DOM, Msg) {
 
         var Module = {};
 
@@ -41,14 +41,18 @@ define([
             return st;
         };
 
-        Module.create = function(primKey) {
+        Module.create = function(id, primKey) {
             var tableData = AXMUtils.object('@TableData');
+            tableData._id = id;
             tableData._primKey = primKey;
 
             tableData._sortCol = null;
             tableData._sortInverse = true;
 
-            //todo: build functionality for keeping map of selected items
+            tableData.getId = function() {
+                return tableData._id;
+            };
+
 
 
             tableData._toggleSortByField = function(colId) {
@@ -89,6 +93,39 @@ define([
             tableData.requireRowRange = function(rowFirst, rowLast, onAvailable) {
                 reportError('Not implemented');
             };
+
+
+            // Item selection functionality
+
+            tableData._selectedItemsMap = {};
+            tableData._selectedCount = 0;
+
+            tableData.setItemSelected = function(itemId, state) {
+                if (state == tableData.isItemSelected(itemId))
+                    return;
+                tableData._selectedCount += state?+1:-1;
+                tableData._selectedItemsMap[itemId] = state;
+            };
+
+            tableData.isItemSelected = function(itemId) {
+                return !!tableData._selectedItemsMap[itemId];
+            };
+
+            tableData.getSelectedItemCount = function() {
+                return tableData._selectedCount;
+            };
+
+            tableData.notifySelectionModified = function() {
+                Msg.broadcast('TableSelectionModified', tableData.getId());
+            };
+
+
+            tableData.clearSelection = function() {
+                tableData._selectedItemsMap = {};
+                tableData._selectedCount = 0;
+                tableData.notifySelectionModified();
+            };
+
 
             return tableData;
         };

@@ -354,8 +354,9 @@ define([
                     }
                 }
                 panel._lastSelClickedRowNr = rowNr;
-                panel.renderTableContent();
+                panel._tableData.notifySelectionModified();
             };
+
 
             panel._handleScrolled = function(params) {
                 if (params.deltaY < 0)
@@ -482,7 +483,7 @@ define([
                 }
             };
 
-            //todo: tear down this event listener in the proper tear down function
+            //todo: tear down these events listener in the proper tear down function
             Msg.listen('', 'UpdateTableInfo', function(tableid) {
                 if (tableid==panel._tableInfo.tableId) {
                     panel.updateTableInfo();
@@ -490,6 +491,12 @@ define([
                     $('#tb'+panel._id).html(panel.createHtmlBody());
                     panel.renderTableContent();
                     panel.attachEventHandlers();
+                }
+            });
+
+            Msg.listen('', 'TableSelectionModified', function(tableid) {
+                if (tableid==panel._tableInfo.tableId) {
+                    panel.renderTableContent();
                 }
             });
 

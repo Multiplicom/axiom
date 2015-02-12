@@ -71,15 +71,17 @@ define([
 
         Module.Static = function(settings) {
             var control = Module.SingleControlBase(settings);
+            control._text = settings.text || '';
 
             control.createHtml = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('display', 'inline-block').addStyle('vertical-align','middle');
-                div.addElem(settings.text);
+                div.addElem(control._text);
                 return div.toString();
             };
 
             control.modifyText = function(newText) {
+                control._text = newText;
                 $('#'+control._id).html(newText);
             };
 
