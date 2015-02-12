@@ -188,6 +188,19 @@ body {
     color: rgb(50,50,50);
 }
 
+.AXMButtonHelp .AXMButtonIcon {
+    display: inline-block;
+    background-color: transparent;
+    color: rgb(0, 126, 190);
+    opacity: 0.5;
+    border: none;
+}
+
+.AXMButtonHelp:hover {
+    background-color: rgba(255,192,0,0.35);
+    opacity: 1;
+}
+
 
 .AXMCommandBar {
     width:100%;

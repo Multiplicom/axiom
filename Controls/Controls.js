@@ -186,6 +186,32 @@ define([
             return control;
         };
 
+        Module.EditTextItemButton = function() {
+            var control = Module.Button({
+                icon:'fa-pencil',
+                buttonClass: 'AXMButtonCommandBar',
+                width:25,
+                height:20,
+                iconSizeFraction: 0.75
+            });
+            return control;
+        };
+
+        Module.HelpButton = function(helpId) {
+            var control = Module.Button({
+                icon: 'fa-question-circle',
+                buttonClass: 'AXMButtonHelp',
+                width:24,
+                height:18,
+                iconSizeFraction: 1.1
+
+            });
+            control.addNotificationHandler(function() {
+                require('AXM/Windows/DocViewer').create(helpId);
+            });
+            return control;
+        };
+
 
 
         Module.Check = function(settings) {

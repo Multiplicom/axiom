@@ -26,7 +26,7 @@ define([
         Module.gripSize = 6;
         Module.gripOverlap = 2;
         Module.gripCornerLength = 35;
-        Module.headerHeight = 35;
+        Module.headerHeight = 30;
 
         Module._activeWindows = [];
 
@@ -48,6 +48,7 @@ define([
             window._rootControl = null;
             window.resizable = false;
             window._blocking = settings.blocking||false;
+            window._closeOnEscape = settings.closeOnEscape||false;
             window._transpBlocking = settings.blockingTransparent||false;
             window._autoCenter = settings.autoCenter||false;
             window._canClose = !(settings.preventClose);
@@ -92,6 +93,9 @@ define([
                             }, 150);
                         }
                     });
+                }
+
+                if (window._blocking || window._closeOnEscape) {
                     AXMUtils.addKeyDownHandler(window._onKeyDown);
                 }
 
