@@ -33,7 +33,11 @@ define([
 
             panel.setContent = function(content) {
                 panel._content = content;
-                $('#' + panel.getId() + '_content').html(content);
+                panel.get$El().html(content);
+            };
+
+            panel.get$El = function() {
+                return $('#' + panel.getId() + '_content');
             };
 
             panel.createHtml = function() {

@@ -1,14 +1,17 @@
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelHtml", "AXM/Windows/Popupwindow", "AXM/Controls/Controls"],
+        "AXM/AXMUtils", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelHtml", "AXM/Windows/Popupwindow", "AXM/Windows/SimplePopups", "AXM/Controls/Controls"],
     function (
         require, $, _,
-        Utils, Frame, PanelForm, PanelHtml, Popupwin, Controls) {
+        Utils, Frame, PanelForm, PanelHtml, Popupwin, SimplePopups, Controls) {
 
         var Module = {};
 
 
         Module.create = function(docId) {
+
+            Module.topicStack = [];
+            Module.topicStackPointer = -1;
 
             var win = Popupwin.create({
                 title: 'Documentation',
@@ -18,62 +21,111 @@ define([
                 closeOnEscape:true
             });
 
-            var rootFrame = Frame.FrameSplitterVert();
 
-            var form1 = PanelForm.create('controls');
+            var _init = function() {
+                var rootFrame = Frame.FrameSplitterVert();
 
-            var bt1 = Controls.Button({
-                icon:'fa-arrow-left',
-                width:40,
-                height:40,
-                enabled: false
-            }).addNotificationHandler(function() {
-            });
-            var bt2 = Controls.Button({
-                icon:'fa-arrow-right',
-                width:40,
-                height:40,
-                enabled: false
-            }).addNotificationHandler(function() {
-            });
-            form1.setRootControl(Controls.Compound.GroupHor({}, [bt1, bt2]));
+                var form1 = PanelForm.create('controls');
 
-            rootFrame.addMember(Frame.FrameFinal(form1)).setFixedDimSize(Frame.dimY,42);
+                win.bt_previous = Controls.Button({
+                    icon:'fa-arrow-left',
+                    width:40,
+                    height:40,
+//                enabled: false
+                }).addNotificationHandler(win.onPrevious);
+                win.bt_next = Controls.Button({
+                    icon:'fa-arrow-right',
+                    width:40,
+                    height:40,
+//                enabled: false
+                }).addNotificationHandler(win.onNext);
+                form1.setRootControl(Controls.Compound.GroupHor({}, [win.bt_previous, win.bt_next]));
 
-            //var formContent = PanelForm.create('content');
-            //win.ctrl_content = Controls.Static({text:
-            //    '<div style="overflow-y: scroll;height:100%"><div style="margin:5px;" class="doccontent"></div></div>'
-            //});
-            //formContent.setRootControl(win.ctrl_content);
-            win.panelContent = PanelHtml.create();
-            win.panelContent.enableVScrollBar();
-            rootFrame.addMember(Frame.FrameFinal(win.panelContent));
+                rootFrame.addMember(Frame.FrameFinal(form1)).setFixedDimSize(Frame.dimY,42);
 
-            win.setRootFrame(rootFrame);
+                //var formContent = PanelForm.create('content');
+                //win.ctrl_content = Controls.Static({text:
+                //    '<div style="overflow-y: scroll;height:100%"><div style="margin:5px;" class="doccontent"></div></div>'
+                //});
+                //formContent.setRootControl(win.ctrl_content);
+                win.panelContent = PanelHtml.create();
+                win.panelContent.enableVScrollBar();
+                rootFrame.addMember(Frame.FrameFinal(win.panelContent));
 
-            win.loadDoc = function(docId) {
-                var url = '/static/docs/{docid}.html'.AXMInterpolate({docid: docId});
-                $.get(url, {})
-                    .done(function (data) {
-                        //DQX.stopProcessing();
-                        var content = $('<div/>').append(data).find('.AXMDocContent').html();
-                        win.panelContent.setContent('<div style="margin:8px">' + content + '</div>');
-                        //win.ctrl_content._getSub$El('').find('.doccontent')
-                        //    .html($);
-                        //if (scrollPos)
-                        //    $('#DocuBoxContent').scrollTop(scrollPos);
-                        //else
-                        //    $('#DocuBoxContent').scrollTop(0);
-                        //Documentation.scrollHelper.update();
-                    })
-                    .fail(function () {
-                        //DQX.stopProcessing();
-                        alert("Failed to download documentation item '" + docId + "'");
-                    });
+                win.setRootFrame(rootFrame);
+                win.start();
+                win._updateButtons();
             };
 
-            win.start();
-            win.loadDoc(docId);
+
+            win.onPrevious = function() {
+                if (Module.topicStackPointer > 0) {
+                    Module.topicStackPointer--;
+                    win._loadDocUrlSub(Module.topicStack[Module.topicStackPointer].url, Module.topicStack[Module.topicStackPointer].scrollPos);
+                    win._updateButtons();
+                }
+            };
+
+            win.onNext = function() {
+                if (Module.topicStackPointer < Module.topicStack.length - 1) {
+                    Module.topicStackPointer++;
+                    win._loadDocUrlSub(Module.topicStack[Module.topicStackPointer].url, Module.topicStack[Module.topicStackPointer].scrollPos);
+                    win._updateButtons();
+                }
+            };
+
+            win._updateButtons = function() {
+                win.bt_previous.setEnabled(Module.topicStackPointer > 0);
+                win.bt_next.setEnabled(Module.topicStackPointer < Module.topicStack.length - 1);
+            };
+
+            win.loadDocId = function(docId) {
+                win.loadDocUrl('/static/docs/{docid}.html'.AXMInterpolate({docid: docId}));
+            }
+
+            win.loadDocUrl = function(url) {
+                if (Module.topicStackPointer >= 0)
+                    Module.topicStack[Module.topicStackPointer].scrollPos = win.panelContent.get$El().scrollTop();
+                Module.topicStack = Module.topicStack.slice(0, Module.topicStackPointer + 1);
+                Module.topicStack.push({ url: url, scrollPos: 0 });
+                Module.topicStackPointer = Module.topicStack.length - 1;
+                win._loadDocUrlSub(url);
+                win._updateButtons();
+            };
+
+            win._loadDocUrlSub = function(url, scrollPos) {
+                var busyid = SimplePopups.setBlockingBusy('Fetching document');
+                $.get(url, {})
+                    .done(function (data) {
+                        SimplePopups.stopBlockingBusy(busyid);
+                        var content = $('<div/>').append(data).find('.AXMDocContent').html();
+                        win._loadContent('<div style="margin:8px">' + content + '</div>', scrollPos);
+                    })
+                    .fail(function () {
+                        SimplePopups.stopBlockingBusy(busyid);
+                        alert("Failed to download Module item '" + docId + "'");
+                    });
+                win._updateButtons();
+            };
+
+            win._loadContent = function(content, scrollPos) {
+                win.panelContent.setContent(content);
+                if (scrollPos)
+                    win.panelContent.get$El().scrollTop(scrollPos);
+                else
+                    win.panelContent.get$El().scrollTop(0);
+                win.panelContent.get$El().find('.AXMDocLink').click(function(ev) {
+                    var href = $(this).attr('href');
+                    win.loadDocUrl(href);
+                    ev.stopPropagation();
+                    ev.preventDefault();
+                    return false;
+                })
+            };
+
+            _init();
+
+            win.loadDocId(docId);
         };
 
 
@@ -85,41 +137,41 @@ define([
 //
 //define(["jquery", "DQX/Utils", "DQX/DocEl", "DQX/Msg", "DQX/Popup"],
 //    function ($, DQX, DocEl, Msg, Popup) {
-//        var Documentation = {};
+//        var Module = {};
 //
-//        Documentation.topicStack = [];
-//        Documentation.topicStackPointer = -1;
+//        Module.topicStack = [];
+//        Module.topicStackPointer = -1;
 //
-//        Documentation._onCancel = function () {
+//        Module._onCancel = function () {
 //            $('#DocuBoxBackGround').remove();
 //            DQX.unRegisterGlobalKeyDownReceiver('DocuBox');
 //        }
 //
-//        closeDocumentation = function () {
-//            Documentation._onCancel();
+//        closeModule = function () {
+//            Module._onCancel();
 //        }
 //
-//        Documentation._onPrevious = function () {
-//            if (Documentation.topicStackPointer > 0) {
-//                Documentation.topicStackPointer--;
-//                Documentation._displayHelp(Documentation.topicStack[Documentation.topicStackPointer].url, Documentation.topicStack[Documentation.topicStackPointer].scrollPos);
+//        Module._onPrevious = function () {
+//            if (Module.topicStackPointer > 0) {
+//                Module.topicStackPointer--;
+//                Module._displayHelp(Module.topicStack[Module.topicStackPointer].url, Module.topicStack[Module.topicStackPointer].scrollPos);
 //            }
 //        }
 //
-//        Documentation._onNext = function () {
-//            if (Documentation.topicStackPointer < Documentation.topicStack.length - 1) {
-//                Documentation.topicStackPointer++;
-//                Documentation._displayHelp(Documentation.topicStack[Documentation.topicStackPointer].url, Documentation.topicStack[Documentation.topicStackPointer].scrollPos);
+//        Module._onNext = function () {
+//            if (Module.topicStackPointer < Module.topicStack.length - 1) {
+//                Module.topicStackPointer++;
+//                Module._displayHelp(Module.topicStack[Module.topicStackPointer].url, Module.topicStack[Module.topicStackPointer].scrollPos);
 //            }
 //        }
 //
-//        Documentation._createBox = function () {
+//        Module._createBox = function () {
 //
 //            if ($('#DocuBoxBackGround').length > 0)
 //                return;
 //
-//            Documentation.topicStack = [];
-//            Documentation.topicStackPointer = -1;
+//            Module.topicStack = [];
+//            Module.topicStackPointer = -1;
 //
 //            var background = DocEl.Div({ id: 'DocuBoxBackGround' });
 //            background.addStyle("position", "absolute");
@@ -160,7 +212,7 @@ define([
 //            box.setCssClass("DQXDocuBox");
 //            //box.addStyle("overflow", "hidden");
 //
-//            var thecloser = DocEl.JavaScriptBitmaplink(DQX.BMP("close2.png"), "Close", "closeDocumentation();");
+//            var thecloser = DocEl.JavaScriptBitmaplink(DQX.BMP("close2.png"), "Close", "closeModule();");
 //            box.addElem(thecloser);
 //            thecloser.addStyle('position', 'absolute');
 //            thecloser.addStyle('right', '-16px');
@@ -176,9 +228,9 @@ define([
 //            var boxButtons = DocEl.Div({ id: 'DocuBoxButtons', parent: boxFooter });
 //
 //            var buttons = [
-//                //                    { id: 'DocuBoxButtonCancel', name: '', bitmap: DQX.BMP('cancel.png'), handler: Documentation._onCancel },
-//                {id: 'DocuBoxButtonPrevious', name: '', bitmap: DQX.BMP('arrow5left.png'), handler: Documentation._onPrevious },
-//                { id: 'DocuBoxButtonNext', name: '', bitmap: DQX.BMP('arrow5right.png'), handler: Documentation._onNext },
+//                //                    { id: 'DocuBoxButtonCancel', name: '', bitmap: DQX.BMP('cancel.png'), handler: Module._onCancel },
+//                {id: 'DocuBoxButtonPrevious', name: '', bitmap: DQX.BMP('arrow5left.png'), handler: Module._onPrevious },
+//                { id: 'DocuBoxButtonNext', name: '', bitmap: DQX.BMP('arrow5right.png'), handler: Module._onNext },
 //            ];
 //
 //            for (var buttonNr = 0; buttonNr < buttons.length; buttonNr++) {
@@ -206,27 +258,27 @@ define([
 //            }
 //
 //            DQX.registerGlobalKeyDownReceiver(function (ev) {
-//                if (ev.isEscape) Documentation._onCancel('DocuBox');
+//                if (ev.isEscape) Module._onCancel('DocuBox');
 //            }, 'DocuBox');
 //
-//            //Documentation.scrollHelper = DQX.scrollHelper($('#DocuBoxContent'));
+//            //Module.scrollHelper = DQX.scrollHelper($('#DocuBoxContent'));
 //        }
 //
 //
 //        //Show a help box corresponding to a help id item in the DOM
-//        Documentation.showHelp = function (url) {
-//            if (Documentation.topicStackPointer >= 0)
-//                Documentation.topicStack[Documentation.topicStackPointer].scrollPos = $('#DocuBoxContent').scrollTop();
-//            Documentation._createBox();
-//            Documentation.topicStack = Documentation.topicStack.slice(0, Documentation.topicStackPointer + 1);
-//            Documentation.topicStack.push({ url: url, scrollPos: 0 });
-//            Documentation.topicStackPointer = Documentation.topicStack.length - 1;
-//            Documentation._displayHelp(url,0);
+//        Module.showHelp = function (url) {
+//            if (Module.topicStackPointer >= 0)
+//                Module.topicStack[Module.topicStackPointer].scrollPos = $('#DocuBoxContent').scrollTop();
+//            Module._createBox();
+//            Module.topicStack = Module.topicStack.slice(0, Module.topicStackPointer + 1);
+//            Module.topicStack.push({ url: url, scrollPos: 0 });
+//            Module.topicStackPointer = Module.topicStack.length - 1;
+//            Module._displayHelp(url,0);
 //        }
 //
-//        Documentation._displayHelp = function (url, scrollPos) {
-//            $('#DocuBoxButtonPrevious').css('opacity', (Documentation.topicStackPointer > 0) ? 1 : 0.3);
-//            $('#DocuBoxButtonNext').css('opacity', (Documentation.topicStackPointer < Documentation.topicStack.length - 1) ? 1 : 0.3);
+//        Module._displayHelp = function (url, scrollPos) {
+//            $('#DocuBoxButtonPrevious').css('opacity', (Module.topicStackPointer > 0) ? 1 : 0.3);
+//            $('#DocuBoxButtonNext').css('opacity', (Module.topicStackPointer < Module.topicStack.length - 1) ? 1 : 0.3);
 //
 //            DQX.setProcessing("Downloading...");
 //            $.get(url, {})
@@ -237,11 +289,11 @@ define([
 //                        $('#DocuBoxContent').scrollTop(scrollPos);
 //                    else
 //                        $('#DocuBoxContent').scrollTop(0);
-//                    //Documentation.scrollHelper.update();
+//                    //Module.scrollHelper.update();
 //                })
 //                .fail(function () {
 //                    DQX.stopProcessing();
-//                    alert("Failed to download documentation item '" + url + "'");
+//                    alert("Failed to download Module item '" + url + "'");
 //                });
 //
 //
@@ -249,9 +301,9 @@ define([
 //
 //
 //        Msg.listen('', { type: 'ShowHelp' }, function (context, helpid) {
-//            Documentation.showHelp(helpid);
+//            Module.showHelp(helpid);
 //        });
 //
 //
-//        return Documentation;
+//        return Module;
 //    });

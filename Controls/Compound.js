@@ -152,7 +152,7 @@ define([
                 var div = DOM.Div();
                 div.addStyle('display','inline-block');
 
-                var st = '<table style="padding-top:{pt}px;">'.AXMInterpolate({ pt: grid.sepV });
+                var st = '<table style="">';
                 $.each(grid._rows, function(rowNr, row) {
                     st += '<tr>';
                     $.each(row, function(colNr, item) {
