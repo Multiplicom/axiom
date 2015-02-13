@@ -74,6 +74,11 @@ define([
                 coldef._onOpen();
             };
 
+            //overridable:
+            coldef.content2DisplayString = function(content) {
+                return content;
+            };
+
             return coldef;
         };
 

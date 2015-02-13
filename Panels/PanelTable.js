@@ -269,7 +269,7 @@ define([
                     cell += '</div>';
                     return cell;
                 }
-                var cell = rowData[colInfo.getId()];
+                var cell = colInfo.content2DisplayString(rowData[colInfo.getId()]);
                 return cell;
             };
 
