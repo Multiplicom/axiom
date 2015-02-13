@@ -19,7 +19,7 @@ define([
         "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Controls/Controls"],
     function (
         require, $, _,
-        Utils, PopupWindow, Controls) {
+        Utils, Popupwin, Controls) {
 
         var Module = {};
 
@@ -27,7 +27,7 @@ define([
             if (!title)
                 title = "Message";
 
-            var window = PopupWindow.create({
+            var win = Popupwin.create({
                 title: title,
                 blocking:true,
                 autoCenter: true
@@ -41,13 +41,13 @@ define([
                 icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
-                    window.close();
+                    win.close();
                 });
             grp.add(btOK);
 
-            window.setHandler_OnPressedEnter(window.close);
-            window.setRootControl(Controls.Compound.StandardMargin(grp));
-            window.start();
+            win.setHandler_OnPressedEnter(win.close);
+            win.setRootControl(Controls.Compound.StandardMargin(grp));
+            win.start();
 
         };
 
@@ -56,7 +56,7 @@ define([
             if (!title)
                 title = "Confirmation";
 
-            var window = PopupWindow.create({
+            var win = Popupwin.create({
                 title: title,
                 blocking:true,
                 autoCenter: true
@@ -70,7 +70,7 @@ define([
                 icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
-                    window.close();
+                    win.close();
                     if (onOK)
                         onOK();
                 });
@@ -80,16 +80,16 @@ define([
                 icon: 'fa-times'
             })
                 .addNotificationHandler(function() {
-                    window.close();
+                    win.close();
                     if (onCancel)
                         onCancel();
                 });
 
             grp.add(Controls.Compound.GroupHor({}, [btOK, btCancel]) );
 
-            window.setHandler_OnPressedEnter(window.close);
-            window.setRootControl(Controls.Compound.StandardMargin(grp));
-            window.start();
+            win.setHandler_OnPressedEnter(win.close);
+            win.setRootControl(Controls.Compound.StandardMargin(grp));
+            win.start();
 
         };
 
@@ -98,7 +98,7 @@ define([
             if (!title)
                 title = "Error";
 
-            var window = PopupWindow.create({
+            var win = Popupwin.create({
                 title: title,
                 blocking:true,
                 autoCenter: true,
@@ -117,22 +117,22 @@ define([
 //                icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
-                    window.close();
+                    win.close();
                     if (onProceed)
                         onProceed();
                 });
             grp2.add(btOK);
 
-            window.setHandler_OnPressedEnter(window.close);
-            window.setRootControl(Controls.Compound.StandardMargin(grp1));
-            window.start();
+            win.setHandler_OnPressedEnter(win.close);
+            win.setRootControl(Controls.Compound.StandardMargin(grp1));
+            win.start();
 
         };
 
         Module.blockingBusy_items = {};
 
         Module.setBlockingBusy = function(msg) {
-            var win = PopupWindow.create({
+            var win = Popupwin.create({
                 blocking:true,
                 blockingTransparent: true,
                 autoCenter: true,

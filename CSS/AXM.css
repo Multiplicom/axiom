@@ -173,7 +173,7 @@ body {
 }
 
 .AXMButton:hover .AXMButtonIcon {
-    color:rgb(60,60,60)
+    color: rgb(0, 87, 126);
 }
 
 .AXMButtonCommandBar {

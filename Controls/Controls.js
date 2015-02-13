@@ -271,7 +271,7 @@ define([
             control._width = settings.width || 120;
             control._height = settings.height || 45;
             control._states = [];
-            control._value = '';
+            control._value = settings.value || '';
 
             control.addState = function(id, name) {
                 control._states.push({id:id, name:name, group:null});
@@ -328,7 +328,7 @@ define([
                     st += '<option value="{id}" {selected}>{name}</option>'.AXMInterpolate({
                         id: state.id,
                         name: state.name,
-                        selected: (state.id == this._value) ? 'selected="selected"' : ''
+                        selected: (state.id == control._value) ? 'selected="selected"' : ''
                     });
                 });
 
