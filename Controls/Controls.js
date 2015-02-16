@@ -104,7 +104,8 @@ define([
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('width',control._width+'px')
                     .addStyle('height',control._height+'px')
-                    .addStyle('white-space', 'normal');
+                    .addStyle('white-space', 'normal')
+                    .addStyle('position', 'relative');
                 div.addCssClass(control._buttonClass);
 
                 var aligner = DOM.Div({parent: div})
@@ -153,6 +154,18 @@ define([
                             .addStyle('width', (control._width-iconWidth-10)+'px');
                     }
                 }
+
+                if (settings.helpId) {
+                    var helpDiv = DOM.Div({parent: div})
+                        .addStyle('position', 'absolute')
+                        .addStyle('font-size', '18px')
+                        .addStyle('top', '2px')
+                        .addStyle('right', '2px')
+                        .addCssClass('AXMButtonHelp');
+                    helpDiv.addElem('<i class="fa fa-question-circle"></i>');
+                }
+
+
                 return div.toString();
             };
 
@@ -172,6 +185,7 @@ define([
 
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
+                control._getSub$El('').find('.AXMButtonHelp').click(control._onHelp);
                 control._updateEnabledState();
             };
 
@@ -179,6 +193,12 @@ define([
                 if (!control._enabled)
                     return;
                 control.performNotify();
+                ev.stopPropagation();
+                return false;
+            };
+
+            control._onHelp = function(ev) {
+                require('AXM/Windows/DocViewer').create(settings.helpId);
                 ev.stopPropagation();
                 return false;
             };

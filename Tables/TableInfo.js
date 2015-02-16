@@ -86,6 +86,7 @@ define([
             var tabledef = AXMUtils.object('@TableInfo');
             tabledef.tableId = tableId;
             tabledef._columns = [];
+            tabledef._map_columns = {};
             tabledef._onOpenRow = null;
             tabledef._canSelect = false;
 
@@ -93,6 +94,7 @@ define([
                 AXMUtils.Test.checkIsString(colId);
                 var colInfo = Module.colInfo(colId);
                 tabledef._columns.push(colInfo);
+                tabledef._map_columns[colId] = colInfo;
                 return colInfo;
             };
 
@@ -106,6 +108,13 @@ define([
 
             tabledef.getColumns = function() {
                 return tabledef._columns;
+            };
+
+            tabledef.getColumn = function(colId) {
+                var colInfo = tabledef._map_columns[colId];
+                if (!colInfo)
+                    reportError('Invalid column '+colId);
+                return colInfo;
             };
 
             tabledef.canOpenRow = function() {

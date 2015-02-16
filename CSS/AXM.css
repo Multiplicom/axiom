@@ -176,6 +176,17 @@ body {
     color: rgb(0, 87, 126);
 }
 
+.AXMButtonHelp {
+    background: transparent;
+    color: rgb(66, 173, 108);
+    opacity:0.4
+}
+
+.AXMButtonHelp:hover {
+    background: transparent !important;
+    opacity:1
+}
+
 .AXMButtonCommandBar {
     display: inline-block;
     background-color: transparent;
