@@ -371,6 +371,21 @@ define([
             control._value = settings.value || '';
             control._isPassWord = settings.passWord || false;
 
+            if (settings.hasClearButton)
+                control._clearButton = Module.Button({
+                    icon: 'fa-times',
+                    width : 25,
+                    height: 19,
+                    buttonClass : 'AXMButtonCommandBar',
+                    iconSizeFraction: 0.9,
+                    enabled: false
+                }).addNotificationHandler(function() {
+                    control.setValue('');
+                    control._clearButton.setEnabled(false);
+                });
+
+
+
 
             control.createHtml = function() {
 
@@ -386,7 +401,10 @@ define([
                 if (settings.placeHolder)
                     rootEl.addAttribute("placeholder", settings.placeHolder);
 
-                return rootEl.toString();
+                var str = rootEl.toString();
+                if (control._clearButton)
+                    str += control._clearButton.createHtml();
+                return str;
             };
 
             control.attachEventHandlers = function() {
@@ -395,9 +413,15 @@ define([
                 control._getSub$El('').bind("keyup", control._onModified);
                 if (control._hasDefaultFocus)
                     control._getSub$El('').select();
+                if (control._clearButton)
+                    control._clearButton.attachEventHandlers();
             };
 
             control._onModified = function(ev) {
+                if (control._clearButton) {
+                    var txt = control.getValue();
+                    control._clearButton.setEnabled(txt.length > 0);
+                }
                 control.performNotify();
             };
 
@@ -411,6 +435,8 @@ define([
             control.setValue = function(newVal, preventNotify) {
                 if (newVal == control.getValue()) return false;
                 control._getSub$El('').val(newVal);
+                if (!preventNotify)
+                    control.performNotify();
             };
 
             return control;
