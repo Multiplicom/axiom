@@ -224,6 +224,11 @@ body {
     margin-bottom: 12px;
 }
 
+.AXMFormVScroller {
+    border: 2px solid rgb(220,220,220);
+    overflow-y: scroll;
+}
+
 .AXMFormSectionHeader {
     height: 33px;
     line-height: 33px;

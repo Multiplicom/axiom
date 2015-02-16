@@ -267,6 +267,20 @@ define([
             return wrapper;
         };
 
+        Module.VScroller = function(ctrl, heigth) {
+            var wrapper = Module.WrapperControlBase(ctrl);
+
+            wrapper.createHtml = function() {
+                var div = DOM.Div();
+                div.addCssClass('AXMFormVScroller');
+                div.addStyle('height', heigth+'px');
+                div.addElem(wrapper._member.createHtml());
+                return div.toString();
+            };
+
+            return wrapper;
+        };
+
 
         ///////////////////////////////////////////////////////////////////////////////////
 
