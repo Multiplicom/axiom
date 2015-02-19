@@ -129,37 +129,106 @@ define([
 
         };
 
-        Module.blockingBusy_items = {};
+        Module.blockingBusy_list = [];
+
+        Module.busyWin = null;
 
         Module.setBlockingBusy = function(msg) {
+            var id = Utils.getUniqueID();
+            Module.blockingBusy_list.push({id: id, msg: msg});
+            //console.log(JSON.stringify(Module.blockingBusy_list));
+            Module.updateBusyWin();
+            return id;
+        };
+
+        Module.stopBlockingBusy = function(id) {
+            var idx = -1;
+            $.each(Module.blockingBusy_list, function(i, data) {
+                if (data.id == id)
+                    idx = i;
+            });
+            if (idx >= 0) {
+                Module.blockingBusy_list.splice (idx, 1);
+                Module.updateBusyWin();
+            }
+        };
+
+        Module.updateBusyWin = function() {
+            if ( (!Module.busyWin) && (Module.blockingBusy_list.length>0) )
+                Module.createBusyWin(Module.blockingBusy_list[0]);
+            if (Module.busyWin) {
+                if (Module.blockingBusy_list.length == 0) {
+                    Module.busyWin.close();
+                    Module.busyWin = null;
+                }
+                else {
+                    var idx = -1;
+                    $.each(Module.blockingBusy_list, function(i, data) {
+                        if (Module.busyWin.busyId == data.id)
+                            idx = i;
+                    });
+                    if (idx < 0) {
+                        Module.busyWin.close();
+                        Module.createBusyWin(Module.blockingBusy_list[0]);
+                    }
+                }
+            }
+        };
+
+        Module.createBusyWin = function(data) {
             var win = Popupwin.create({
                 blocking:true,
                 blockingTransparent: true,
                 autoCenter: true,
                 preventClose: true
             });
+            win.busyId = data.id;
+            Module.busyWin = win;
 
             var grp = Controls.Compound.GroupHor({});
             var txt = '';
             txt += '<div style="padding:15px;display:inline-block;vertical-align: middle"><i class="fa fa-spinner fa-spin fa-3x"></i></div>';
-            txt += '<div style="padding:15px;display:inline-block;vertical-align: middle">' + msg + '</div>';
+            txt += '<div style="padding:15px;display:inline-block;vertical-align: middle">' + data.msg + '</div>';
             grp.add(Controls.Static({text: txt}));
 
             win.setRootControl(Controls.Compound.StandardMargin(grp));
             win.start();
-            var id = Utils.getUniqueID();
-            Module.blockingBusy_items[id] = win;
-            return id;
         };
 
-        Module.stopBlockingBusy = function(id) {
-            if (id in Module.blockingBusy_items) {
-                Module.blockingBusy_items[id].close();
-                Module.blockingBusy_items[id] = null;
-                delete Module.blockingBusy_items[id];
-            }
+        if (false) {
+            Module.blockingBusy_items = {};
 
-        };
+            Module.setBlockingBusy = function(msg) {
+                var win = Popupwin.create({
+                    blocking:true,
+                    blockingTransparent: true,
+                    autoCenter: true,
+                    preventClose: true
+                });
+
+                var grp = Controls.Compound.GroupHor({});
+                var txt = '';
+                txt += '<div style="padding:15px;display:inline-block;vertical-align: middle"><i class="fa fa-spinner fa-spin fa-3x"></i></div>';
+                txt += '<div style="padding:15px;display:inline-block;vertical-align: middle">' + msg + '</div>';
+                grp.add(Controls.Static({text: txt}));
+
+                win.setRootControl(Controls.Compound.StandardMargin(grp));
+                win.start();
+                var id = Utils.getUniqueID();
+                Module.blockingBusy_items[id] = win;
+                return id;
+            };
+
+            Module.stopBlockingBusy = function(id) {
+                if (id in Module.blockingBusy_items) {
+                    Module.blockingBusy_items[id].close();
+                    Module.blockingBusy_items[id] = null;
+                    delete Module.blockingBusy_items[id];
+                }
+
+            };
+
+        }
 
 
 
