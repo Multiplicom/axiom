@@ -195,41 +195,6 @@ define([
             win.start();
         };
 
-        if (false) {
-            Module.blockingBusy_items = {};
-
-            Module.setBlockingBusy = function(msg) {
-                var win = Popupwin.create({
-                    blocking:true,
-                    blockingTransparent: true,
-                    autoCenter: true,
-                    preventClose: true
-                });
-
-                var grp = Controls.Compound.GroupHor({});
-                var txt = '';
-                txt += '<div style="padding:15px;display:inline-block;vertical-align: middle"><i class="fa fa-spinner fa-spin fa-3x"></i></div>';
-                txt += '<div style="padding:15px;display:inline-block;vertical-align: middle">' + msg + '</div>';
-                grp.add(Controls.Static({text: txt}));
-
-                win.setRootControl(Controls.Compound.StandardMargin(grp));
-                win.start();
-                var id = Utils.getUniqueID();
-                Module.blockingBusy_items[id] = win;
-                return id;
-            };
-
-            Module.stopBlockingBusy = function(id) {
-                if (id in Module.blockingBusy_items) {
-                    Module.blockingBusy_items[id].close();
-                    Module.blockingBusy_items[id] = null;
-                    delete Module.blockingBusy_items[id];
-                }
-
-            };
-
-        }
-
 
 
         return Module;
