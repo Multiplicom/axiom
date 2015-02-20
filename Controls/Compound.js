@@ -188,6 +188,11 @@ define([
                 wrapper._member.attachEventHandlers();
             };
 
+            wrapper.get$El = function() {
+                return $('#' + wrapper._id);
+            };
+
+
             return wrapper;
         };
 
@@ -196,7 +201,7 @@ define([
             var wrapper = Module.WrapperControlBase(ctrl);
 
             wrapper.createHtml = function() {
-                var div = DOM.Div();
+                var div = DOM.Div({id: wrapper._id});
                 div.addCssClass(styleClass);
                 div.addElem(wrapper._member.createHtml());
                 return div.toString();
@@ -209,7 +214,7 @@ define([
             var wrapper = Module.WrapperControlBase(ctrl);
 
             wrapper.createHtml = function() {
-                var div = DOM.Div();
+                var div = DOM.Div({id: wrapper._id});
                 div.addStyle('margin', marginLeft+'px');
                 //div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
@@ -223,7 +228,7 @@ define([
             var wrapper = Module.WrapperControlBase(ctrl);
 
             wrapper.createHtml = function() {
-                var div = DOM.Div();
+                var div = DOM.Div({id: wrapper._id});
                 div.addCssClass('AXMFormStandardMargin')
                 //div.addStyle('margin-left', marginLeft+'px');
                 //div.addStyle('display', 'inline-block');
@@ -238,7 +243,7 @@ define([
             var wrapper = Module.WrapperControlBase(ctrl);
 
             wrapper.createHtml = function() {
-                var div = DOM.Div();
+                var div = DOM.Div({id: wrapper._id});
                 div.addStyle('position', 'absolute');
                 div.addStyle('right', '0px');
                 div.addStyle('top', '0px');
@@ -255,7 +260,7 @@ define([
             wrapper._title = title;
 
             wrapper.createHtml = function() {
-                var divContainer = DOM.Div();
+                var divContainer = DOM.Div({id: wrapper._id});
                 var divTitle = DOM.Div({parent: divContainer});
                 divTitle.addCssClass('AXMFormSectionHeader');
                 divTitle.addElem(wrapper._title);
@@ -271,11 +276,37 @@ define([
             var wrapper = Module.WrapperControlBase(ctrl);
 
             wrapper.createHtml = function() {
-                var div = DOM.Div();
+                var div = DOM.Div({id: wrapper._id});
                 div.addCssClass('AXMFormVScroller');
                 div.addStyle('height', heigth+'px');
                 div.addElem(wrapper._member.createHtml());
                 return div.toString();
+            };
+
+            return wrapper;
+        };
+
+        Module.Hider = function(ctrl, hidden) {
+            var wrapper = Module.WrapperControlBase(ctrl);
+            wrapper._show = !hidden;
+
+            wrapper.createHtml = function() {
+                var div = DOM.Div({id: wrapper._id});
+                if (!wrapper._show)
+                    div.addStyle('display', 'none');
+                div.addElem(wrapper._member.createHtml());
+                return div.toString();
+            };
+
+            wrapper.show = function(status) {
+                if (wrapper._show != status) {
+                    wrapper._show = status;
+                    if (status)
+                        wrapper.get$El().show(400);
+                    else
+                        wrapper.get$El().hide(400);
+
+                }
             };
 
             return wrapper;

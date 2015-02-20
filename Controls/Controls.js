@@ -390,6 +390,7 @@ define([
             //control._buttonClass = settings.buttonClass || 'AXMEdit';
             control._value = settings.value || '';
             control._isPassWord = settings.passWord || false;
+            control._disabled = settings.disabled || false;
 
             if (settings.hasClearButton)
                 control._clearButton = Module.Button({
@@ -410,6 +411,13 @@ define([
             control.createHtml = function() {
 
                 var rootEl = DOM.Create("input", {id: control._getSubId('')});
+
+                if (settings.bold)
+                    rootEl.addStyle('font-weight', 'bold');
+
+                if (control._disabled)
+                    rootEl.addAttribute('disabled', "disabled");
+
                 if (control._width)
                     rootEl.addStyle('width',control._width+'px');
                 if (!control._isPassWord)
@@ -455,6 +463,10 @@ define([
             control.setValue = function(newVal, preventNotify) {
                 if (newVal == control.getValue()) return false;
                 control._getSub$El('').val(newVal);
+                if (control._clearButton) {
+                    var txt = control.getValue();
+                    control._clearButton.setEnabled(txt.length > 0);
+                }
                 if (!preventNotify)
                     control.performNotify();
             };
