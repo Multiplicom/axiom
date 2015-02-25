@@ -484,7 +484,15 @@ define([
                 }
             };
 
-            //todo: tear down these events listener in the proper tear down function
+            //todo: tear down these events listeners in the proper tear down function
+
+            Msg.listen('', 'UpdateTableRecordContent', function(msg) {
+                if (msg.tableId==panel._tableInfo.tableId) {
+                    panel._tableData.resetBuffer();
+                    panel.invalidate();
+                }
+            });
+
             Msg.listen('', 'UpdateTableInfo', function(tableid) {
                 if (tableid==panel._tableInfo.tableId) {
                     panel.updateTableInfo();

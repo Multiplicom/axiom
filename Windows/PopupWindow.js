@@ -53,6 +53,8 @@ define([
             window._autoCenter = settings.autoCenter||false;
             window._canClose = !(settings.preventClose);
 
+            window._listeners = [];
+
 
             window.setRootFrame = function(iFrame) {
                 window._rootFrame = iFrame;
@@ -314,7 +316,17 @@ define([
 
             };
 
+            window.listen = function(msgId, callbackFunction) {
+                var eventid = AXMUtils.getUniqueID();
+                window._listeners.push(eventid);
+                Msg.listen(eventid, msgId, callbackFunction);
+            };
+
             window.close = function() {
+                $.each(window._listeners, function(idx, eventid) {
+                    Msg.delListener(eventid);
+                });
+                window._listeners = [];
                 $('#blocker_'+window._id).remove();
                 AXMUtils.removeKeyDownHandler(window._onKeyDown);
 
