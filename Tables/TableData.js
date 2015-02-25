@@ -66,6 +66,12 @@ define([
                 tableData.resetBuffer();
             };
 
+            tableData._sortByField = function(colId, inverse) {
+                tableData._sortCol = colId;
+                tableData._sortInverse = !!inverse;
+                tableData.resetBuffer();
+            };
+
             tableData.getPrimKey = function() {
                 return tableData._primKey;
             };

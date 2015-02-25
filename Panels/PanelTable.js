@@ -367,7 +367,8 @@ define([
 
             panel._toggleSortByField = function(colId) {
                 panel._tableData._toggleSortByField(colId);
-                panel.renderTableContent();
+                panel.resetView();
+                //panel.renderTableContent();
                 panel._updateSortStatus();
             };
 
