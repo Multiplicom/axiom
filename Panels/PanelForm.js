@@ -23,9 +23,16 @@ define([
 
         var Module = {};
 
-        Module.create = function(id) {
+        Module.create = function(id, settings) {
             var panel = PanelBase.create(id);
             panel._rootControl = null;
+            panel._scrollY = false;
+            panel._scrollX = false;
+            if (settings) {
+                panel._scrollY = settings.scrollY;
+                panel._scrollX = settings.scrollX;
+            }
+
 
             panel.setRootControl = function(ctrl) {
                 AXMUtils.Test.checkIsType(ctrl, '@Control');
@@ -33,10 +40,11 @@ define([
             };
 
             panel.createHtml = function() {
-                var rootDiv = DOM.Div({});
+                var rootDiv = DOM.Div({id: 'frm' + panel._id});
                 rootDiv.addStyle('width', '100%');
                 rootDiv.addStyle('height', '100%');
-                rootDiv.addStyle('overflow', 'hidden');
+                rootDiv.addStyle('overflow-y', (panel._scrollY)?'scroll':'hidden');
+                rootDiv.addStyle('overflow-x', (panel._scrollX)?'scroll':'hidden');
                 if (panel._rootControl)
                     rootDiv.addElem(panel._rootControl.createHtml());
                 return rootDiv.toString();
@@ -45,6 +53,12 @@ define([
             panel.attachEventHandlers = function() {
                 if (panel._rootControl)
                     return panel._rootControl.attachEventHandlers();
+            };
+
+            panel.reCreate = function() {
+                if (panel._rootControl)
+                    $('#frm'+panel._id).html(panel._rootControl.createHtml());
+                panel.attachEventHandlers();
             };
 
 
