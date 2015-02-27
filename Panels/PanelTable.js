@@ -15,12 +15,12 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_",
+        "require", "jquery", "_", "blob", "filesaver",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg",
         "AXM/Tables/TableInfo"
     ],
     function (
-        require, $, _,
+        require, $, _, Blob, FileSaver,
         AXMUtils, DOM, Controls, Frame, PanelBase, Msg,
         TableInfo
     ) {
@@ -438,6 +438,12 @@ define([
             };
 
 
+            panel.saveLocal = function() {
+                var data='test_content';
+                var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+                FileSaver(blob, 'tablecontent.txt');
+            };
+
             panel.navigateNextPage = function() {
                 panel._tableOffset = Math.min(Math.max(0, panel._tableRowCount-panel._tableLineCount+2), panel._tableOffset+panel._tableLineCount);
                 panel._lastSelClickedRowNr = null;
@@ -521,12 +527,12 @@ define([
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
             theFrame.addCommand({
-                icon: "fa-cog"
-            }, thePanel.navigateLastPage);
+                icon: "fa-download"
+            }, thePanel.saveLocal);
 
-            theFrame.addCommand({
-                icon: "fa-filter"
-            }, thePanel.navigateLastPage);
+            //theFrame.addCommand({
+            //    icon: "fa-filter"
+            //}, thePanel.navigateLastPage);
 
             theFrame.addSeparator();
 
