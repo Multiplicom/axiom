@@ -322,7 +322,15 @@ define([
                 Msg.listen(eventid, msgId, callbackFunction);
             };
 
+            window._verifyCanClose = function() { return true; };
+
+            window.setVerifyCanClose = function(handler) {
+                window._verifyCanClose = handler;
+            };
+
             window.close = function() {
+                if (!window._verifyCanClose())
+                    return;
                 $.each(window._listeners, function(idx, eventid) {
                     Msg.delListener(eventid);
                 });
