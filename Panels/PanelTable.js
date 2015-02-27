@@ -439,10 +439,25 @@ define([
 
 
             panel.saveLocal = function() {
-                var data='test_content';
+                if (panel._tableData.requireRowRange(0, 999, panel._exec_Save))
+                    panel._exec_Save()
+            };
+
+            panel._exec_Save = function() {
+                var data = '';
+                var cnt = Math.min(999, panel._tableData.getRowCount());
+                for (var rowNr = 0; rowNr < cnt ; rowNr ++) {
+                    var rowData = panel._tableData.getRow(rowNr);
+                    $.each(panel._columns, function (colNr, colInfo) {
+                        var cell = colInfo.content2DisplayString(rowData[colInfo.getId()]);
+                        data += cell + '\t'
+                    });
+                    data += '\n';
+                }
                 var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
                 FileSaver(blob, 'tablecontent.txt');
             };
+
 
             panel.navigateNextPage = function() {
                 panel._tableOffset = Math.min(Math.max(0, panel._tableRowCount-panel._tableLineCount+2), panel._tableOffset+panel._tableLineCount);
