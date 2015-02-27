@@ -94,6 +94,53 @@ define([
         };
 
 
+        Module.TextEditBox = function(value, header, title, settings, onOK, onCancel) {
+
+            var win = Popupwin.create({
+                title: title,
+                blocking:true,
+                autoCenter: true
+            });
+
+            var grp = Controls.Compound.GroupVert({separator:12});
+            grp.add(Controls.Static({text: header}));
+
+            var btOK = Controls.Button({
+                text: 'OK',
+                icon: 'fa-check'
+            })
+                .addNotificationHandler(function() {
+                    win.onOK();
+                });
+
+            var btCancel = Controls.Button({
+                text: 'Cancel',
+                icon: 'fa-times'
+            })
+                .addNotificationHandler(function() {
+                    win.close();
+                    if (onCancel)
+                        onCancel();
+                });
+
+            win.ctrlEdit = Controls.Edit({width:230, value: value}).setHasDefaultFocus();
+            grp.add(win.ctrlEdit);
+
+            grp.add(Controls.Compound.GroupHor({}, [btOK, btCancel]) );
+
+            win.onOK = function() {
+                var newValue = win.ctrlEdit.getValue();
+                win.close();
+                if (onOK)
+                    onOK(newValue);
+            };
+
+            win.setHandler_OnPressedEnter(win.onOK);
+            win.setRootControl(Controls.Compound.StandardMargin(grp));
+            win.start();
+        };
+
+
         Module.ErrorBox = function(content, title, onProceed) {
             if (!title)
                 title = "Error";
