@@ -439,20 +439,34 @@ define([
 
 
             panel.saveLocal = function() {
-                if (panel._tableData.requireRowRange(0, 999, panel._exec_Save))
+                panel._maxDownloadRowCount = 999;
+                if (panel._tableData.requireRowRange(0, panel._maxDownloadRowCount, panel._exec_Save))
                     panel._exec_Save()
             };
 
             panel._exec_Save = function() {
+                var cnt = Math.min(panel._maxDownloadRowCount, panel._tableData.getRowCount());
                 var data = '';
-                var cnt = Math.min(999, panel._tableData.getRowCount());
+                var line  = '';
+                $.each(panel._columns, function (colNr, colInfo) {
+                    if (colInfo.getName().length>0) {
+                        if (line.length>0)
+                            line += '\t';
+                        line += colInfo.getName();
+                    }
+                });
+                data += line + '\n';
                 for (var rowNr = 0; rowNr < cnt ; rowNr ++) {
                     var rowData = panel._tableData.getRow(rowNr);
+                    var line  = '';
                     $.each(panel._columns, function (colNr, colInfo) {
-                        var cell = colInfo.content2DisplayString(rowData[colInfo.getId()]);
-                        data += cell + '\t'
+                        if (colInfo.getName().length>0) {
+                            if (line.length>0)
+                                line += '\t';
+                            line += colInfo.content2DisplayString(rowData[colInfo.getId()]);
+                        }
                     });
-                    data += '\n';
+                    data += line + '\n';
                 }
                 var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
                 FileSaver(blob, 'tablecontent.txt');

@@ -76,6 +76,8 @@ define([
 
             //overridable:
             coldef.content2DisplayString = function(content) {
+                if (content===null)
+                    return '';
                 return String(content);
             };
 
