@@ -528,6 +528,14 @@ define([
                 }
             });
 
+            Msg.listen('', 'DeleteTableRecord', function(msg) {
+                if (msg.tableId==panel._tableInfo.tableId) {
+                    panel._tableData.setItemSelected(msg.primKey, false);
+                    panel._tableData.resetBuffer();
+                    panel.invalidate();
+                }
+            });
+
             Msg.listen('', 'UpdateTableInfo', function(tableid) {
                 if (tableid==panel._tableInfo.tableId) {
                     panel.updateTableInfo();
