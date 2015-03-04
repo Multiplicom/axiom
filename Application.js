@@ -16,11 +16,11 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Test", "AXM/Windows/RootWindow"
+        "AXM/AXMUtils", "AXM/Test", "AXM/Windows/RootWindow", "AXM/Msg"
     ],
     function (
         require, $, _,
-        AXMUtils, Test, RootWindow
+        AXMUtils, Test, RootWindow, Msg
     ) {
 
         var Module = {};
@@ -31,17 +31,29 @@ define([
         theApp.setRootFrame = function(iRootFrame) {
             Test.checkIsType(iRootFrame, "@Frame");
             theApp._rootFrame = iRootFrame;
-        }
+        };
 
         theApp.getRootFrame = function() {
             return theApp._rootFrame;
-        }
+        };
+
+        theApp.confirmExit = function() {
+            var confirmMessage = null;
+            var results = Msg.broadcast('ConfirmExit');
+            $.each(results, function(idx, msg) {
+                if (msg)
+                    confirmMessage = msg;
+            });
+            return confirmMessage;
+        };
 
         // Intialises the app
         theApp.init = function() {
             Test.checkDefined(theApp._rootFrame, "No root frame defined. Call Application.setRootFrame first.");
             theApp._rootWindow = RootWindow.create(theApp._rootFrame);
             theApp._rootWindow.render();
+
+            window.onbeforeunload = theApp.confirmExit;
 
             //Prevent drag & drop to app area
             window.addEventListener("dragover",function(e){

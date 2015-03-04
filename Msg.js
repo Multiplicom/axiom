@@ -23,25 +23,27 @@ define(
 
         //Broadcasts a message (does not put any constraints on the number of recipients receiving the message)
         Msg.broadcast = function (msgId, content) {
-            var receiverCount = 0
+            var results = [];
             for (var lnr = 0; lnr < Msg._listeners.length; lnr++) {
                 if (Msg._listeners[lnr]!=null) {
                     if (msgId == Msg._listeners[lnr].msgId) {
-                        Msg._listeners[lnr].callbackFunction(content);
-                        receiverCount++;
+                        var result = Msg._listeners[lnr].callbackFunction(content);
+                        results.push(result);
                     }
                 }
             }
-            return receiverCount;
+            return results;
         };
 
         //Send a message (requires the message to be received by exactly one recipient)
         Msg.send = function (msgId, content) {
-            var receiverCount = Msg.broadcast(msgId, content);
+            var results = Msg.broadcast(msgId, content);
+            var receiverCount = results.length;
             if (receiverCount > 1)
                 AXMreportError("Message was processed by more than one recipient");
             if (receiverCount == 0)
                 AXMreportError("Message was not processed by any recipient");
+            return results[0];
         };
 
         //eventid: optional unique identifier to avoid duplicate entry of the same listener
