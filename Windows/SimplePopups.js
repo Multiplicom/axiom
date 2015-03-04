@@ -226,7 +226,7 @@ define([
             var win = Popupwin.create({
                 blocking:true,
                 blockingTransparent: true,
-                autoCenter: true,
+                autoCenterTop: true,
                 preventClose: true
             });
             win.busyId = data.id;
@@ -234,8 +234,8 @@ define([
 
             var grp = Controls.Compound.GroupHor({});
             var txt = '';
-            txt += '<div style="padding:15px;display:inline-block;vertical-align: middle"><i class="fa fa-spinner fa-spin fa-3x"></i></div>';
-            txt += '<div style="padding:15px;display:inline-block;vertical-align: middle">' + data.msg + '</div>';
+            txt += '<div style="padding:5px;display:inline-block;vertical-align: middle"><i class="fa fa-spinner fa-spin fa-2x"></i></div>';
+            txt += '<div style="padding:5px;display:inline-block;vertical-align: middle">' + data.msg + '</div>';
             grp.add(Controls.Static({text: txt}));
 
             win.setRootControl(Controls.Compound.StandardMargin(grp));

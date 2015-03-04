@@ -51,6 +51,7 @@ define([
             window._closeOnEscape = settings.closeOnEscape||false;
             window._transpBlocking = settings.blockingTransparent||false;
             window._autoCenter = settings.autoCenter||false;
+            window._autoCenterTop = settings.autoCenterTop||false;
             window._canClose = !(settings.preventClose);
 
             window._listeners = [];
@@ -144,12 +145,18 @@ define([
                 $('.AXMContainer').append(rootDiv.toString());
                 window._$ElContainer = $('#' + window._id);
 
-                if (window._autoCenter) {
+                if (window._autoCenter || window._autoCenterTop) {
                     var browserSize = AXMUtils.getBrowserSize();
                     var windowSizeX = window._$ElContainer.width();
+                    window._$ElContainer
+                        .css('top', 4)
+                        .css('left', (browserSize.sizeX-windowSizeX)/2)
+                }
+
+                if (window._autoCenter) {
+                    var browserSize = AXMUtils.getBrowserSize();
                     var windowSizeY = window._$ElContainer.height();
                     window._$ElContainer
-                        .css('left', (browserSize.sizeX-windowSizeX)/2)
                         .css('top', (browserSize.sizeY-windowSizeY)/2);
                 }
 

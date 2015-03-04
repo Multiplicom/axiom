@@ -420,6 +420,10 @@ define([
                 panel.invalidate();
             };
 
+            panel.reloadContent = function() {
+                panel._tableData.resetBuffer();
+                panel.invalidate();
+            }
 
             panel.invalidate = function() {
                 panel.renderTableContent();
