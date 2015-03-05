@@ -17,11 +17,13 @@
 define([
         "require", "jquery", "_", "blob", "filesaver",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg",
+        "AXM/Windows/SimplePopups",
         "AXM/Tables/TableInfo"
     ],
     function (
         require, $, _, Blob, FileSaver,
         AXMUtils, DOM, Controls, Frame, PanelBase, Msg,
+        SimplePopups,
         TableInfo
     ) {
 
@@ -443,9 +445,11 @@ define([
 
 
             panel.saveLocal = function() {
-                panel._maxDownloadRowCount = 999;
-                if (panel._tableData.requireRowRange(0, panel._maxDownloadRowCount, panel._exec_Save))
-                    panel._exec_Save()
+                SimplePopups.ConfirmationBox('Do you want to download the table content<br>to your local computer?', 'Download', {}, function() {
+                    panel._maxDownloadRowCount = 999;
+                    if (panel._tableData.requireRowRange(0, panel._maxDownloadRowCount, panel._exec_Save))
+                        panel._exec_Save()
+                });
             };
 
             panel._exec_Save = function() {
@@ -473,7 +477,9 @@ define([
                     data += line + '\n';
                 }
                 var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
-                FileSaver(blob, 'tablecontent.txt');
+                FileSaver(blob, 'TableContent.txt');
+                if (cnt < panel._tableData.getRowCount())
+                    SimplePopups.ErrorBox('Download was restricted to the first {cnt} rows'.AXMInterpolate({cnt: cnt}));
             };
 
 

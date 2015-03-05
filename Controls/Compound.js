@@ -129,9 +129,14 @@ define([
 
         Module.Grid = function(settings) {
             var grid = Module.CompoundControlBase();
+
+            if (!settings)
+                settings = {};
+
             grid._rows = [];
-            grid.sepH = 12;
-            grid.sepV = 5;
+            grid.sepH = settings.sepH || 12;
+            grid.sepV = settings.sepV || 5;
+
 
             grid.set = null; //not applicable here
             grid._parentAdd = grid.add;
@@ -146,6 +151,10 @@ define([
                     grid._rows[rowNr].push(null);
                 grid._rows[rowNr][colNr] = ctrl;
                 return ctrl;
+            };
+
+            grid.getRowCount = function() {
+                return grid._rows.length;
             };
 
             grid.createHtml = function() {
