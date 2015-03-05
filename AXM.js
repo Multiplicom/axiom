@@ -16,7 +16,7 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/Msg", "AXM/AXMUtils",
+        "AXM/Msg", "AXM/AXMUtils", "AXM/Color",
         "AXM/Application",
         "AXM/Tables/TableData", "AXM/Tables/TableInfo",
         "AXM/Controls/Controls", "AXM/Controls/Compound",
@@ -25,7 +25,7 @@ define([
     ],
     function (
         require, $, _,
-        Msg, Utils,
+        Msg, Utils, Color,
         Application,
         TableData, TableInfo,
         Controls, Compound,
@@ -36,6 +36,7 @@ define([
         var Module = {
             Msg: Msg,
             Utils: Utils,
+            Color: Color,
             Test: Utils.Test,
             Application: Application,
             Tables: {

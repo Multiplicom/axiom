@@ -16,10 +16,12 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Color"
+    ],
     function (
         require, $, _,
-        AXMUtils, DOM) {
+        AXMUtils, DOM, Color
+    ) {
 
         var Module = {};
 
@@ -79,6 +81,11 @@ define([
                 if (content===null)
                     return '';
                 return String(content);
+            };
+
+            //overridable:
+            coldef.content2BackgroundColor = function(content) {
+                return Color.Color(1,1,1);
             };
 
             return coldef;
