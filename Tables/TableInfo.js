@@ -83,9 +83,9 @@ define([
                 return String(content);
             };
 
-            //overridable:
+            //overridable (should return an AXM.Color object):
             coldef.content2BackgroundColor = function(content) {
-                return Color.Color(1,1,1);
+                return null;
             };
 
             return coldef;

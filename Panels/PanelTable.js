@@ -292,8 +292,12 @@ define([
                     bodyRightHtml += '<tr id="rowRight_'+panel.getId()+'_'+rowNr+'">';
                     var rowData = panel._tableData.getRow(rowNr);
                     $.each(panel._columns, function (colNr, colInfo) {
-                        var cell = '<td style="background-color:{bkcolor}" id="tbcell_{id}">'.AXMInterpolate({
-                                bkcolor: colInfo.content2BackgroundColor(rowData[colInfo.getId()]),
+                        var bkcolor = colInfo.content2BackgroundColor(rowData[colInfo.getId()]);
+                        var styles = '';
+                        if (bkcolor)
+                            styles += 'background-color:'+bkcolor.toString();
+                        var cell = '<td style="{styles}" id="tbcell_{id}">'.AXMInterpolate({
+                                styles: styles,
                                 id: panel.getId()+'_'+rowNr+'_'+colNr
                             })
                             + panel.renderCell(rowNr, colNr, rowData, colInfo)
