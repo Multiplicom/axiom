@@ -59,7 +59,7 @@ define([
                     panel._columns.push(openerCol);
                 }
 
-                if (tableInfo.canOpenRow()) {
+                if (tableInfo.canSelect()) {
                     var selectorCol = TableInfo.colInfo('_selector_');
                     selectorCol.isSelector = true;
                     selectorCol._dispSize = 25;

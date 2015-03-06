@@ -121,6 +121,15 @@ define([
                 return tableData._selectedCount;
             };
 
+            tableData.getSelectedItemList = function() {
+                var lst = [];
+                $.each(tableData._selectedItemsMap, function(id, status) {
+                    if (status)
+                        lst.push(id);
+                });
+                return lst;
+            };
+
             tableData.notifySelectionModified = function() {
                 Msg.broadcast('TableSelectionModified', tableData.getId());
             };
