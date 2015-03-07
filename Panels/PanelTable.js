@@ -96,6 +96,7 @@ define([
             };
 
             panel.createHtml = function() {
+
                 panel._divid_leftHeadRow = panel._getSubId('leftheadrow');
                 panel._divid_leftBody = panel._getSubId('leftbody');
                 panel._divid_rightHeadRow = panel._getSubId('rightheadrow');
@@ -114,6 +115,8 @@ define([
             };
 
             panel.createHtmlBody = function() {
+                panel._loadColumnSettings();
+
                 var divLeftTableContainer = DOM.Div({ id: panel._getSubId('leftTableScrollContainer')})
                     //.addStyle('width','100px')
                     .addStyle('height','100%')
@@ -147,7 +150,6 @@ define([
                 var divRightTableHead = DOM.Create('thead', {parent: divRightTable});
                 var divRightTableHeadRow = DOM.Create('tr', {parent: divRightTableHead, id: panel._divid_rightHeadRow});
                 var divRightTableBody = DOM.Create('tbody', {parent: divRightTable, id:panel._divid_rightBody});
-
 
 
                 $.each(panel._columns, function(colNr, colInfo) {
@@ -215,7 +217,7 @@ define([
                             $ElCol.width(colInfo._dispSize);
                         },
                         function() {
-
+                            panel._storeColumnSettings();
                         }
                     )
                 });
@@ -396,6 +398,36 @@ define([
                         else
                             sortBox.removeClass('AXMPgTableColSortBoxActive');
                         sortBox.html('<i class="fa fa-arrow-{dir}"></i>'.AXMInterpolate({dir: sortInv?'up':'down' }));
+                    }
+                });
+            };
+
+            panel._storeColumnSettings = function() {
+                var colSettings = [];
+                $.each(panel._columns, function(colNr, colInfo) {
+                    colSettings.push({
+                        id: colInfo.getId(),
+                        size: colInfo._dispSize
+                    })
+                });
+                var content = window.btoa(JSON.stringify(colSettings));
+                $.cookie('TableSettings_' + panel.getTypeId(), content);
+            };
+
+            panel._loadColumnSettings = function() {
+                var encodedContent = $.cookie('TableSettings_' + panel.getTypeId());
+                if (!encodedContent)
+                    return;
+                var content = window.atob(encodedContent);
+                var colSettings = JSON.parse(content);
+                var settingMap = {};
+                $.each(colSettings, function(idx, colSetting) {
+                    settingMap[colSetting.id] = colSetting;
+                });
+                $.each(panel._columns, function(colNr, colInfo) {
+                    var colSetting = settingMap[colInfo.getId()];
+                    if (colSetting) {
+                        colInfo.setDispSize(colSetting.size);
                     }
                 });
             };

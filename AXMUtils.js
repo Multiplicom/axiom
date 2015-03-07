@@ -15,9 +15,13 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_", "AXM/Test"],
+        "require", "jquery", "_", "jquery_cookie",
+        "AXM/Test",
+    ],
     function (
-        require, $, _, Test) {
+        require, $, _, dummy_jquery_cookie,
+        Test
+    ) {
 
         var Module = {
             Test: Test
@@ -255,7 +259,7 @@ define([
             }
 
             return sched;
-        }
+        };
 
 
         return Module;
