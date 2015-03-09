@@ -20,7 +20,7 @@ define([
         "AXM/Application",
         "AXM/Tables/TableData", "AXM/Tables/TableInfo",
         "AXM/Controls/Controls", "AXM/Controls/Compound",
-        "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable",
+        "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelCanvas",
         "AXM/Windows/RootWindow", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups"
     ],
     function (
@@ -29,7 +29,7 @@ define([
         Application,
         TableData, TableInfo,
         Controls, Compound,
-        Frame, PanelForm, PanelTable,
+        Frame, PanelForm, PanelTable, PanelCanvas,
         RootWindow, PopupWindow, SimplePopups
     ) {
 
@@ -47,7 +47,8 @@ define([
             Panels: {
                 Frame: Frame,
                 PanelForm: PanelForm,
-                PanelTable: PanelTable
+                PanelTable: PanelTable,
+                PanelCanvas: PanelCanvas
             },
             Windows: {
                 RootWindow: RootWindow,
