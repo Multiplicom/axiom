@@ -32,7 +32,7 @@ define([
                 __typeStrings: [typeStr]
             };
             return obj;
-        }
+        };
 
 
         String.prototype.AXMInterpolate = function (args) {
@@ -41,12 +41,19 @@ define([
                 newStr = newStr.replace('{' + key + '}', args[key]);
             }
             return newStr;
+        };
+
+
+        Module.log = function(line) {
+            if (!console || !console.log)
+                return;
+            console.log(line);
         }
 
         Module.BmpFile = function(bmpId) {
             var st = '/static/js/AXM/Bitmaps/'+bmpId+'.png';
             return st;
-        }
+        };
 
 
         // Returns a throttled function that wraps around the argument function fn, making sure it is called not more often than delay specifies
