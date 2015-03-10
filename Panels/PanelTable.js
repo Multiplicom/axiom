@@ -314,6 +314,14 @@ define([
                 }
                 $ElLeftBody.html(bodyLeftHtml);
                 $ElRightBody.html(bodyRightHtml);
+
+                $ElRightBody.find('td').bind('mouseenter', function(){
+                    var $this = $(this);
+                    if(this.offsetWidth < this.scrollWidth && !$this.attr('title')){
+                        $this.attr('title', $this.text());
+                    }
+                });
+
                 panel._renderHighlightRowNr();
 
                 panel._pagerInfo.modifyText('<span style="font-size:80%">Current: {start}-{stop}<br>Total: {total}</span>'.AXMInterpolate({
