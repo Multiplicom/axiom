@@ -273,7 +273,7 @@ define([
                     cell += '</div>';
                     return cell;
                 }
-                var cell = colInfo.content2DisplayString(rowData[colInfo.getId()]);
+                var cell = colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
                 return cell;
             };
 
@@ -294,7 +294,7 @@ define([
                     bodyRightHtml += '<tr id="rowRight_'+panel.getId()+'_'+rowNr+'">';
                     var rowData = panel._tableData.getRow(rowNr);
                     $.each(panel._columns, function (colNr, colInfo) {
-                        var bkcolor = colInfo.content2BackgroundColor(rowData[colInfo.getId()]);
+                        var bkcolor = colInfo.content2BackgroundColor(rowData[colInfo.getId()], rowData);
                         var styles = '';
                         if (bkcolor)
                             styles += 'background-color:'+bkcolor.toString();
@@ -512,7 +512,7 @@ define([
                         if (colInfo.getName().length>0) {
                             if (line.length>0)
                                 line += '\t';
-                            line += colInfo.content2DisplayString(rowData[colInfo.getId()]);
+                            line += colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
                         }
                     });
                     data += line + '\n';

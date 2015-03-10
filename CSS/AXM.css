@@ -260,3 +260,20 @@ body {
     background: linear-gradient(to bottom,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#fafafa',GradientType=0 );
 }
+
+
+
+.reportunit {
+    margin-left:40px;
+    padding-left:10px;
+    border-left:1px solid rgb(220,220,220);
+    border-top:1px solid rgb(220,220,220);
+}
+
+.reportheader {
+    cursor: pointer
+}
+
+.reportcomment {
+    color: rgb(150,150,150)
+}

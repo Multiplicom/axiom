@@ -16,25 +16,26 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/Msg", "AXM/AXMUtils", "AXM/Color",
+        "AXM/Msg", "AXM/AXMUtils", "AXM/Color", "AXM/DOM",
         "AXM/Application",
         "AXM/Tables/TableData", "AXM/Tables/TableInfo",
         "AXM/Controls/Controls", "AXM/Controls/Compound",
-        "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelCanvas",
+        "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelCanvas", "AXM/Panels/PanelHtml",
         "AXM/Windows/RootWindow", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups"
     ],
     function (
         require, $, _,
-        Msg, Utils, Color,
+        Msg, Utils, Color, DOM,
         Application,
         TableData, TableInfo,
         Controls, Compound,
-        Frame, PanelForm, PanelTable, PanelCanvas,
+        Frame, PanelForm, PanelTable, PanelCanvas, PanelHtml,
         RootWindow, PopupWindow, SimplePopups
     ) {
 
         var Module = {
             Msg: Msg,
+            DOM: DOM,
             Utils: Utils,
             Color: Color,
             Test: Utils.Test,
@@ -48,7 +49,8 @@ define([
                 Frame: Frame,
                 PanelForm: PanelForm,
                 PanelTable: PanelTable,
-                PanelCanvas: PanelCanvas
+                PanelCanvas: PanelCanvas,
+                PanelHtml: PanelHtml
             },
             Windows: {
                 RootWindow: RootWindow,

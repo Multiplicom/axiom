@@ -59,17 +59,17 @@ define([
             //Returns a darkened version of the color, amount between 0 and 1
             that.darken = function (amount) {
                 var fc = 1.0 - amount;
-                return DQX.Color(fc * this.r, fc * this.g, fc * this.b, this.a);
+                return Module.Color(fc * this.r, fc * this.g, fc * this.b, this.a);
             }
 
             //Returns a lightened version of the color, amount between 0 and 1
             that.lighten = function (amount) {
                 var fc = amount;
-                return DQX.Color((1 - fc) * this.r + fc, (1 - fc) * this.g + fc, (1 - fc) * this.b + fc, this.a);
+                return Module.Color((1 - fc) * this.r + fc, (1 - fc) * this.g + fc, (1 - fc) * this.b + fc, this.a);
             }
 
             that.changeOpacity = function (opacity) {
-                return DQX.Color(this.getR(), this.getG(), this.getB(), opacity);
+                return Module.Color(this.getR(), this.getG(), this.getB(), opacity);
             }
 
             return that;
