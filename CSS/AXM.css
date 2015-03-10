@@ -278,7 +278,7 @@ body {
     color: rgb(150,150,150)
 }
 
-.reportbitmap {
+.reporthyperlink {
     cursor: pointer;
-    color: rgb(0,128,255);
+    color: rgb(0, 93, 186);
 }
