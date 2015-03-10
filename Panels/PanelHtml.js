@@ -29,6 +29,7 @@ define([
 
             panel.enableVScrollBar = function() {
                 panel._scrollbarV  = true;
+                return panel;
             };
 
             panel.setContent = function(content) {

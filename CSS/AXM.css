@@ -277,3 +277,8 @@ body {
 .reportcomment {
     color: rgb(150,150,150)
 }
+
+.reportbitmap {
+    cursor: pointer;
+    color: rgb(0,128,255);
+}

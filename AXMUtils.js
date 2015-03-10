@@ -34,6 +34,27 @@ define([
             return obj;
         };
 
+        Module.isArray = function(v) {
+            return (v && v.constructor && (v.constructor == Array));
+        };
+
+        Module.isString = function(v) {
+            return (typeof v == 'string');
+        }
+
+        Module.isBoolean = function(v) {
+            return (typeof v == 'boolean');
+        }
+
+        Module.isNumber = function(v) {
+            return (typeof v == 'number');
+        }
+
+        Module.isFunction = function(v) {
+            return (typeof v == 'function');
+        }
+
+
 
         String.prototype.AXMInterpolate = function (args) {
             var newStr = this;
