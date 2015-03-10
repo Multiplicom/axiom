@@ -205,7 +205,7 @@ define([
                         var newPosX = window._moveX0 + data.diffTotalX;
                         var newPosY = window._moveY0 + data.diffTotalY;
                         newPosX = Math.min(newPosX, window._tmpBrowserSize.sizeX-window._tmpWindowSize.sizeX-3)
-                        newPosY = Math.min(newPosY, window._tmpBrowserSize.sizeY-window._tmpWindowSize.sizeY-3)
+                        newPosY = Math.min(newPosY, window._tmpBrowserSize.sizeY-40/*window._tmpWindowSize.sizeY-3*/)
                         newPosX = Math.max(0,newPosX);
                         newPosY = Math.max(0,newPosY);
                         window._$ElContainer
@@ -495,7 +495,7 @@ define([
                 var sizeX = window._$ElContainer.width();
                 var sizeY = window._$ElContainer.height();
                 var correctedX = correctSize(sizeX, window._minSizeX, offsetX, browserSize.sizeX);
-                var correctedY = correctSize(sizeY, window._minSizeY, offsetY, browserSize.sizeY);
+                var correctedY = correctSize(sizeY, window._minSizeY, offsetY, 99999/*browserSize.sizeY*/);
                 window._$ElContainer
                     .css('left', correctedX.offset)
                     .css('top', correctedY.offset);
