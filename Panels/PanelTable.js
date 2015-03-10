@@ -249,6 +249,15 @@ define([
                     return false;
                 });
 
+                $ElLeftHeadRow.find('th').bind('mouseenter', function(){
+                    var $this = $(this);
+                    $this.attr('title', $this.text());
+                });
+                $ElRightHeadRow.find('th').bind('mouseenter', function(){
+                    var $this = $(this);
+                    $this.attr('title', $this.text());
+                });
+
                 panel._updateSortStatus();
                 panel.renderTableContent();
             };
@@ -315,6 +324,12 @@ define([
                 $ElLeftBody.html(bodyLeftHtml);
                 $ElRightBody.html(bodyRightHtml);
 
+                $ElLeftBody.find('td').bind('mouseenter', function(){
+                    var $this = $(this);
+                    if(this.offsetWidth < this.scrollWidth && !$this.attr('title')){
+                        $this.attr('title', $this.text());
+                    }
+                });
                 $ElRightBody.find('td').bind('mouseenter', function(){
                     var $this = $(this);
                     if(this.offsetWidth < this.scrollWidth && !$this.attr('title')){
