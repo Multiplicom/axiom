@@ -119,10 +119,26 @@ define([
                 return tabledef._columns;
             };
 
+            tabledef.delColumn = function(colId) {
+                delete tabledef._map_columns[colId];
+                var colIdx = -1;
+                $.each(tabledef._columns, function(idx, colInfo) {
+                    if (colInfo.getId() == colId)
+                        colIdx = idx;
+                });
+                if (colIdx >= 0)
+                    tabledef._columns.splice(colIdx, 1);
+            };
+
             tabledef.getColumn = function(colId) {
                 var colInfo = tabledef._map_columns[colId];
                 if (!colInfo)
                     reportError('Invalid column '+colId);
+                return colInfo;
+            };
+
+            tabledef.getColumn_Optional = function(colId) {
+                var colInfo = tabledef._map_columns[colId];
                 return colInfo;
             };
 
