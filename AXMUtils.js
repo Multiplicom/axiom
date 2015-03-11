@@ -193,7 +193,8 @@ define([
                 //console.log('scrollevent');
                 handler({
                     deltaY: getMouseWheelDeltaY(ev),
-                    deltaX: getMouseWheelDeltaX(ev)
+                    deltaX: getMouseWheelDeltaX(ev),
+                    event: ev
                 });
             });
         };

@@ -74,7 +74,7 @@ define([
             };
 
 
-            panel.resize = function(xl, yl) {
+            panel.resize = function(xl, yl, params) {
                 //panel._cnvWidth = $('#' + panel.getId()+'_content').innerWidth();
                 //panel._cnvHeight = $('#' + panel.getId()+'_content').innerHeight();
                 panel._cnvWidth = xl;
@@ -90,16 +90,13 @@ define([
 
                 panel.ratio = panel.devicePixelRatio / panel.backingStoreRatio;
 
-                AXMUtils.log('CNV props: ' + panel.devicePixelRatio + ' ' + panel.backingStoreRatio);
-
-
                 $.each(panel._canvasLayerIds, function(idx, layerid) {
                     var $El = panel.getCanvas$El(layerid);
                     $El.width((panel._cnvWidth)+'px');
                     $El.height((panel._cnvHeight)+'px');
                 });
 
-                if (true) {
+                if (!params.resizing) {
                     $.each(panel._canvasLayerIds, function(idx, layerid) {
                         var canvasElement = panel.getCanvasElement(layerid);
                         if (canvasElement) {
@@ -139,6 +136,21 @@ define([
                 drawInfo.ctx.lineTo(drawInfo.sizeX, drawInfo.sizeY);
                 drawInfo.ctx.stroke();
             };
+
+            panel.getEventPosX = function (ev) {
+                var ev1 = ev;
+                if (ev.originalEvent)
+                    ev1 = ev.originalEvent;
+                return ev1.pageX - panel.getCanvas$El('main').offset().left;
+            }
+
+            panel.getEventPosY = function (ev) {
+                var ev1 = ev;
+                if (ev.originalEvent)
+                    ev1 = ev.originalEvent;
+                return ev1.pageY - panel.getCanvas$El('main').offset().top;
+            }
+
 
 
             return panel;

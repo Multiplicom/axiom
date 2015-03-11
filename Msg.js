@@ -14,8 +14,10 @@
 //DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-define(
-    function () {
+define([
+    "AXM/AXMUtils", "AXM/Test"
+],
+    function (AXMUtils, Test) {
         var Msg = {};
 
         Msg._listeners = [];
@@ -40,18 +42,18 @@ define(
             var results = Msg.broadcast(msgId, content);
             var receiverCount = results.length;
             if (receiverCount > 1)
-                AXMreportError("Message was processed by more than one recipient");
+                Test.reportBug("Message was processed by more than one recipient");
             if (receiverCount == 0)
-                AXMreportError("Message was not processed by any recipient");
+                Test.reportBug("Message was not processed by any recipient");
             return results[0];
         };
 
         //eventid: optional unique identifier to avoid duplicate entry of the same listener
         Msg.listen = function (eventid, msgId, callbackFunction) {
             if (typeof (eventid) != 'string')
-                AXMreportError('Listener event id not provided');
+                Test.reportBug('Listener event id not provided');
             if (!callbackFunction)
-                AXMreportError('No callback function provided for event listener');
+                Test.reportBug('No callback function provided for event listener');
             if ((eventid != '') && (eventid in Msg._listeneridmap)) {
                 var idx = Msg._listeneridmap[eventid];
                 Msg._listeners[idx].msgId = msgId;

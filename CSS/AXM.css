@@ -282,3 +282,9 @@ body {
     cursor: pointer;
     color: rgb(0, 93, 186);
 }
+
+
+.headerSmallText {
+    font-size: 90%;
+    color: rgb(140, 140, 140)
+}

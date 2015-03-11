@@ -354,16 +354,27 @@ define([
             return wrapper;
         };
 
+
+        Module.SeparatorH = function(w) {
+            var wrapper = Module.DecoratorBase();
+            wrapper.createHtml = function() {
+                var div = DOM.Div()
+                    .addStyle('display','inline-block')
+                    .addStyle('width',w + 'px')
+                    .addStyle('height','1px')
+                return div.toString();
+            };
+            return wrapper;
+        };
+
         Module.SeparatorV = function(h) {
             var wrapper = Module.DecoratorBase();
-
             wrapper.createHtml = function() {
                 var div = DOM.Div()
                     .addStyle('width','1px')
                     .addStyle('height',h + 'px')
                 return div.toString();
             };
-
             return wrapper;
         };
 
