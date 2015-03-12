@@ -112,6 +112,7 @@ define([
             panel.scaleMarginX = 37;
             panel.scaleMarginY = 37;
             panel._dragActionPan = true;
+            //panel._directRedraw = true;
 
             panel.xScaler = Scaler();
             panel.yScaler = Scaler();
@@ -200,6 +201,7 @@ define([
                 else {
                     var mainCanvas = panel.getCanvasElement('main');
                     var ctx = mainCanvas.getContext("2d");
+                    ctx.setTransform(1, 0, 0, 1, 0, 0);
                     if (!panel.zoompanProcessing) {
                         panel.zoompanProcessing = true;
                         panel.zoompanImage = new Image();
@@ -216,20 +218,24 @@ define([
                         panel.zoompanImage.id = "tempzoompic";
                         panel.zoompanImage.src = mainCanvas.toDataURL();
                     }
+
+                    ctx.scale(panel.ratio, panel.ratio);
                     ctx.fillStyle="rgb(240,240,240)";
                     ctx.fillRect(0, 0, panel._cnvWidth,panel._cnvHeight);
+                    ctx.setTransform(1, 0, 0, 1, 0, 0);
                     var frx1 = panel.xScaler.toFraction(panel.origXScaler.getMinVisibleRange());
                     var frx2 = panel.xScaler.toFraction(panel.origXScaler.getMaxVisibleRange());
                     var fry1 = panel.yScaler.toFraction(panel.origYScaler.getMinVisibleRange());
                     var fry2 = panel.yScaler.toFraction(panel.origYScaler.getMaxVisibleRange());
-                    var imW = panel.zoompanImage.width-panel.scaleMarginX;
-                    var imH = panel.zoompanImage.height-panel.scaleMarginY;
+                    var imW = panel.zoompanImage.width-panel.scaleMarginX*panel.ratio;
+                    var imH = panel.zoompanImage.height-panel.scaleMarginY*panel.ratio;
                     ctx.drawImage(panel.zoompanImage,
-                        panel.scaleMarginX, 0,
+                        panel.scaleMarginX*panel.ratio, 0,
                         imW, imH,
-                        panel.scaleMarginX + imW*frx1, imH*(1-fry2),
+                        panel.scaleMarginX*panel.ratio + imW*frx1, imH*(1-fry2),
                         imW*(frx2-frx1), imH*(fry2-fry1)
                     );
+                    ctx.scale(panel.ratio, panel.ratio);
                     panel.renderScale();
                     panel.ThrottledFinishZoomPan();
                 }
