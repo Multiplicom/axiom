@@ -22,9 +22,16 @@ define([
         AXMUtils, DOM, PanelCanvas) {
 
 
-        var Scaler = function() {
+        var Scaler = function(iScaler) {
             var scaler = {};
 
+            if (iScaler) {
+                scaler.minVal = iScaler.minVal;
+                scaler.maxVal = iScaler.maxVal;
+                scaler.range =  iScaler.range;
+                scaler.offset = iScaler.offset;
+            }
+            
             scaler.setRange = function(minVal, maxVal) {
                 scaler.minVal = minVal;
                 scaler.maxVal = maxVal;
@@ -176,7 +183,14 @@ define([
                 panel.drawScale(drawInfo);
             };
 
+            panel.finishZoomPan = function() {
+                if (panel.zoompanProcessing) {
+                    panel.zoompanProcessing = false;
+                    panel.render();
+                }
+            };
 
+            panel.ThrottledFinishZoomPan = AXMUtils.debounce(panel.finishZoomPan, 250);
             panel._setNewScalers = function(newXScaler, newYScaler) {
                 if (panel._directRedraw) {
                     panel.xScaler = newXScaler;
@@ -184,7 +198,7 @@ define([
                     panel.render();
                 }
                 else {
-                    var mainCanvas = panel.getMyCanvasElement('main');
+                    var mainCanvas = panel.getCanvasElement('main');
                     var ctx = mainCanvas.getContext("2d");
                     if (!panel.zoompanProcessing) {
                         panel.zoompanProcessing = true;
@@ -243,11 +257,35 @@ define([
                 }
             };
 
+
+            panel._panningStart = function() {
+                panel._panning_x0 = 0;
+                panel._panning_y0 = 0;
+                panel.origXScaler = Scaler(panel.xScaler);
+                panel.origYScaler = Scaler(panel.yScaler);
+            };
+
+            panel._panningDo = function(dragInfo) {
+                var imW = panel.drawSizeX - panel.scaleMarginX;
+                var imH = panel.drawSizeY - panel.scaleMarginY;
+                var newXScaler = Scaler(panel.xScaler);newXScaler.panFraction(-(dragInfo.diffTotalX-panel._panning_x0)/imW);
+                var newYScaler = Scaler(panel.yScaler);newYScaler.panFraction((dragInfo.diffTotalY-panel._panning_y0)/imH);
+                panel._panning_x0 = dragInfo.diffTotalX;
+                panel._panning_y0 = dragInfo.diffTotalY;
+                panel._setNewScalers(newXScaler, newYScaler);
+            };
+
+            panel._panningStop = function() {
+                panel.finishZoomPan();
+            };
+            
+
             var _super_attachEventHandlers = panel.attachEventHandlers;
             panel.attachEventHandlers = function() {
                 _super_attachEventHandlers();
                 var clickLayer$El = panel.getCanvas$El('selection');
                 AXMUtils.create$ElScrollHandler(clickLayer$El, panel._handleScrolled);
+                AXMUtils.create$ElDragHandler(clickLayer$El, panel._panningStart, panel._panningDo, panel._panningStop);
             };
 
 
