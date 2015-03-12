@@ -20,7 +20,7 @@ define([
         "AXM/Application",
         "AXM/Tables/TableData", "AXM/Tables/TableInfo",
         "AXM/Controls/Controls", "AXM/Controls/Compound",
-        "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelCanvas", "AXM/Panels/PanelCanvasXYPlot", "AXM/Panels/PanelHtml",
+        "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelCanvas", "AXM/Panels/PanelCanvasZoomPan", "AXM/Panels/PanelHtml",
         "AXM/Windows/RootWindow", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups"
     ],
     function (
@@ -29,7 +29,7 @@ define([
         Application,
         TableData, TableInfo,
         Controls, Compound,
-        Frame, PanelForm, PanelTable, PanelCanvas, CanvasXYPlot, PanelHtml,
+        Frame, PanelForm, PanelTable, PanelCanvas, PanelCanvasZoomPan, PanelHtml,
         RootWindow, PopupWindow, SimplePopups
     ) {
 
@@ -50,7 +50,7 @@ define([
                 PanelForm: PanelForm,
                 PanelTable: PanelTable,
                 PanelCanvas: PanelCanvas,
-                CanvasXYPlot: CanvasXYPlot,
+                PanelCanvasZoomPan: PanelCanvasZoomPan,
                 PanelHtml: PanelHtml
             },
             Windows: {
