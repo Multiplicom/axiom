@@ -479,6 +479,13 @@ define([
 
             };
 
+            panel.emptyContent = function() {
+                var $ElRightBody = $('#'+panel._divid_rightBody);
+                var $ElLeftBody = $('#'+panel._divid_leftBody);
+                $ElLeftBody.html('');
+                $ElRightBody.html('');
+            };
+
             panel.resetView = function() {
                 panel._tableOffset = 0;
                 panel._lastSelClickedRowNr = null;
@@ -489,7 +496,7 @@ define([
             panel.reloadContent = function() {
                 panel._tableData.resetBuffer();
                 panel.invalidate();
-            }
+            };
 
             panel.invalidate = function() {
                 panel.renderTableContent();
