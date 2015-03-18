@@ -32,6 +32,11 @@ define([
                 return panel;
             };
 
+            panel.enableHScrollBar = function() {
+                panel._scrollbarH  = true;
+                return panel;
+            };
+
             panel.setContent = function(content) {
                 panel._content = content;
                 panel.get$El().html(content);
@@ -49,6 +54,8 @@ define([
                 rootDiv.addStyle('overflow', 'hidden');
                 if (panel._scrollbarV)
                     rootDiv.addStyle('overflow-y', 'scroll');
+                if (panel._scrollbarH)
+                    rootDiv.addStyle('overflow-x', 'scroll');
                 rootDiv.addElem(panel._content);
                 return rootDiv.toString();
             };

@@ -21,7 +21,7 @@ define([
         "AXM/Tables/TableData", "AXM/Tables/TableInfo",
         "AXM/Controls/Controls", "AXM/Controls/Compound",
         "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelCanvas", "AXM/Panels/PanelCanvasZoomPan", "AXM/Panels/PanelCanvasXYPlot", "AXM/Panels/PanelHtml",
-        "AXM/Windows/RootWindow", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups"
+        "AXM/Windows/RootWindow", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Windows/LogViewer"
     ],
     function (
         require, $, _,
@@ -30,7 +30,7 @@ define([
         TableData, TableInfo,
         Controls, Compound,
         Frame, PanelForm, PanelTable, PanelCanvas, PanelCanvasZoomPan, PanelCanvasXYPlot, PanelHtml,
-        RootWindow, PopupWindow, SimplePopups
+        RootWindow, PopupWindow, SimplePopups, LogViewer
     ) {
 
         var Module = {
@@ -58,7 +58,8 @@ define([
             Windows: {
                 RootWindow: RootWindow,
                 PopupWindow: PopupWindow,
-                SimplePopups: SimplePopups
+                SimplePopups: SimplePopups,
+                LogViewer: LogViewer
             }
         };
 

@@ -268,6 +268,8 @@ body {
     padding-left:10px;
     border-left:1px solid rgb(220,220,220);
     border-top:1px solid rgb(220,220,220);
+    margin-top:10px;
+    padding-bottom: 10px;
 }
 
 .reportheader {
@@ -287,4 +289,38 @@ body {
 .headerSmallText {
     font-size: 85%;
     color: rgb(140, 140, 140)
+}
+
+.AXMLogLine {
+    vertical-align: middle;
+    display: inline-block;
+    /*white-space: nowrap;*/
+}
+
+.AXMLogLineNoWrap {
+    white-space: nowrap;
+}
+
+.AXMLogTimeStamp {
+    font-size: 80%;
+    color: rgb(167, 167, 167);
+    font-weight: normal;
+}
+
+.AXMLogElapsedInfo {
+    font-size: 80%;
+    color: rgb(145, 145, 145);
+    font-weight: normal;
+    padding-top:7px;
+}
+
+.AXMLogWarning {
+    color: rgb(186, 93, 1);
+    font-weight: bold;
+}
+
+.AXMLogError {
+    color: rgb(232, 0, 0);
+    background-color: rgb(255,255,100);
+    font-weight: bold;
 }
