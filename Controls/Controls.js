@@ -158,6 +158,9 @@ define([
                     }
                 }
 
+                if (settings.hint)
+                    div.addAttribute('title', settings.hint);
+
                 if (settings.helpId) {
                     var helpDiv = DOM.Div({parent: div})
                         .addStyle('position', 'absolute')

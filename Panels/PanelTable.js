@@ -643,7 +643,8 @@ define([
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
             theFrame.addCommand({
-                icon: "fa-download"
+                icon: "fa-download",
+                hint: "Download table content to local machine"
             }, thePanel.saveLocal);
 
             //theFrame.addCommand({
@@ -653,16 +654,20 @@ define([
             theFrame.addSeparator();
 
             theFrame.addCommand({
-                icon: "fa-flip-horizontal fa-fast-forward"
+                icon: "fa-flip-horizontal fa-fast-forward",
+                hint: "First page"
             }, thePanel.navigateFirstPage);
             theFrame.addCommand({
-                icon: "fa-flip-horizontal fa-play"
+                icon: "fa-flip-horizontal fa-play",
+                hint: "Previous page"
             }, thePanel.navigatePreviousPage);
             theFrame.addCommand({
-                icon: "fa-play"
+                icon: "fa-play",
+                hint: "Next page"
             }, thePanel.navigateNextPage);
             theFrame.addCommand({
-                icon: "fa-fast-forward"
+                icon: "fa-fast-forward",
+                hint: "Last page"
             }, thePanel.navigateLastPage);
 
             thePanel._pagerInfo = Controls.Static({

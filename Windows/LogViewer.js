@@ -99,7 +99,8 @@ define([
                 var rootFrame = Frame.FrameFinalCommands(win.panelHtml);
 
                 var bt_noWrap = rootFrame.addCommand({
-                    icon: "fa-align-left"
+                    icon: "fa-align-left",
+                    hint: "Do not wrap log lines"
                 }, function() {
                     win.noWrap = !win.noWrap;
                     bt_noWrap.setChecked(win.noWrap);
