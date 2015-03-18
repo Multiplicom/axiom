@@ -194,6 +194,19 @@ body {
     border: none;
 }
 
+.AXMButtonChecked {
+    background-color: rgba(100, 150, 255, 0.16);
+    border-left: 1px solid rgb(168, 187, 204);
+    border-top: 1px solid rgb(168, 187, 204);
+    border-right: 1px solid rgb(160, 179, 196);
+    border-bottom: 1px solid rgb(160, 179, 196);
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+}
+
+
+
 .AXMButtonCommandBar:hover {
     background-color: rgba(255,192,0,0.35);
     color: rgb(50,50,50);

@@ -98,6 +98,9 @@ define([
             control._enabled = true;
             if (settings.enabled === false)
                 control._enabled = false;
+            control._checked = false;
+            if (settings.checked)
+                control._checked = true;
 
 
             control.createHtml = function() {
@@ -169,7 +172,6 @@ define([
                 return div.toString();
             };
 
-            //enable / disable the button
             control._updateEnabledState = function() {
                 if (control._enabled)
                     control._getSub$El('').css('opacity', 1);
@@ -182,11 +184,23 @@ define([
                 control._updateEnabledState();
             };
 
+            control._updateCheckedState = function() {
+                if (control._checked)
+                    control._getSub$El('').addClass('AXMButtonChecked');
+                else
+                    control._getSub$El('').removeClass('AXMButtonChecked');
+            };
+
+            control.setChecked = function(newStatus) {
+                control._checked = newStatus;
+                control._updateCheckedState();
+            };
 
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
                 control._getSub$El('').find('.AXMButtonHelp').click(control._onHelp);
                 control._updateEnabledState();
+                control._updateCheckedState();
             };
 
             control._onClicked = function(ev) {

@@ -98,10 +98,11 @@ define([
                 win.panelHtml.enableVScrollBar().enableHScrollBar();
                 var rootFrame = Frame.FrameFinalCommands(win.panelHtml);
 
-                rootFrame.addCommand({
+                var bt_noWrap = rootFrame.addCommand({
                     icon: "fa-align-left"
                 }, function() {
                     win.noWrap = !win.noWrap;
+                    bt_noWrap.setChecked(win.noWrap);
                     if (win.noWrap)
                         win.panelHtml.get$El().find('.AXMLogLine').addClass('AXMLogLineNoWrap');
                     else

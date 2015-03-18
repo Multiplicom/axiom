@@ -758,16 +758,19 @@ define([
             frame._controlGroup = ControlsCompound.GroupHor({verticalAlignCenter: true});
             frame._panelControls.setRootControl(ControlsCompound.WrapperStyled(frame._controlGroup, 'AXMCommandBar'));
 
+            frame._commandButtonsList = [];
+
             frame.addCommand = function(settings, action) {
                 settings.height = controlsH-1;
                 if (!settings.width)
-                    settings.width = 30;
+                    settings.width = 35;
                 if (!settings.buttonClass)
                     settings.buttonClass = 'AXMButtonCommandBar';
                 var bt = Controls.Button(settings);
                 bt.addNotificationHandler(action);
-
+                frame._commandButtonsList.push(bt);
                 frame._controlGroup.add(bt);
+                return bt;
             };
 
             frame.addControl = function(ctrl) {
