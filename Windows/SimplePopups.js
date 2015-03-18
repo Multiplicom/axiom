@@ -55,6 +55,8 @@ define([
         Module.ConfirmationBox = function(content, title, settings, onOK, onCancel) {
             if (!title)
                 title = "Confirmation";
+            if (!settings)
+                settings = {};
 
             var win = Popupwin.create({
                 title: title,
@@ -66,8 +68,8 @@ define([
             grp.add(Controls.Static({text: content+'<p/>'}));
 
             var btOK = Controls.Button({
-                text: 'OK',
-                icon: 'fa-check'
+                text: settings.textOK || 'OK',
+                icon: settings.iconOK || 'fa-check'
             })
                 .addNotificationHandler(function() {
                     win.close();
@@ -76,8 +78,8 @@ define([
                 });
 
             var btCancel = Controls.Button({
-                text: 'Cancel',
-                icon: 'fa-times'
+                text: settings.textCancel || 'Cancel',
+                icon: settings.iconCancel || 'fa-times'
             })
                 .addNotificationHandler(function() {
                     win.close();
@@ -86,6 +88,59 @@ define([
                 });
 
             grp.add(Controls.Compound.GroupHor({}, [btOK, btCancel]) );
+
+            win.setHandler_OnPressedEnter(win.close);
+            win.setRootControl(Controls.Compound.StandardMargin(grp));
+            win.start();
+
+        };
+
+
+        Module.YesNoCancelBox = function(content, title, settings, onYes, onNo, onCancel) {
+            if (!title)
+                title = "Confirmation";
+            if (!settings)
+                settings = {};
+
+            var win = Popupwin.create({
+                title: title,
+                blocking:true,
+                autoCenter: true
+            });
+
+            var grp = Controls.Compound.GroupVert({});
+            grp.add(Controls.Static({text: content+'<p/>'}));
+
+            var btYes = Controls.Button({
+                text: settings.textYes || 'Yes',
+                icon: settings.iconYes || 'fa-check'
+            })
+                .addNotificationHandler(function() {
+                    win.close();
+                    if (onYes)
+                        onYes();
+                });
+
+            var btNo = Controls.Button({
+                text: settings.textNo || 'No',
+                icon: settings.iconNo || 'fa-times'
+            })
+                .addNotificationHandler(function() {
+                    win.close();
+                    if (onNo)
+                        onNo();
+                });
+
+            var btCancel = Controls.Button({
+                text: 'Cancel',
+            })
+                .addNotificationHandler(function() {
+                    win.close();
+                    if (onCancel)
+                        onCancel();
+                });
+
+            grp.add(Controls.Compound.GroupHor({}, [btYes, btNo, btCancel]) );
 
             win.setHandler_OnPressedEnter(win.close);
             win.setRootControl(Controls.Compound.StandardMargin(grp));
