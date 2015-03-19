@@ -282,8 +282,9 @@ define([
                     cell += '</div>';
                     return cell;
                 }
-                var cell = colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
-                return cell;
+                if (colInfo.content2CellHtml)
+                    return colInfo.content2CellHtml(rowData[colInfo.getId()], rowData);
+                return colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
             };
 
             panel.renderTableContent = function() {

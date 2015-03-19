@@ -84,6 +84,13 @@ define([
                 }
             });
 
+            while (sectionStack.length > 0) {
+                var sectionInfo = sectionStack.pop();
+                fmtLogContent += '<div class="AXMLogElapsedInfo" style="color: orangered">{title} busy</div>'.AXMInterpolate({title: sectionInfo.title});
+                fmtLogContent += '</div></div>';
+
+            }
+
             var win = Popupwin.create({
                 title: title,
                 autoCenter: true,

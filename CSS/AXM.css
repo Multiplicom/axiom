@@ -305,8 +305,6 @@ body {
 }
 
 .AXMLogLine {
-    vertical-align: middle;
-    display: inline-block;
     /*white-space: nowrap;*/
 }
 
