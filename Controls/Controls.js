@@ -76,6 +76,8 @@ define([
             control.createHtml = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('display', 'inline-block').addStyle('vertical-align','middle');
+                if (settings.cssClass)
+                    div.addCssClass(settings.cssClass);
                 div.addElem(control._text);
                 return div.toString();
             };
@@ -403,11 +405,12 @@ define([
         Module.Edit = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
-            //control._height = settings.height || 45;
+            control._height = settings.height || null;
             //control._buttonClass = settings.buttonClass || 'AXMEdit';
             control._value = settings.value || '';
             control._isPassWord = settings.passWord || false;
             control._disabled = settings.disabled || false;
+            control._nonEmptyClass = settings.nonEmptyClass || null;
 
             if (settings.hasClearButton)
                 control._clearButton = Module.Button({
@@ -437,6 +440,8 @@ define([
 
                 if (control._width)
                     rootEl.addStyle('width',control._width+'px');
+                if (control._height)
+                    rootEl.addStyle('height',control._height+'px');
                 if (!control._isPassWord)
                     rootEl.addAttribute("type", 'text');
                 else
@@ -456,6 +461,7 @@ define([
                 control._getSub$El('').click(control._onClicked);
                 control._getSub$El('').bind("propertychange input paste", control._onModified);
                 control._getSub$El('').bind("keyup", control._onModified);
+                control._checkNonEmptyClass();
                 if (control._hasDefaultFocus)
                     control._getSub$El('').select();
                 if (control._clearButton)
@@ -463,12 +469,24 @@ define([
             };
 
             control._onModified = function(ev) {
+                var txt = control.getValue();
                 if (control._clearButton) {
-                    var txt = control.getValue();
                     control._clearButton.setEnabled(txt.length > 0);
                 }
+                control._checkNonEmptyClass();
                 control.performNotify();
             };
+
+            control._checkNonEmptyClass = function() {
+                if (!control._nonEmptyClass)
+                    return;
+                var txt = control.getValue();
+                if (txt.length>0)
+                    control._getSub$El('').addClass(control._nonEmptyClass);
+                else
+                    control._getSub$El('').removeClass(control._nonEmptyClass);
+            }
+
 
             control.getValue = function () {
                 if (control._getSub$El('').length>0)
@@ -480,6 +498,7 @@ define([
             control.setValue = function(newVal, preventNotify) {
                 if (newVal == control.getValue()) return false;
                 control._getSub$El('').val(newVal);
+                control._checkNonEmptyClass();
                 if (control._clearButton) {
                     var txt = control.getValue();
                     control._clearButton.setEnabled(txt.length > 0);
