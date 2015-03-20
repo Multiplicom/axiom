@@ -431,6 +431,7 @@ define([
             control.createHtml = function() {
 
                 var rootEl = DOM.Create("input", {id: control._getSubId('')});
+                rootEl.addCssClass('AXMEdit');
 
                 if (settings.bold)
                     rootEl.addStyle('font-weight', 'bold');
