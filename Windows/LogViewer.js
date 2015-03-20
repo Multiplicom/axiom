@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelHtml", "AXM/Controls/Controls"],
+        "AXM/AXMUtils", "AXM/Test", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelHtml", "AXM/Controls/Controls"],
     function (
         require, $, _,
-        Utils, Popupwin, Frame, PanelHtml, Controls) {
+        Utils, Test, Popupwin, Frame, PanelHtml, Controls) {
 
         var Module = {};
 
@@ -40,7 +40,7 @@ define([
                         fmtLogContent += '<div class="reportunit">';
                         var sectionTitle = logLine.substring('>SECT>'.length);
                         sectionStack.push({
-                            tme: new Date(timeStamp).getTime(),
+                            tme: new Date(timeStamp.replace(/-/g, "/")).getTime(),
                             title: sectionTitle
                         });
                         var sectionLevel = sectionStack.length;
@@ -49,7 +49,7 @@ define([
                         fmtLogContent += '<div class="reportbody">';
                     }
                     if (logLine.indexOf('<SECT<') == 0) {
-                        var tme = new Date(timeStamp).getTime();
+                        var tme = new Date(timeStamp.replace(/-/g, "/")).getTime();
                         var sectionInfo = sectionStack.pop();
                         var timeDiff = (tme-sectionInfo.tme)/1000;
                         var timeDiffStr = timeDiff%60+'s';
