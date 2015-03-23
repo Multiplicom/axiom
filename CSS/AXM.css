@@ -180,12 +180,12 @@ body {
 }
 
 .AXMButtonIcon {
-    color: rgb(53, 131, 173);
+    color: rgb(41, 139, 163);
     text-shadow: 1px 1px 1px rgba(100, 100, 100, 0.25);
 }
 
 .AXMButton:hover .AXMButtonIcon {
-    color: rgb(0, 87, 126);
+    color: rgb(0, 106, 130);
 }
 
 .AXMButtonHelp {
