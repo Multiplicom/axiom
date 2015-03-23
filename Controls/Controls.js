@@ -405,7 +405,7 @@ define([
         Module.Edit = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
-            control._height = settings.height || null;
+            control._height = settings.height || 20;
             //control._buttonClass = settings.buttonClass || 'AXMEdit';
             control._value = settings.value || '';
             control._isPassWord = settings.passWord || false;

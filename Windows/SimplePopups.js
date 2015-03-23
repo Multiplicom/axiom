@@ -23,15 +23,22 @@ define([
 
         var Module = {};
 
-        Module.MessageBox = function(content, title) {
+        Module.MessageBox = function(content, title, onProceed) {
             if (!title)
                 title = "Message";
 
             var win = Popupwin.create({
                 title: title,
                 blocking:true,
-                autoCenter: true
+                autoCenter: true,
+                preventClose: true
             });
+
+            win.doClose = function() {
+                win.close();
+                if (onProceed)
+                    onProceed();
+            };
 
             var grp = Controls.Compound.GroupVert({});
             grp.add(Controls.Static({text: content+'<p/>'}));
@@ -41,11 +48,11 @@ define([
                 icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
-                    win.close();
+                    win.doClose();
                 });
             grp.add(btOK);
 
-            win.setHandler_OnPressedEnter(win.close);
+            win.setHandler_OnPressedEnter(win.doClose);
             win.setRootControl(Controls.Compound.StandardMargin(grp));
             win.start();
 
