@@ -91,6 +91,17 @@ define([
         };
 
 
+        Module.RawHtml = function(content) {
+            var control = Module.SingleControlBase({});
+
+            control.createHtml = function() {
+                return content;
+            };
+
+            return control;
+        };
+
+
 
         Module.Button = function(settings) {
             var control = Module.SingleControlBase(settings);
