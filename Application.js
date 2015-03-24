@@ -37,14 +37,15 @@ define([
             return theApp._rootFrame;
         };
 
-        theApp.confirmExit = function() {
+        theApp.confirmExit = function(ev) {
             var confirmMessage = null;
             var results = Msg.broadcast('ConfirmExit');
             $.each(results, function(idx, msg) {
                 if (msg)
                     confirmMessage = msg;
             });
-            return confirmMessage;
+            if (confirmMessage)
+                return confirmMessage;
         };
 
         // Intialises the app
