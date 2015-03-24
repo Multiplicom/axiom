@@ -76,6 +76,8 @@ define([
             control.createHtml = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('display', 'inline-block').addStyle('vertical-align','middle');
+                if (settings.maxWidth)
+                    div.addStyle('max-width', settings.maxWidth+'px').addStyle('overflow-x', 'hidden').addStyle('text-overflow', 'ellipsis');
                 if (settings.cssClass)
                     div.addCssClass(settings.cssClass);
                 div.addElem(control._text);
