@@ -106,8 +106,10 @@ define([
                 rootDiv.addStyle('z-index', window.zIndex);
                 rootDiv.addCssClass('AXMPopupWindowContainer');
 
+                var browserSize = AXMUtils.getBrowserSize();
+
                 if (window.resizable)
-                    rootDiv.addStyle('width', window._defaultSizeX+'px').addStyle('height', window._defaultSizeY+'px');
+                    rootDiv.addStyle('width', Math.min(browserSize.sizeX, window._defaultSizeX)+'px').addStyle('height', Math.min(browserSize.sizeY, window._defaultSizeY)+'px');
 
                 if (window._title)
                     headerDiv = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowHeader').addElem(window._title);
@@ -146,18 +148,16 @@ define([
                 window._$ElContainer = $('#' + window._id);
 
                 if (window._autoCenter || window._autoCenterTop) {
-                    var browserSize = AXMUtils.getBrowserSize();
                     var windowSizeX = window._$ElContainer.width();
                     window._$ElContainer
                         .css('top', 4)
-                        .css('left', (browserSize.sizeX-windowSizeX)/2)
+                        .css('left', Math.max(0, (browserSize.sizeX-windowSizeX)/2))
                 }
 
                 if (window._autoCenter) {
-                    var browserSize = AXMUtils.getBrowserSize();
                     var windowSizeY = window._$ElContainer.height();
                     window._$ElContainer
-                        .css('top', (browserSize.sizeY-windowSizeY)/2);
+                        .css('top', Math.max(0, (browserSize.sizeY-windowSizeY)/2));
                 }
 
                 if (window._rootFrame)
