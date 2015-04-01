@@ -250,14 +250,14 @@ define([
                     return false;
                 });
 
-                $ElLeftHeadRow.find('th').bind('mouseenter', function(){
-                    var $this = $(this);
-                    $this.attr('title', $this.text());
-                });
-                $ElRightHeadRow.find('th').bind('mouseenter', function(){
-                    var $this = $(this);
-                    $this.attr('title', $this.text());
-                });
+                //$ElLeftHeadRow.find('th').bind('mouseenter', function(){
+                //    var $this = $(this);
+                //    $this.attr('title', $this.text());
+                //});
+                //$ElRightHeadRow.find('th').bind('mouseenter', function(){
+                //    var $this = $(this);
+                //    $this.attr('title', $this.text());
+                //});
 
                 panel._updateSortStatus();
                 panel.renderTableContent();
