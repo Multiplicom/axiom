@@ -133,7 +133,7 @@ define([
             tabledef.getColumn = function(colId) {
                 var colInfo = tabledef._map_columns[colId];
                 if (!colInfo)
-                    reportError('Invalid column '+colId);
+                    AXMUtils.Test.reportBug('Invalid column {colid} for table {tableid}'.AXMInterpolate({colid: colId, tableid: tabledef.tableId}));
                 return colInfo;
             };
 
