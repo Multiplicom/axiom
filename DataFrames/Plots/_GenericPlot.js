@@ -111,7 +111,7 @@ define([
 
                 win._createAspectControls = function(grp) {
                     $.each(plotType.getPlotAspects(), function(idx, aspect) {
-                        var picker = Controls.DropList({width: 180});
+                        var picker = Controls.DropList({width: 160});
                         if (!aspect.getRequired())
                             picker.addState('', "- None -");
                         $.each(dataFrame.getProperties(), function(idx, prop) {
@@ -136,7 +136,7 @@ define([
 
                     var rootFrame = Frame.FrameSplitterHor();
 
-                    var formHeader = PanelForm.create('intro');
+                    var formHeader = PanelForm.create('intro', {scrollY: true});
                     rootFrame.addMember(Frame.FrameFinal(formHeader)).setFixedDimSize(Frame.dimX, 200);
 
                     var headerGroup = Controls.Compound.GroupVert({}).setSeparator(12);

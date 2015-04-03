@@ -296,27 +296,40 @@ define([
 
 
             panel._panningStart = function() {
+                panel._isPanning = false;
                 panel._panning_x0 = 0;
                 panel._panning_y0 = 0;
                 panel.origXScaler = Scaler(panel.xScaler);
                 panel.origYScaler = Scaler(panel.yScaler);
+                panel._hideToolTip();
             };
 
             panel._panningDo = function(dragInfo) {
-                var imW = panel.drawSizeX - panel.scaleMarginX;
-                var imH = panel.drawSizeY - panel.scaleMarginY;
-                var newXScaler = Scaler(panel.xScaler);newXScaler.panFraction(-(dragInfo.diffTotalX-panel._panning_x0)/imW);
-                var newYScaler = Scaler(panel.yScaler);newYScaler.panFraction((dragInfo.diffTotalY-panel._panning_y0)/imH);
-                panel._panning_x0 = dragInfo.diffTotalX;
-                panel._panning_y0 = dragInfo.diffTotalY;
-                panel._setNewScalers(newXScaler, newYScaler);
+                if (Math.abs(dragInfo.diffTotalX)+Math.abs(dragInfo.diffTotalY)>10)
+                    panel._isPanning = true;
+                if (panel._isPanning) {
+                    var imW = panel.drawSizeX - panel.scaleMarginX;
+                    var imH = panel.drawSizeY - panel.scaleMarginY;
+                    var newXScaler = Scaler(panel.xScaler);newXScaler.panFraction(-(dragInfo.diffTotalX-panel._panning_x0)/imW);
+                    var newYScaler = Scaler(panel.yScaler);newYScaler.panFraction((dragInfo.diffTotalY-panel._panning_y0)/imH);
+                    panel._panning_x0 = dragInfo.diffTotalX;
+                    panel._panning_y0 = dragInfo.diffTotalY;
+                    panel._setNewScalers(newXScaler, newYScaler);
+                }
             };
 
             panel._panningStop = function() {
-                panel.finishZoomPan();
+                if (panel._isPanning) {
+                    setTimeout(function() { // some delay to avoid the click handler to kick in
+                        panel._isPanning = false;
+                    },100);
+                    panel.finishZoomPan();
+                }
             };
 
             panel._onMouseMove = function(ev) {
+                if (panel._isPanning)
+                    return;
                 var px = panel.getEventPosX(ev);
                 var py = panel.getEventPosY(ev);
                 var newToolTipInfo = panel.getToolTipInfo(px, py);
@@ -330,12 +343,13 @@ define([
                 else
                     panel._hideToolTip();
                 var pointerType = showPointer?"pointer":"auto";
-                //$('#' + that.canvasID).css('cursor', pointerType);
                 panel.getCanvas$El('main').css('cursor', pointerType);
                 panel.getCanvas$El('selection').css('cursor', pointerType);
             };
 
             panel._onClick = function(ev) {
+                if (panel._isPanning)
+                    return;
                 panel._hideToolTip();
                 panel.onMouseClick(ev, {
                     x: panel.getEventPosX(ev),

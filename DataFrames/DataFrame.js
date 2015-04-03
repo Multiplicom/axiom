@@ -102,6 +102,8 @@ define([
                             uniqueCats.push(valList[i]);
                         }
                     }
+                    if (uniqueCats.length>25) //can't do anything good here...
+                        return colorLegend;
                     property._category2ColorMapper.map(uniqueCats);
                     $.each(uniqueCats, function(idx, catStr) {
                         colorLegend.push({
