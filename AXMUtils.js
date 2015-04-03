@@ -298,10 +298,69 @@ define([
             // Start the execution of the scheduled functions
             sched.execute = function() {
                 sched._tryNext();
-            }
+            };
 
             return sched;
         };
+
+
+
+        Module.PersistentAssociator = function(itemCount) {
+            var assoc = {};
+            assoc.itemCount = itemCount;
+            assoc.associations = {};
+
+            assoc.map = function(idlist) {
+                var freeItemMap = {};
+                for (var i=0; i<assoc.itemCount; i++) freeItemMap[i]=1;
+                $.each(idlist, function(idx, id) {
+                    if (idx<assoc.itemCount) {
+                        if (id in assoc.associations)
+                            delete freeItemMap[id];
+                    }
+                });
+                var freeItems=[];
+                for (var i=0; i<assoc.itemCount; i++) {
+                    if (freeItemMap[i]==1)
+                        freeItems.push(i);
+                };
+                var freenr = 0;
+
+                var usedItemMap = {};
+                $.each(idlist, function(idx, id) {
+                    if (idx<assoc.itemCount) {
+                        var missing = false;
+                        if (!(id in assoc.associations))
+                            missing = true;
+                        else {
+                            if (assoc.associations[id] in usedItemMap)
+                                missing = true;
+                        }
+                        if (missing) {
+                            assoc.associations[id] = freeItems[freenr];
+                            freenr++;
+                        }
+                        usedItemMap[assoc.associations[id]] = 1;
+                    }
+                });
+
+                assoc.mapped = true;
+            };
+
+            assoc.getAssociations = function() {
+                return assoc.associations;
+            };
+
+            assoc.get = function(id) {
+                if (!(id in assoc.associations))
+                    return -1;
+                else
+                    return assoc.associations[id];
+            };
+
+            return assoc;
+        };
+
 
 
         return Module;

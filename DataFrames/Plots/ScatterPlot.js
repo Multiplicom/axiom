@@ -16,14 +16,14 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils",
+        "AXM/AXMUtils", "AXM/Color", "AXM/Panels/PanelCanvasXYPlot", "AXM/Windows/PopupWindow", "AXM/Controls/Controls", "AXM/Windows/SimplePopups",
         "AXM/DataFrames/Plots/_GenericPlot",
         "AXM/DataFrames/DataTypes"
 
     ],
     function (
         require, $, _,
-        AXMUtils,
+        AXMUtils, Color, PanelCanvasXYPlot, PopupWindow, Controls, SimplePopups,
         _GenericPlot,
         DataTypes
     ) {
@@ -32,7 +32,166 @@ define([
         PlotType.addPlotAspect('xvalue', 'X Value', DataTypes.typeFloat, true);
         PlotType.addPlotAspect('yvalue', 'Y Value', DataTypes.typeFloat, true);
         PlotType.addPlotAspect('color', 'Color', DataTypes.typeAny, false);
+        PlotType.addPlotAspect('label', 'Label', DataTypes.typeAny, false);
+        PlotType.addPlotAspect('tooltip', 'Hover text', DataTypes.typeAny, false);
 
+        PlotType.create = function(dataFrame, aspectMap) {
+            var win = PlotType.createGeneric(dataFrame, aspectMap);
+
+            win.plot = PanelCanvasXYPlot.create('', {});
+            win.plot._directRedraw = true; //!!!
+            win._opacity = 0.40;
+
+
+            win._createDisplayControls = function(dispGroup) {
+                win.colorLegendCtrl = Controls.Static({});
+                dispGroup.add(win.colorLegendCtrl);
+            };
+
+            win.plot.getToolTipInfo = function (px, py) {
+                if (!win.hasAspectProperty('tooltip'))
+                    return;
+                var dataX = win.getAspectProperty('xvalue').data;
+                var dataY = win.getAspectProperty('yvalue').data;
+                var dataPrimKey = win.getPrimKeyProperty().data;
+
+                var propTooltip = win.getAspectProperty('tooltip');
+
+                var coordXLogic2Win = win.plot.coordXLogic2Win;
+                var coordYLogic2Win = win.plot.coordYLogic2Win;
+                var minDist = 7;
+                var bestRowNr = null;
+                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                    var ptPx = coordXLogic2Win(dataX[rowNr]);
+                    var ptPy = coordYLogic2Win(dataY[rowNr]);
+                    var dist = Math.abs(ptPx-px) + Math.abs(ptPy-py);
+                    if (dist <= minDist) {
+                        minDist = dist;
+                        bestRowNr = rowNr;
+                    }
+                }
+                if (bestRowNr === null)
+                    return null;
+
+                return {
+                    px: coordXLogic2Win(dataX[bestRowNr]),
+                    py: coordYLogic2Win(dataY[bestRowNr]),
+                    ID: dataPrimKey[bestRowNr],
+                    rowNr: bestRowNr,
+                    content: propTooltip.content2DisplayString(propTooltip.data[bestRowNr]),
+                    showPointer: true
+                }
+
+            };
+
+            win.plot.onMouseClick = function(ev, info) {
+                var tooltip = win.plot.getToolTipInfo(info.x, info.y);
+                if (tooltip)
+                    win.openPoint(tooltip.rowNr);
+            };
+
+
+            win.updateAspect = function(aspectId) {
+                if (aspectId == 'xvalue') {
+                    var rangeX = win.getAspectProperty('xvalue').getValueRange();
+                    rangeX.extendFraction(0.1);
+                    win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
+                }
+                if (aspectId == 'yvalue') {
+                    var rangeY = win.getAspectProperty('yvalue').getValueRange();
+                    rangeY.extendFraction(0.1);
+                    win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
+                }
+                if (aspectId == 'color')
+                    win.updateColorLegend();
+                win.plot.render();
+            };
+
+
+            win.updateColorLegend = function() {
+                var propColor = null;
+                win.colorLegendCtrl.modifyText('');
+                if (win.hasAspectProperty('color')) {
+                    propColor = win.getAspectProperty('color');
+                    var dataColor = propColor.data;
+                    var legendData = propColor.mapColors(dataColor);
+                    var legendHtml = '';
+                    $.each(legendData, function(idx, legendItem) {
+                        legendHtml += '<span style="background-color: {col};">&nbsp;&nbsp;&nbsp;</span>&nbsp;'.AXMInterpolate({col: legendItem.color.toString()});
+                        legendHtml += legendItem.content;
+                        legendHtml += '<br>';
+                    });
+                    win.colorLegendCtrl.modifyText(legendHtml);
+                }
+            };
+
+            win.plot.drawPlot = function(drawInfo) {
+                var plot = win.plot;
+
+                var propX = win.getAspectProperty('xvalue');
+                var propY = win.getAspectProperty('yvalue');
+                var dataX = propX.data;
+                var dataY = propY.data;
+
+                var propColor = null;
+                if (win.hasAspectProperty('color')) {
+                    propColor = win.getAspectProperty('color');
+                    var dataColor = propColor.data;
+                }
+
+                drawInfo.ctx.fillStyle = Color.Color(0,0,0,0.4).toStringCanvas();
+                if (win.hasAspectProperty('label')) {
+                    var propLabel = win.getAspectProperty('label');
+                    var dataLabel = propLabel.data;
+                    for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                        plot.drawLabel(drawInfo, dataX[rowNr], dataY[rowNr], 4, propLabel.content2DisplayString(dataLabel[rowNr]));
+                    }
+                }
+
+                drawInfo.ctx.fillStyle = Color.Color(0,0,255,win._opacity).toStringCanvas();
+                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                    if (propColor) {
+                        drawInfo.ctx.fillStyle = propColor.getSingleColor(dataColor[rowNr]).changeOpacity(win._opacity).toStringCanvas();
+                    }
+                    plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr]);
+                }
+            };
+
+
+            win.openPoint = function(rowNr) {
+                var win = PopupWindow.create({
+                    title: 'Data point',
+                    blocking:true,
+                    autoCenter: true
+                });
+
+                var grp = Controls.Compound.Grid({});
+
+                $.each(dataFrame.getProperties(), function(idx, property) {
+                    grp.setItem(idx, 0, property.getDispName());
+                    grp.setItem(idx, 1, property.content2DisplayString(property.data[rowNr]));
+                });
+
+                win.setRootControl(Controls.Compound.StandardMargin(grp));
+                win.start();
+            };
+
+
+            win.initPlot = function() {
+                win.updateColorLegend();
+            };
+
+            var propX = win.getAspectProperty('xvalue');
+            var propY = win.getAspectProperty('yvalue');
+            var rangeX = propX.getValueRange();
+            var rangeY = propY.getValueRange();
+            rangeX.extendFraction(0.1);
+            rangeY.extendFraction(0.1);
+            win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
+            win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
+
+            win.init();
+        };
 
 
         return PlotType;

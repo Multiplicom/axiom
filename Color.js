@@ -94,24 +94,58 @@ define([
                 g = hue2rgb(p, q, h);
                 b = hue2rgb(p, q, h - 1/3);
             }
-            return DQX.Color(r,g,b);
-        }
+            return Module.Color(r,g,b);
+        };
 
-        //converts a html color string to a DQX.Color
+        //converts a html color string to a Module.Color
         Module.parseColorString = function (colorstring, faildefault) {
             try {
                 var parts = colorstring.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
                 if ((parts) && (parts.length >= 2) && (parts[1].length > 0) && (parts[2].length > 0) && (parts[3].length > 0))
-                    return DQX.Color(parseFloat(parts[1]) / 255.0, parseFloat(parts[2]) / 255.0, parseFloat(parts[3]) / 255.0);
+                    return Module.Color(parseFloat(parts[1]) / 255.0, parseFloat(parts[2]) / 255.0, parseFloat(parts[3]) / 255.0);
                 if (typeof faildefault != 'undefined')
                     return faildefault;
-                return DQX.Color(0,0,0);
+                return Module.Color(0,0,0);
             }
             catch(err)
             {
                 Test.reportBug('Invalid color string: '+colorstring);
             }
-        }
+        };
+
+
+
+        Module.standardColors = [
+            Module.Color(0.2,0.2,1.0),
+            Module.Color(1.0,0.3,0.3),
+            Module.Color(0.2,0.6,0.7),
+            Module.Color(0.9,0.5,0.0),
+            Module.Color(0.0,0.8,0.0),
+            Module.Color(0.8,0.2,0.8),
+            Module.Color(0,0,0.7),
+            Module.Color(0.7,0,0),
+            Module.Color(0,0.5,0),
+            Module.Color(0.5,0,0.5),
+            Module.Color(0.3,0.4,0.5),
+            Module.Color(0.5,0.5,0.8),
+            Module.Color(0.8,0.5,0.5),
+            Module.Color(0.7,0.6,0.4),
+            Module.Color(0.4,0.7,0.4),
+            Module.Color(0.3,0.3,0.5),
+            Module.Color(0.5,0.3,0.3),
+            Module.Color(0.5,0.4,0.2),
+            Module.Color(0.2,0.4,0.2),
+            Module.Color(0.5,0.3,0.5),
+            Module.Color(0.3,0.5,0.5),
+            Module.Color(0.6,0.6,0.7),
+            Module.Color(0.7,0.6,0.6),
+            Module.Color(0.7,0.7,0.5),
+            Module.Color(0.7,0.5,0.7),
+            Module.Color(0.5,0.7,0.7),
+            Module.Color(0.5,0.6,0.5),
+            Module.Color(0.6,0.6,0.6)
+        ];
+        
 
 
         return Module;

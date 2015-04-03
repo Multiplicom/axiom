@@ -31,6 +31,11 @@ define([
 
         PlotType.addPlotAspect('value', 'Value', DataTypes.typeFloat, true);
 
+        PlotType.create = function(dataFrame, aspectMap) {
+            var win = PlotType.createGeneric(dataFrame, aspectMap);
+            win.init();
+        };
+
         return PlotType;
     });
 

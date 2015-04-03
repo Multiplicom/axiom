@@ -112,6 +112,7 @@ define([
             panel.scaleMarginX = 37;
             panel.scaleMarginY = 37;
             panel._dragActionPan = true;
+            panel._toolTipInfo = { ID: null };
             //panel._directRedraw = true;
 
             panel.xScaler = Scaler();
@@ -138,6 +139,16 @@ define([
 
             // override:
             panel.drawCenter = function(drawInfo) {
+
+            };
+
+            // Override this function. Should return an object with members ID, px,py, content
+            panel.getToolTipInfo = function (px, py) {
+                return null;
+            };
+
+            // Override this function to get informed about clicks
+            panel.onMouseClick = function(ev, info) {
 
             };
 
@@ -182,6 +193,26 @@ define([
                     scaleBorderOnly: true
                 };
                 panel.drawScale(drawInfo);
+            };
+
+            panel._showToolTip = function(tooltipInfo) {
+                panel._hideToolTip();
+                panel._toolTipInfo = tooltipInfo;
+                var tooltip = DOM.Div();
+                tooltip.addCssClass("AXMToolTip");
+                tooltip.addStyle("position", "absolute");
+                var screenX = panel.posXCanvas2Screen(panel._toolTipInfo.px);
+                var screenY = panel.posYCanvas2Screen(panel._toolTipInfo.py);
+                tooltip.addStyle("left", (screenX + 10) + 'px');
+                tooltip.addStyle("top", (screenY + 10) + 'px');
+                tooltip.addStyle("z-index", '9999999');
+                tooltip.addElem(panel._toolTipInfo.content);
+                $('.AXMContainer').append(tooltip.toString());
+            };
+
+            panel._hideToolTip = function() {
+                panel._toolTipInfo.ID = null;
+                $('.AXMContainer').find('.AXMToolTip').remove();
             };
 
             panel.finishZoomPan = function() {
@@ -284,7 +315,36 @@ define([
             panel._panningStop = function() {
                 panel.finishZoomPan();
             };
-            
+
+            panel._onMouseMove = function(ev) {
+                var px = panel.getEventPosX(ev);
+                var py = panel.getEventPosY(ev);
+                var newToolTipInfo = panel.getToolTipInfo(px, py);
+                var showPointer = false;
+                if (newToolTipInfo) {
+                    if (newToolTipInfo.showPointer)
+                        showPointer = true;
+                    if (panel._toolTipInfo.ID != newToolTipInfo.ID)
+                        panel._showToolTip(newToolTipInfo);
+                }
+                else
+                    panel._hideToolTip();
+                var pointerType = showPointer?"pointer":"auto";
+                //$('#' + that.canvasID).css('cursor', pointerType);
+                panel.getCanvas$El('main').css('cursor', pointerType);
+                panel.getCanvas$El('selection').css('cursor', pointerType);
+            };
+
+            panel._onClick = function(ev) {
+                panel._hideToolTip();
+                panel.onMouseClick(ev, {
+                    x: panel.getEventPosX(ev),
+                    y: panel.getEventPosY(ev),
+                    pageX: ev.pageX,
+                    pageY: ev.pageY
+                });
+            };
+
 
             var _super_attachEventHandlers = panel.attachEventHandlers;
             panel.attachEventHandlers = function() {
@@ -292,6 +352,8 @@ define([
                 var clickLayer$El = panel.getCanvas$El('selection');
                 AXMUtils.create$ElScrollHandler(clickLayer$El, panel._handleScrolled);
                 AXMUtils.create$ElDragHandler(clickLayer$El, panel._panningStart, panel._panningDo, panel._panningStop);
+                clickLayer$El.mousemove(panel._onMouseMove);
+                clickLayer$El.click(panel._onClick);
             };
 
 

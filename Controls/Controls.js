@@ -390,12 +390,16 @@ define([
             };
 
             control.attachEventHandlers = function() {
-                control._getSub$El('').click(control._onClicked);
+                var target = 'change.controlevent';
+                control._getSub$El('').unbind(target).bind(target, control._onChange);
+                //control._getSub$El('').click(control._onClicked);
             };
 
-            control._onClicked = function(ev) {
-                control.isChecked = control._getSub$El('').is(':checked');
-                control.performNotify();
+            control._onChange = function(ev) {
+                var oldVal = control._value;
+                var newVal = control.getValue();
+                if (newVal != oldVal)
+                    control.performNotify();
             };
 
 

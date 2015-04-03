@@ -349,3 +349,18 @@ body {
 }
 
 
+.AXMToolTip
+{
+    opacity:0.9;
+    padding:4px;
+    /*border:1px solid black;*/
+    background: #fcef79; /* Old browsers */
+    background: -moz-linear-gradient(top, #fcef79 1%, #e87f35 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#fcef79), color-stop(100%,#e87f35)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #fcef79 1%,#e87f35 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #fcef79 1%,#e87f35 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #fcef79 1%,#e87f35 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #fcef79 1%,#e87f35 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcef79', endColorstr='#e87f35',GradientType=0 ); /* IE6-9 */
+    box-shadow: 1px 1px 7px rgba(0,0,0,0.65);
+}

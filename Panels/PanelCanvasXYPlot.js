@@ -127,6 +127,14 @@ define([
                 ctx.restore();
             };
 
+            panel.coordXLogic2Win = function(vlx) {
+                return vlx * panel.scaleX + panel.offsetX;
+            };
+
+            panel.coordYLogic2Win = function(vly) {
+                return vly * panel.scaleY + panel.offsetY;
+            };
+
             // Override to create a plot
             panel.drawPlot = function(drawInfo) {
 
@@ -138,9 +146,16 @@ define([
                 var py = /*Math.round*/(vly * drawInfo.scaleY + drawInfo.offsetY);
                 var ctx = drawInfo.ctx;
                 ctx.beginPath();
-                ctx.arc(px, py, 3, 0, 2 * Math.PI, false);
+                ctx.arc(px, py, 2, 0, 2 * Math.PI, false);
                 ctx.closePath();
                 ctx.fill();
+            };
+
+            panel.drawLabel = function(drawInfo, vlx, vly, offset, content) {
+                var px = /*Math.round*/(vlx * drawInfo.scaleX + drawInfo.offsetX);
+                var py = /*Math.round*/(vly * drawInfo.scaleY + drawInfo.offsetY);
+                var ctx = drawInfo.ctx;
+                ctx.fillText(content, px+offset, py+offset);
             };
 
             panel.drawCenter = function(drawInfo) {

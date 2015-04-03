@@ -143,13 +143,21 @@ define([
                 if (ev.originalEvent)
                     ev1 = ev.originalEvent;
                 return ev1.pageX - panel.getCanvas$El('main').offset().left;
-            }
+            };
 
             panel.getEventPosY = function (ev) {
                 var ev1 = ev;
                 if (ev.originalEvent)
                     ev1 = ev.originalEvent;
                 return ev1.pageY - panel.getCanvas$El('main').offset().top;
+            };
+
+            panel.posXCanvas2Screen = function (px) {
+                return px + panel.getCanvas$El('main').offset().left;
+            }
+
+            panel.posYCanvas2Screen = function (py) {
+                return py + panel.getCanvas$El('main').offset().top;
             }
 
 

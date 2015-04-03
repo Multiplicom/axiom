@@ -31,6 +31,10 @@ define([
         var PlotType = _GenericPlot.createPlotType('bargraph', 'Bar graph');
         PlotType.addPlotAspect('category', 'Category', DataTypes.typeString, true);
 
+        PlotType.create = function(dataFrame, aspectMap) {
+            var win = PlotType.createGeneric(dataFrame, aspectMap);
+            win.init();
+        };
 
 
         return PlotType;
