@@ -182,7 +182,7 @@ define([
                                 objectType.rowSelNotifyChanged();
                             }
                         },
-                    ]
+                    ];
                     SimplePopups.ActionChoiceBox('Selected points', '', actions);
                 };
 
@@ -224,6 +224,8 @@ define([
                     headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(selGroup), "Selection"));
                     win._createSelectionControls(selGroup);
 
+                    if (!win.plot)
+                        AXMUtils.Test.reportBug('Plot panel is not defined');
                     rootFrame.addMember(Frame.FrameFinal(win.plot));
 
 

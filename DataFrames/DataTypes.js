@@ -32,16 +32,26 @@ define([
             };
         };
 
+
         Module.typeString = Module.typeGeneric('typeString');
         Module.typeString.includes = function(otherType) {
             return otherType.id == 'typeString';
         };
         Module.typeString.isCategorical = function() {return true; };
 
+
+        Module.typeBoolean = Module.typeGeneric('typeBoolean');
+        Module.typeBoolean.includes = function(otherType) {
+            return otherType.id == 'typeBoolean';
+        };
+        Module.typeBoolean.isCategorical = function() {return true; };
+
+
         Module.typeFloat = Module.typeGeneric('typeFloat');
         Module.typeFloat.includes = function(otherType) {
             return otherType.id == 'typeFloat';
         };
+
 
         Module.typeAny = Module.typeGeneric('typeAny');
         Module.typeAny.includes = function(otherType) {

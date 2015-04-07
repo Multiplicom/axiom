@@ -106,12 +106,18 @@ define([
         
         var Module = {};
 
-        Module.create = function(id) {
+        Module.create = function(id, settings) {
             var panel = PanelCanvas.create(id);
 
+            if (!settings)
+                settings = {};
+
             panel.scaleMarginX = 37;
-            panel.scaleMarginY = 37;
+            panel.scaleMarginY = settings.scaleMarginY || 37;
+
             panel._dragActionPan = true;
+            panel._canZoomX = true;
+            panel._canZoomY = true;
             panel._toolTipInfo = { ID: null };
             //panel._directRedraw = true;
 
@@ -135,6 +141,11 @@ define([
             };
             panel.getYOffset = function() {
                 return (panel.drawSizeY - panel.scaleMarginY) - panel.yScaler.getOffset()*panel.getYScale();
+            };
+
+            panel.setZoomDirections = function(canZoomX, canZoomY) {
+                panel._canZoomX = canZoomX;
+                panel._canZoomY = canZoomY;
             };
 
             // override:
@@ -301,8 +312,16 @@ define([
             panel._handleZoom = function(scaleFactor, px, py) {
                 var centerFracX = (px-panel.scaleMarginX)*1.0/(panel.drawSizeX-panel.scaleMarginX);
                 var centerFracY = (panel.drawSizeY-panel.scaleMarginY-py)/(panel.drawSizeY-panel.scaleMarginY);
-                var newXScaler = Scaler(panel.xScaler);newXScaler.zoom(scaleFactor, centerFracX);
-                var newYScaler = Scaler(panel.yScaler);newYScaler.zoom(scaleFactor, centerFracY);
+                var newXScaler = panel.xScaler;
+                if (panel._canZoomX) {
+                    newXScaler = Scaler(panel.xScaler);
+                    newXScaler.zoom(scaleFactor, centerFracX);
+                }
+                var newYScaler = panel.yScaler;
+                if (panel._canZoomY) {
+                    newYScaler = Scaler(panel.yScaler);
+                    newYScaler.zoom(scaleFactor, centerFracY);
+                }
                 panel._setNewScalers(newXScaler, newYScaler);
             }
             
