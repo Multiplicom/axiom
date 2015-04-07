@@ -132,6 +132,7 @@ define([
                 var propY = win.getAspectProperty('yvalue');
                 var dataX = propX.data;
                 var dataY = propY.data;
+                var dataPrimKey = win.getPrimKeyProperty().data;
 
                 var propColor = null;
                 if (win.hasAspectProperty('color')) {
@@ -148,6 +149,13 @@ define([
                     }
                 }
 
+                var rowSelGet = win.dataFrame.objectType.rowSelGet
+                drawInfo.ctx.strokeStyle = Color.Color(255,0,0,0.5).toStringCanvas();
+                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                    if (rowSelGet(dataPrimKey[rowNr]))
+                        plot.drawSel(drawInfo, dataX[rowNr], dataY[rowNr]);
+                }
+
                 drawInfo.ctx.fillStyle = Color.Color(0,0,255,win._opacity).toStringCanvas();
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
                     if (propColor) {
@@ -156,6 +164,25 @@ define([
                     plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr]);
                 }
             };
+
+            win.plot.handleRectSelection = function(pt1, pt2) {
+                var xMin = win.plot.coordXWin2Logic(Math.min(pt1.x, pt2.x));
+                var xMax = win.plot.coordXWin2Logic(Math.max(pt1.x, pt2.x));
+                var yMin = win.plot.coordYWin2Logic(Math.max(pt1.y, pt2.y));
+                var yMax = win.plot.coordYWin2Logic(Math.min(pt1.y, pt2.y));
+
+                var dataX = win.getAspectProperty('xvalue').data;
+                var dataY = win.getAspectProperty('yvalue').data;
+                var dataPrimKey = win.getPrimKeyProperty().data;
+
+                var selList = [];
+                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                    if ((dataX[rowNr]>=xMin) && (dataX[rowNr]<=xMax) && (dataY[rowNr]>=yMin) && (dataY[rowNr]<=yMax))
+                        selList.push(dataPrimKey[rowNr]);
+                }
+                win.performRowSelected(selList);
+            };
+
 
 
             win.openPoint = function(rowNr) {

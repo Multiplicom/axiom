@@ -16,12 +16,12 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Controls/Controls",
+        "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Controls/Controls",
         "AXM/DataFrames/DataTypes"
     ],
     function (
         require, $, _,
-        AXMUtils, PopupWindow, Frame, PanelForm, Controls,
+        AXMUtils, PopupWindow, SimplePopups, Frame, PanelForm, Controls,
         DataTypes
     ) {
 
@@ -132,6 +132,74 @@ define([
                     });
                 };
 
+                win._createSelectionControls = function(grp) {
+                    win._ctrlSelectionCount = Controls.Static({text: '0 points selected'});
+                    grp.add(win._ctrlSelectionCount);
+
+                    var btSelPlot = Controls.Button({
+                        text: 'Create chart',
+                        icon: 'fa-area-chart'
+                    })
+                        .addNotificationHandler(function() {
+                            var subDataFrame = win.dataFrame.createSelectedRowsDataFrame();
+                            subDataFrame.promptPlot();
+                        });
+
+                    var btDownload = Controls.Button({
+                        text: 'Download',
+                        icon: 'fa-download'
+                    })
+                        .addNotificationHandler(function() {
+                            var subDataFrame = win.dataFrame.createSelectedRowsDataFrame();
+                            subDataFrame.showData();
+                        });
+
+                    grp.add(Controls.Compound.GroupHor({}, [ btSelPlot, btDownload]));
+
+                };
+
+
+                // Called when the user selected a set of rows in the dataframe
+                win.performRowSelected = function(selList) {
+                    var objectType = win.dataFrame.objectType;
+                    var actions = [
+                        {
+                            name: 'Add to selection',
+                            action: function() {
+                                $.each(selList, function(idx, rowId) {
+                                    objectType.rowSelSet(rowId, true);
+                                });
+                                objectType.rowSelNotifyChanged();
+                            }
+                        },
+                        {
+                            name: 'Replace selection',
+                            action: function() {
+                                objectType.rowSelClear();
+                                $.each(selList, function(idx, rowId) {
+                                    objectType.rowSelSet(rowId, true);
+                                });
+                                objectType.rowSelNotifyChanged();
+                            }
+                        },
+                    ]
+                    SimplePopups.ActionChoiceBox('Selected points', '', actions);
+                };
+
+                win.updateRowSelection = function() {
+                    var selCount = 0;
+
+                    var dataPrimKey = win.getPrimKeyProperty().data;
+                    var rowSelGet = win.dataFrame.objectType.rowSelGet;
+                    for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                        if (rowSelGet(dataPrimKey[rowNr]))
+                            selCount += 1;
+                    }
+
+                    win._ctrlSelectionCount.modifyText('{cnt} points selected'.AXMInterpolate({cnt: selCount}));
+                    win.plot.render();
+                };
+
                 win.init = function() {
 
                     var rootFrame = Frame.FrameSplitterHor();
@@ -152,6 +220,9 @@ define([
                         win._createDisplayControls(dispGroup);
                     }
 
+                    var selGroup = Controls.Compound.GroupVert({}).setSeparator(12);
+                    headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(selGroup), "Selection"));
+                    win._createSelectionControls(selGroup);
 
                     rootFrame.addMember(Frame.FrameFinal(win.plot));
 
@@ -160,6 +231,12 @@ define([
                     if (win.initPlot)
                         win.initPlot();
                     win.start();
+
+                    win.listen('DataFrameRowSelChanged', function(objectTypeId) {
+                        if (objectTypeId == win.dataFrame.objectType.typeId)
+                            win.updateRowSelection();
+                    });
+
                 };
 
                 return win;

@@ -270,7 +270,32 @@ define([
                     panel.renderScale();
                     panel.ThrottledFinishZoomPan();
                 }
-            }
+            };
+
+
+            panel._drawSelRect = function(firstPoint, secondPoint) {
+                var selCanvas = panel.getCanvasElement('selection');
+                var ctx = selCanvas.getContext("2d");
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+                ctx.scale(panel.ratio, panel.ratio);
+                //ctx.fillStyle="rgb(255,255,255)";
+                //ctx.fillRect(0, 0, panel._cnvWidth,panel._cnvHeight);
+                ctx.clearRect(0, 0, panel._cnvWidth,panel._cnvHeight);
+                ctx.fillStyle='rgba(255,0,0,0.1)';
+                ctx.strokeStyle='rgba(255,0,0,0.5)';
+                if (firstPoint && secondPoint) {
+                    ctx.beginPath();
+                    ctx.moveTo(firstPoint.x, firstPoint.y);
+                    ctx.lineTo(firstPoint.x, secondPoint.y);
+                    ctx.lineTo(secondPoint.x, secondPoint.y);
+                    ctx.lineTo(secondPoint.x, firstPoint.y);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            };
+
             
 
             panel._handleZoom = function(scaleFactor, px, py) {
@@ -295,39 +320,68 @@ define([
             };
 
 
-            panel._panningStart = function() {
-                panel._isPanning = false;
-                panel._panning_x0 = 0;
-                panel._panning_y0 = 0;
-                panel.origXScaler = Scaler(panel.xScaler);
-                panel.origYScaler = Scaler(panel.yScaler);
+            panel._panningStart = function(params) {
                 panel._hideToolTip();
+                panel._isRectSelecting = params.shiftPressed;
+                if (panel._isRectSelecting) {
+                    panel._rectSelectPoint1 = {
+                        x: panel.getEventPosX(params.event),
+                        y: panel.getEventPosY(params.event)
+                    };
+                }
+                panel._isPanning = !params.shiftPressed;
+                if (panel._isPanning) {
+                    panel._hasPanned = false;
+                    panel._panning_x0 = 0;
+                    panel._panning_y0 = 0;
+                    panel.origXScaler = Scaler(panel.xScaler);
+                    panel.origYScaler = Scaler(panel.yScaler);
+                }
             };
 
             panel._panningDo = function(dragInfo) {
-                if (Math.abs(dragInfo.diffTotalX)+Math.abs(dragInfo.diffTotalY)>10)
-                    panel._isPanning = true;
+                if (panel._isRectSelecting) {
+                    panel._rectSelectPoint2 = {
+                        x: panel.getEventPosX(dragInfo.event),
+                        y: panel.getEventPosY(dragInfo.event)
+                    };
+                    panel._drawSelRect(panel._rectSelectPoint1, panel._rectSelectPoint2);
+                }
                 if (panel._isPanning) {
-                    var imW = panel.drawSizeX - panel.scaleMarginX;
-                    var imH = panel.drawSizeY - panel.scaleMarginY;
-                    var newXScaler = Scaler(panel.xScaler);newXScaler.panFraction(-(dragInfo.diffTotalX-panel._panning_x0)/imW);
-                    var newYScaler = Scaler(panel.yScaler);newYScaler.panFraction((dragInfo.diffTotalY-panel._panning_y0)/imH);
-                    panel._panning_x0 = dragInfo.diffTotalX;
-                    panel._panning_y0 = dragInfo.diffTotalY;
-                    panel._setNewScalers(newXScaler, newYScaler);
+                    if (Math.abs(dragInfo.diffTotalX)+Math.abs(dragInfo.diffTotalY)>10)
+                        panel._hasPanned = true;
+                    if (panel._hasPanned) {
+                        var imW = panel.drawSizeX - panel.scaleMarginX;
+                        var imH = panel.drawSizeY - panel.scaleMarginY;
+                        var newXScaler = Scaler(panel.xScaler);newXScaler.panFraction(-(dragInfo.diffTotalX-panel._panning_x0)/imW);
+                        var newYScaler = Scaler(panel.yScaler);newYScaler.panFraction((dragInfo.diffTotalY-panel._panning_y0)/imH);
+                        panel._panning_x0 = dragInfo.diffTotalX;
+                        panel._panning_y0 = dragInfo.diffTotalY;
+                        panel._setNewScalers(newXScaler, newYScaler);
+                    }
                 }
             };
 
             panel._panningStop = function() {
-                if (panel._isPanning) {
+                if (panel._isRectSelecting) {
+                    panel._drawSelRect(null, null);
+                    if (panel.handleRectSelection)
+                        panel.handleRectSelection(panel._rectSelectPoint1, panel._rectSelectPoint2);
                     setTimeout(function() { // some delay to avoid the click handler to kick in
-                        panel._isPanning = false;
+                        panel._isRectSelecting = false;
+                    },100);
+                }
+                if (panel._hasPanned) {
+                    setTimeout(function() { // some delay to avoid the click handler to kick in
+                        panel._hasPanned = false;
                     },100);
                     panel.finishZoomPan();
                 }
             };
 
             panel._onMouseMove = function(ev) {
+                if (panel._isRectSelecting)
+                    return;
                 if (panel._isPanning)
                     return;
                 var px = panel.getEventPosX(ev);
@@ -348,7 +402,9 @@ define([
             };
 
             panel._onClick = function(ev) {
-                if (panel._isPanning)
+                if (panel._isRectSelecting)
+                    return;
+                if (panel._hasPanned)
                     return;
                 panel._hideToolTip();
                 panel.onMouseClick(ev, {

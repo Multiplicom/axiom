@@ -145,7 +145,12 @@ define([
                 positStartY = ev.pageY;
                 $(document).bind("mouseup."+handlerId, handleMouseUp);
                 $(document).bind("mousemove."+handlerId, handleMouseMove);
-                handlerStart({});
+                handlerStart({
+                    event: ev,
+                    shiftPressed:ev.shiftKey,
+                    controlPressed:ev.ctrlKey,
+                    altPressed:ev.altKey
+                });
                 ev.stopPropagation();
                 return false;
             };
@@ -162,6 +167,7 @@ define([
                 var positX = ev.pageX;
                 var positY = ev.pageY;
                 handlerMove({
+                    event: ev,
                     diffTotalX:positX-positStartX,
                     diffTotalY:positY-positStartY
                 });

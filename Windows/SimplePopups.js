@@ -152,8 +152,48 @@ define([
             win.setHandler_OnPressedEnter(win.close);
             win.setRootControl(Controls.Compound.StandardMargin(grp));
             win.start();
-
         };
+
+
+        Module.ActionChoiceBox = function(title, intro, actions, settings) {
+            if (!title)
+                title = "Action";
+            if (!intro)
+                intro = "";
+            if (!settings)
+                settings = {};
+
+            var win = Popupwin.create({
+                title: title,
+                blocking:true,
+                autoCenter: true
+            });
+
+            var grp = Controls.Compound.GroupVert({});
+            grp.add(Controls.Static({text: intro+'<p/>'}));
+
+            var buttons = [];
+            $.each(actions, function(idx, action) {
+                var bt = Controls.Button({
+                    text: action.name,
+//                    icon: settings.iconYes || 'fa-check'
+                })
+                    .addNotificationHandler(function() {
+                        win.close();
+                        action.action();
+                    });
+                buttons.push(bt);
+            });
+
+
+
+
+            grp.add(Controls.Compound.GroupHor({}, buttons) );
+
+            win.setRootControl(Controls.Compound.StandardMargin(grp));
+            win.start();
+        };
+
 
 
         Module.TextEditBox = function(value, header, title, settings, onOK, onCancel) {

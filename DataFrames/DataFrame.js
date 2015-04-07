@@ -15,12 +15,14 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_", "AXM/AXMUtils", "AXM/Color",
+        "require", "jquery", "_",  "blob", "filesaver",
+        "AXM/AXMUtils", "AXM/Color", "AXM/Msg", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Windows/PopupWindow", "AXM/Panels/PanelHtml",
         "AXM/DataFrames/DataTypes",
         "AXM/DataFrames/PromptPlot"
     ],
     function (
-        require, $, _, AXMUtils, Color,
+        require, $, _, Blob, FileSaver,
+        AXMUtils, Color, Msg, Controls, Frame, PopupWindow, PanelHtml,
         DataTypes,
         PromptPlot
     ) {
@@ -61,6 +63,11 @@ define([
             property._isCategorical = propType.isCategorical();
             if (property._isCategorical)
                 property._category2ColorMapper = AXMUtils.PersistentAssociator(Color.standardColors.length);
+
+            property.clone = function() {
+                var prop = Module.property(property._propId, property._propDispName, property._propType, {});
+                return prop;
+            };
 
             property.getId = function() {
                 return property._propId;
@@ -145,6 +152,8 @@ define([
             objectType._properties = [];
             objectType._mapProperties = {};
 
+            objectType._selectedRowIds = {};
+
             objectType.hasProperty = function(propId) {
                 return !!objectType._mapProperties[propId];
             };
@@ -171,6 +180,23 @@ define([
                 return objectType._defaultTooltip;
             };
 
+            objectType.rowSelClear = function() {
+                objectType._selectedRowIds = {};
+            };
+
+            objectType.rowSelSet = function(rowId, status) {
+                objectType._selectedRowIds[rowId] = status;
+            };
+
+            objectType.rowSelGet = function(rowId) {
+                return !!objectType._selectedRowIds[rowId];
+            };
+
+            objectType.rowSelNotifyChanged = function() {
+                Msg.broadcast('DataFrameRowSelChanged', objectType.typeId);
+            };
+
+
             Module._objectTypes[typeId] = objectType;
             return objectType;
         };
@@ -194,11 +220,12 @@ define([
                 if (!dataFrame.objectType.hasProperty(propId)) {
                     var propInfo = Module.property(propId, propDispName, propType, settings)
                     dataFrame.objectType.addProperty(propInfo);
-                    dataFrame._properties.push(propInfo);
-                    for (var i=0; i<dataFrame._rowCount; i++)
-                        propInfo.data.push(null);
-                    dataFrame._mapProperties[propId] = propInfo;
                 }
+                var propInfo = dataFrame.objectType.getProperty(propId).clone();
+                dataFrame._properties.push(propInfo);
+                for (var i=0; i<dataFrame._rowCount; i++)
+                    propInfo.data.push(null);
+                dataFrame._mapProperties[propId] = propInfo;
             };
 
             dataFrame.getProperties = function() {
@@ -221,6 +248,14 @@ define([
                 return dataFrame._rowCount;
             };
 
+            dataFrame.getRowInfo = function(rowNr) {
+                var rowInfo = {};
+                $.each(dataFrame._properties, function(idx, prop) {
+                    rowInfo[prop.getId()] = prop.data[rowNr];
+                });
+                return rowInfo;
+            };
+
             dataFrame.addRow = function(rowInfo) {
                 dataFrame._rowCount += 1;
                 $.each(dataFrame._properties, function(idx, prop) {
@@ -231,8 +266,69 @@ define([
                 });
             };
 
+            dataFrame.createSelectedRowsDataFrame = function() {
+                var subFrame = Module.createDataFrame(dataFrame.objectType.typeId);
+                $.each(dataFrame.getProperties(), function(idx, propInfo) {
+                    subFrame.addProperty(propInfo.getId());
+                });
+                var rowSelGet = dataFrame.objectType.rowSelGet;
+                var dataPrimKey = dataFrame.getPrimKeyProperty().data;
+                for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
+                    if (rowSelGet(dataPrimKey[rowNr])) {
+                        var rowInfo = dataFrame.getRowInfo(rowNr);
+                        subFrame.addRow(rowInfo);
+                    }
+                }
+
+                return subFrame;
+            };
+
+
+            dataFrame.getContentString = function() {
+                var str = '';
+                $.each(dataFrame.getProperties(), function(idx, propInfo) {
+                    if (idx>0)
+                    str += '\t';
+                    str += propInfo.getDispName();
+                });
+                str += '\n';
+                for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
+                    $.each(dataFrame.getProperties(), function(idx, propInfo) {
+                        if (idx>0)
+                            str += '\t';
+                        str += propInfo.content2DisplayString(propInfo.data[rowNr]);
+                    });
+                    str += '\n';
+                }
+                return str;
+            };
+
             dataFrame.promptPlot = function() {
                 PromptPlot.create(dataFrame);
+            };
+
+            dataFrame.showData = function() {
+                var win = PopupWindow.create({
+                    title: 'Data',
+                    sizeX: 650,
+                    sizeY: 500,
+                    autoCenter: true
+                });
+                var content = dataFrame.getContentString();
+                var form = PanelHtml.create();
+                form.enableVScrollBar();
+                form.setContent('<PRE>' + content + '</PRE>');
+                var rootFrame = Frame.FrameFinalCommands(form);
+                win.setRootFrame(rootFrame);
+
+                rootFrame.addCommand({
+                    icon: "fa-external-link"
+                }, function() {
+                    var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+                    FileSaver(blob,  'data.txt');
+                });
+
+                win.start();
             };
 
             return dataFrame;
