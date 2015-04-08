@@ -235,7 +235,6 @@ define([
             };
 
             win.openCategory = function(catInfo) {
-                var objectType = win.dataFrame.objectType;
                 var selList = [];
                 var dataCat = win.getAspectProperty('category').data;
                 var dataPrimKey = win.getPrimKeyProperty().data;
@@ -243,41 +242,11 @@ define([
                     if (dataCat[rowNr] == catInfo.catVal)
                         selList.push(dataPrimKey[rowNr]);
                 }
-                var dispText = '{propname}= {value}<br>({count} points)'.AXMInterpolate({
+                var dispText = '{propname}= {value}'.AXMInterpolate({
                     propname: win.getAspectProperty('category').getDispName(),
-                    value: catInfo.dispName,
-                    count: catInfo.count
+                    value: catInfo.dispName
                 });
                 win.performRowSelected(selList,dispText);
-                //var actions = [
-                //    {
-                //        name: 'Add to selection',
-                //        action: function() {
-                //            $.each(selList, function(idx, rowId) {
-                //                objectType.rowSelSet(rowId, true);
-                //            });
-                //            objectType.rowSelNotifyChanged();
-                //        }
-                //    },
-                //    {
-                //        name: 'Replace selection',
-                //        action: function() {
-                //            objectType.rowSelClear();
-                //            $.each(selList, function(idx, rowId) {
-                //                objectType.rowSelSet(rowId, true);
-                //            });
-                //            objectType.rowSelNotifyChanged();
-                //        }
-                //    },
-                //];
-                //SimplePopups.ActionChoiceBox(
-                //    'Bar graph',
-                //    '{propname}= {value}<br>({count} points)'.AXMInterpolate({
-                //        propname: win.getAspectProperty('category').getDispName(),
-                //        value: catInfo.dispName,
-                //        count: catInfo.count
-                //    }),
-                //    actions);
             };
 
 

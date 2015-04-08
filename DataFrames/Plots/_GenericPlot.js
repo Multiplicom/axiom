@@ -216,7 +216,11 @@ define([
                             }
                         }
                     ];
-                    SimplePopups.ActionChoiceBox('Selected points', dispText, actions);
+                    var introText = '{disptext}<br><b>{count} points</b>'.AXMInterpolate({
+                        disptext: dispText || '',
+                        count: selList.length
+                    })
+                    SimplePopups.ActionChoiceBox('Highlighted points', introText, actions);
                 };
 
                 win.updateRowSelection = function() {
