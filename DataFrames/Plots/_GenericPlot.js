@@ -205,6 +205,15 @@ define([
                                 });
                                 objectType.rowSelNotifyChanged();
                             }
+                        },
+                        {
+                            name: 'Exclude from selection',
+                            action: function() {
+                                $.each(selList, function(idx, rowId) {
+                                    objectType.rowSelSet(rowId, false);
+                                });
+                                objectType.rowSelNotifyChanged();
+                            }
                         }
                     ];
                     SimplePopups.ActionChoiceBox('Selected points', dispText, actions);
