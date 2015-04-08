@@ -26,8 +26,8 @@ define([
 
         var Module = {};
 
-        Module.create = function(id) {
-            var panel = PanelCanvasZoomPan.create(id);
+        Module.create = function(id, settings) {
+            var panel = PanelCanvasZoomPan.create(id, settings);
 
             panel.drawXScale = function(drawInfo) {
                 var ctx = drawInfo.ctx;

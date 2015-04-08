@@ -189,6 +189,16 @@ define([
                                 });
                                 objectType.rowSelNotifyChanged();
                             }
+                        },
+                        {
+                            name: 'Restrict selection',
+                            action: function() {
+                                objectType.rowSelClear();
+                                $.each(selList, function(idx, rowId) {
+                                    objectType.rowSelSet(rowId, true);
+                                });
+                                objectType.rowSelNotifyChanged();
+                            }
                         }
                     ];
                     SimplePopups.ActionChoiceBox('Selected points', dispText, actions);

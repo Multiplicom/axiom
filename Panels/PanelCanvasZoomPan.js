@@ -115,6 +115,8 @@ define([
             panel.scaleMarginX = 37;
             panel.scaleMarginY = settings.scaleMarginY || 37;
 
+            panel.selectXDirOnly = settings.selectXDirOnly || false;
+
             panel._dragActionPan = true;
             panel._canZoomX = true;
             panel._canZoomY = true;
@@ -292,10 +294,14 @@ define([
                 ctx.scale(panel.ratio, panel.ratio);
                 //ctx.fillStyle="rgb(255,255,255)";
                 //ctx.fillRect(0, 0, panel._cnvWidth,panel._cnvHeight);
-                ctx.clearRect(0, 0, panel._cnvWidth,panel._cnvHeight);
+                ctx.clearRect(0, 0, panel._cnvWidth, panel._cnvHeight);
                 ctx.fillStyle='rgba(255,0,0,0.1)';
                 ctx.strokeStyle='rgba(255,0,0,0.5)';
                 if (firstPoint && secondPoint) {
+                    if (panel.selectXDirOnly) {
+                        firstPoint.y = 0;
+                        secondPoint.y = panel._cnvHeight;
+                    }
                     ctx.beginPath();
                     ctx.moveTo(firstPoint.x, firstPoint.y);
                     ctx.lineTo(firstPoint.x, secondPoint.y);
