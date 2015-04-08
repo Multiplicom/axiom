@@ -75,7 +75,7 @@ define([
                     blocking:false,
                     autoCenter: true,
                     resizable: true,
-                    sizeX: 700,
+                    sizeX: 800,
                     sizeY: 500
                 });
 
@@ -142,6 +142,10 @@ define([
                     })
                         .addNotificationHandler(function() {
                             var subDataFrame = win.dataFrame.createSelectedRowsDataFrame();
+                            if (subDataFrame.getRowCount() == 0) {
+                                SimplePopups.ErrorBox('No points are selected');
+                                return;
+                            }
                             subDataFrame.promptPlot();
                         });
 
@@ -151,6 +155,10 @@ define([
                     })
                         .addNotificationHandler(function() {
                             var subDataFrame = win.dataFrame.createSelectedRowsDataFrame();
+                            if (subDataFrame.getRowCount() == 0) {
+                                SimplePopups.ErrorBox('No points are selected');
+                                return;
+                            }
                             subDataFrame.showData();
                         });
 
@@ -160,7 +168,7 @@ define([
 
 
                 // Called when the user selected a set of rows in the dataframe
-                win.performRowSelected = function(selList) {
+                win.performRowSelected = function(selList, dispText) {
                     var objectType = win.dataFrame.objectType;
                     var actions = [
                         {
@@ -181,9 +189,9 @@ define([
                                 });
                                 objectType.rowSelNotifyChanged();
                             }
-                        },
+                        }
                     ];
-                    SimplePopups.ActionChoiceBox('Selected points', '', actions);
+                    SimplePopups.ActionChoiceBox('Selected points', dispText, actions);
                 };
 
                 win.updateRowSelection = function() {
@@ -205,7 +213,7 @@ define([
                     var rootFrame = Frame.FrameSplitterHor();
 
                     var formHeader = PanelForm.create('intro', {scrollY: true});
-                    rootFrame.addMember(Frame.FrameFinal(formHeader)).setFixedDimSize(Frame.dimX, 200);
+                    rootFrame.addMember(Frame.FrameFinal(formHeader)).setFixedDimSize(Frame.dimX, 280);
 
                     var headerGroup = Controls.Compound.GroupVert({}).setSeparator(12);
                     formHeader.setRootControl(headerGroup);

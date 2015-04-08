@@ -35,7 +35,9 @@ define([
         PlotType.addPlotAspect('label', 'Label', DataTypes.typeAny, false);
         PlotType.addPlotAspect('tooltip', 'Hover text', DataTypes.typeAny, false);
 
+
         PlotType.create = function(dataFrame, aspectMap) {
+
             var win = PlotType.createGeneric(dataFrame, aspectMap);
 
             win.plot = PanelCanvasXYPlot.create('', {});
@@ -81,7 +83,6 @@ define([
                     content: propTooltip.content2DisplayString(propTooltip.data[bestRowNr]),
                     showPointer: true
                 }
-
             };
 
             win.plot.onMouseClick = function(ev, info) {

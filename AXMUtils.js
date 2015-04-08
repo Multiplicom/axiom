@@ -40,21 +40,40 @@ define([
 
         Module.isString = function(v) {
             return (typeof v == 'string');
-        }
+        };
 
         Module.isBoolean = function(v) {
             return (typeof v == 'boolean');
-        }
+        };
 
         Module.isNumber = function(v) {
             return (typeof v == 'number');
-        }
+        };
 
         Module.isFunction = function(v) {
             return (typeof v == 'function');
-        }
+        };
 
 
+        //Sort helpers
+        Module.ByProperty = function (prop) {
+            return function (a, b) {
+                if (typeof a[prop] == "number") {
+                    return (a[prop] - b[prop]);
+                } else {
+                    return ((a[prop] < b[prop]) ? -1 : ((a[prop] > b[prop]) ? 1 : 0));
+                }
+            };
+        };
+        Module.ByPropertyReverse = function (prop) {
+            return function (b, a) {
+                if (typeof a[prop] == "number") {
+                    return (a[prop] - b[prop]);
+                } else {
+                    return ((a[prop] < b[prop]) ? -1 : ((a[prop] > b[prop]) ? 1 : 0));
+                }
+            };
+        };
 
         String.prototype.AXMInterpolate = function (args) {
             var newStr = this;

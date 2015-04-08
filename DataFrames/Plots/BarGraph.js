@@ -16,14 +16,14 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Color", "AXM/Panels/PanelCanvasZoomPan", "AXM/Windows/SimplePopups",
+        "AXM/AXMUtils", "AXM/Controls/Controls", "AXM/Color", "AXM/Panels/PanelCanvasZoomPan", "AXM/Windows/SimplePopups",
         "AXM/DataFrames/Plots/_GenericPlot",
         "AXM/DataFrames/DataTypes"
 
     ],
     function (
         require, $, _,
-        AXMUtils, Color, PanelCanvasZoomPan, SimplePopups,
+        AXMUtils, Controls, Color, PanelCanvasZoomPan, SimplePopups,
         _GenericPlot,
         DataTypes
     ) {
@@ -38,6 +38,20 @@ define([
             win.plot = PanelCanvasZoomPan.create('', {scaleMarginY: 120});
             win.plot._directRedraw = true;
             win.plot.setZoomDirections(true, false);
+
+            win._createDisplayControls = function(dispGroup) {
+                win.ctrlSortType = Controls.DropList({}).addNotificationHandler(function() {
+                    win.parseData();
+                    win.plot.render();
+                });
+                win.ctrlSortType.addState('val', "Alphabetical");
+                win.ctrlSortType.addState('count', "Count");
+                dispGroup.add(Controls.Compound.GroupVert({}, [
+                    'Sort by:',
+                    win.ctrlSortType
+                ]));
+            };
+
 
             win.plot.drawXScale = function(drawInfo) {
                 var plot = win.plot;
@@ -77,6 +91,7 @@ define([
                 var scaleY = plot.getYScale();
                 var offsetY = plot.getYOffset();
                 plot.scaleX = scaleX; plot.offsetX = offsetX;
+                plot.scaleY = scaleY; plot.offsetY = offsetY;
                 drawInfo.scaleX = scaleX; drawInfo.offsetX = offsetX;
                 drawInfo.scaleY = scaleY; drawInfo.offsetY = offsetY;
 
@@ -119,7 +134,7 @@ define([
                     ctx.fill();
                     ctx.stroke();
 
-                    var selCount = catSelMap[category.name].count;
+                    var selCount = catSelMap[category.catVal].count;
                     if (selCount > 0) {
                         var y2s = yL2S(selCount*1.0/win._maxCount);
                         ctx.fillStyle=Color.Color(1,0.0,0,0.5).toStringCanvas();
@@ -156,7 +171,7 @@ define([
                     var val = dataCat[rowNr];
                     if (!catMap[val]) {
                         catMap[val] = {
-                            name: val,
+                            catVal: val,
                             dispName: propCat.content2DisplayString(val),
                             count: 0
                         }
@@ -170,22 +185,53 @@ define([
                     win._maxCount = Math.max(win._maxCount, cat.count);
                 });
 
+                if (win.ctrlSortType.getValue() != 'count')
+                    win._categories.sort(AXMUtils.ByProperty('dispName'));
+                else
+                    win._categories.sort(AXMUtils.ByPropertyReverse('count'));
+
                 win.plot.setXRange(0, Math.max(500, win._categories.length*win.catSizeX));
                 win.plot.setYRange(0, 1.2);
             };
 
 
-            win.plot.onMouseClick = function(ev, info) {
+            win.plot.getCategoryOnPoint = function(px, py) {
                 var xL2S = function(vlx) {
                     return vlx *win.plot.scaleX + win.plot.offsetX;
                 };
-
+                var yL2S = function(vly) {
+                    return vly *win.plot.scaleY + win.plot.offsetY;
+                };
+                var theCat = null;
                 $.each(win._categories, function(idx, category) {
                     var x1 = xL2S((idx+0) * win.catSizeX);
                     var x2 = xL2S((idx+1) * win.catSizeX);
-                    if ((info.x>=x1) && (info.x<x2))
-                        win.openCategory(category);
+                    var y1 = yL2S(0.0);
+                    var y2 = yL2S(category.count*1.0/win._maxCount);
+                    if ((px>=x1) && (px<x2) && (py<=y1) && (py>=y2-5))
+                        theCat = category;
                 });
+                return theCat;
+            };
+
+            win.plot.getToolTipInfo = function (px, py) {
+                var category = win.plot.getCategoryOnPoint(px, py);
+                if (!category)
+                    return null;
+                return {
+                    px: px,
+                    py: py,
+                    ID: category.catVal,
+                    content: category.dispName,
+                    showPointer: true
+                }
+            };
+
+
+            win.plot.onMouseClick = function(ev, info) {
+                var category = win.plot.getCategoryOnPoint(info.x, info.y);
+                if (category)
+                    win.openCategory(category);
             };
 
             win.openCategory = function(catInfo) {
@@ -194,39 +240,45 @@ define([
                 var dataCat = win.getAspectProperty('category').data;
                 var dataPrimKey = win.getPrimKeyProperty().data;
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
-                    if (dataCat[rowNr] == catInfo.name)
+                    if (dataCat[rowNr] == catInfo.catVal)
                         selList.push(dataPrimKey[rowNr]);
                 }
-                var actions = [
-                    {
-                        name: 'Add to selection',
-                        action: function() {
-                            $.each(selList, function(idx, rowId) {
-                                objectType.rowSelSet(rowId, true);
-                            });
-                            objectType.rowSelNotifyChanged();
-                        }
-                    },
-                    {
-                        name: 'Replace selection',
-                        action: function() {
-                            objectType.rowSelClear();
-                            $.each(selList, function(idx, rowId) {
-                                objectType.rowSelSet(rowId, true);
-                            });
-                            objectType.rowSelNotifyChanged();
-                        }
-                    },
-                ];
-                SimplePopups.ActionChoiceBox(
-                    'Bar graph',
-                    '{propname}= {value}<br>({count} points)'.AXMInterpolate({
-                        propname: win.getAspectProperty('category').getDispName(),
-                        value: catInfo.dispName,
-                        count: catInfo.count
-                    }),
-                    actions);
-            }
+                var dispText = '{propname}= {value}<br>({count} points)'.AXMInterpolate({
+                    propname: win.getAspectProperty('category').getDispName(),
+                    value: catInfo.dispName,
+                    count: catInfo.count
+                });
+                win.performRowSelected(selList,dispText);
+                //var actions = [
+                //    {
+                //        name: 'Add to selection',
+                //        action: function() {
+                //            $.each(selList, function(idx, rowId) {
+                //                objectType.rowSelSet(rowId, true);
+                //            });
+                //            objectType.rowSelNotifyChanged();
+                //        }
+                //    },
+                //    {
+                //        name: 'Replace selection',
+                //        action: function() {
+                //            objectType.rowSelClear();
+                //            $.each(selList, function(idx, rowId) {
+                //                objectType.rowSelSet(rowId, true);
+                //            });
+                //            objectType.rowSelNotifyChanged();
+                //        }
+                //    },
+                //];
+                //SimplePopups.ActionChoiceBox(
+                //    'Bar graph',
+                //    '{propname}= {value}<br>({count} points)'.AXMInterpolate({
+                //        propname: win.getAspectProperty('category').getDispName(),
+                //        value: catInfo.dispName,
+                //        count: catInfo.count
+                //    }),
+                //    actions);
+            };
 
 
             win.initPlot = function() {

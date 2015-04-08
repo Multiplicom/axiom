@@ -390,12 +390,16 @@ define([
                         panel._isRectSelecting = false;
                     },100);
                 }
-                if (panel._hasPanned) {
-                    setTimeout(function() { // some delay to avoid the click handler to kick in
-                        panel._hasPanned = false;
-                    },100);
-                    panel.finishZoomPan();
+                if (panel._isPanning) {
+                    panel._isPanning = false;
+                    if (panel._hasPanned) {
+                        setTimeout(function() { // some delay to avoid the click handler to kick in
+                            panel._hasPanned = false;
+                        },100);
+                        panel.finishZoomPan();
+                    }
                 }
+
             };
 
             panel._onMouseMove = function(ev) {
