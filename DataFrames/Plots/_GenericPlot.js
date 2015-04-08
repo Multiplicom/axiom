@@ -193,9 +193,15 @@ define([
                         {
                             name: 'Restrict selection',
                             action: function() {
+                                var currentSelectedList = objectType.rowSelGetList();
+                                var currentSelectedMap = {};
+                                $.each(currentSelectedList, function(idx, id) {
+                                    currentSelectedMap[id] = true;
+                                });
                                 objectType.rowSelClear();
                                 $.each(selList, function(idx, rowId) {
-                                    objectType.rowSelSet(rowId, true);
+                                    if (currentSelectedMap[rowId])
+                                        objectType.rowSelSet(rowId, true);
                                 });
                                 objectType.rowSelNotifyChanged();
                             }

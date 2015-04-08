@@ -177,6 +177,14 @@ define([
                 return !!objectType._selectedRowIds[rowId];
             };
 
+            objectType.rowSelGetList = function() {
+                var lst = [];
+                $.each(objectType._selectedRowIds, function(key, val) {
+                    lst.push(key);
+                });
+                return lst;
+            };
+
             objectType.rowSelNotifyChanged = function() {
                 Msg.broadcast('DataFrameRowSelChanged', objectType.typeId);
             };
