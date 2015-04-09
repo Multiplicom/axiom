@@ -44,10 +44,16 @@ define([
             win.plot._directRedraw = true; //!!!
             win._opacity = 0.40;
 
+            win._curves = [];
 
             win._createDisplayControls = function(dispGroup) {
                 win.colorLegendCtrl = Controls.Static({});
                 dispGroup.add(win.colorLegendCtrl);
+                var btLine = Controls.Button({
+                    text: 'Add curve',
+                    icon: 'fa-line-chart'
+                }).addNotificationHandler(win.addCurve);
+                dispGroup.add(btLine);
             };
 
             win.plot.getToolTipInfo = function (px, py) {
@@ -97,11 +103,13 @@ define([
                     var rangeX = win.getAspectProperty('xvalue').getValueRange();
                     rangeX.extendFraction(0.1);
                     win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
+                    win._curves = [];
                 }
                 if (aspectId == 'yvalue') {
                     var rangeY = win.getAspectProperty('yvalue').getValueRange();
                     rangeY.extendFraction(0.1);
                     win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
+                    win._curves = [];
                 }
                 if (aspectId == 'color')
                     win.updateColorLegend();
@@ -128,6 +136,7 @@ define([
 
             win.plot.drawPlot = function(drawInfo) {
                 var plot = win.plot;
+                var ctx = drawInfo.ctx;
 
                 var propX = win.getAspectProperty('xvalue');
                 var propY = win.getAspectProperty('yvalue');
@@ -164,6 +173,39 @@ define([
                     }
                     plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr]);
                 }
+
+                ctx.strokeStyle = Color.Color(255,0,0,0.5).toStringCanvas();
+                ctx.lineWidth=2;
+                var plotLimitXMin = plot.xScaler.getMinVisibleRange();
+                var plotLimitXMax = plot.xScaler.getMaxVisibleRange();
+                var plotLimitYMin = plot.yScaler.getMinVisibleRange();
+                var plotLimitYMax = plot.yScaler.getMaxVisibleRange();
+                var x=0, y=0, px=0, py=0;
+                $.each(win._curves, function(idx, expr) {
+                    ctx.beginPath();
+                    for (var ptNr = 0; ptNr<=200; ptNr++) {
+                        var match = false;
+                        if (expr.indexOf('y=')==0) {
+                            x = plotLimitXMin + ptNr*1.0/200 * (plotLimitXMax-plotLimitXMin);
+                            y = eval(expr.substring(2));
+                            match = true;
+                        }
+                        if (expr.indexOf('x=')==0) {
+                            y = plotLimitYMin + ptNr*1.0/200 * (plotLimitYMax-plotLimitYMin);
+                            x = eval(expr.substring(2));
+                            match = true;
+                        }
+                        if (match) {
+                            px = plot.coordXLogic2Win(x);
+                            py = plot.coordYLogic2Win(y);
+                            if (ptNr==0)
+                                ctx.moveTo(px, py);
+                            else
+                                ctx.lineTo(px, py);
+                        }
+                    }
+                    ctx.stroke();
+                });
             };
 
             win.plot.handleRectSelection = function(pt1, pt2) {
@@ -202,6 +244,14 @@ define([
 
                 win.setRootControl(Controls.Compound.StandardMargin(grp));
                 win.start();
+            };
+
+
+            win.addCurve = function() {
+                SimplePopups.TextEditBox('', 'Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")', 'Add curve', {}, function(expr) {
+                    win._curves.push(expr);
+                    win.plot.render();
+                });
             };
 
 
