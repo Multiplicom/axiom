@@ -28,7 +28,8 @@ define([
         Module.typeGeneric = function(id) {
             return {
                 id: id,
-                isCategorical: function() {return false; }
+                isCategorical: function() {return false; },
+                parseString: function(str) {return str; }
             };
         };
 
@@ -45,12 +46,16 @@ define([
             return otherType.id == 'typeBoolean';
         };
         Module.typeBoolean.isCategorical = function() {return true; };
+        Module.typeBoolean.parseString = function(str) {
+            return str.toLowerCase() === 'true';
+        };
 
 
         Module.typeFloat = Module.typeGeneric('typeFloat');
         Module.typeFloat.includes = function(otherType) {
             return otherType.id == 'typeFloat';
         };
+        Module.typeFloat.parseString = function(str) {return parseFloat(str); };
 
 
         Module.typeAny = Module.typeGeneric('typeAny');

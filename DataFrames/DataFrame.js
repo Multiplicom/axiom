@@ -81,6 +81,15 @@ define([
                 return property._propType
             };
 
+            property.addValue = function(str) {
+                if (!str)
+                    property.data.push(null);
+                else {
+                    var dataType = property.getDataType();
+                    property.data.push(dataType.parseString(str));
+                }
+            };
+
             property.getValueRange = function() {
                 if (!property.getDataType().includes(DataTypes.typeFloat))
                     AXMUtils.Test.reportBug('Property is not numerical');
@@ -260,9 +269,10 @@ define([
                 dataFrame._rowCount += 1;
                 $.each(dataFrame._properties, function(idx, prop) {
                     var cell = rowInfo[prop.getId()];
-                    if (!cell)
-                        cell = null;
-                    prop.data.push(cell)
+                    prop.addValue(cell);
+                    //if (!cell)
+                    //    cell = null;
+                    //prop.data.push(cell)
                 });
             };
 
