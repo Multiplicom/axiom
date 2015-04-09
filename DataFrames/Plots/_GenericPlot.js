@@ -189,9 +189,38 @@ define([
                                 });
                                 objectType.rowSelNotifyChanged();
                             }
+                        },
+                        {
+                            name: 'Restrict selection',
+                            action: function() {
+                                var currentSelectedList = objectType.rowSelGetList();
+                                var currentSelectedMap = {};
+                                $.each(currentSelectedList, function(idx, id) {
+                                    currentSelectedMap[id] = true;
+                                });
+                                objectType.rowSelClear();
+                                $.each(selList, function(idx, rowId) {
+                                    if (currentSelectedMap[rowId])
+                                        objectType.rowSelSet(rowId, true);
+                                });
+                                objectType.rowSelNotifyChanged();
+                            }
+                        },
+                        {
+                            name: 'Exclude from selection',
+                            action: function() {
+                                $.each(selList, function(idx, rowId) {
+                                    objectType.rowSelSet(rowId, false);
+                                });
+                                objectType.rowSelNotifyChanged();
+                            }
                         }
                     ];
-                    SimplePopups.ActionChoiceBox('Selected points', dispText, actions);
+                    var introText = '{disptext}<br><b>{count} points</b>'.AXMInterpolate({
+                        disptext: dispText || '',
+                        count: selList.length
+                    })
+                    SimplePopups.ActionChoiceBox('Highlighted points', introText, actions);
                 };
 
                 win.updateRowSelection = function() {

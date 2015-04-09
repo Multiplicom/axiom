@@ -55,6 +55,21 @@ define([
         };
 
 
+        Module.valueRange = function(minValue, maxValue) {
+            var range = Module.object('@ValueRange');
+            range._minValue = minValue;
+            range._maxValue = maxValue;
+            range.getMin = function() { return range._minValue; };
+            range.getMax = function() { return range._maxValue; };
+            range.extendFraction = function(fr) {
+                var ext = (range._maxValue - range._minValue) * fr/2;
+                range._minValue -= ext;
+                range._maxValue += ext;
+            };
+            return range;
+        };
+
+
         //Sort helpers
         Module.ByProperty = function (prop) {
             return function (a, b) {

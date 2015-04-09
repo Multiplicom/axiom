@@ -107,7 +107,7 @@ define([
 
                 //count current selection
                 var catSelMap = {};
-                var rowSelGet = win.dataFrame.objectType.rowSelGet
+                var rowSelGet = win.dataFrame.objectType.rowSelGet;
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
                     var cat = dataCat[rowNr];;
                     if (!catSelMap[cat])
@@ -124,10 +124,10 @@ define([
                 ctx.strokeStyle =  Color.Color(0,0,0).toStringCanvas();
 
                 $.each(win._categories, function(idx, category) {
-                    var x1 = xL2S((idx+0) * win.catSizeX);
-                    var x2 = xL2S((idx+1) * win.catSizeX);
-                    var y1 = yL2S(0.0);
-                    var y2 = yL2S(category.count*1.0/win._maxCount);
+                    var x1 = Math.round(xL2S((idx+0) * win.catSizeX))+0.5;
+                    var x2 = Math.round(xL2S((idx+1) * win.catSizeX))+0.5;
+                    var y1 = Math.round(yL2S(0.0))-0.5;
+                    var y2 = Math.round(yL2S(category.count*1.0/win._maxCount))+0.5;
                     ctx.fillStyle=Color.Color(0.85,0.9,0.95).toStringCanvas();
                     ctx.beginPath();
                     ctx.rect(x1, y1, x2-x1, y2-y1);
@@ -139,7 +139,7 @@ define([
                         var y2s = yL2S(selCount*1.0/win._maxCount);
                         ctx.fillStyle=Color.Color(1,0.0,0,0.5).toStringCanvas();
                         ctx.beginPath();
-                        ctx.rect(x1+1, y1, (x2-x1)/2, y2s-y1);
+                        ctx.rect(x1+1, y1, x2-x1, y2s-y1);
                         ctx.fill();
                     }
 
@@ -235,7 +235,6 @@ define([
             };
 
             win.openCategory = function(catInfo) {
-                var objectType = win.dataFrame.objectType;
                 var selList = [];
                 var dataCat = win.getAspectProperty('category').data;
                 var dataPrimKey = win.getPrimKeyProperty().data;
@@ -243,41 +242,11 @@ define([
                     if (dataCat[rowNr] == catInfo.catVal)
                         selList.push(dataPrimKey[rowNr]);
                 }
-                var dispText = '{propname}= {value}<br>({count} points)'.AXMInterpolate({
+                var dispText = '{propname}= {value}'.AXMInterpolate({
                     propname: win.getAspectProperty('category').getDispName(),
-                    value: catInfo.dispName,
-                    count: catInfo.count
+                    value: catInfo.dispName
                 });
                 win.performRowSelected(selList,dispText);
-                //var actions = [
-                //    {
-                //        name: 'Add to selection',
-                //        action: function() {
-                //            $.each(selList, function(idx, rowId) {
-                //                objectType.rowSelSet(rowId, true);
-                //            });
-                //            objectType.rowSelNotifyChanged();
-                //        }
-                //    },
-                //    {
-                //        name: 'Replace selection',
-                //        action: function() {
-                //            objectType.rowSelClear();
-                //            $.each(selList, function(idx, rowId) {
-                //                objectType.rowSelSet(rowId, true);
-                //            });
-                //            objectType.rowSelNotifyChanged();
-                //        }
-                //    },
-                //];
-                //SimplePopups.ActionChoiceBox(
-                //    'Bar graph',
-                //    '{propname}= {value}<br>({count} points)'.AXMInterpolate({
-                //        propname: win.getAspectProperty('category').getDispName(),
-                //        value: catInfo.dispName,
-                //        count: catInfo.count
-                //    }),
-                //    actions);
             };
 
 

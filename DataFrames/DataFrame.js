@@ -35,21 +35,6 @@ define([
 
 
 
-        Module.valueRange = function(minValue, maxValue) {
-            var range = AXMUtils.object('@ValueRange');
-            range._minValue = minValue;
-            range._maxValue = maxValue;
-            range.getMin = function() { return range._minValue; };
-            range.getMax = function() { return range._maxValue; };
-            range.extendFraction = function(fr) {
-                var ext = (range._maxValue - range._minValue) * fr/2;
-                range._minValue -= ext;
-                range._maxValue += ext;
-            };
-            return range;
-        };
-
-
 
 
         Module.property = function(propId, propDispName, propType, settings) {
@@ -103,7 +88,7 @@ define([
                         if (val>maxValue) maxValue = val;
                     }
                 }
-                return Module.valueRange(minValue, maxValue);
+                return AXMUtils.valueRange(minValue, maxValue);
             };
 
             // Returns a color legend
@@ -199,6 +184,14 @@ define([
 
             objectType.rowSelGet = function(rowId) {
                 return !!objectType._selectedRowIds[rowId];
+            };
+
+            objectType.rowSelGetList = function() {
+                var lst = [];
+                $.each(objectType._selectedRowIds, function(key, val) {
+                    lst.push(key);
+                });
+                return lst;
             };
 
             objectType.rowSelNotifyChanged = function() {
