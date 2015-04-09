@@ -66,14 +66,14 @@ define([
                 return property._propType
             };
 
-            property.addValue = function(str) {
-                if (!str)
-                    property.data.push(null);
-                else {
-                    var dataType = property.getDataType();
-                    property.data.push(dataType.parseString(str));
-                }
-            };
+            //property.addValue = function(str) {
+            //    if (!str)
+            //        property.data.push(null);
+            //    else {
+            //        var dataType = property.getDataType();
+            //        property.data.push(dataType.parseString(str));
+            //    }
+            //};
 
             property.getValueRange = function() {
                 if (!property.getDataType().includes(DataTypes.typeFloat))
@@ -262,10 +262,9 @@ define([
                 dataFrame._rowCount += 1;
                 $.each(dataFrame._properties, function(idx, prop) {
                     var cell = rowInfo[prop.getId()];
-                    prop.addValue(cell);
-                    //if (!cell)
-                    //    cell = null;
-                    //prop.data.push(cell)
+                    if (!cell)
+                        cell = null;
+                    prop.data.push(cell)
                 });
             };
 
