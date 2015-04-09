@@ -71,7 +71,7 @@ define([
             //##############  Create in instance of a plot window ##########################
             plotType.createGeneric = function(dataFrame, aspectMap) {
                 var win = PopupWindow.create({
-                    title: plotType.getPlotTypeName(),
+                    title: '{name} ({plotname})'.AXMInterpolate({name: dataFrame.getName(), plotname: plotType.getPlotTypeName()}),
                     blocking:false,
                     autoCenter: true,
                     resizable: true,
