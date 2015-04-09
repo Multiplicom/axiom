@@ -141,7 +141,7 @@ define([
                     var dataColor = propColor.data;
                 }
 
-                drawInfo.ctx.fillStyle = Color.Color(0,0,0,0.4).toStringCanvas();
+                drawInfo.ctx.fillStyle = Color.Color(0,0,0,0.6).toStringCanvas();
                 if (win.hasAspectProperty('label')) {
                     var propLabel = win.getAspectProperty('label');
                     var dataLabel = propLabel.data;
