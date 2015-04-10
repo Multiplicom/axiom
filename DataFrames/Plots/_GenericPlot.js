@@ -17,12 +17,12 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelHtml", "AXM/Controls/Controls",
-        "AXM/DataFrames/DataTypes"
+        "AXM/DataFrames/DataTypes", "AXM/DataFrames/Query"
     ],
     function (
         require, $, _,
         AXMUtils, PopupWindow, SimplePopups, Frame, PanelForm, PanelHtml, Controls,
-        DataTypes
+        DataTypes, FrameQuery
     ) {
 
         var Module = {};
@@ -136,6 +136,12 @@ define([
                     win._ctrlSelectionCount = Controls.Static({text: '0 points selected'});
                     grp.add(win._ctrlSelectionCount);
 
+                    var btQuery = Controls.Button({
+                        text: 'Query...',
+                        icon: 'fa-filter'
+                    })
+                        .addNotificationHandler(win.doQuery);
+
                     var btSelPlot = Controls.Button({
                         text: 'Create chart',
                         icon: 'fa-area-chart'
@@ -162,7 +168,7 @@ define([
                             subDataFrame.showData();
                         });
 
-                    grp.add(Controls.Compound.GroupHor({}, [ btSelPlot, btDownload]));
+                    grp.add(Controls.Compound.GroupHor({}, [ btQuery, btSelPlot, btDownload]));
 
                 };
 
@@ -250,6 +256,13 @@ define([
                 win.setInfoText = function(content) {
                     win._formInfoText.setContent(content);
                     win._rightGroup.updatePosition();
+                };
+
+
+                win.doQuery = function() {
+                    FrameQuery.create(win.dataFrame, '', function(selList, expr) {
+                        win.performRowSelected(selList, expr);
+                    });
                 };
 
                 win.init = function() {

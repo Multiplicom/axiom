@@ -18,14 +18,14 @@ define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Color", "AXM/Panels/PanelCanvasXYPlot", "AXM/Windows/PopupWindow", "AXM/Controls/Controls", "AXM/Windows/SimplePopups",
         "AXM/DataFrames/Plots/_GenericPlot",
-        "AXM/DataFrames/DataTypes"
+        "AXM/DataFrames/DataTypes", "AXM/DataFrames/ViewRow"
 
     ],
     function (
         require, $, _,
         AXMUtils, Color, PanelCanvasXYPlot, PopupWindow, Controls, SimplePopups,
         _GenericPlot,
-        DataTypes
+        DataTypes, ViewRow
     ) {
 
         var PlotType = _GenericPlot.createPlotType('scatterplot', 'Scatter plot');
@@ -280,21 +280,7 @@ define([
 
 
             win.openPoint = function(rowNr) {
-                var win = PopupWindow.create({
-                    title: 'Data point',
-                    blocking:true,
-                    autoCenter: true
-                });
-
-                var grp = Controls.Compound.Grid({});
-
-                $.each(dataFrame.getProperties(), function(idx, property) {
-                    grp.setItem(idx, 0, property.getDispName());
-                    grp.setItem(idx, 1, property.content2DisplayString(property.data[rowNr]));
-                });
-
-                win.setRootControl(Controls.Compound.StandardMargin(grp));
-                win.start();
+                ViewRow.create(win.dataFrame, win.getPrimKeyProperty().data[rowNr], win);
             };
 
 

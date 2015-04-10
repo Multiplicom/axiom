@@ -28,6 +28,7 @@ define([
         Module.typeGeneric = function(id) {
             return {
                 id: id,
+                isString: function() {return false; },
                 isCategorical: function() {return false; },
                 parseString: function(str) {return str; }
             };
@@ -38,6 +39,7 @@ define([
         Module.typeString.includes = function(otherType) {
             return otherType.id == 'typeString';
         };
+        Module.typeString.isString = function() {return true; };
         Module.typeString.isCategorical = function() {return true; };
 
 
