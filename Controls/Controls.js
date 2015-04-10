@@ -271,7 +271,7 @@ define([
             control._width = settings.width || 120;
             control._height = settings.height || 45;
             //control._buttonClass = settings.buttonClass || 'AXMCheck';
-            control._value = false;
+            control._value = settings.checked || false;
 
             control.createHtml = function() {
 

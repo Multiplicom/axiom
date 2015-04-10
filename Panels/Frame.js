@@ -189,6 +189,21 @@ define([
                 frame.$ElContainer = $('#' + frame._id);
             };
 
+            frame.updatePosition = function() {
+                var _digest = function(vl) {
+                    if (vl.indexOf('px', vl.length - 2) >= 0)
+                        return parseInt(vl.substring(0,vl.length-2));
+                    else
+                        return parseInt(vl);
+                };
+                var x0 = _digest(frame.$ElContainer.css('left'));
+                var y0 = _digest(frame.$ElContainer.css('top'));
+                var xl = _digest(frame.$ElContainer.css('width'));
+                var yl = _digest(frame.$ElContainer.css('height'));
+                frame.setPosition(x0, y0, xl, yl, {});
+
+            };
+
             frame.setPosition = function(x0, y0, xl, yl, params) {
                 AXMUtils.Test.checkIsNumber(x0, y0, xl, yl);
                 frame.$ElContainer.css('left', x0 + 'px');

@@ -51,21 +51,32 @@ define([
                     'fa-crosshairs',
                     'Lasso selection',
                     function() {
-                        win.plot.toggleLassoSelection(win._hasLassoSelected);
-                        win.button_lassoSelection.setChecked(win.plot.isLassoSelecting());
+                        win.plot.doLassoSelection(win._hasLassoSelected);
+                        win.button_lassoSelection.setChecked(true);
+                        win.setInfoText('<div style="width:100%;padding:2px;background-color: yellow;font-weight: bold">Double click to complete the lasso selection</div>');
                     }
                 );
             };
 
 
             win._createDisplayControls = function(dispGroup) {
+
+                var opacityCheck = Controls.Check({text: 'Semi-transparent points', checked: true})
+                    .addNotificationHandler(function() {
+                        win._opacity = opacityCheck.getValue() ? 0.4 : 1;
+                        win.plot.render();
+                    });
+                dispGroup.add(opacityCheck);
+
                 win.colorLegendCtrl = Controls.Static({});
                 dispGroup.add(win.colorLegendCtrl);
+
                 var btLine = Controls.Button({
                     text: 'Add curve',
                     icon: 'fa-line-chart'
                 }).addNotificationHandler(win.addCurve);
                 dispGroup.add(btLine);
+
             };
 
             win.plot.getToolTipInfo = function (px, py) {
@@ -148,6 +159,7 @@ define([
 
             win._hasLassoSelected = function(points) {
                 win.button_lassoSelection.setChecked(false);
+                win.setInfoText('');
 
                 function isPointInPoly(poly, pt) {
                     for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
@@ -198,19 +210,19 @@ define([
                     }
                 }
 
-                var rowSelGet = win.dataFrame.objectType.rowSelGet
-                drawInfo.ctx.strokeStyle = Color.Color(255,0,0,0.5).toStringCanvas();
-                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
-                    if (rowSelGet(dataPrimKey[rowNr]))
-                        plot.drawSel(drawInfo, dataX[rowNr], dataY[rowNr]);
-                }
-
                 drawInfo.ctx.fillStyle = Color.Color(0,0,255,win._opacity).toStringCanvas();
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
                     if (propColor) {
                         drawInfo.ctx.fillStyle = propColor.getSingleColor(dataColor[rowNr]).changeOpacity(win._opacity).toStringCanvas();
                     }
                     plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr]);
+                }
+
+                var rowSelGet = win.dataFrame.objectType.rowSelGet;
+                drawInfo.ctx.strokeStyle = Color.Color(255,0,0,0.5).toStringCanvas();
+                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                    if (rowSelGet(dataPrimKey[rowNr]))
+                        plot.drawSel(drawInfo, dataX[rowNr], dataY[rowNr]);
                 }
 
                 ctx.strokeStyle = Color.Color(255,0,0,0.5).toStringCanvas();

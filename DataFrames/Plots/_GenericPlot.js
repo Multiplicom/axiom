@@ -16,12 +16,12 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Controls/Controls",
+        "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelHtml", "AXM/Controls/Controls",
         "AXM/DataFrames/DataTypes"
     ],
     function (
         require, $, _,
-        AXMUtils, PopupWindow, SimplePopups, Frame, PanelForm, Controls,
+        AXMUtils, PopupWindow, SimplePopups, Frame, PanelForm, PanelHtml, Controls,
         DataTypes
     ) {
 
@@ -247,6 +247,11 @@ define([
                     return bt;
                 };
 
+                win.setInfoText = function(content) {
+                    win._formInfoText.setContent(content);
+                    win._rightGroup.updatePosition();
+                };
+
                 win.init = function() {
 
                     var rootFrame = Frame.FrameSplitterHor();
@@ -271,10 +276,17 @@ define([
                     headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(selGroup), "Selection"));
                     win._createSelectionControls(selGroup);
 
+                    var rightGroup = Frame.FrameSplitterVert().setHalfSplitterSize(0);
+                    win._rightGroup = rightGroup;
+                    rootFrame.addMember(rightGroup);
+
                     if (!win.plot)
                         AXMUtils.Test.reportBug('Plot panel is not defined');
                     win.plotFrame = Frame.FrameFinalCommands(win.plot);
-                    rootFrame.addMember(win.plotFrame);
+                    rightGroup.addMember(win.plotFrame);
+
+                    win._formInfoText = PanelHtml.create('', {});
+                    rightGroup.addMember(Frame.FrameFinal(win._formInfoText).setAutoSize(Frame.dimY));
 
                     if (win.setPlotCommands)
                         win.setPlotCommands();

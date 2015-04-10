@@ -452,8 +452,10 @@ define([
                 return panel._lassoSelecting;
             };
 
-            panel.toggleLassoSelection = function(onCompleted) {
-                panel._lassoSelecting = !panel._lassoSelecting;
+            panel.doLassoSelection = function(onCompleted) {
+                if (panel._lassoSelecting)
+                    return;
+                panel._lassoSelecting = true;
 
                 var selPts = [];
                 var clickLayer$El = panel.getCanvas$El('selection');

@@ -16,13 +16,13 @@
 
 define([
         "require", "jquery", "_",  "blob", "filesaver",
-        "AXM/AXMUtils", "AXM/Color", "AXM/Msg", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Windows/PopupWindow", "AXM/Panels/PanelHtml",
+        "AXM/AXMUtils", "AXM/Color", "AXM/DrawUtils", "AXM/Msg", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Windows/PopupWindow", "AXM/Panels/PanelHtml",
         "AXM/DataFrames/DataTypes",
         "AXM/DataFrames/PromptPlot"
     ],
     function (
         require, $, _, Blob, FileSaver,
-        AXMUtils, Color, Msg, Controls, Frame, PopupWindow, PanelHtml,
+        AXMUtils, Color, DrawUtils, Msg, Controls, Frame, PopupWindow, PanelHtml,
         DataTypes,
         PromptPlot
     ) {
@@ -104,6 +104,25 @@ define([
                         });
                     });
                 }
+                if (DataTypes.typeFloat.includes(property.getDataType())) {
+                    var range = property.getValueRange();
+                    property._colorRangeMin = range.getMin();
+                    property._colorRangeMax = range.getMax();
+                    property._colorRange = range.getMax()-range.getMin();
+
+                    var scale = DrawUtils.getScaleJump(property._colorRange/20);
+                    for (var i=Math.ceil(property._colorRangeMin/scale.Jump1); i<=Math.floor(property._colorRangeMax/scale.Jump1); i++) {
+                        if (i%scale.JumpReduc==0) {
+                            var value = i*scale.Jump1;
+                            var fr = (value-property._colorRangeMin)/property._colorRange;
+                            colorLegend.push({
+                                content: scale.value2String(value),
+                                color: Color.HSL2Color(0.5-fr*0.75,0.6,0.5)
+                            });
+                        }
+                    }
+
+                }
                 return colorLegend;
             };
 
@@ -113,6 +132,10 @@ define([
                     if (idx>=0)
                         return Color.standardColors[idx];
                     return Color.Color(0.5,0.5,0.5);
+                }
+                if (DataTypes.typeFloat.includes(property.getDataType())) {
+                    var fr = (val-property._colorRangeMin) / property._colorRange;
+                    return Color.HSL2Color(0.5-fr*0.75,0.6,0.5);
                 }
                 return Color.Color(0,0,0);
             };
