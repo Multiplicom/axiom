@@ -506,6 +506,10 @@ define([
             }
 
 
+            control.setFocus = function() {
+                control._getSub$El('').select();
+            };
+
             control.getValue = function () {
                 if (control._getSub$El('').length>0)
                     control._value = control._getSub$El('').val();
@@ -515,6 +519,7 @@ define([
 
             control.setValue = function(newVal, preventNotify) {
                 if (newVal == control.getValue()) return false;
+                control._value = newVal;
                 control._getSub$El('').val(newVal);
                 control._checkNonEmptyClass();
                 if (control._clearButton) {

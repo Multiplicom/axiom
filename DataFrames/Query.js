@@ -40,11 +40,23 @@ define([
             if (startQuery)
                 Module.lastExpr = startQuery;
             var grp = Controls.Compound.GroupVert({separator: 5});
-            grp.add('<i>Use the following tokes in the expression:</i>');
-            var grd = Controls.Compound.Grid({sepV: 2});
+            grp.add('<i>Use the following tokens in the expression:</i>');
+            var grd = Controls.Compound.Grid({sepH:4, sepV: 2});
             $.each(dataFrame.getProperties(), function(idx, property) {
-                grd.setItem(idx, 0, '<b>pt.'+property.getId()+'</b>');
-                grd.setItem(idx, 1, property.getDispName());
+                var filterButton = Controls.Button({
+                    icon: 'fa-plus-square',
+                    width : 25,
+                    height: 19,
+                    buttonClass : 'AXMButtonCommandBar',
+                    iconSizeFraction: 0.9,
+                }).addNotificationHandler(function() {
+                    var str = win.ctrlExpr.getValue()+'pt.'+property.getId();
+                    win.ctrlExpr.setValue(str);
+                    win.ctrlExpr.setFocus();
+                });
+                grd.setItem(idx, 0, filterButton);
+                grd.setItem(idx, 1, '<b>pt.'+property.getId()+'</b>');
+                grd.setItem(idx, 2, property.getDispName());
             });
             grp.add(grd);
 
