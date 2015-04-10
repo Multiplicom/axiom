@@ -237,6 +237,16 @@ define([
                     win.plot.render();
                 };
 
+                win.addPlotCommand = function(icon, name, action) {
+                    var bt = win.plotFrame.addCommand({
+                        icon: icon,
+                        hint: name
+                    },
+                        action
+                    );
+                    return bt;
+                };
+
                 win.init = function() {
 
                     var rootFrame = Frame.FrameSplitterHor();
@@ -263,7 +273,11 @@ define([
 
                     if (!win.plot)
                         AXMUtils.Test.reportBug('Plot panel is not defined');
-                    rootFrame.addMember(Frame.FrameFinal(win.plot));
+                    win.plotFrame = Frame.FrameFinalCommands(win.plot);
+                    rootFrame.addMember(win.plotFrame);
+
+                    if (win.setPlotCommands)
+                        win.setPlotCommands();
 
 
                     win.setRootFrame(rootFrame);

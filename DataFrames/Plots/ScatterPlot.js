@@ -46,6 +46,18 @@ define([
 
             win._curves = [];
 
+            win.setPlotCommands = function() {
+                win.button_lassoSelection = win.addPlotCommand(
+                    'fa-crosshairs',
+                    'Lasso selection',
+                    function() {
+                        win.plot.toggleLassoSelection(win._hasLassoSelected);
+                        win.button_lassoSelection.setChecked(win.plot.isLassoSelecting());
+                    }
+                );
+            };
+
+
             win._createDisplayControls = function(dispGroup) {
                 win.colorLegendCtrl = Controls.Static({});
                 dispGroup.add(win.colorLegendCtrl);
@@ -132,6 +144,33 @@ define([
                     });
                     win.colorLegendCtrl.modifyText(legendHtml);
                 }
+            };
+
+            win._hasLassoSelected = function(points) {
+                win.button_lassoSelection.setChecked(false);
+
+                function isPointInPoly(poly, pt) {
+                    for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+                        ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+                        && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+                        && (c = !c);
+                    return c;
+                }
+
+                var dataX = win.getAspectProperty('xvalue').data;
+                var dataY = win.getAspectProperty('yvalue').data;
+                var dataPrimKey = win.getPrimKeyProperty().data;
+
+                var coordXLogic2Win = win.plot.coordXLogic2Win;
+                var coordYLogic2Win = win.plot.coordYLogic2Win;
+                var selList = [];
+                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                    var ptPx = coordXLogic2Win(dataX[rowNr]);
+                    var ptPy = coordYLogic2Win(dataY[rowNr]);
+                    if (isPointInPoly(points, {x:ptPx, y:ptPy}))
+                        selList.push(dataPrimKey[rowNr]);
+                }
+                win.performRowSelected(selList);
             };
 
             win.plot.drawPlot = function(drawInfo) {

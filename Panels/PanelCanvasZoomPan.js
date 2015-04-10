@@ -409,6 +409,8 @@ define([
             };
 
             panel._onMouseMove = function(ev) {
+                if (panel._lassoSelecting)
+                    return;
                 if (panel._isRectSelecting)
                     return;
                 if (panel._isPanning)
@@ -431,6 +433,8 @@ define([
             };
 
             panel._onClick = function(ev) {
+                if (panel._lassoSelecting)
+                    return;
                 if (panel._isRectSelecting)
                     return;
                 if (panel._hasPanned)
@@ -444,6 +448,78 @@ define([
                 });
             };
 
+            panel.isLassoSelecting = function() {
+                return panel._lassoSelecting;
+            };
+
+            panel.toggleLassoSelection = function(onCompleted) {
+                panel._lassoSelecting = !panel._lassoSelecting;
+
+                var selPts = [];
+                var clickLayer$El = panel.getCanvas$El('selection');
+
+                var drawSelArea = function(tempPt) {
+                    var selCanvas = panel.getCanvasElement('selection');
+                    var ctx = selCanvas.getContext("2d");
+                    ctx.setTransform(1, 0, 0, 1, 0, 0);
+                    ctx.clearRect(0, 0, selCanvas.width, selCanvas.height);
+                    ctx.fillStyle='rgba(255,0,0,0.1)';
+                    ctx.strokeStyle='rgba(255,0,0,0.5)';
+                    ctx.beginPath();
+                    $.each(selPts, function(idx, pt) {
+                        if (idx==0)
+                            ctx.moveTo(pt.x, pt.y);
+                        else
+                            ctx.lineTo(pt.x, pt.y);
+                    });
+                    if (tempPt && (selPts.length>0))
+                        ctx.lineTo(tempPt.x, tempPt.y);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                };
+
+                var end = function() {
+                    clickLayer$El.unbind("click.FrameCanvasLasso");
+                    clickLayer$El.unbind("dblclick.FrameCanvasLasso");
+                    $(document).unbind("mousemove.FrameCanvasLasso");
+                    selPts = [];
+                    drawSelArea();
+                    clickLayer$El.css('cursor', 'auto');
+                    panel._lassoSelecting = false;
+                };
+
+                var lassoEventListener_click = function(ev) {
+                    var px = panel.getEventPosX(ev);
+                    var py = panel.getEventPosY(ev);
+                    if ( (selPts.length==0) || (px!=selPts[selPts.length-1].x) || (py!=selPts[selPts.length-1].y) )
+                        selPts.push({x:px, y:py});
+                    drawSelArea();
+                };
+
+                var lassoEventListener_dblclick = function() {
+                    var selectedPoints = selPts;
+                    end();
+                    onCompleted(selectedPoints);
+                };
+
+                var lassoEventListener_mousemove = function(ev) {
+                    var px = panel.getEventPosX(ev);
+                    var py = panel.getEventPosY(ev);
+                    drawSelArea({x:px, y:py});
+                };
+
+                if (!panel._lassoSelecting) { // end the lasso selection
+                    end();
+                }
+
+                else { // start the lasso selection
+                    clickLayer$El.bind("click.FrameCanvasLasso", lassoEventListener_click);
+                    clickLayer$El.bind("dblclick.FrameCanvasLasso", lassoEventListener_dblclick);
+                    $(document).bind("mousemove.FrameCanvasLasso", lassoEventListener_mousemove);
+                    clickLayer$El.css('cursor', 'crosshair');
+                }
+            };
 
             var _super_attachEventHandlers = panel.attachEventHandlers;
             panel.attachEventHandlers = function() {
