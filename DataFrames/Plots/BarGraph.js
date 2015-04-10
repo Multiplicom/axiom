@@ -30,6 +30,7 @@ define([
 
         var PlotType = _GenericPlot.createPlotType('bargraph', 'Bar graph');
         PlotType.addPlotAspect('category', 'Category', DataTypes.typeString, true);
+        PlotType.addPlotAspect('category2', 'Second category', DataTypes.typeString, false);
 
         PlotType.create = function(dataFrame, aspectMap) {
             var win = PlotType.createGeneric(dataFrame, aspectMap);
@@ -40,6 +41,13 @@ define([
             win.plot.setZoomDirections(true, false);
 
             win._createDisplayControls = function(dispGroup) {
+
+                win._scaleCheck = Controls.Check({text: 'Scale to 100%', checked: false})
+                    .addNotificationHandler(function() {
+                        win.plot.render();
+                    });
+                dispGroup.add(win._scaleCheck);
+
                 win.ctrlSortType = Controls.DropList({}).addNotificationHandler(function() {
                     win.parseData();
                     win.plot.render();
@@ -50,6 +58,9 @@ define([
                     'Sort by:',
                     win.ctrlSortType
                 ]));
+                win.colorLegendCtrl = Controls.Static({});
+                dispGroup.add(win.colorLegendCtrl);
+
             };
 
 
@@ -105,6 +116,8 @@ define([
                 var dataCat = win.getAspectProperty('category').data;
                 var dataPrimKey = win.getPrimKeyProperty().data;
 
+                var scaleBars = win._scaleCheck.getValue();
+
                 //count current selection
                 var catSelMap = {};
                 var rowSelGet = win.dataFrame.objectType.rowSelGet;
@@ -117,6 +130,10 @@ define([
                     }
                 }
 
+                var propCat2 = null;
+                if (win.hasAspectProperty('category2')) {
+                    propCat2 = win.getAspectProperty('category2');
+                }
 
                 ctx.fillStyle="#FFFFFF";
                 ctx.fillRect(0, 0, drawInfo.sizeX,  drawInfo.sizeY);
@@ -124,19 +141,37 @@ define([
                 ctx.strokeStyle =  Color.Color(0,0,0).toStringCanvas();
 
                 $.each(win._categories, function(idx, category) {
+                    var barRange = win._maxCount;
+                    if (scaleBars)
+                        barRange = Math.max(1, category.count);
                     var x1 = Math.round(xL2S((idx+0) * win.catSizeX))+0.5;
                     var x2 = Math.round(xL2S((idx+1) * win.catSizeX))+0.5;
                     var y1 = Math.round(yL2S(0.0))-0.5;
-                    var y2 = Math.round(yL2S(category.count*1.0/win._maxCount))+0.5;
-                    ctx.fillStyle=Color.Color(0.85,0.9,0.95).toStringCanvas();
+                    var y2 = Math.round(yL2S(category.count*1.0/barRange))+0.5;
+                    ctx.fillStyle = Color.Color(0.85,0.9,0.95).toStringCanvas();
                     ctx.beginPath();
                     ctx.rect(x1, y1, x2-x1, y2-y1);
                     ctx.fill();
                     ctx.stroke();
 
+                    if (propCat2) {
+                        var countTot = 0;
+                        $.each(win._categories2, function(idx, cat2) {
+                            ctx.fillStyle = propCat2.getSingleColor(cat2.catVal).toStringCanvas();
+                            var count  = category.mapCategories2[cat2.catVal].count;
+                            var y1 = Math.round(yL2S(countTot*1.0/barRange))+0.5;
+                            countTot += count;
+                            var y2 = Math.round(yL2S(countTot*1.0/barRange))+0.5;
+                            ctx.beginPath();
+                            ctx.rect(x1, y1, x2-x1, y2-y1);
+                            ctx.fill();
+                            ctx.stroke();
+                        });
+                    }
+
                     var selCount = catSelMap[category.catVal].count;
                     if (selCount > 0) {
-                        var y2s = yL2S(selCount*1.0/win._maxCount);
+                        var y2s = yL2S(selCount*1.0/barRange);
                         ctx.fillStyle=Color.Color(1,0.0,0,0.5).toStringCanvas();
                         ctx.beginPath();
                         ctx.rect(x1+1, y1, x2-x1, y2s-y1);
@@ -152,8 +187,6 @@ define([
                     ctx.restore();
                 });
 
-                //panel.drawPlot(drawInfo);
-
             };
 
 
@@ -165,6 +198,8 @@ define([
             win.parseData = function() {
                 var propCat = win.getAspectProperty('category');
                 var dataCat = propCat.data;
+
+                win.colorLegendCtrl.modifyText('');
 
                 var catMap = {};
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
@@ -192,6 +227,53 @@ define([
 
                 win.plot.setXRange(0, Math.max(500, win._categories.length*win.catSizeX));
                 win.plot.setYRange(0, 1.2);
+
+
+                if (win.hasAspectProperty('category2')) {
+                    var propCat2 = win.getAspectProperty('category2');
+                    var dataCat2 = propCat2.data;
+
+                    var catMap2 = {};
+                    for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                        var val = dataCat2[rowNr];
+                        if (!catMap2[val]) {
+                            catMap2[val] = {
+                                catVal: val,
+                                dispName: propCat2.content2DisplayString(val)
+                            }
+                        }
+                    }
+                    win._categories2 = [];
+                    $.each(catMap2, function(idx, cat) {
+                        win._categories2.push(cat);
+                    });
+
+                    $.each(win._categories, function(idx, cat) {
+                        cat.mapCategories2 = {};
+                        $.each(win._categories2, function(idx, cat2) {
+                            cat.mapCategories2[cat2.catVal] = {
+                                count: 0
+                            }
+                        });
+                    });
+
+                    for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                        var val1 = dataCat[rowNr];
+                        var val2 = dataCat2[rowNr];
+                        catMap[val1].mapCategories2[val2].count += 1;
+                    }
+
+                    var legendData = propCat2.mapColors(dataCat2);
+
+                    var legendHtml = '';
+                    $.each(legendData, function(idx, legendItem) {
+                        legendHtml += '<span style="background-color: {col};">&nbsp;&nbsp;&nbsp;</span>&nbsp;'.AXMInterpolate({col: legendItem.color.toString()});
+                        legendHtml += legendItem.content;
+                        legendHtml += '<br>';
+                    });
+                    win.colorLegendCtrl.modifyText(legendHtml);
+
+                }
             };
 
 
