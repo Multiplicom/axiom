@@ -39,7 +39,8 @@ define([
 
             if (startQuery)
                 Module.lastExpr = startQuery;
-            var grp = Controls.Compound.GroupVert({separator: 3});
+            var grp = Controls.Compound.GroupVert({separator: 5});
+            grp.add('<i>Use the following tokes in the expression:</i>');
             var grd = Controls.Compound.Grid({sepV: 2});
             $.each(dataFrame.getProperties(), function(idx, property) {
                 grd.setItem(idx, 0, '<b>pt.'+property.getId()+'</b>');
@@ -49,6 +50,8 @@ define([
 
             win.ctrlExpr = Controls.Edit({width: 500, value: Module.lastExpr}).setHasDefaultFocus();
             grp.add(win.ctrlExpr);
+
+            grp.add('<i>NOTE: test equality with "==". Surround strings with single quotes.</i>');
 
             var btOK = Controls.Button({
                 text: 'Execute',
