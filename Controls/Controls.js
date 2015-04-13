@@ -110,12 +110,18 @@ define([
             control._width = settings.width || 120;
             control._height = settings.height || 45;
             control._buttonClass = settings.buttonClass || 'AXMButton';
+            control._extraClasses = [];
             control._enabled = true;
             if (settings.enabled === false)
                 control._enabled = false;
             control._checked = false;
             if (settings.checked)
                 control._checked = true;
+
+            control.addClass = function(className) {
+                control._extraClasses.push(className);
+                return control;
+            }
 
 
             control.createHtml = function() {
@@ -125,6 +131,9 @@ define([
                     .addStyle('white-space', 'normal')
                     .addStyle('position', 'relative');
                 div.addCssClass(control._buttonClass);
+                $.each(control._extraClasses, function(idx, className) {
+                    div.addCssClass(className);
+                });
 
                 var aligner = DOM.Div({parent: div})
                     .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle')
