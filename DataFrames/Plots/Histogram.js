@@ -183,6 +183,7 @@ define([
                 rangeY.extendFraction(0.1);
                 win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
                 win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
+                win.plot.setXLabel(propVal.getDispName());
             };
 
 

@@ -28,6 +28,16 @@ define([
 
         Module.create = function(id, settings) {
             var panel = PanelCanvasZoomPan.create(id, settings);
+            panel._xLabel = '';
+            panel._yLabel = '';
+
+            panel.setXLabel = function(txt) {
+                panel._xLabel = txt;
+            };
+
+            panel.setYLabel = function(txt) {
+                panel._yLabel = txt;
+            };
 
             panel.drawXScale = function(drawInfo) {
                 var ctx = drawInfo.ctx;
@@ -69,6 +79,7 @@ define([
                         }
                     }
                 });
+                ctx.fillText(panel._xLabel, drawInfo.sizeX/2, drawInfo.sizeY - 10);
                 ctx.restore();
             };
 
@@ -123,6 +134,12 @@ define([
                         }
                     }
                 });
+
+                ctx.save();
+                ctx.translate(15,drawInfo.sizeY/2);
+                ctx.rotate(-Math.PI/2);
+                ctx.fillText(panel._yLabel, 0, 0);
+                ctx.restore();
 
                 ctx.restore();
             };

@@ -250,6 +250,7 @@ define([
                     legendHtml += '<br>';
                 });
                 win.colorLegendCtrl.modifyText(legendHtml);
+                win.plot.setXLabel(propVal.getDispName());
 
             };
 

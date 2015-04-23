@@ -126,12 +126,14 @@ define([
                     var rangeX = win.getAspectProperty('xvalue').getValueRange();
                     rangeX.extendFraction(0.1);
                     win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
+                    win.plot.setXLabel(win.getAspectProperty('xvalue').getDispName());
                     win._curves = [];
                 }
                 if (aspectId == 'yvalue') {
                     var rangeY = win.getAspectProperty('yvalue').getValueRange();
                     rangeY.extendFraction(0.1);
                     win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
+                    win.plot.setYLabel(win.getAspectProperty('yvalue').getDispName());
                     win._curves = [];
                 }
                 if (aspectId == 'color')
@@ -302,6 +304,8 @@ define([
             var rangeY = propY.getValueRange();
             rangeX.extendFraction(0.1);
             rangeY.extendFraction(0.1);
+            win.plot.setXLabel(propX.getDispName());
+            win.plot.setYLabel(propY.getDispName());
             win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
             win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
 
