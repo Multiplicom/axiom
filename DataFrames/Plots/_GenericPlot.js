@@ -265,6 +265,10 @@ define([
                     });
                 };
 
+                win.openImage = function() {
+                    win.plot.save();
+                };
+
                 win.init = function() {
 
                     var rootFrame = Frame.FrameSplitterHor();
@@ -300,6 +304,8 @@ define([
 
                     win._formInfoText = PanelHtml.create('', {});
                     rightGroup.addMember(Frame.FrameFinal(win._formInfoText).setAutoSize(Frame.dimY));
+
+                    win.addPlotCommand('fa-external-link', 'Open plot', win.openImage);
 
                     if (win.setPlotCommands)
                         win.setPlotCommands();

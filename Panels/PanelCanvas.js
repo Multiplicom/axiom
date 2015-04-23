@@ -154,12 +154,16 @@ define([
 
             panel.posXCanvas2Screen = function (px) {
                 return px + panel.getCanvas$El('main').offset().left;
-            }
+            };
 
             panel.posYCanvas2Screen = function (py) {
                 return py + panel.getCanvas$El('main').offset().top;
-            }
+            };
 
+            panel.save = function() {
+                var dataUrl = panel.getCanvasElement('main').toDataURL('image/png');
+                window.open(dataUrl,'_blank');
+            };
 
 
             return panel;
