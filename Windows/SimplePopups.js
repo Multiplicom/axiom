@@ -243,6 +243,56 @@ define([
         };
 
 
+        Module.MultipleChoiceBox = function(value, choices, header, title, settings, onOK, onCancel) {
+
+            var win = Popupwin.create({
+                title: title,
+                blocking:true,
+                autoCenter: true
+            });
+
+            var grp = Controls.Compound.GroupVert({separator:12});
+            grp.add(Controls.Static({text: header}));
+
+            var btOK = Controls.Button({
+                text: 'OK',
+                icon: 'fa-check'
+            })
+                .addNotificationHandler(function() {
+                    win.onOK();
+                });
+
+            var btCancel = Controls.Button({
+                text: 'Cancel',
+                icon: 'fa-times'
+            })
+                .addNotificationHandler(function() {
+                    win.close();
+                    if (onCancel)
+                        onCancel();
+                });
+
+            win.ctrlChoices = Controls.DropList({width:230, value: value});
+            $.each(choices, function(idx, choice) {
+                win.ctrlChoices.addState(choice.id, choice.name);
+            });
+            grp.add(win.ctrlChoices);
+
+            grp.add(Controls.Compound.GroupHor({}, [btOK, btCancel]) );
+
+            win.onOK = function() {
+                var newValue = win.ctrlChoices.getValue();
+                win.close();
+                if (onOK)
+                    onOK(newValue);
+            };
+
+            win.setHandler_OnPressedEnter(win.onOK);
+            win.setRootControl(Controls.Compound.StandardMargin(grp));
+            win.start();
+        };
+
+
         Module.ErrorBox = function(content, title, onProceed) {
             if (!title)
                 title = "Error";
