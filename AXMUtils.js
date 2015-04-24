@@ -401,6 +401,36 @@ define([
             return assoc;
         };
 
+        Module._textInterpolators = {};
+
+        Module.setTextInterpolators = function(dct) {
+            Module._textInterpolators = dct;
+        };
+
+        _TRL = function(txt) {
+            var reg = new RegExp(/{_.*?_}/g);
+            var tokens = [];
+            var match;
+            while (match = reg.exec(txt))
+                tokens.push(match[0]);
+            $.each(tokens,function(idx, token) {
+                if (token.length < 5)
+                    Module.Test.reportBug('Invalid token: '+token);
+                var tokenString = token.substring(2, token.length-2);
+                var isCapital = (tokenString[0] != tokenString[0].toLowerCase());
+                tokenString = tokenString.toLowerCase();
+                var replacement = Module._textInterpolators[tokenString];
+                if (!replacement) {
+                    Module.Test.reportBug('Invalid token: '+token);
+                    replacement = tokenString;
+                }
+                if (isCapital)
+                    replacement = replacement.charAt(0).toUpperCase() + replacement.slice(1);
+                txt = txt.replace(token, replacement);
+            });
+            return txt;
+        };
+
 
 
         return Module;
