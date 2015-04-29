@@ -281,6 +281,7 @@ define([
             control._height = settings.height || 45;
             //control._buttonClass = settings.buttonClass || 'AXMCheck';
             control._value = settings.checked || false;
+            control._checkedClass = settings.checkedClass || null;
 
             control.createHtml = function() {
 
@@ -297,10 +298,12 @@ define([
 
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
+                control._checkCheckedClass();
             };
 
             control._onClicked = function(ev) {
                 control.isChecked = control._getSub$El('').is(':checked');
+                control._checkCheckedClass();
                 control.performNotify();
             };
 
@@ -308,7 +311,7 @@ define([
                 if (control._getSub$El('').length>0)
                     control.isChecked = control._getSub$El('').is(':checked');
                 return control.isChecked;
-            }
+            };
 
 
             control.setValue = function(newVal, preventNotify) {
@@ -320,8 +323,20 @@ define([
                     control._getSub$El('').removeAttr('checked');
                 if (!preventNotify)
                     control.performNotify();
+                control._checkCheckedClass();
                 return true;
             };
+
+
+            control._checkCheckedClass = function() {
+                if (!control._checkedClass)
+                    return;
+                if (control.getValue())
+                    control._getSub$El('label').addClass(control._checkedClass);
+                else
+                    control._getSub$El('label').removeClass(control._checkedClass);
+            };
+
 
             return control;
         };
@@ -512,7 +527,7 @@ define([
                     control._getSub$El('').addClass(control._nonEmptyClass);
                 else
                     control._getSub$El('').removeClass(control._nonEmptyClass);
-            }
+            };
 
 
             control.setFocus = function() {
