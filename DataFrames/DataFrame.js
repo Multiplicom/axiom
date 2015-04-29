@@ -188,6 +188,15 @@ define([
                 return objectType._defaultTooltip;
             };
 
+            objectType.setOpenHandler = function(handler) {
+                //AXMUtils.Test.isFunction(handler);
+                objectType._onOpenHandler = handler;
+            };
+
+            objectType.getOpenHandler = function() {
+                return objectType._onOpenHandler;
+            };
+
             objectType.rowSelClear = function() {
                 objectType._selectedRowIds = {};
             };
@@ -230,6 +239,10 @@ define([
             dataFrame._properties = [];
             dataFrame._mapProperties = {};
             dataFrame._name = name;
+
+            dataFrame.getObjectType = function() {
+                return dataFrame.objectType;
+            };
 
             dataFrame.addProperty = function(propId, propDispName, propType, settings) {
                 if (dataFrame._mapProperties[propId])

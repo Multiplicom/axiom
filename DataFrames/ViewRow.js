@@ -44,13 +44,14 @@ define([
             if (rowNr < 0)
                 AXMUtils.reportBug('Invalid dataframe item');
 
+            var rootGrp = Controls.Compound.GroupVert({separator: 12});
 
             var grp = Controls.Compound.Grid({});
+            rootGrp.add(Controls.Compound.VScroller(grp, 400));
 
             $.each(dataFrame.getProperties(), function(idx, property) {
                 grp.setItem(idx, 0, property.getDispName());
                 grp.setItem(idx, 1, property.content2DisplayString(property.data[rowNr]));
-
                 if (parentWin.performRowSelected) {
                     var filterButton = Controls.Button({
                         icon: 'fa-filter',
@@ -63,8 +64,18 @@ define([
                     });
                     grp.setItem(idx, 2, filterButton);
                 }
-
             });
+
+            var openHandler = dataFrame.getObjectType().getOpenHandler();
+            if (openHandler) {
+                var btOpen = Controls.Button({
+                    text: 'Open',
+                    icon: 'fa-arrow-right'
+                }).addNotificationHandler(function() {
+                    openHandler(primKey);
+                });
+                rootGrp.add(btOpen);
+            }
 
             win.filter = function(property) {
                 var value = property.data[rowNr];
@@ -77,7 +88,7 @@ define([
                 });
             };
 
-            win.setRootControl(Controls.Compound.StandardMargin(grp));
+            win.setRootControl(Controls.Compound.StandardMargin(rootGrp));
             win.start();
         }
 
