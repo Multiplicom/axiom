@@ -27,7 +27,7 @@ define([
         DataTypes
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('histogram', 'Histogram');
+        var PlotType = _GenericPlot.createPlotType('histogram', 'Histogram', 'fa-area-chart');
 
         PlotType.addPlotAspect('value', 'Value', DataTypes.typeFloat, true);
 

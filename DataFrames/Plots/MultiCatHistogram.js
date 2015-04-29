@@ -27,7 +27,7 @@ define([
         DataTypes
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('histogram', 'Multi-category histogram');
+        var PlotType = _GenericPlot.createPlotType('histogram', 'Multi-category histogram', 'fa-area-chart');
 
         PlotType.addPlotAspect('category', 'Category', DataTypes.typeString, true);
         PlotType.addPlotAspect('value', 'Value', DataTypes.typeFloat, true);

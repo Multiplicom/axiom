@@ -37,10 +37,11 @@ define([
         };
 
 
-        Module.createPlotType = function(id, name) {
+        Module.createPlotType = function(id, name, icon) {
             var plotType = {
                 _plotTypeId: id,
                 _plotTypeName: name,
+                _plotTypeIcon: icon,
                 _aspects: [],
                 _aspectsMap: {}
             };
@@ -48,6 +49,10 @@ define([
 
             plotType.getPlotTypeName = function() {
                 return plotType._plotTypeName
+            };
+
+            plotType.getPlotTypeIcon = function() {
+                return plotType._plotTypeIcon
             };
 
             plotType.addPlotAspect = function(aspectId, aspectName, dataType, isRequired) {
@@ -143,8 +148,8 @@ define([
                         .addNotificationHandler(win.doQuery);
 
                     var btSelPlot = Controls.Button({
-                        text: 'Create chart',
-                        icon: 'fa-area-chart'
+                        text: 'Create view',
+                        icon: 'fa-eye'
                     })
                         .addNotificationHandler(function() {
                             var subDataFrame = win.dataFrame.createSelectedRowsDataFrame();

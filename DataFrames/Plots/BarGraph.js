@@ -28,7 +28,7 @@ define([
         DataTypes
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('bargraph', 'Bar graph');
+        var PlotType = _GenericPlot.createPlotType('bargraph', 'Bar graph', 'fa-bar-chart');
         PlotType.addPlotAspect('category', 'Category', DataTypes.typeString, true);
         PlotType.addPlotAspect('category2', 'Second category', DataTypes.typeString, false);
 

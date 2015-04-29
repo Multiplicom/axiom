@@ -162,6 +162,14 @@ define([
 
             objectType._selectedRowIds = {};
 
+            objectType.getTypeId = function() {
+                return objectType.typeId;
+            };
+
+            objectType.getPrimKey = function() {
+                return objectType.primKey;
+            };
+
             objectType.hasProperty = function(propId) {
                 return !!objectType._mapProperties[propId];
             };

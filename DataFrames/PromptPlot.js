@@ -17,12 +17,12 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Controls/Controls", "AXM/Windows/SimplePopups",
-        "AXM/DataFrames/Plots"
+        "AXM/DataFrames/Plots", "AXM/DataFrames/Table"
     ],
     function (
         require, $, _,
         AXMUtils, PopupWindow, Controls, SimplePopups,
-        Plots
+        Plots, Table
     ) {
 
         var Module = {
@@ -31,7 +31,7 @@ define([
         Module.create = function(dataFrame) {
 
             var win = PopupWindow.create({
-                title: 'Create plot',
+                title: 'Create a view',
                 blocking:true,
                 autoCenter: true,
             });
@@ -42,7 +42,8 @@ define([
             $.each(Plots.plotTypes, function(idx, plotType) {
                 var btPlot = Controls.Button({
                     text: plotType.getPlotTypeName(),
-                    //icon: 'fa-check'
+                    icon: plotType.getPlotTypeIcon(),
+                    width: 250
                 })
                     .addNotificationHandler(function() {
                         win.close();
@@ -50,6 +51,17 @@ define([
                     });
                 grp.add(btPlot);
             });
+
+            var btPlot = Controls.Button({
+                text: 'Table',
+                icon: 'fa-table',
+                width: 250
+            })
+                .addNotificationHandler(function() {
+                    win.close();
+                    Table.create(dataFrame);
+                });
+            grp.add(btPlot);
 
             win.setRootControl(Controls.Compound.StandardMargin(grp));
             win.start();

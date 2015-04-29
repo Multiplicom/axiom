@@ -618,7 +618,7 @@ define([
 
             panel.saveLocal = function() {
                 SimplePopups.ConfirmationBox('Do you want to download the table content<br>to your local computer?', 'Download', {}, function() {
-                    panel._maxDownloadRowCount = 999;
+                    panel._maxDownloadRowCount = 9999;
                     if (panel._tableData.requireRowRange(0, panel._maxDownloadRowCount, panel._exec_Save))
                         panel._exec_Save()
                 });

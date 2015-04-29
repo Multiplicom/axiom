@@ -28,7 +28,7 @@ define([
         DataTypes, ViewRow
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('scatterplot', 'Scatter plot');
+        var PlotType = _GenericPlot.createPlotType('scatterplot', 'Scatter plot', 'fa-line-chart');
         PlotType.addPlotAspect('xvalue', 'X Value', DataTypes.typeFloat, true);
         PlotType.addPlotAspect('yvalue', 'Y Value', DataTypes.typeFloat, true);
         PlotType.addPlotAspect('color', 'Color', DataTypes.typeAny, false);

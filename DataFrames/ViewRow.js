@@ -31,7 +31,7 @@ define([
         Module.create = function(dataFrame, primKey, parentWin) {
             var win = PopupWindow.create({
                 title: 'Data point',
-                blocking:true,
+                blocking:false,
                 autoCenter: true
             });
 
