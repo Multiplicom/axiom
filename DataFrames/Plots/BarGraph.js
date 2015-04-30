@@ -28,9 +28,9 @@ define([
         DataTypes
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('bargraph', 'Bar graph', 'fa-bar-chart');
-        PlotType.addPlotAspect('category', 'Category', DataTypes.typeString, true);
-        PlotType.addPlotAspect('category2', 'Second category', DataTypes.typeString, false);
+        var PlotType = _GenericPlot.createPlotType('bargraph', _TRL('Bar graph'), 'fa-bar-chart');
+        PlotType.addPlotAspect('category', _TRL('Category'), DataTypes.typeString, true);
+        PlotType.addPlotAspect('category2', _TRL('Second category'), DataTypes.typeString, false);
 
         PlotType.create = function(dataFrame, aspectMap) {
             var win = PlotType.createGeneric(dataFrame, aspectMap);
@@ -42,7 +42,7 @@ define([
 
             win._createDisplayControls = function(dispGroup) {
 
-                win._scaleCheck = Controls.Check({text: 'Scale to 100%', checked: false})
+                win._scaleCheck = Controls.Check({text: _TRL('Scale to 100%'), checked: false})
                     .addNotificationHandler(function() {
                         win.plot.render();
                     });
@@ -52,10 +52,10 @@ define([
                     win.parseData();
                     win.plot.render();
                 });
-                win.ctrlSortType.addState('val', "Alphabetical");
-                win.ctrlSortType.addState('count', "Count");
+                win.ctrlSortType.addState('val', _TRL("Alphabetical"));
+                win.ctrlSortType.addState('count', _TRL("Count"));
                 dispGroup.add(Controls.Compound.GroupVert({}, [
-                    'Sort by:',
+                    _TRL('Sort by:'),
                     win.ctrlSortType
                 ]));
                 win.colorLegendCtrl = Controls.Static({});
@@ -324,7 +324,7 @@ define([
                     if (dataCat[rowNr] == catInfo.catVal)
                         selList.push(dataPrimKey[rowNr]);
                 }
-                var dispText = '{propname}= {value}'.AXMInterpolate({
+                var dispText = _TRL('{propname}= {value}').AXMInterpolate({
                     propname: win.getAspectProperty('category').getDispName(),
                     value: catInfo.dispName
                 });

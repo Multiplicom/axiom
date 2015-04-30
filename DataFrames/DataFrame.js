@@ -68,7 +68,7 @@ define([
 
             property.getValueRange = function() {
                 if (!property.getDataType().includes(DataTypes.typeFloat))
-                    AXMUtils.Test.reportBug('Property is not numerical');
+                    AXMUtils.Test.reportBug(_TRL('Property is not numerical'));
                 var minValue = +1.0E99;
                 var maxValue = -1.0E99;
                 var data=property.data;
@@ -151,7 +151,7 @@ define([
 
         Module.createObjectType = function(typeId, primKey) {
             if (Module._objectTypes[typeId])
-                AXMUtils.Test.reportBug('Dataframe object type already exists: '+typeId);
+                AXMUtils.Test.reportBug(_TRL('Dataframe object type already exists: ') + typeId);
             var objectType = {
                 typeId: typeId,
                 primKey: primKey,
@@ -177,13 +177,13 @@ define([
             objectType.getProperty = function(propId) {
                 prop = objectType._mapProperties[propId];
                 if (!prop)
-                    AXMUtils.Test.reportBug('Invalid objectType property id: '+propId);
+                    AXMUtils.Test.reportBug(_TRL('Invalid objectType property id: ') + propId);
                 return prop;
             };
 
             objectType.addProperty = function(property) {
                 if (objectType._mapProperties[property.getId()])
-                    AXMUtils.Test.reportBug('Duplicate objectType property id: '+property.getId());
+                    AXMUtils.Test.reportBug(_TRL('Duplicate objectType property id: ') + property.getId());
                 objectType._properties.push(property);
                 objectType._mapProperties[property.getId()] = property;
             };
@@ -242,7 +242,7 @@ define([
             var dataFrame = {};
             dataFrame.objectType = Module._objectTypes[objectTypeId];
             if (!dataFrame.objectType)
-                AXMUtils.Test.reportBug('Invalid datafrom objecttype: ' + objectTypeId);
+                AXMUtils.Test.reportBug(_TRL('Invalid datafrom objecttype: ') + objectTypeId);
             dataFrame._rowCount = 0;
             dataFrame._properties = [];
             dataFrame._mapProperties = {};
@@ -254,7 +254,7 @@ define([
 
             dataFrame.addProperty = function(propId, propDispName, propType, settings) {
                 if (dataFrame._mapProperties[propId])
-                    AXMUtils.Test.reportBug('Duplicate dataframe property id: '+propId);
+                    AXMUtils.Test.reportBug(_TRL('Duplicate dataframe property id: ') + propId);
                 if (!dataFrame.objectType.hasProperty(propId)) {
                     var propInfo = Module.property(propId, propDispName, propType, settings)
                     dataFrame.objectType.addProperty(propInfo);
@@ -277,7 +277,7 @@ define([
             dataFrame.getProperty = function(propId) {
                 var prop = dataFrame._mapProperties[propId];
                 if (!prop)
-                    AXMUtils.Test.reportBug('Dataframe does not have property ' + propId);
+                    AXMUtils.Test.reportBug(_TRL('Dataframe does not have property ') + propId);
                 return prop;
             };
 
@@ -351,7 +351,7 @@ define([
 
             dataFrame.showData = function() {
                 var win = PopupWindow.create({
-                    title: 'Data',
+                    title: _TRL('Data'),
                     sizeX: 650,
                     sizeY: 500,
                     autoCenter: true

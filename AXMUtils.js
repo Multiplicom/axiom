@@ -407,6 +407,12 @@ define([
             Module._textInterpolators = dct;
         };
 
+        Module._useTextDecoration = function() {
+            if(typeof __AXMTextDecoration === "undefined")
+                return false;
+            return __AXMTextDecoration;
+        };
+
         _TRL = function(txt) {
             var reg = new RegExp(/{_.*?_}/g);
             var tokens = [];
@@ -426,8 +432,12 @@ define([
                 }
                 if (isCapital)
                     replacement = replacement.charAt(0).toUpperCase() + replacement.slice(1);
+                //if (Module._useTextDecoration())
+                //    replacement = '|' + replacement + '|';
                 txt = txt.replace(token, replacement);
             });
+            if (Module._useTextDecoration())
+                txt = '‘' + txt + "’";
             return txt;
         };
 
