@@ -588,7 +588,7 @@ define([
                 }
 
                 if (diff < 0) {
-                    for (var rowNr = rowLastPrev+1; rowNr <=rowLast; rowNr++) {
+                    for (var rowNr = rowLastPrev+1; rowNr >rowLast; rowNr--) {
                         $ElLeftBody.find('#'+panel._getRowLeftId(rowNr)).remove();
                         $ElRightBody.find('#'+panel._getRowRightId(rowNr)).remove();
                     }
