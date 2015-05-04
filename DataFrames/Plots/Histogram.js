@@ -40,8 +40,8 @@ define([
 
 
             win._createDisplayControls = function(dispGroup) {
-                //win.colorLegendCtrl = Controls.Static({});
-                //dispGroup.add(win.colorLegendCtrl);
+                win.infoCtrl = Controls.Static({});
+                dispGroup.add(win.infoCtrl);
             };
 
             win.initPlot = function() {
@@ -184,6 +184,38 @@ define([
                 win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
                 win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
                 win.plot.setXLabel(propVal.getDispName());
+
+                var str = '';
+                str += 'Min: ' + minVal + '<br>';
+                str += 'Max: ' + maxVal + '<br>';
+
+                var sum = 0;
+                for (var i=0; i<values.length; i+= 1)
+                    sum += values[i];
+                str += 'Count: ' + values.length + '<br>';
+                str += 'Sum: ' + sum + '<br>';
+                var average = sum/values.length;
+                str += 'Average: ' + average + '<br>';
+
+                var stdev = 0;
+                for (var i=0; i<values.length; i+= 1)
+                    stdev += Math.pow(values[i]-average, 2.0);
+                stdev = Math.sqrt(stdev/values.length);
+                str += 'Stdev: ' + stdev + '<br>';
+
+                function median(values) {
+                    values.sort( function(a,b) {return a - b;} );
+                    var half = Math.floor(values.length/2);
+                    if(values.length % 2)
+                        return values[half];
+                    else
+                        return (values[half-1] + values[half]) / 2.0;
+                }
+
+                str += 'Median: ' + median(values) + '<br>';
+
+                win.infoCtrl.modifyText(str);
+
             };
 
 
