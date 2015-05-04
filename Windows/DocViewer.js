@@ -1,6 +1,6 @@
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelHtml", "AXM/Windows/Popupwindow", "AXM/Windows/SimplePopups", "AXM/Controls/Controls"],
+        "AXM/AXMUtils", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelHtml", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Controls/Controls"],
     function (
         require, $, _,
         Utils, Frame, PanelForm, PanelHtml, Popupwin, SimplePopups, Controls) {
