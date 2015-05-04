@@ -28,12 +28,12 @@ define([
         DataTypes, ViewRow
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('scatterplot', 'Scatter plot', 'fa-line-chart');
-        PlotType.addPlotAspect('xvalue', 'X Value', DataTypes.typeFloat, true);
-        PlotType.addPlotAspect('yvalue', 'Y Value', DataTypes.typeFloat, true);
-        PlotType.addPlotAspect('color', 'Color', DataTypes.typeAny, false);
-        PlotType.addPlotAspect('label', 'Label', DataTypes.typeAny, false);
-        PlotType.addPlotAspect('tooltip', 'Hover text', DataTypes.typeAny, false);
+        var PlotType = _GenericPlot.createPlotType('scatterplot', _TRL('Scatter plot'), 'fa-line-chart');
+        PlotType.addPlotAspect('xvalue', _TRL('X Value'), DataTypes.typeFloat, true);
+        PlotType.addPlotAspect('yvalue', _TRL('Y Value'), DataTypes.typeFloat, true);
+        PlotType.addPlotAspect('color', _TRL('Color'), DataTypes.typeAny, false);
+        PlotType.addPlotAspect('label', _TRL('Label'), DataTypes.typeAny, false);
+        PlotType.addPlotAspect('tooltip', _TRL('Hover text'), DataTypes.typeAny, false);
 
 
         PlotType.create = function(dataFrame, aspectMap) {
@@ -49,11 +49,12 @@ define([
             win.setPlotCommands = function() {
                 win.button_lassoSelection = win.addPlotCommand(
                     'fa-crosshairs',
-                    'Lasso selection',
+                    _TRL('Lasso selection'),
                     function() {
                         win.plot.doLassoSelection(win._hasLassoSelected);
                         win.button_lassoSelection.setChecked(true);
-                        win.setInfoText('<div style="width:100%;padding:2px;background-color: yellow;font-weight: bold">Double click to complete the lasso selection</div>');
+                        var infoTxt = _TRL("Double click to complete the lasso selection");
+                        win.setInfoText('<div style="width:100%;padding:2px;background-color: yellow;font-weight: bold">' + intoTxt + '</div>');
                     }
                 );
             };
@@ -61,7 +62,7 @@ define([
 
             win._createDisplayControls = function(dispGroup) {
 
-                var opacityCheck = Controls.Check({text: 'Semi-transparent points', checked: true})
+                var opacityCheck = Controls.Check({text: _TRL('Semi-transparent points'), checked: true})
                     .addNotificationHandler(function() {
                         win._opacity = opacityCheck.getValue() ? 0.4 : 1;
                         win.plot.render();
@@ -72,7 +73,7 @@ define([
                 dispGroup.add(win.colorLegendCtrl);
 
                 var btLine = Controls.Button({
-                    text: 'Add curve',
+                    text: _TRL('Add curve'),
                     icon: 'fa-line-chart'
                 }).addNotificationHandler(win.addCurve);
                 dispGroup.add(btLine);
@@ -287,7 +288,7 @@ define([
 
 
             win.addCurve = function() {
-                SimplePopups.TextEditBox('', 'Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")', 'Add curve', {}, function(expr) {
+                SimplePopups.TextEditBox('', _TRL('Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")'), _TRL('Add curve'), {}, function(expr) {
                     win._curves.push(expr);
                     win.plot.render();
                 });

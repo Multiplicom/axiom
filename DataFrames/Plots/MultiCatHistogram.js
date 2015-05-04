@@ -27,10 +27,10 @@ define([
         DataTypes
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('histogram', 'Multi-category histogram', 'fa-area-chart');
+        var PlotType = _GenericPlot.createPlotType('histogram', _TRL('Multi-category histogram'), 'fa-area-chart');
 
-        PlotType.addPlotAspect('category', 'Category', DataTypes.typeString, true);
-        PlotType.addPlotAspect('value', 'Value', DataTypes.typeFloat, true);
+        PlotType.addPlotAspect('category', _TRL('Category'), DataTypes.typeString, true);
+        PlotType.addPlotAspect('value', _TRL('Value'), DataTypes.typeFloat, true);
 
         PlotType.create = function(dataFrame, aspectMap) {
             var win = PlotType.createGeneric(dataFrame, aspectMap);
@@ -41,7 +41,7 @@ define([
 
 
             win._createDisplayControls = function(dispGroup) {
-                win._ctrlNormalise = Controls.Check({text: 'Normalise per category', checked: false})
+                win._ctrlNormalise = Controls.Check({text: _TRL('Normalise per category'), checked: false})
                     .addNotificationHandler(function() {
                         win.parseData();
                         win.plot.render();
@@ -208,7 +208,7 @@ define([
                     if (val !== null) {
                         var binNr = Math.floor((val-win._binOffset)/binSize);
                         if ((binNr<0)  || (binNr>=win._binCount))
-                            AXMUtils.reportBug('Invalid bin');
+                            AXMUtils.reportBug(_TRL('Invalid bin'));
                         catMap[cat]._binValues[binNr] += 1;
                     }
                 }

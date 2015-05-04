@@ -178,6 +178,7 @@ define([
                 $.each(panel._columns, function(colNr, colInfo) {
                     var cell = DOM.Create('th', {id:panel._getColSubId('header',colNr)});
                     cell.addElem(colInfo.getName());
+                    cell.addAttribute('title', colInfo.getName())
                     if (colInfo.canSort()) {
                         DOM.Div({parent: cell}).addCssClass('AXMPgTableColSortBox');
                     }
@@ -724,7 +725,7 @@ define([
 
             theFrame.addCommand({
                 icon: "fa-download",
-                hint: "Download table content to local machine"
+                hint: _TRL("Download table content to local machine")
             }, thePanel.saveLocal);
 
             //theFrame.addCommand({
@@ -735,19 +736,19 @@ define([
 
             theFrame.addCommand({
                 icon: "fa-flip-horizontal fa-fast-forward",
-                hint: "First page"
+                hint: _TRL("First page")
             }, thePanel.navigateFirstPage);
             theFrame.addCommand({
                 icon: "fa-flip-horizontal fa-play",
-                hint: "Previous page"
+                hint: _TRL("Previous page")
             }, thePanel.navigatePreviousPage);
             theFrame.addCommand({
                 icon: "fa-play",
-                hint: "Next page"
+                hint: _TRL("Next page")
             }, thePanel.navigateNextPage);
             theFrame.addCommand({
                 icon: "fa-fast-forward",
-                hint: "Last page"
+                hint: _TRL("Last page")
             }, thePanel.navigateLastPage);
 
             thePanel._pagerInfo = Controls.Static({

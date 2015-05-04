@@ -30,7 +30,7 @@ define([
 
         Module.create = function(dataFrame, primKey, parentWin) {
             var win = PopupWindow.create({
-                title: 'Data point',
+                title: _TRL('Data point'),
                 blocking:false,
                 autoCenter: true
             });
@@ -42,7 +42,7 @@ define([
                     rowNr = i;
             }
             if (rowNr < 0)
-                AXMUtils.reportBug('Invalid dataframe item');
+                AXMUtils.reportBug(_TRL('Invalid dataframe item'));
 
             var rootGrp = Controls.Compound.GroupVert({separator: 12});
 
@@ -69,7 +69,7 @@ define([
             var openHandler = dataFrame.getObjectType().getOpenHandler();
             if (openHandler) {
                 var btOpen = Controls.Button({
-                    text: 'Open',
+                    text: _TRL('Open'),
                     icon: 'fa-arrow-right'
                 }).addNotificationHandler(function() {
                     openHandler(primKey);

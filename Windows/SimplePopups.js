@@ -25,7 +25,7 @@ define([
 
         Module.MessageBox = function(content, title, onProceed) {
             if (!title)
-                title = "Message";
+                title = _TRL("Message");
 
             var win = Popupwin.create({
                 title: title,
@@ -44,7 +44,7 @@ define([
             grp.add(Controls.Static({text: content+'<p/>'}));
 
             var btOK = Controls.Button({
-                text: 'OK',
+                text: _TRL('OK'),
                 icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
@@ -61,7 +61,7 @@ define([
 
         Module.ConfirmationBox = function(content, title, settings, onOK, onCancel) {
             if (!title)
-                title = "Confirmation";
+                title = _TRL("Confirmation");
             if (!settings)
                 settings = {};
 
@@ -75,7 +75,7 @@ define([
             grp.add(Controls.Static({text: content+'<p/>'}));
 
             var btOK = Controls.Button({
-                text: settings.textOK || 'OK',
+                text: settings.textOK || _TRL('OK'),
                 icon: settings.iconOK || 'fa-check'
             })
                 .addNotificationHandler(function() {
@@ -85,7 +85,7 @@ define([
                 });
 
             var btCancel = Controls.Button({
-                text: settings.textCancel || 'Cancel',
+                text: settings.textCancel || _TRL('Cancel'),
                 icon: settings.iconCancel || 'fa-times'
             })
                 .addNotificationHandler(function() {
@@ -105,7 +105,7 @@ define([
 
         Module.YesNoCancelBox = function(content, title, settings, onYes, onNo, onCancel) {
             if (!title)
-                title = "Confirmation";
+                title = _TRL("Confirmation");
             if (!settings)
                 settings = {};
 
@@ -119,7 +119,7 @@ define([
             grp.add(Controls.Static({text: content+'<p/>'}));
 
             var btYes = Controls.Button({
-                text: settings.textYes || 'Yes',
+                text: settings.textYes || _TRL('Yes'),
                 icon: settings.iconYes || 'fa-check'
             })
                 .addNotificationHandler(function() {
@@ -129,7 +129,7 @@ define([
                 });
 
             var btNo = Controls.Button({
-                text: settings.textNo || 'No',
+                text: settings.textNo || _TRL('No'),
                 icon: settings.iconNo || 'fa-times'
             })
                 .addNotificationHandler(function() {
@@ -139,7 +139,7 @@ define([
                 });
 
             var btCancel = Controls.Button({
-                text: 'Cancel',
+                text: _TRL('Cancel'),
             })
                 .addNotificationHandler(function() {
                     win.close();
@@ -157,7 +157,7 @@ define([
 
         Module.ActionChoiceBox = function(title, intro, actions, settings) {
             if (!title)
-                title = "Action";
+                title = _TRL("Action");
             if (!intro)
                 intro = "";
             if (!settings)
@@ -208,7 +208,7 @@ define([
             grp.add(Controls.Static({text: header}));
 
             var btOK = Controls.Button({
-                text: 'OK',
+                text: _TRL('OK'),
                 icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
@@ -216,7 +216,7 @@ define([
                 });
 
             var btCancel = Controls.Button({
-                text: 'Cancel',
+                text: _TRL('Cancel'),
                 icon: 'fa-times'
             })
                 .addNotificationHandler(function() {
@@ -255,7 +255,7 @@ define([
             grp.add(Controls.Static({text: header}));
 
             var btOK = Controls.Button({
-                text: 'OK',
+                text: _TRL('OK'),
                 icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
@@ -263,7 +263,7 @@ define([
                 });
 
             var btCancel = Controls.Button({
-                text: 'Cancel',
+                text: _TRL('Cancel'),
                 icon: 'fa-times'
             })
                 .addNotificationHandler(function() {
@@ -295,7 +295,7 @@ define([
 
         Module.ErrorBox = function(content, title, onProceed) {
             if (!title)
-                title = "Error";
+                title = _TRL("Error");
 
             var win = Popupwin.create({
                 title: title,
@@ -312,7 +312,7 @@ define([
             grp2.add(Controls.Static({text: content+'<p/>'}));
 
             var btOK = Controls.Button({
-                text: 'Close',
+                text: _TRL('Close'),
 //                icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
