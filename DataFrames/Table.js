@@ -16,17 +16,29 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Controls/Controls", "AXM/Windows/SimplePopups", "AXM/Tables/TableData", "AXM/Tables/TableInfo",
-        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty"
+        "AXM/AXMUtils", "AXM/Msg", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Controls/Controls", "AXM/Windows/SimplePopups", "AXM/Tables/TableData", "AXM/Tables/TableInfo",
+        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty", "AXM/DataFrames/CopyProperty"
     ],
     function (
         require, $, _,
-        AXMUtils, PopupWindow, Frame, PanelForm, PanelTable, Controls, SimplePopups, TableData, TableInfo,
-        ViewRow, CalcProperty
+        AXMUtils, Msg, PopupWindow, Frame, PanelForm, PanelTable, Controls, SimplePopups, TableData, TableInfo,
+        ViewRow, CalcProperty, CopyProperty
     ) {
 
         var Module = {
         };
+
+        Module._activeWindows = [];
+
+        Msg.listen('', 'CloseWindow', function(win) {
+            for (var i=0; i<Module._activeWindows.length; i++) {
+                if (Module._activeWindows[i] == win) {
+                    Module._activeWindows.splice(i,1);
+                    return;
+                }
+            }
+        });
+
 
         Module.create = function(dataFrame) {
 
@@ -99,6 +111,9 @@ define([
                 sizeY: 500
             });
 
+            win.dataFrame = dataFrame;
+            Module._activeWindows.push(win);
+
             win.init = function() {
                 var rootFrame = Frame.FrameSplitterHor();
                 //rootFrame.setHalfSplitterSize(0);
@@ -136,6 +151,7 @@ define([
 
                 var btViewPlot = Controls.Button({
                     width: 160,
+                    height: 60,
                     text: _TRL('Create view'),
                     icon: 'fa-eye'
                 })
@@ -145,6 +161,7 @@ define([
 
                 var btCalcCol = Controls.Button({
                     width: 160,
+                    height: 60,
                     text: _TRL('Calculate new property'),
                     icon: 'fa-calculator'
                 })
@@ -155,9 +172,23 @@ define([
                         });
                     });
 
+                var btCopyCol = Controls.Button({
+                    width: 160,
+                    height: 60,
+                    text: _TRL('Import property from other dataframe'),
+                    icon: 'fa-copy'
+                })
+                    .addNotificationHandler(function() {
+                        CopyProperty.create(dataFrame, function() {
+                            win.close();
+                            Module.create(dataFrame);
+                        });
+                    });
+
                 group.add(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({}, [
                     btViewPlot,
-                    btCalcCol
+                    btCalcCol,
+                    btCopyCol
                 ])));
 
 

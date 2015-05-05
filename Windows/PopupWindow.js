@@ -354,6 +354,7 @@ define([
                 if (winNr>=0)
                     Module._activeWindows.splice(winNr,1);
 
+                Msg.broadcast('CloseWindow', window);
             };
 
 

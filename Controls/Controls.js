@@ -349,6 +349,11 @@ define([
             control._states = [];
             control._value = settings.value || '';
 
+            control.clearStates = function(id, name) {
+                control._states = [];
+                control._getSub$El('').html(control._buildSelectContent());
+            };
+
             control.addState = function(id, name) {
                 control._states.push({id:id, name:name, group:null});
                 control._getSub$El('').html(control._buildSelectContent());
