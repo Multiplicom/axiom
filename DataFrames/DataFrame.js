@@ -254,9 +254,9 @@ define([
 
             dataFrame.addProperty = function(propId, propDispName, propType, settings) {
                 if (dataFrame._mapProperties[propId])
-                    AXMUtils.Test.reportBug(_TRL('Duplicate dataframe property id: ') + propId);
+                    AXMUtils.Test.reportBug(_TRL('Duplicate dataframe property id: ' + propId));
                 if (!dataFrame.objectType.hasProperty(propId)) {
-                    var propInfo = Module.property(propId, propDispName, propType, settings)
+                    var propInfo = Module.property(propId, propDispName, propType, settings);
                     dataFrame.objectType.addProperty(propInfo);
                 }
                 var propInfo = dataFrame.objectType.getProperty(propId).clone();
@@ -264,6 +264,7 @@ define([
                 for (var i=0; i<dataFrame._rowCount; i++)
                     propInfo.data.push(null);
                 dataFrame._mapProperties[propId] = propInfo;
+                return propInfo;
             };
 
             dataFrame.getName = function() {
@@ -351,7 +352,7 @@ define([
 
             dataFrame.showData = function() {
                 var win = PopupWindow.create({
-                    title: _TRL('Data'),
+                    title: 'Data',
                     sizeX: 650,
                     sizeY: 500,
                     autoCenter: true

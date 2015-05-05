@@ -17,12 +17,12 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Controls/Controls", "AXM/Windows/SimplePopups", "AXM/Tables/TableData", "AXM/Tables/TableInfo",
-        "AXM/DataFrames/ViewRow"
+        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty"
     ],
     function (
         require, $, _,
         AXMUtils, PopupWindow, Frame, PanelForm, PanelTable, Controls, SimplePopups, TableData, TableInfo,
-        ViewRow
+        ViewRow, CalcProperty
     ) {
 
         var Module = {
@@ -91,7 +91,7 @@ define([
 
             var Compound = Controls.Compound;
             var win = PopupWindow.create({
-                title: '{name} ({Table})'.AXMInterpolate({name: dataFrame.getName()}),
+                title: '{name} (Table)'.AXMInterpolate({name: dataFrame.getName()}),
                 blocking:false,
                 autoCenter: true,
                 resizable: true,
@@ -133,6 +133,34 @@ define([
 
 
             win.createControls = function(group) {
+
+                var btViewPlot = Controls.Button({
+                    width: 160,
+                    text: _TRL('Create view'),
+                    icon: 'fa-eye'
+                })
+                    .addNotificationHandler(function() {
+                        dataFrame.promptPlot();
+                    });
+
+                var btCalcCol = Controls.Button({
+                    width: 160,
+                    text: _TRL('Calculate new property'),
+                    icon: 'fa-calculator'
+                })
+                    .addNotificationHandler(function() {
+                        CalcProperty.create(dataFrame, '', function() {
+                            win.close();
+                            Module.create(dataFrame);
+                        });
+                    });
+
+                group.add(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({}, [
+                    btViewPlot,
+                    btCalcCol
+                ])));
+
+
                 win.createSelectionTools(group);
             };
 
