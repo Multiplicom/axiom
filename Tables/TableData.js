@@ -141,6 +141,25 @@ define([
                 tableData.notifySelectionModified();
             };
 
+            tableData.selectAll = function() {
+                var _maxDownloadRowCount = 9999;
+
+                var _exec_Select = function() {
+                    tableData._selectedItemsMap = {};
+                    tableData._selectedCount = 0;
+
+                    var cnt = Math.min(_maxDownloadRowCount, tableData.getRowCount());
+                    for (var rowNr = 0; rowNr < cnt ; rowNr ++) {
+                        var rowData = tableData.getRow(rowNr);
+                        tableData.setItemSelected(rowData[tableData._primKey], true);
+                    }
+
+                    tableData.notifySelectionModified();
+                };
+
+                if (tableData.requireRowRange(0, _maxDownloadRowCount, _exec_Select))
+                    _exec_Select()
+            };
 
             return tableData;
         };
@@ -188,6 +207,8 @@ define([
             tableData.getRowCount = function() {
                 return rowCount;
             };
+
+
 
 
             return tableData;
