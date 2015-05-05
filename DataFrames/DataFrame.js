@@ -18,13 +18,13 @@ define([
         "require", "jquery", "_",  "blob", "filesaver",
         "AXM/AXMUtils", "AXM/Color", "AXM/DrawUtils", "AXM/Msg", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Windows/PopupWindow", "AXM/Panels/PanelHtml",
         "AXM/DataFrames/DataTypes",
-        "AXM/DataFrames/PromptPlot"
+        "AXM/DataFrames/PromptPlot", "AXM/DataFrames/Table"
     ],
     function (
         require, $, _, Blob, FileSaver,
         AXMUtils, Color, DrawUtils, Msg, Controls, Frame, PopupWindow, PanelHtml,
         DataTypes,
-        PromptPlot
+        PromptPlot, Table
     ) {
 
         var Module = {};
@@ -375,6 +375,52 @@ define([
             };
 
             return dataFrame;
+        };
+
+        Module.loadFromText = function(name, sourceText) {
+            var lines = sourceText.split('\n');
+            var dataTypeString = "# datatype: ";
+            if(lines[0] != "#RD_TEXT" || lines.length < 2 || lines[1].indexOf(dataTypeString) < 0) {
+                AXMUtils.reportBug('File type not supported for creating dataframe');
+                return;
+            }
+            var dataFrame = Module.createDataFrame(lines[1].substr(dataTypeString.length), name);
+            var columnOrder = null;
+            $.each(lines, function(idx, line) {
+                if(line.charAt(0) == '#'){
+                    // Header of file
+                    var columnString = "# column: ";
+                    if(line.indexOf(columnString) == 0){
+                        var columnProperties = line.substr(columnString.length).split('\t');
+                        if(columnProperties.length != 3)
+                            AXMUtils.reportBug(_TRL('RD file column header does no have exactly three properties: id, description, type'));
+                        if(!DataTypes[columnProperties[2]])
+                            AXMUtils.reportBug(_TRL('RD file column header type is not supported'));
+                        dataFrame.addProperty(columnProperties[0], columnProperties[1], DataTypes[columnProperties[2]]);
+                    }
+                }
+                else{
+                    // Body of file
+                    var fields = line.split('\t');
+                    if (!columnOrder)
+                        columnOrder = fields;
+                    else{
+                        if(fields.length == columnOrder.length) {
+                            var rowData = {};
+                            $.each(columnOrder, function(colNr, propId) {
+                                if(!fields[colNr])
+                                    rowData[propId] = fields[colNr]
+                                else
+                                    rowData[propId] = dataFrame.getProperty(propId).getDataType().parseString(fields[colNr]);
+                            });
+                            dataFrame.addRow(rowData);
+                        }
+                        else if(line.length > 0 && fields.length != columnOrder.length)
+                            AXMUtils.reportBug(_TRL('RD text file row cells differs from number of columns'));
+                    }
+                }
+            });
+            Table.create(dataFrame);
         };
 
         return Module;
