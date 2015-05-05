@@ -27,8 +27,6 @@ define([
 
         var Module = {
         };
-        Module.lastExpr = '';
-        Module.lastName = 'NewProperty';
 
         Module.create = function(dataFrame, onCompleted) {
 
@@ -44,7 +42,7 @@ define([
             }
 
             var win = PopupWindow.create({
-                title: _TRL('Import property'),
+                title: _TRL('Append dataframe'),
                 blocking:true,
                 autoCenter: true
             });
@@ -56,14 +54,6 @@ define([
                 win.ctrlDataFrame.addState(idx+1, frame.getName());
             });
             grp.add(Controls.Compound.GroupHor({}, ['Dataframe: ', win.ctrlDataFrame]));
-            win.ctrlDataFrame.addNotificationHandler(function() {win.update;});
-
-            win.ctrlProperty = Controls.DropList({width:300});
-            grp.add(Controls.Compound.GroupHor({}, ['Property: ', win.ctrlProperty]));
-
-            //win.ctrlName = Controls.Edit({width: 150, value: Module.lastName});
-            //grp.add(Controls.Compound.GroupHor({}, ['Property name: ', win.ctrlName]));
-
 
             var btOK = Controls.Button({
                 text: _TRL('Execute'),
@@ -73,39 +63,14 @@ define([
             });
             grp.add(btOK);
 
-            win.update = function() {
-                win.ctrlProperty.clearStates();
-                var dataFrameId = parseInt(win.ctrlDataFrame.getValue())-1;
-                if (dataFrameId >= 0) {
-                    var dataFrame = compatibleDataFrames[dataFrameId];
-                    $.each(dataFrame.getProperties(), function(idx, propInfo) {
-                        win.ctrlProperty.addState(propInfo.getId(), propInfo.getDispName());
-                    });
-                }
-            };
 
             win.execute = function() {
                 var dataFrameId = parseInt(win.ctrlDataFrame.getValue())-1;
                 if (dataFrameId >= 0) {
                     var sourceDataFrame = compatibleDataFrames[dataFrameId];
-                    var propId = win.ctrlProperty.getValue();
-                    var propInfo = sourceDataFrame.getProperty(propId);
-                    newProp = dataFrame.addProperty(
-                        AXMUtils.getUniqueID(),
-                        sourceDataFrame.getName() + ' - ' + propInfo.getDispName(),
-                        propInfo.getDataType(),
-                        {});
-                    var primKey = dataFrame.getPrimKeyProperty();
-                    var sourcePrimKey = sourceDataFrame.getPrimKeyProperty();
-                    var sourceMap = {}
-                    for (var rowNr = 0; rowNr < sourceDataFrame.getRowCount(); rowNr++)
-                        sourceMap[sourcePrimKey.data[rowNr]] = rowNr;
-                    for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
-                        var newVal = null;
-                        var ID = primKey.data[rowNr];
-                        if (ID in sourceMap)
-                            newVal = propInfo.data[sourceMap[ID]];
-                        newProp.data[rowNr] = newVal;
+
+                    for (var rowNr = 0; rowNr < sourceDataFrame.getRowCount(); rowNr++) {
+                        dataFrame.addRow(sourceDataFrame.getRowInfo(rowNr));
                     }
                     win.close();
                 }
@@ -115,7 +80,6 @@ define([
 
             win.setRootControl(Controls.Compound.StandardMargin(grp));
             win.start();
-            win.update();
         };
 
         return Module;

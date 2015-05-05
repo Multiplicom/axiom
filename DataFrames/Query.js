@@ -58,7 +58,7 @@ define([
                 grd.setItem(idx, 1, '<b>pt.'+property.getId()+'</b>');
                 grd.setItem(idx, 2, property.getDispName());
             });
-            grp.add(grd);
+            grp.add(Controls.Compound.VScroller(grd,300));
 
             win.ctrlExpr = Controls.Edit({width: 500, value: Module.lastExpr}).setHasDefaultFocus();
             grp.add(win.ctrlExpr);

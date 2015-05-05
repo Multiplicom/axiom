@@ -59,14 +59,19 @@ define([
                 grd.setItem(idx, 1, '<b>pt.'+property.getId()+'</b>');
                 grd.setItem(idx, 2, property.getDispName());
             });
-            grp.add(grd);
+            grp.add(Controls.Compound.VScroller(grd,300));
 
             win.ctrlExpr = Controls.Edit({width: 500, value: Module.lastExpr}).setHasDefaultFocus();
             grp.add(win.ctrlExpr);
 
+            win.ctrlType = Controls.DropList({width: 150, value: DataTypes.typeFloat.id});
+            grp.add(Controls.Compound.GroupHor({}, ['Property type:&nbsp;&nbsp;', win.ctrlType]));
+            $.each(DataTypes.typesMap, function(id, val) {
+                win.ctrlType.addState(id, val.getName);
+            });
 
             win.ctrlName = Controls.Edit({width: 150, value: Module.lastName});
-            grp.add(Controls.Compound.GroupHor({}, ['Property name: ', win.ctrlName]));
+            grp.add(Controls.Compound.GroupHor({}, ['Property name:&nbsp;&nbsp;', win.ctrlName]));
 
             //grp.add(_TRL('<i>NOTE: test equality with "==". Surround strings with single quotes.</i>'));
 
@@ -90,7 +95,12 @@ define([
                         newProp = propInfo;
                 });
                 if (!newProp) {
-                    newProp = dataFrame.addProperty(name, name, DataTypes.typeFloat, {});
+                    newProp = dataFrame.addProperty(
+                        name,
+                        name,
+                        DataTypes.typesMap[win.ctrlType.getValue()],
+                        {}
+                    );
                 }
                 for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
                     var newVal = null;

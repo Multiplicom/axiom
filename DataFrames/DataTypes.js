@@ -30,7 +30,8 @@ define([
                 id: id,
                 isString: function() {return false; },
                 isCategorical: function() {return false; },
-                parseString: function(str) {return str; }
+                parseString: function(str) {return str; },
+                getName: function(str) {return 'GenericType'; }
             };
         };
 
@@ -41,6 +42,7 @@ define([
         };
         Module.typeString.isString = function() {return true; };
         Module.typeString.isCategorical = function() {return true; };
+        Module.typeString.getName = function() {return 'Text'; };
 
 
         Module.typeBoolean = Module.typeGeneric('typeBoolean');
@@ -51,6 +53,7 @@ define([
         Module.typeBoolean.parseString = function(str) {
             return str.toLowerCase() === 'true';
         };
+        Module.typeBoolean.getName = function() {return 'Boolean'; };
 
 
         Module.typeFloat = Module.typeGeneric('typeFloat');
@@ -58,12 +61,19 @@ define([
             return otherType.id == 'typeFloat';
         };
         Module.typeFloat.parseString = function(str) {return parseFloat(str); };
+        Module.typeFloat.getName = function() {return 'Value'; };
 
 
         Module.typeAny = Module.typeGeneric('typeAny');
         Module.typeAny.includes = function(otherType) {
             return true;
         };
+
+        Module.typesMap = {
+            typeFloat: Module.typeFloat,
+            typeString: Module.typeString,
+            typeBoolean: Module.typeBoolean
+        }
 
 
         return Module;

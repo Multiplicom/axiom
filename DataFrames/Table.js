@@ -17,12 +17,12 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Msg", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Controls/Controls", "AXM/Windows/SimplePopups", "AXM/Tables/TableData", "AXM/Tables/TableInfo",
-        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty", "AXM/DataFrames/CopyProperty"
+        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty", "AXM/DataFrames/CopyProperty", "AXM/DataFrames/Append"
     ],
     function (
         require, $, _,
         AXMUtils, Msg, PopupWindow, Frame, PanelForm, PanelTable, Controls, SimplePopups, TableData, TableInfo,
-        ViewRow, CalcProperty, CopyProperty
+        ViewRow, CalcProperty, CopyProperty, Append
     ) {
 
         var Module = {
@@ -185,10 +185,24 @@ define([
                         });
                     });
 
+                var btAppend = Controls.Button({
+                    width: 160,
+                    height: 60,
+                    text: _TRL('Append other dataframe'),
+                    icon: 'fa-plus-square'
+                })
+                    .addNotificationHandler(function() {
+                        Append.create(dataFrame, function() {
+                            win.close();
+                            Module.create(dataFrame);
+                        });
+                    });
+
                 group.add(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({}, [
                     btViewPlot,
                     btCalcCol,
-                    btCopyCol
+                    btCopyCol,
+                    btAppend
                 ])));
 
 
