@@ -429,6 +429,33 @@ define([
             Table.create(dataFrame);
         };
 
+
+        Module.loadLocalFile = function() {
+
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.style.display = 'none';
+
+            input.onchange = function(e) {
+                if (input.files.length>0) {
+                    var file = input.files[0];
+
+                    var reader = new FileReader();
+
+                    reader.addEventListener("load", function(event) {
+                        var textFile = event.target;
+                        var txt = textFile.result;
+                        Module.loadFromText(file.name, txt);
+                    });
+
+                    reader.readAsText(file);
+                }
+            };
+
+            input.focus();
+            input.click();
+        };
+
         return Module;
     });
 
