@@ -68,10 +68,7 @@ define([
                 var dataFrameId = parseInt(win.ctrlDataFrame.getValue())-1;
                 if (dataFrameId >= 0) {
                     var sourceDataFrame = compatibleDataFrames[dataFrameId];
-
-                    for (var rowNr = 0; rowNr < sourceDataFrame.getRowCount(); rowNr++) {
-                        dataFrame.addRow(sourceDataFrame.getRowInfo(rowNr));
-                    }
+                    dataFrame.append(sourceDataFrame);
                     win.close();
                 }
                 onCompleted();

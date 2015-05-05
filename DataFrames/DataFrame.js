@@ -309,6 +309,12 @@ define([
                 });
             };
 
+            dataFrame.append = function(sourceDataFrame) {
+                for (var rowNr = 0; rowNr < sourceDataFrame.getRowCount(); rowNr++) {
+                    dataFrame.addRow(sourceDataFrame.getRowInfo(rowNr));
+                }
+            };
+
             dataFrame.createSelectedRowsDataFrame = function() {
                 var subFrame = Module.createDataFrame(dataFrame.objectType.typeId);
                 $.each(dataFrame.getProperties(), function(idx, propInfo) {
