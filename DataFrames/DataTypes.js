@@ -26,13 +26,15 @@ define([
         var Module = {};
 
         Module.typeGeneric = function(id) {
-            return {
+            var tpe = {
                 id: id,
                 isString: function() {return false; },
                 isCategorical: function() {return false; },
                 parseString: function(str) {return str; },
-                getName: function(str) {return 'GenericType'; }
+                getName: function() {return 'GenericType'; }
             };
+            tpe.getId = function() {return tpe.id; };
+            return tpe;
         };
 
 

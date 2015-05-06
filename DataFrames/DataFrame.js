@@ -333,7 +333,33 @@ define([
             };
 
 
-            dataFrame.getContentString = function() {
+            dataFrame.getContentString_Raw = function() {
+                var str = '';
+                str += '#RD_TEXT\n';
+                str += '# datatype: {tpe}\n'.AXMInterpolate({tpe: dataFrame.getObjectType().getTypeId()});
+                $.each(dataFrame.getProperties(), function(idx, propInfo) {
+                    str += '# column: ' + propInfo.getId() + '\t' + propInfo.getDispName() + '\t' + propInfo.getDataType().getId() + '\n';
+                });
+                $.each(dataFrame.getProperties(), function(idx, propInfo) {
+                    if (idx>0)
+                        str += '\t';
+                    str += propInfo.getId();
+                });
+                str += '\n';
+
+                for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
+                    $.each(dataFrame.getProperties(), function(idx, propInfo) {
+                        if (idx>0)
+                            str += '\t';
+                        str += propInfo.data[rowNr];
+                    });
+                    str += '\n';
+                }
+                return str;
+            };
+
+
+            dataFrame.getContentString_Display = function() {
                 var str = '';
                 $.each(dataFrame.getProperties(), function(idx, propInfo) {
                     if (idx>0)
@@ -363,7 +389,7 @@ define([
                     sizeY: 500,
                     autoCenter: true
                 });
-                var content = dataFrame.getContentString();
+                var content = dataFrame.getContentString_Display(false);
                 var form = PanelHtml.create();
                 form.enableVScrollBar();
                 form.setContent('<PRE>' + content + '</PRE>');
@@ -379,6 +405,14 @@ define([
 
                 win.start();
             };
+
+
+            dataFrame.saveLocalFile = function() {
+                var content = dataFrame.getContentString_Raw(true);
+                var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+                FileSaver(blob, dataFrame.getName());
+            };
+
 
             return dataFrame;
         };
@@ -455,6 +489,7 @@ define([
             input.focus();
             input.click();
         };
+
 
         return Module;
     });

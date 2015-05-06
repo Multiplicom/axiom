@@ -198,11 +198,22 @@ define([
                         });
                     });
 
+                var btSaveLocal = Controls.Button({
+                    width: 160,
+                    height: 60,
+                    text: _TRL('Save to local machine'),
+                    icon: 'fa-cloud-download'
+                })
+                    .addNotificationHandler(function() {
+                        dataFrame.saveLocalFile();
+                    });
+
                 group.add(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({}, [
                     btViewPlot,
                     btCalcCol,
                     btCopyCol,
-                    btAppend
+                    btAppend,
+                    btSaveLocal
                 ])));
 
 
