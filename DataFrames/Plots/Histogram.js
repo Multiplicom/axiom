@@ -40,6 +40,21 @@ define([
 
 
             win._createDisplayControls = function(dispGroup) {
+
+                win.ctrl_Resolution = Controls.Slider({
+                    width:160,
+                    minValue: -1,
+                    maxValue: +1,
+                    step: 0.01,
+                    value: 0,
+                    text: _TRL('Resolution')
+                })
+                    .addNotificationHandler(function() {
+                        win.parseData();
+                        win.plot.render();
+                    });
+                dispGroup.add(win.ctrl_Resolution);
+
                 win.infoCtrl = Controls.Static({});
                 dispGroup.add(win.infoCtrl);
             };
@@ -136,8 +151,10 @@ define([
                     }
                 }
 
+                var resolMultFac = Math.exp(2*win.ctrl_Resolution.getValue());
+
                 var jumpPrototypes = [1, 2, 5];
-                var optimalbincount = Math.floor(Math.sqrt(count));
+                var optimalbincount = Math.floor(Math.sqrt(count))*resolMultFac;
                 optimalbincount = Math.max(optimalbincount, 2);
                 optimalbincount = Math.min(optimalbincount, 200);
                 var optimalbinsize = (maxVal-minVal)*1.0/optimalbincount;
