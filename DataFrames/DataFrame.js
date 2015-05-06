@@ -241,8 +241,9 @@ define([
         Module.createDataFrame = function(objectTypeId, name) {
             var dataFrame = {};
             dataFrame.objectType = Module._objectTypes[objectTypeId];
-            if (!dataFrame.objectType)
-                AXMUtils.Test.reportBug(_TRL('Invalid datafrom objecttype: ') + objectTypeId);
+            if (!dataFrame.objectType) {
+                dataFrame.objectType = Module.createObjectType(objectTypeId, 'id');
+            }
             dataFrame._rowCount = 0;
             dataFrame._properties = [];
             dataFrame._mapProperties = {};

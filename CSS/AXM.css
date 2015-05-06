@@ -365,3 +365,22 @@ body {
     box-shadow: 1px 1px 7px rgba(0,0,0,0.65);
 }
 
+
+
+.AXMFileDrop {
+    box-sizing: border-box;
+    padding:9px;
+    font-size:13px;
+    text-align:center;
+    color:#666;
+    background-color:#eee;
+    border:2px dashed #aaa;
+    border-radius:10px;
+    z-index:9999;
+    width:250px;
+    height:100px;
+}
+.AXMFileDropDragOver {
+    background-color: #a2e6ee;
+    border:2px dashed #7d7d7d;
+}

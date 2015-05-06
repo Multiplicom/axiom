@@ -471,9 +471,6 @@ define([
                     control._clearButton.setEnabled(false);
                 });
 
-
-
-
             control.createHtml = function() {
 
                 var rootEl = DOM.Create("input", {id: control._getSubId('')});
@@ -557,6 +554,62 @@ define([
                 }
                 if (!preventNotify)
                     control.performNotify();
+            };
+
+            return control;
+        };
+
+
+
+
+        Module.FileDrop = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control._width = settings.width || 160;
+            control._height = settings.height || 60;
+            control._text = settings.text || 'Drop file(s)';
+            control._files = null;
+
+            control.createHtml = function() {
+                var div = DOM.Div({ id:control._getSubId('') })
+                    .addStyle('width',control._width+'px')
+                    .addStyle('height',control._height+'px')
+                    //.addStyle('line-height',control._height+'px')
+                    .addStyle('white-space', 'normal')
+                    .addStyle('position', 'relative');
+                div.addCssClass('AXMFileDrop');
+                var txtDiv = DOM.Div({parent: div});
+                //txtDiv.addStyle('line-height','3px')
+                txtDiv.addElem(control._text);
+                return div.toString();
+            };
+
+            control.onDragOver = function(ev) {
+                control._getSub$El('').addClass('AXMFileDropDragOver');
+            };
+
+            control.onDragLeave = function(ev) {
+                control._getSub$El('').removeClass('AXMFileDropDragOver');
+            };
+
+            control.onDrop = function(ev) {
+                control._getSub$El('').removeClass('AXMFileDropDragOver');
+                control._files = ev.originalEvent.dataTransfer.files;
+                control.performNotify();
+            };
+
+            control.attachEventHandlers = function() {
+                control._getSub$El('')
+//                    .on("dragenter", onDragEnter)
+                    .on("dragover", control.onDragOver)
+                    .on("dragleave", control.onDragLeave)
+                    .on("drop", control.onDrop);
+//                control._getSub$El('').click(control._onClicked);
+            };
+
+
+
+            control.getValue = function () {
+                return control._files;
             };
 
             return control;
