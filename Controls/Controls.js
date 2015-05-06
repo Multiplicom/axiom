@@ -599,17 +599,74 @@ define([
 
             control.attachEventHandlers = function() {
                 control._getSub$El('')
-//                    .on("dragenter", onDragEnter)
                     .on("dragover", control.onDragOver)
                     .on("dragleave", control.onDragLeave)
                     .on("drop", control.onDrop);
-//                control._getSub$El('').click(control._onClicked);
             };
-
-
 
             control.getValue = function () {
                 return control._files;
+            };
+
+            return control;
+        };
+
+
+        Module.Slider = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control._width = settings.width || 160;
+            control._minValue = settings.minValue || 0;
+            control._maxValue = settings.maxValue || 1000;
+            control._step = settings.step || 1;
+            control._value = settings.value || 0;
+            control._text = settings.text || '';
+
+            control.createHtml = function() {
+
+                var div = DOM.Div({ id:control._getSubId('') })
+                    .addStyle('width',control._width+'px')
+                    .addStyle('height',control._height+'px')
+                    //.addStyle('line-height',control._height+'px')
+                    .addStyle('white-space', 'normal')
+                    .addStyle('position', 'relative');
+
+                DOM.Create('Span', {parent:div}).addElem(control._text);
+                DOM.Create('Span', {id: control._getSubId('value'), parent:div})
+                    .addStyle('float', 'right');
+
+
+                var slider = DOM.Create("input", {id: control._getSubId('slider'), parent: div});
+                slider.addAttribute('type', 'range')
+                    .addAttribute('min', control._minValue)
+                    .addAttribute('max', control._maxValue)
+                    .addAttribute('step', control._step)
+                    .addAttribute('value', control._value)
+                    .addCssClass('AXMEdit')
+                    .addStyle('width',control._width+'px')
+                    .addStyle('white-space', 'normal')
+                    .addStyle('position', 'relative');
+                return div.toString();
+            };
+
+
+            control.attachEventHandlers = function() {
+                control._getSub$El('slider').change(control._onChange);
+                control._setNewValue();
+            };
+
+            control._onChange = function() {
+                control._value = control._getSub$El('slider').val();
+                control._setNewValue();
+            };
+
+            control._setNewValue = function() {
+                control._getSub$El('value').text(control._value);
+            };
+
+            control.getValue = function () {
+                if (control._getSub$El('slider').length>0)
+                    control._value = control._getSub$El('slider').val();
+                return control._value;
             };
 
             return control;
