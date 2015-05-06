@@ -621,6 +621,8 @@ define([
             control._value = settings.value || 0;
             control._text = settings.text || '';
 
+            control._value = Math.round(control._value/control._step)*control._step;
+
             control.createHtml = function() {
 
                 var div = DOM.Div({ id:control._getSubId('') })
@@ -657,6 +659,7 @@ define([
             control._onChange = function() {
                 control._value = control._getSub$El('slider').val();
                 control._setNewValue();
+                control.performNotify();
             };
 
             control._setNewValue = function() {

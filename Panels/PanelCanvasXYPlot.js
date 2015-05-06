@@ -175,12 +175,12 @@ define([
                 ctx.stroke();
             };
 
-            panel.drawPoint = function(drawInfo, vlx, vly) {
+            panel.drawPoint = function(drawInfo, vlx, vly, size) {
                 var px = /*Math.round*/(vlx * drawInfo.scaleX + drawInfo.offsetX);
                 var py = /*Math.round*/(vly * drawInfo.scaleY + drawInfo.offsetY);
                 var ctx = drawInfo.ctx;
                 ctx.beginPath();
-                ctx.arc(px, py, 2, 0, 2 * Math.PI, false);
+                ctx.arc(px, py, size, 0, 2 * Math.PI, false);
                 ctx.closePath();
                 ctx.fill();
             };

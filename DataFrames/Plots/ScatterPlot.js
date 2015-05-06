@@ -62,12 +62,32 @@ define([
 
             win._createDisplayControls = function(dispGroup) {
 
-                var opacityCheck = Controls.Check({text: _TRL('Semi-transparent points'), checked: true})
+                var opacityCheck = Controls.Slider({
+                    width:160,
+                    minValue: 0.1,
+                    maxValue: 1,
+                    step: 0.01,
+                    value: Math.pow(win._opacity, 1/1.5),
+                    text: _TRL('Opacity')
+                })
                     .addNotificationHandler(function() {
-                        win._opacity = opacityCheck.getValue() ? 0.4 : 1;
+                        win._opacity = Math.pow(opacityCheck.getValue(),1.5);
                         win.plot.render();
                     });
                 dispGroup.add(opacityCheck);
+
+                win.ctrl_PointSize = Controls.Slider({
+                    width:160,
+                    minValue: 0.5,
+                    maxValue: 5,
+                    step: 0.2,
+                    value: 2,
+                    text: _TRL('Point size')
+                })
+                    .addNotificationHandler(function() {
+                        win.plot.render();
+                    });
+                dispGroup.add(win.ctrl_PointSize);
 
                 win.colorLegendCtrl = Controls.Static({});
                 dispGroup.add(win.colorLegendCtrl);
@@ -213,12 +233,14 @@ define([
                     }
                 }
 
+                var pointSize = win.ctrl_PointSize.getValue();
+
                 drawInfo.ctx.fillStyle = Color.Color(0,0,255,win._opacity).toStringCanvas();
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
                     if (propColor) {
                         drawInfo.ctx.fillStyle = propColor.getSingleColor(dataColor[rowNr]).changeOpacity(win._opacity).toStringCanvas();
                     }
-                    plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr]);
+                    plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr],pointSize);
                 }
 
                 var rowSelGet = win.dataFrame.objectType.rowSelGet;
