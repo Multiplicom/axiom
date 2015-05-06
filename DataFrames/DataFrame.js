@@ -383,6 +383,10 @@ define([
                 PromptPlot.create(dataFrame);
             };
 
+            dataFrame.showTable = function() {
+                Table.create(dataFrame);
+            }
+
             dataFrame.showData = function() {
                 var win = PopupWindow.create({
                     title: 'Data',
@@ -418,7 +422,7 @@ define([
             return dataFrame;
         };
 
-        Module.loadFromText = function(name, sourceText) {
+        Module.loadFromText = function(name, sourceText, showAsTable) {
             var lines = sourceText.split('\n');
             var dataTypeString = "# datatype: ";
             if(lines[0] != "#RD_TEXT" || lines.length < 2 || lines[1].indexOf(dataTypeString) < 0) {
@@ -461,7 +465,9 @@ define([
                     }
                 }
             });
-            Table.create(dataFrame);
+            if (showAsTable)
+                Table.create(dataFrame);
+            return dataFrame;
         };
 
 
