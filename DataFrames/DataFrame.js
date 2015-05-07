@@ -142,8 +142,20 @@ define([
 
 
             property.content2DisplayString = function(val) {
+                if (val===null)
+                    return '';
                 return String(val);
             };
+
+            if (propType.getId() == 'typeBoolean') {
+                property.content2DisplayString = function(val) {
+                    if (val === true)
+                        return 'true';
+                    if (val === false)
+                        return 'false';
+                    return '';
+                };
+            }
 
             return property;
         };

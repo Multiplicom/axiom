@@ -71,6 +71,11 @@ define([
             return true;
         };
 
+        Module.typeAnyCategorical = Module.typeGeneric('typeAnyCategorical');
+        Module.typeAnyCategorical.includes = function(otherType) {
+            return otherType.isCategorical();
+        };
+
         Module.typesMap = {
             typeFloat: Module.typeFloat,
             typeString: Module.typeString,

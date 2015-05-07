@@ -29,8 +29,8 @@ define([
     ) {
 
         var PlotType = _GenericPlot.createPlotType('bargraph', _TRL('Bar graph'), 'fa-bar-chart');
-        PlotType.addPlotAspect('category', _TRL('Category'), DataTypes.typeString, true);
-        PlotType.addPlotAspect('category2', _TRL('Second category'), DataTypes.typeString, false);
+        PlotType.addPlotAspect('category', _TRL('Category'), DataTypes.typeAnyCategorical, true);
+        PlotType.addPlotAspect('category2', _TRL('Second category'), DataTypes.typeAnyCategorical, false);
 
         PlotType.create = function(dataFrame, aspectMap) {
             var win = PlotType.createGeneric(dataFrame, aspectMap);
