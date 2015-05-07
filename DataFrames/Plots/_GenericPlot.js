@@ -302,15 +302,16 @@ define([
                     win._rightGroup = rightGroup;
                     rootFrame.addMember(rightGroup);
 
-                    if (!win.plot)
-                        AXMUtils.Test.reportBug(_TRL('Plot panel is not defined'));
-                    win.plotFrame = Frame.FrameFinalCommands(win.plot);
-                    rightGroup.addMember(win.plotFrame);
+                    if (win.plot) {
+                        win.plotFrame = Frame.FrameFinalCommands(win.plot);
+                        rightGroup.addMember(win.plotFrame);
+                    }
 
                     win._formInfoText = PanelHtml.create('', {});
                     rightGroup.addMember(Frame.FrameFinal(win._formInfoText).setAutoSize(Frame.dimY));
 
-                    win.addPlotCommand('fa-external-link', _TRL('Open plot'), win.openImage);
+                    if (win.plot)
+                        win.addPlotCommand('fa-external-link', _TRL('Open plot'), win.openImage);
 
                     if (win.setPlotCommands)
                         win.setPlotCommands();
