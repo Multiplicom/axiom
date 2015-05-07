@@ -41,11 +41,24 @@ define([
 
             win._createDisplayControls = function(dispGroup) {
 
-                //win._scaleCheck = Controls.Check({text: _TRL('Scale to 100%'), checked: false})
-                //    .addNotificationHandler(function() {
-                //        win.plot.render();
-                //    });
-                //dispGroup.add(win._scaleCheck);
+                win.ctrl_showEnhInfo = Controls.Check({text: _TRL('Show enhancement'), checked: false})
+                    .addNotificationHandler(function() {
+                        win.render();
+                    });
+                dispGroup.add(win.ctrl_showEnhInfo);
+
+                win.ctrl_showFracInfo = Controls.Check({text: _TRL('Show fraction info'), checked: true})
+                    .addNotificationHandler(function() {
+                        win.render();
+                    });
+                dispGroup.add(win.ctrl_showFracInfo);
+
+                win.ctrl_showSelInfo = Controls.Check({text: _TRL('Show selection info'), checked: true})
+                    .addNotificationHandler(function() {
+                        win.render();
+                    });
+                dispGroup.add(win.ctrl_showSelInfo);
+
                 //
                 //win.ctrlSortType = Controls.DropList({}).addNotificationHandler(function() {
                 //    win.parseData();
@@ -140,9 +153,20 @@ define([
                 $.each(win.cats1, function(idx1, cat1) {
                     $.each(win.cats2, function(idx2, cat2) {
                         var cellInfo = win.cellData[idx1][idx2];
-                        win.maxCellCount = Math.max(win.maxCellCount, cellInfo.count);
+                        cellInfo.enhancement = cellInfo.count*1.0 / (cat1.count*cat2.count) * win.totCount-1;
                     });
                 });
+
+                win.maxCellCount = 0;
+                win.maxCellEnhancement = 0.1;
+                $.each(win.cats1, function(idx1, cat1) {
+                    $.each(win.cats2, function(idx2, cat2) {
+                        var cellInfo = win.cellData[idx1][idx2];
+                        win.maxCellCount = Math.max(win.maxCellCount, cellInfo.count);
+                        win.maxCellEnhancement = Math.max(win.maxCellEnhancement, Math.abs(cellInfo.enhancement));
+                    });
+                });
+                win.maxCellEnhancement = Math.min(win.maxCellEnhancement, 5);
 
 
             };
@@ -163,21 +187,33 @@ define([
                 content += '<tr><th>Count:</th><td><b>{val}</b></td></tr>'.AXMInterpolate({
                     val: cellInfo.count
                 });
-                content += '<tr><th>Frac&nbsp;tot:</th><td>{val}</td></tr>'.AXMInterpolate({
-                    val: writeFrac(cellInfo.count*1.0/win.totCount)
-                });
-                content += '<tr><th>Frac&nbsp;Row:</th><td>{val}</td></tr>'.AXMInterpolate({
-                    val: writeFrac(cellInfo.count*1.0/win.cats1[idx1].count)
-                });
-                content += '<tr><th>Frac&nbsp;Col:</th><td>{val}</td></tr>'.AXMInterpolate({
-                    val: writeFrac(cellInfo.count*1.0/win.cats2[idx2].count)
-                });
-                content += '<tr><th>Sel:</th><td>{val}</td></tr>'.AXMInterpolate({
-                    val: cellInfo.selCount
-                });
-                content += '<tr><th>Frac&nbsp;Sel:</th><td>{val}</td></tr>'.AXMInterpolate({
-                    val: writeFrac(cellInfo.selCount*1.0/Math.max(cellInfo.count,1))
-                });
+
+                if (win._dispEnhInfo) {
+                    content += '<tr><th>Enhanc:</th><td>{val}</td></tr>'.AXMInterpolate({
+                        val: writeFrac(cellInfo.enhancement)
+                    });
+                }
+
+                if (win._dispFracInfo) {
+                    content += '<tr><th>Frac&nbsp;tot:</th><td>{val}</td></tr>'.AXMInterpolate({
+                        val: writeFrac(cellInfo.count * 1.0 / win.totCount)
+                    });
+                    content += '<tr><th>Frac&nbsp;Row:</th><td>{val}</td></tr>'.AXMInterpolate({
+                        val: writeFrac(cellInfo.count * 1.0 / win.cats1[idx1].count)
+                    });
+                    content += '<tr><th>Frac&nbsp;Col:</th><td>{val}</td></tr>'.AXMInterpolate({
+                        val: writeFrac(cellInfo.count * 1.0 / win.cats2[idx2].count)
+                    });
+                }
+
+                if (win._dispSelInfo) {
+                    content += '<tr><th>Sel:</th><td>{val}</td></tr>'.AXMInterpolate({
+                        val: cellInfo.selCount
+                    });
+                    content += '<tr><th>Frac&nbsp;Sel:</th><td>{val}</td></tr>'.AXMInterpolate({
+                        val: writeFrac(cellInfo.selCount*1.0/Math.max(cellInfo.count,1))
+                    });
+                }
 
 
                 content += '</table>';
@@ -185,6 +221,11 @@ define([
             };
 
             win.render = function() {
+
+                win._dispEnhInfo = win.ctrl_showEnhInfo.getValue();
+                win._dispSelInfo = win.ctrl_showSelInfo.getValue();
+                win._dispFracInfo = win.ctrl_showFracInfo.getValue();
+
                 win.parseData();
                 var content = '<table class="AXMCrossTable">';
 
@@ -210,6 +251,18 @@ define([
                         cellInfo._id = AXMUtils.getUniqueID();
                         var colorFr = cellInfo.count*1.0/win.maxCellCount;
                         var col = Color.Color(1-0.6*colorFr, 1-0.3*colorFr*colorFr, 1);
+                        if (win._dispEnhInfo) {
+                            colorFr = cellInfo.enhancement*1.0/win.maxCellEnhancement;
+                            if (colorFr>0) {
+                                if (colorFr > 1) colorFr = 1;
+                                col = Color.Color(1-0.6*colorFr, 1-0.3*colorFr*colorFr, 1);
+                            }
+                            else {
+                                colorFr = -colorFr;
+                                if (colorFr > 1) colorFr = 1;
+                                col = Color.Color(1, 1-0.3*colorFr*colorFr, 1-0.6*colorFr);
+                            }
+                        }
                         content += '<td><div id="{id}" style="padding:8px;background-color: {col}">'.AXMInterpolate({id: cellInfo._id, col: col.toString()});
                         content += win.renderCellInfo(idx1, idx2);
                         content += '</div></td>';
