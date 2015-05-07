@@ -229,7 +229,8 @@ define([
                     var propLabel = win.getAspectProperty('label');
                     var dataLabel = propLabel.data;
                     for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
-                        plot.drawLabel(drawInfo, dataX[rowNr], dataY[rowNr], 4, propLabel.content2DisplayString(dataLabel[rowNr]));
+                        if ( (dataX[rowNr]!=null) && (dataY[rowNr]!=null) )
+                            plot.drawLabel(drawInfo, dataX[rowNr], dataY[rowNr], 4, propLabel.content2DisplayString(dataLabel[rowNr]));
                     }
                 }
 
@@ -237,17 +238,21 @@ define([
 
                 drawInfo.ctx.fillStyle = Color.Color(0,0,255,win._opacity).toStringCanvas();
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
-                    if (propColor) {
-                        drawInfo.ctx.fillStyle = propColor.getSingleColor(dataColor[rowNr]).changeOpacity(win._opacity).toStringCanvas();
+                    if ( (dataX[rowNr]!=null) && (dataY[rowNr]!=null) ) {
+                        if (propColor) {
+                            drawInfo.ctx.fillStyle = propColor.getSingleColor(dataColor[rowNr]).changeOpacity(win._opacity).toStringCanvas();
+                        }
+                        plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr],pointSize);
                     }
-                    plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr],pointSize);
                 }
 
                 var rowSelGet = win.dataFrame.objectType.rowSelGet;
                 drawInfo.ctx.strokeStyle = Color.Color(255,0,0,0.5).toStringCanvas();
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
-                    if (rowSelGet(dataPrimKey[rowNr]))
-                        plot.drawSel(drawInfo, dataX[rowNr], dataY[rowNr]);
+                    if ( (dataX[rowNr]!=null) && (dataY[rowNr]!=null) ) {
+                        if (rowSelGet(dataPrimKey[rowNr]))
+                            plot.drawSel(drawInfo, dataX[rowNr], dataY[rowNr]);
+                    }
                 }
 
                 ctx.strokeStyle = Color.Color(255,0,0,0.5).toStringCanvas();
