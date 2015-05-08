@@ -116,13 +116,17 @@ define([
 
                 win._createAspectControls = function(grp) {
                     $.each(plotType.getPlotAspects(), function(idx, aspect) {
-                        var picker = Controls.DropList({width: 160});
-                        if (!aspect.getRequired())
-                            picker.addState('', _TRL("-- None --"));
-                        $.each(dataFrame.getProperties(), function(idx, prop) {
-                            if (aspect.getDataType().includes(prop.getDataType()))
-                                picker.addState(prop.getId(), prop.getDispName());
-                        });
+                        var picker = dataFrame.createPropertySelector(
+                            aspect.getDataType(),
+                            !aspect.getRequired()
+                        );
+                        //var picker = Controls.DropList({width: 160});
+                        //if (!aspect.getRequired())
+                        //    picker.addState('', _TRL("-- None --"));
+                        //$.each(dataFrame.getProperties(), function(idx, prop) {
+                        //    if (aspect.getDataType().includes(prop.getDataType()))
+                        //        picker.addState(prop.getId(), prop.getDispName());
+                        //});
                         var aspectProp = win.getAspectProperty(aspect.getId());
                         if (aspectProp)
                             picker.setValue(aspectProp.getId());

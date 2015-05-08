@@ -354,8 +354,9 @@ define([
                 control._getSub$El('').html(control._buildSelectContent());
             };
 
-            control.addState = function(id, name) {
-                control._states.push({id:id, name:name, group:null});
+            control.addState = function(id, name, group) {
+                if (!group) group = '';
+                control._states.push({id:id, name:name, group:group});
                 control._getSub$El('').html(control._buildSelectContent());
             };
 
@@ -404,7 +405,7 @@ define([
                             st += '</optgroup>';
                         lastGroupName = groupName;
                         if (groupName)
-                            st += '<optgroup = label="{name}">'.DQXformat({name: groupName});
+                            st += '<optgroup = label="{name}">'.AXMInterpolate({name: groupName});
                     }
                     st += '<option value="{id}" {selected}>{name}</option>'.AXMInterpolate({
                         id: state.id,

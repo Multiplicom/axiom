@@ -47,7 +47,7 @@ define([
                 })
                     .addNotificationHandler(function() {
                         win.close();
-                        Module._createPropertyPicker(plotType, dataFrame);
+                        Module._createPlotPropertyPicker(plotType, dataFrame);
                     });
                 grp.add(btPlot);
             });
@@ -67,7 +67,7 @@ define([
             win.start();
         };
 
-        Module._createPropertyPicker = function(plotType, dataFrame) {
+        Module._createPlotPropertyPicker = function(plotType, dataFrame) {
             var win = PopupWindow.create({
                 title: _TRL('Create ') + plotType.getPlotTypeName(),
                 blocking: true,
@@ -79,13 +79,15 @@ define([
             win._aspectPickerMap = {};
             $.each(plotType.getPlotAspects(), function(idx, aspect) {
                 grp.setItem(idx, 0, aspect.getName()+':');
-                var picker = Controls.DropList({width: 200});
+                var picker = dataFrame.createPropertySelector(aspect.getDataType(), true);
                 win._aspectPickerMap[aspect.getId()] = picker;
-                picker.addState('', "- None -");
-                $.each(dataFrame.getProperties(), function(idx, prop) {
-                    if (aspect.getDataType().includes(prop.getDataType()))
-                    picker.addState(prop.getId(), prop.getDispName());
-                });
+                //var picker = Controls.DropList({width: 200});
+                //win._aspectPickerMap[aspect.getId()] = picker;
+                //picker.addState('', "- None -");
+                //$.each(dataFrame.getProperties(), function(idx, prop) {
+                //    if (aspect.getDataType().includes(prop.getDataType()))
+                //    picker.addState(prop.getId(), prop.getDispName());
+                //});
                 if (aspect.getId() == 'tooltip')
                     picker.setValue(dataFrame.objectType.getDefaultTooltip());
                 grp.setItem(idx, 1, picker);

@@ -40,10 +40,18 @@ define([
         Module.property = function(propId, propDispName, propType, settings) {
             var property = {
                 _propId: propId,
+                _propCat: '',
                 _propDispName: propDispName,
+                _propDispNamePart: propDispName,
                 _propType: propType,
                 data: []
             };
+
+            var tokens = propDispName.split(': ');
+            if (tokens.length == 2) {
+                property._propCat = tokens[0];
+                property._propDispNamePart = tokens[1];
+            }
 
             property._isCategorical = propType.isCategorical();
             if (property._isCategorical)
@@ -58,8 +66,16 @@ define([
                 return property._propId;
             };
 
+            property.getCategory = function() {
+                return property._propCat;
+            };
+
             property.getDispName = function() {
                 return property._propDispName;
+            };
+
+            property.getDispNamePart = function() {
+                return property._propDispNamePart;
             };
 
             property.getDataType = function() {
@@ -407,13 +423,24 @@ define([
                 return str;
             };
 
+            dataFrame.createPropertySelector = function(compatibleDataType, canHaveNone) {
+                var picker = Controls.DropList({width: 200});
+                if (canHaveNone)
+                    picker.addState('', "- None -", '');
+                $.each(dataFrame.getProperties(), function(idx, prop) {
+                    if (compatibleDataType.includes(prop.getDataType()))
+                        picker.addState(prop.getId(), prop.getDispNamePart(), prop.getCategory());
+                });
+                return picker;
+            };
+
             dataFrame.promptPlot = function() {
                 PromptPlot.create(dataFrame);
             };
 
             dataFrame.showTable = function() {
                 Table.create(dataFrame);
-            }
+            };
 
             dataFrame.showData = function() {
                 var win = PopupWindow.create({
