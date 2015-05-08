@@ -165,17 +165,19 @@ define([
 
             };
 
-            panel.drawSel = function(drawInfo, vlx, vly) {
+            panel.drawSel = function(drawInfo, vlx, vly, size) {
                 var px = /*Math.round*/(vlx * drawInfo.scaleX + drawInfo.offsetX);
                 var py = /*Math.round*/(vly * drawInfo.scaleY + drawInfo.offsetY);
                 var ctx = drawInfo.ctx;
                 ctx.beginPath();
-                ctx.arc(px, py, 4, 0, 2 * Math.PI, false);
+                ctx.arc(px, py, size, 0, 2 * Math.PI, false);
                 ctx.closePath();
                 ctx.stroke();
             };
 
-            panel.drawPoint = function(drawInfo, vlx, vly, size) {
+            panel.drawPoint = function(drawInfo, vlx, vly, size, drawOutline) {
+                if (size < 0)
+                    debugger;
                 var px = /*Math.round*/(vlx * drawInfo.scaleX + drawInfo.offsetX);
                 var py = /*Math.round*/(vly * drawInfo.scaleY + drawInfo.offsetY);
                 var ctx = drawInfo.ctx;
@@ -183,6 +185,8 @@ define([
                 ctx.arc(px, py, size, 0, 2 * Math.PI, false);
                 ctx.closePath();
                 ctx.fill();
+                if (drawOutline)
+                    ctx.stroke();
             };
 
             panel.drawLabel = function(drawInfo, vlx, vly, offset, content) {

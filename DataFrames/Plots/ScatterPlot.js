@@ -32,6 +32,7 @@ define([
         PlotType.addPlotAspect('xvalue', _TRL('X Value'), DataTypes.typeFloat, true);
         PlotType.addPlotAspect('yvalue', _TRL('Y Value'), DataTypes.typeFloat, true);
         PlotType.addPlotAspect('color', _TRL('Color'), DataTypes.typeAny, false);
+        PlotType.addPlotAspect('size', _TRL('Size'), DataTypes.typeFloat, false);
         PlotType.addPlotAspect('label', _TRL('Label'), DataTypes.typeAny, false);
         PlotType.addPlotAspect('tooltip', _TRL('Hover text'), DataTypes.typeAny, false);
 
@@ -88,6 +89,13 @@ define([
                         win.plot.render();
                     });
                 dispGroup.add(win.ctrl_PointSize);
+
+                win.ctrl_showOutline = Controls.Check({text: _TRL('Point outline'), checked: false})
+                    .addNotificationHandler(function() {
+                        win.plot.render();
+                    });
+                dispGroup.add(win.ctrl_showOutline);
+
 
                 win.colorLegendCtrl = Controls.Static({});
                 dispGroup.add(win.colorLegendCtrl);
@@ -224,34 +232,99 @@ define([
                     var dataColor = propColor.data;
                 }
 
+
+                var propSize = null;
+                if (win.hasAspectProperty('size')) {
+                    propSize = win.getAspectProperty('size');
+                    var dataSize = propSize.data;
+                }
+
+                var usedRowNrs = [];
+                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                    if ( (dataX[rowNr]!=null) && (dataY[rowNr]!=null) )
+                    if (propSize) {
+                        if (dataSize[rowNr] != null)
+                            usedRowNrs.push(rowNr);
+                    }
+                    else
+                        usedRowNrs.push(rowNr);
+                }
+                var rowNr = null;
+
+
+                if (propSize) {
+                    var minSizeVal = 1.0e99;
+                    var maxSizeVal = -1.0e99;
+                    for (var idx = 0; idx < usedRowNrs.length; idx++) {
+                        rowNr = usedRowNrs[idx];
+                        minSizeVal = Math.min(minSizeVal, dataSize[rowNr]);
+                        maxSizeVal = Math.max(maxSizeVal, dataSize[rowNr]);
+                    }
+                }
+
+                if (propSize) {
+                    var order = [];
+                    for (var idx = 0; idx < usedRowNrs.length; idx++) {
+                        rowNr = usedRowNrs[idx];
+                        order.push(-dataSize[rowNr]);
+                    }
+                }
+                else { //sort random
+                    var seed = 1;
+                    function random_seeded() {
+                        var x = Math.sin(seed++) * 10000;
+                        return x - Math.floor(x);
+                    }
+                    var order = [];
+                    for (var idx = 0; idx < usedRowNrs.length; idx++) {
+                        order.push(random_seeded());
+                    }
+                }
+
+                usedRowNrs.sort(function(idx1, idx2) {
+                    var val1 = order[idx1];
+                    var val2 = order[idx2];
+                    var discr = ((val1 < val2) ? -1 : ((val1 > val2) ? 1 : 0));
+                    return discr;
+                });
+
+
                 drawInfo.ctx.fillStyle = Color.Color(0,0,0,0.6).toStringCanvas();
                 if (win.hasAspectProperty('label')) {
                     var propLabel = win.getAspectProperty('label');
                     var dataLabel = propLabel.data;
-                    for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
-                        if ( (dataX[rowNr]!=null) && (dataY[rowNr]!=null) )
-                            plot.drawLabel(drawInfo, dataX[rowNr], dataY[rowNr], 4, propLabel.content2DisplayString(dataLabel[rowNr]));
+                    for (var idx = 0; idx < usedRowNrs.length; idx++) {
+                        rowNr = usedRowNrs[idx];
+                        plot.drawLabel(drawInfo, dataX[rowNr], dataY[rowNr], 4, propLabel.content2DisplayString(dataLabel[rowNr]));
                     }
                 }
 
-                var pointSize = win.ctrl_PointSize.getValue();
 
+                var globalPointSize = win.ctrl_PointSize.getValue();
+                var pointSize = globalPointSize;
+                var drawOutline = win.ctrl_showOutline.getValue();
                 drawInfo.ctx.fillStyle = Color.Color(0,0,255,win._opacity).toStringCanvas();
-                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
-                    if ( (dataX[rowNr]!=null) && (dataY[rowNr]!=null) ) {
-                        if (propColor) {
-                            drawInfo.ctx.fillStyle = propColor.getSingleColor(dataColor[rowNr]).changeOpacity(win._opacity).toStringCanvas();
-                        }
-                        plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr],pointSize);
+                ctx.strokeStyle = Color.Color(0,0,0,0.7*win._opacity).toStringCanvas();
+                ctx.lineWidth=1;
+                for (var idx = 0; idx < usedRowNrs.length; idx++) {
+                    rowNr = usedRowNrs[idx];
+                    if (propColor) {
+                        drawInfo.ctx.fillStyle = propColor.getSingleColor(dataColor[rowNr]).changeOpacity(win._opacity).toStringCanvas();
                     }
+                    if (propSize)
+                        pointSize = globalPointSize*3*(0.1+(dataSize[rowNr]-minSizeVal)/(maxSizeVal-minSizeVal));
+                    plot.drawPoint(drawInfo, dataX[rowNr], dataY[rowNr],pointSize, drawOutline);
                 }
 
+                pointSize = globalPointSize;
                 var rowSelGet = win.dataFrame.objectType.rowSelGet;
                 drawInfo.ctx.strokeStyle = Color.Color(255,0,0,0.5).toStringCanvas();
-                for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
-                    if ( (dataX[rowNr]!=null) && (dataY[rowNr]!=null) ) {
-                        if (rowSelGet(dataPrimKey[rowNr]))
-                            plot.drawSel(drawInfo, dataX[rowNr], dataY[rowNr]);
+                for (var idx = 0; idx < usedRowNrs.length; idx++) {
+                    rowNr = usedRowNrs[idx];
+                    if (rowSelGet(dataPrimKey[rowNr])) {
+                        if (propSize)
+                            pointSize = globalPointSize*3*(0.1+(dataSize[rowNr]-minSizeVal)/(maxSizeVal-minSizeVal));
+                        plot.drawSel(drawInfo, dataX[rowNr], dataY[rowNr], pointSize+2);
                     }
                 }
 

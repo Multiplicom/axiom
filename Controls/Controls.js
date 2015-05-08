@@ -658,7 +658,7 @@ define([
             };
 
             control._onChange = function() {
-                control._value = control._getSub$El('slider').val();
+                control._value = parseFloat(control._getSub$El('slider').val());
                 control._setNewValue();
                 control.performNotify();
             };
@@ -669,7 +669,7 @@ define([
 
             control.getValue = function () {
                 if (control._getSub$El('slider').length>0)
-                    control._value = control._getSub$El('slider').val();
+                    control._value = parseFloat(control._getSub$El('slider').val());
                 return control._value;
             };
 
