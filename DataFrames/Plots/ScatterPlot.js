@@ -55,7 +55,7 @@ define([
                         win.plot.doLassoSelection(win._hasLassoSelected);
                         win.button_lassoSelection.setChecked(true);
                         var infoTxt = _TRL("Double click to complete the lasso selection");
-                        win.setInfoText('<div style="width:100%;padding:2px;background-color: yellow;font-weight: bold">' + intoTxt + '</div>');
+                        win.setInfoText('<div style="width:100%;padding:2px;background-color: yellow;font-weight: bold">' + infoTxt + '</div>');
                     }
                 );
             };
@@ -151,21 +151,22 @@ define([
 
 
             win.updateAspect = function(aspectId) {
-                if (aspectId == 'xvalue') {
+                var all = !aspectId;
+                if ((aspectId == 'xvalue') || all) {
                     var rangeX = win.getAspectProperty('xvalue').getValueRange();
                     rangeX.extendFraction(0.1);
                     win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
                     win.plot.setXLabel(win.getAspectProperty('xvalue').getDispName());
                     win._curves = [];
                 }
-                if (aspectId == 'yvalue') {
+                if ((aspectId == 'yvalue') || all) {
                     var rangeY = win.getAspectProperty('yvalue').getValueRange();
                     rangeY.extendFraction(0.1);
                     win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
                     win.plot.setYLabel(win.getAspectProperty('yvalue').getDispName());
                     win._curves = [];
                 }
-                if (aspectId == 'color')
+                if ((aspectId == 'color') || all)
                     win.updateColorLegend();
                 win.plot.render();
             };

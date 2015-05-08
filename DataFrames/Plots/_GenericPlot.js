@@ -145,6 +145,18 @@ define([
                     win._ctrlSelectionCount = Controls.Static({text: _TRL('0 points selected')});
                     grp.add(win._ctrlSelectionCount);
 
+                    var btSelectAll = Controls.Button({
+                        text: _TRL('Select all'),
+                        icon: 'fa-square-o'
+                    })
+                        .addNotificationHandler(win.selectAll);
+
+                    var btSelectNone = Controls.Button({
+                        text: _TRL('Select none'),
+                        icon: 'fa-ban'
+                    })
+                        .addNotificationHandler(win.selectNone);
+
                     var btQuery = Controls.Button({
                         text: _TRL('Query...'),
                         icon: 'fa-filter'
@@ -152,7 +164,7 @@ define([
                         .addNotificationHandler(win.doQuery);
 
                     var btSelPlot = Controls.Button({
-                        text: _TRL('Create view'),
+                        text: _TRL('Create new view'),
                         icon: 'fa-eye'
                     })
                         .addNotificationHandler(function() {
@@ -164,9 +176,9 @@ define([
                             subDataFrame.promptPlot();
                         });
 
-                    var btDownload = Controls.Button({
-                        text: _TRL('Download'),
-                        icon: 'fa-download'
+                    var btRestrict = Controls.Button({
+                        text: _TRL('Restrict current view'),
+                        icon: 'fa-sign-in'
                     })
                         .addNotificationHandler(function() {
                             var subDataFrame = win.dataFrame.createSelectedRowsDataFrame();
@@ -174,10 +186,11 @@ define([
                                 SimplePopups.ErrorBox(_TRL('No points are selected'));
                                 return;
                             }
-                            subDataFrame.showData();
+                            win.dataFrame = subDataFrame;
+                            win.updateAspect();
                         });
 
-                    grp.add(Controls.Compound.GroupHor({}, [ btQuery, btSelPlot, btDownload]));
+                    grp.add(Controls.Compound.GroupHor({}, [ btSelectAll, btSelectNone, btQuery, btSelPlot, btRestrict]));
 
                 };
 
@@ -267,6 +280,26 @@ define([
                     win._rightGroup.updatePosition();
                 };
 
+
+                win.selectAll = function() {
+                    var selList = [];
+                    var dataPrimKey = win.dataFrame.getPrimKeyProperty().data;
+                    for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                        selList.push(dataPrimKey[rowNr]);
+                    }
+                    $.each(selList, function(idx, rowId) {
+                        win.dataFrame.objectType.rowSelSet(rowId, true);
+                    });
+                    win.dataFrame.objectType.rowSelNotifyChanged();
+                };
+
+                win.selectNone = function() {
+                    win.dataFrame.objectType.rowSelClear();
+                    //$.each(selList, function(idx, rowId) {
+                    //    win.dataFrame.objectType.rowSelSet(rowId, false);
+                    //});
+                    win.dataFrame.objectType.rowSelNotifyChanged();
+                };
 
                 win.doQuery = function() {
                     FrameQuery.create(win.dataFrame, '', function(selList, expr) {
