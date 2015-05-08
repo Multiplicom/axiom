@@ -478,7 +478,7 @@ define([
         };
 
         Module.loadFromText = function(name, sourceText, showAsTable) {
-            var lines = sourceText.split('\n');
+            var lines = sourceText.split(/\r\n|\r|\n/g);
             var dataTypeString = "# datatype: ";
             if(lines[0] != "#RD_TEXT" || lines.length < 2 || lines[1].indexOf(dataTypeString) < 0) {
                 AXMUtils.reportBug('File type not supported for creating dataframe');
