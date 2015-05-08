@@ -215,3 +215,23 @@
     color: rgb(120,120,120);
 }
 
+.AXMCrossTableCell td {
+    font-weight: normal;
+}
+
+.AXMCrossTableSmall {
+    font-size: 75%;
+    font-weight: normal;
+    color: rgb(140,140,140);
+    text-align: left;
+    padding-bottom: 2px;
+}
+
+.AXMCrossTableLarge {
+    font-size: 120%;
+    font-weight: bold;
+    color: black;
+    text-align: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}

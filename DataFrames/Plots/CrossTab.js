@@ -167,12 +167,44 @@ define([
                     });
                 });
                 win.maxCellEnhancement = Math.min(win.maxCellEnhancement, 5);
-
-
             };
 
-            win.renderCatInfo = function(info) {
-                return info.dispName;
+            var writeFrac = function(val) {
+                return (100*val).toFixed(2)+'%';
+            };
+
+
+            win.renderHeadInfo = function() {
+                var content = '';
+                content += '<table class="AXMCrossTableCell">';
+
+                content += '<tr><th>Count:</th><td><b>{val}</b></td></tr>'.AXMInterpolate({
+                    val: win.totCount
+                });
+
+                content += '</table>';
+                return content;
+            };
+
+
+            win.renderCatInfo = function(propInfo, info) {
+                var content = '';
+                content += '<div class="AXMCrossTableSmall">'+propInfo.getDispName()+'</div>';
+                content += '<div class="AXMCrossTableLarge">'+info.dispName+'</div>';
+                content += '<table class="AXMCrossTableCell">';
+
+                content += '<tr><th>Count:</th><td><b>{val}</b></td></tr>'.AXMInterpolate({
+                    val: info.count
+                });
+
+                if (win._dispFracInfo) {
+                    content += '<tr><th>Frac&nbsp;tot:</th><td>{val}</td></tr>'.AXMInterpolate({
+                        val: writeFrac(info.count * 1.0 / win.totCount)
+                    });
+                }
+
+                content += '</table>';
+                return content;
             };
 
             win.renderCellInfo = function(idx1, idx2) {
@@ -180,9 +212,6 @@ define([
                 var content = '<table class="AXMCrossTableCell">';
                 var cellInfo = win.cellData[idx1][idx2];
 
-                var writeFrac = function(val) {
-                    return (100*val).toFixed(2)+'%';
-                };
 
                 content += '<tr><th>Count:</th><td><b>{val}</b></td></tr>'.AXMInterpolate({
                     val: cellInfo.count
@@ -221,6 +250,8 @@ define([
             };
 
             win.render = function() {
+                var propCat1 = win.getAspectProperty('category1');
+                var propCat2 = win.getAspectProperty('category2');
 
                 win._dispEnhInfo = win.ctrl_showEnhInfo.getValue();
                 win._dispSelInfo = win.ctrl_showSelInfo.getValue();
@@ -231,10 +262,11 @@ define([
 
                 content += '<tr>';
                 content += '<th><div>';
+                content += win.renderHeadInfo();
                 content += '</div></th>';
                 $.each(win.cats2,  function(idx2, cat2Info) {
                     content += '<th><div>';
-                    content += win.renderCatInfo(cat2Info);
+                    content += win.renderCatInfo(propCat2, cat2Info);
                     content += '</div></th>';
                 });
                 content += '</tr>';
@@ -243,7 +275,7 @@ define([
                     content += '<tr>';
 
                     content += '<th><div>';
-                    content += win.renderCatInfo(cat1Info);
+                    content += win.renderCatInfo(propCat1, cat1Info);
                     content += '</div></th>';
 
                     $.each(win.cats2,  function(idx2, cat2Info) {
@@ -263,7 +295,7 @@ define([
                                 col = Color.Color(1, 1-0.3*colorFr*colorFr, 1-0.6*colorFr);
                             }
                         }
-                        content += '<td><div id="{id}" style="padding:8px;background-color: {col}">'.AXMInterpolate({id: cellInfo._id, col: col.toString()});
+                        content += '<td style="background-color: {col}"><div id="{id}" style="height:100%;padding:8px">'.AXMInterpolate({id: cellInfo._id, col: col.toString()});
                         content += win.renderCellInfo(idx1, idx2);
                         content += '</div></td>';
                     });
