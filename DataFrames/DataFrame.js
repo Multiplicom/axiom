@@ -424,7 +424,7 @@ define([
             };
 
             dataFrame.createPropertySelector = function(compatibleDataType, canHaveNone) {
-                var picker = Controls.DropList({width: 200});
+                var picker = Controls.DropList({width: 240});
                 if (canHaveNone)
                     picker.addState('', "- None -", '');
                 $.each(dataFrame.getProperties(), function(idx, prop) {

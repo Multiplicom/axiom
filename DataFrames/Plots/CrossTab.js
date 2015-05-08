@@ -28,7 +28,7 @@ define([
         DataTypes
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('crosstab', _TRL('Crosstab'), 'fa-bar-chart');
+        var PlotType = _GenericPlot.createPlotType('crosstab', _TRL('Crosstab'), 'fa-th-large');
         PlotType.addPlotAspect('category1', _TRL('Rows category'), DataTypes.typeAnyCategorical, true);
         PlotType.addPlotAspect('category2', _TRL('Columns category'), DataTypes.typeAnyCategorical, true);
 
