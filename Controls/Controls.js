@@ -561,6 +561,111 @@ define([
         };
 
 
+        Module.TextArea = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control._width = settings.width || 120;
+            control._lineCount = settings.lineCount || 2;
+            control._value = settings.value || '';
+            control._fixedfont = settings.fixedfont || false;
+            control._noWrap = settings._noWrap || false;
+            control._accepttabs = settings.accepttabs || false;
+
+
+            control.createHtml = function() {
+
+                var rootEl = DOM.Create("textarea", {id: control._getSubId('')});
+                rootEl.addCssClass('AXMEdit');
+
+//                rootEl.addAttribute('cols', control._width);
+                rootEl.addAttribute('rows', control._lineCount);
+
+                if (control._disabled)
+                    rootEl.addAttribute('disabled', "disabled");
+
+                if (control._width)
+                    rootEl.addStyle('width',control._width+'px');
+
+                //rootEl.addAttribute("value", control._value);
+                rootEl.addElem(control._value);
+
+                rootEl.addAttribute('autocorrect', "off");
+                rootEl.addAttribute('autocapitalize', "off");
+                rootEl.addAttribute('autocomplete', "off");
+                if (control._noWrap) {
+                    rootEl.addStyle('overflow-x','scroll');
+                    rootEl.addStyle('white-space','pre');
+                    rootEl.addAttribute('wrap', "off");
+                }
+                if (control._fixedfont) {
+                    rootEl.addStyle('font-family', 'Courier');
+                }
+                else {
+                    rootEl.addStyle('font-family', 'Verdana, Arial, Helvetica, sans-serif');
+                }
+
+                var str = rootEl.toString();
+                if (control._clearButton)
+                    str += control._clearButton.createHtml();
+                return str;
+            };
+
+            control.attachEventHandlers = function() {
+                control._getSub$El('').click(control._onClicked);
+                control._getSub$El('').bind("propertychange input paste", control._onModified);
+                control._getSub$El('').bind("keyup", control._onModified);
+                control._checkNonEmptyClass();
+                if (control._hasDefaultFocus)
+                    control._getSub$El('').select();
+                if (control._clearButton)
+                    control._clearButton.attachEventHandlers();
+            };
+
+            control._onModified = function(ev) {
+                var txt = control.getValue();
+                if (control._clearButton) {
+                    control._clearButton.setEnabled(txt.length > 0);
+                }
+                control._checkNonEmptyClass();
+                control.performNotify();
+            };
+
+            control._checkNonEmptyClass = function() {
+                if (!control._nonEmptyClass)
+                    return;
+                var txt = control.getValue();
+                if (txt.length>0)
+                    control._getSub$El('').addClass(control._nonEmptyClass);
+                else
+                    control._getSub$El('').removeClass(control._nonEmptyClass);
+            };
+
+
+            control.setFocus = function() {
+                control._getSub$El('').select();
+            };
+
+            control.getValue = function () {
+                if (control._getSub$El('').length>0)
+                    control._value = control._getSub$El('').val();
+                return control._value;
+            }
+
+
+            control.setValue = function(newVal, preventNotify) {
+                if (newVal == control.getValue()) return false;
+                control._value = newVal;
+                control._getSub$El('').val(newVal);
+                control._checkNonEmptyClass();
+                if (control._clearButton) {
+                    var txt = control.getValue();
+                    control._clearButton.setEnabled(txt.length > 0);
+                }
+                if (!preventNotify)
+                    control.performNotify();
+            };
+
+            return control;
+        };
 
 
         Module.FileDrop = function(settings) {
