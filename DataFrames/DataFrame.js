@@ -520,6 +520,10 @@ define([
                     }
                 }
             });
+            if (!dataFrame.getObjectType().hasProperty('id')) {
+                AXMUtils.reportBug(_TRL('Dataframe should have column "id"'));
+                return;
+            }
             if (showAsTable)
                 Table.create(dataFrame);
             return dataFrame;

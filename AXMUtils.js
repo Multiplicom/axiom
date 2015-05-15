@@ -106,8 +106,9 @@ define([
         }
 
         Module.BmpFile = function(bmpId) {
-            var st = '/static/js/AXM/Bitmaps/'+bmpId+'.png';
-            return st;
+            //var st = '/static/js/AXM/Bitmaps/'+bmpId+'.png';
+            //return st;
+            return require.toUrl('AXM/Bitmaps/'+bmpId+'.png');
         };
 
 
