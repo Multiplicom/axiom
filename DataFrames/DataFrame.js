@@ -194,6 +194,10 @@ define([
                 return objectType.typeId;
             };
 
+            objectType.setPrimKey = function(colId) {
+                objectType.primKey = colId;
+            };
+
             objectType.getPrimKey = function() {
                 return objectType.primKey;
             };
@@ -489,6 +493,11 @@ define([
             $.each(lines, function(idx, line) {
                 if(line.charAt(0) == '#'){
                     // Header of file
+                    var keyString = "# key: ";
+                    if(line.indexOf(keyString) == 0) {
+                        var primKeyColId = line.substr(keyString.length);
+                        dataFrame.getObjectType().setPrimKey(primKeyColId);
+                    }
                     var columnString = "# column: ";
                     if(line.indexOf(columnString) == 0){
                         var columnProperties = line.substr(columnString.length).split('\t');
@@ -520,8 +529,9 @@ define([
                     }
                 }
             });
-            if (!dataFrame.getObjectType().hasProperty('id')) {
-                AXMUtils.reportBug(_TRL('Dataframe should have column "id"'));
+            var objectType = dataFrame.getObjectType();
+            if (!objectType.hasProperty(objectType.getPrimKey())) {
+                AXMUtils.reportBug(_TRL('Dataframe should have column key column "{key}"'.AXMInterpolate({key: objectType.getPrimKey()})));
                 return;
             }
             if (showAsTable)
