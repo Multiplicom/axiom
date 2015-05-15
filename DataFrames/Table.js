@@ -17,12 +17,12 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Msg", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Controls/Controls", "AXM/Windows/SimplePopups", "AXM/Tables/TableData", "AXM/Tables/TableInfo",
-        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty", "AXM/DataFrames/CopyProperty", "AXM/DataFrames/Append"
+        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty", "AXM/DataFrames/ExecuteCode", "AXM/DataFrames/CopyProperty", "AXM/DataFrames/Append"
     ],
     function (
         require, $, _,
         AXMUtils, Msg, PopupWindow, Frame, PanelForm, PanelTable, Controls, SimplePopups, TableData, TableInfo,
-        ViewRow, CalcProperty, CopyProperty, Append
+        ViewRow, CalcProperty, ExecuteCode, CopyProperty, Append
     ) {
 
         var Module = {
@@ -172,6 +172,19 @@ define([
                         });
                     });
 
+                var btExec = Controls.Button({
+                    width: 160,
+                    height: 60,
+                    text: _TRL('Execute script for each row'),
+                    icon: 'fa-terminal'
+                })
+                    .addNotificationHandler(function() {
+                        ExecuteCode.create(dataFrame, '', function() {
+                            win.close();
+                            Module.create(dataFrame);
+                        });
+                    });
+
                 var btCopyCol = Controls.Button({
                     width: 160,
                     height: 60,
@@ -211,6 +224,7 @@ define([
                 group.add(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({}, [
                     btViewPlot,
                     btCalcCol,
+                    btExec,
                     btCopyCol,
                     btAppend,
                     btSaveLocal
