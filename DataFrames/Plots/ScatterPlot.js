@@ -113,13 +113,13 @@ define([
             }
 
             win.plot.getToolTipInfo = function (px, py) {
-                if (!win.hasAspectProperty('tooltip'))
-                    return;
                 var dataX = win.getAspectProperty('xvalue').data;
                 var dataY = win.getAspectProperty('yvalue').data;
                 var dataPrimKey = win.getPrimKeyProperty().data;
 
-                var propTooltip = win.getAspectProperty('tooltip');
+                var propTooltip = null;
+                if (win.hasAspectProperty('tooltip'))
+                    propTooltip = win.getAspectProperty('tooltip');
 
                 var coordXLogic2Win = win.plot.coordXLogic2Win;
                 var coordYLogic2Win = win.plot.coordYLogic2Win;
@@ -137,12 +137,17 @@ define([
                 if (bestRowNr === null)
                     return null;
 
+                var content = null;
+                if (propTooltip)
+                    content: propTooltip.content2DisplayString(propTooltip.data[bestRowNr]);
+
+
                 return {
                     px: coordXLogic2Win(dataX[bestRowNr]),
                     py: coordYLogic2Win(dataY[bestRowNr]),
                     ID: dataPrimKey[bestRowNr],
                     rowNr: bestRowNr,
-                    content: propTooltip.content2DisplayString(propTooltip.data[bestRowNr]),
+                    content: content,
                     showPointer: true
                 }
             };

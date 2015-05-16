@@ -53,7 +53,11 @@ define([
         };
         Module.typeBoolean.isCategorical = function() {return true; };
         Module.typeBoolean.parseString = function(str) {
-            return str.toLowerCase() === 'true';
+            if (str.toLowerCase() === 'true')
+                return true;
+            if (str.toLowerCase() === 'false')
+                return false;
+            return null;
         };
         Module.typeBoolean.getName = function() {return 'Boolean'; };
 
@@ -62,7 +66,11 @@ define([
         Module.typeFloat.includes = function(otherType) {
             return otherType.id == 'typeFloat';
         };
-        Module.typeFloat.parseString = function(str) {return parseFloat(str); };
+        Module.typeFloat.parseString = function(str) {
+            if ((str==null) || (str==''))
+                return null;
+            return parseFloat(str);
+        };
         Module.typeFloat.getName = function() {return 'Value'; };
 
 

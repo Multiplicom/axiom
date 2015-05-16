@@ -17,12 +17,12 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils",
-        "AXM/DataFrames/Plots/ScatterPlot", "AXM/DataFrames/Plots/Histogram", "AXM/DataFrames/Plots/BarGraph", "AXM/DataFrames/Plots/MultiCatHistogram", "AXM/DataFrames/Plots/CrossTab"
+        "AXM/DataFrames/Plots/ScatterPlot", "AXM/DataFrames/Plots/Histogram", "AXM/DataFrames/Plots/BarGraph", "AXM/DataFrames/Plots/MultiCatHistogram", "AXM/DataFrames/Plots/CrossTab", "AXM/DataFrames/Plots/BinaryPredictor"
     ],
     function (
         require, $, _,
         AXMUtils,
-        ScatterPlot, Histogram, BarGraph, MultiCatHistogram, CrossTab
+        ScatterPlot, Histogram, BarGraph, MultiCatHistogram, CrossTab, BinPredictor
     ) {
 
         var Module = {
@@ -34,6 +34,7 @@ define([
         Module.plotTypes.push(BarGraph);
         Module.plotTypes.push(MultiCatHistogram);
         Module.plotTypes.push(CrossTab);
+        Module.plotTypes.push(BinPredictor);
 
 
         return Module;

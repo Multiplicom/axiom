@@ -166,9 +166,9 @@ define([
             if (propType.getId() == 'typeBoolean') {
                 property.content2DisplayString = function(val) {
                     if (val === true)
-                        return 'true';
+                        return 'True';
                     if (val === false)
-                        return 'false';
+                        return 'False';
                     return '';
                 };
             }
@@ -336,8 +336,8 @@ define([
                 dataFrame._rowCount += 1;
                 $.each(dataFrame._properties, function(idx, prop) {
                     var cell = rowInfo[prop.getId()];
-                    if (!cell)
-                        cell = null;
+                    //if (!cell)
+                    //    cell = null;
                     prop.data.push(cell)
                 });
             };
@@ -518,10 +518,10 @@ define([
                         if(fields.length == columnOrder.length) {
                             var rowData = {};
                             $.each(columnOrder, function(colNr, propId) {
-                                if(!fields[colNr])
-                                    rowData[propId] = fields[colNr]
-                                else
-                                    rowData[propId] = dataFrame.getProperty(propId).getDataType().parseString(fields[colNr]);
+                                //if(!fields[colNr])
+                                //    rowData[propId] = fields[colNr]
+                                //else
+                                rowData[propId] = dataFrame.getProperty(propId).getDataType().parseString(fields[colNr]);
                             });
                             dataFrame.addRow(rowData);
                         }

@@ -211,16 +211,18 @@ define([
             panel._showToolTip = function(tooltipInfo) {
                 panel._hideToolTip();
                 panel._toolTipInfo = tooltipInfo;
-                var tooltip = DOM.Div();
-                tooltip.addCssClass("AXMToolTip");
-                tooltip.addStyle("position", "absolute");
-                var screenX = panel.posXCanvas2Screen(panel._toolTipInfo.px);
-                var screenY = panel.posYCanvas2Screen(panel._toolTipInfo.py);
-                tooltip.addStyle("left", (screenX + 10) + 'px');
-                tooltip.addStyle("top", (screenY + 10) + 'px');
-                tooltip.addStyle("z-index", '9999999');
-                tooltip.addElem(panel._toolTipInfo.content);
-                $('.AXMContainer').append(tooltip.toString());
+                if (tooltipInfo.content) {
+                    var tooltip = DOM.Div();
+                    tooltip.addCssClass("AXMToolTip");
+                    tooltip.addStyle("position", "absolute");
+                    var screenX = panel.posXCanvas2Screen(panel._toolTipInfo.px);
+                    var screenY = panel.posYCanvas2Screen(panel._toolTipInfo.py);
+                    tooltip.addStyle("left", (screenX + 10) + 'px');
+                    tooltip.addStyle("top", (screenY + 10) + 'px');
+                    tooltip.addStyle("z-index", '9999999');
+                    tooltip.addElem(panel._toolTipInfo.content);
+                    $('.AXMContainer').append(tooltip.toString());
+                }
             };
 
             panel._hideToolTip = function() {
@@ -467,6 +469,7 @@ define([
                     ctx.clearRect(0, 0, selCanvas.width, selCanvas.height);
                     ctx.fillStyle='rgba(255,0,0,0.1)';
                     ctx.strokeStyle='rgba(255,0,0,0.5)';
+                    ctx.scale(panel.ratio, panel.ratio);
                     ctx.beginPath();
                     $.each(selPts, function(idx, pt) {
                         if (idx==0)
