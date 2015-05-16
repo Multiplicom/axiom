@@ -29,7 +29,7 @@ define([
 
         var PlotType = _GenericPlot.createPlotType('histogram', _TRL('Multi-category histogram'), 'fa-area-chart');
 
-        PlotType.addPlotAspect('category', _TRL('Category'), DataTypes.typeString, true);
+        PlotType.addPlotAspect('category', _TRL('Category'), DataTypes.typeAnyCategorical, true);
         PlotType.addPlotAspect('value', _TRL('Value'), DataTypes.typeFloat, true);
 
         PlotType.create = function(dataFrame, aspectMap) {
@@ -44,7 +44,7 @@ define([
                 win._ctrlNormalise = Controls.Check({text: _TRL('Normalise per category'), checked: false})
                     .addNotificationHandler(function() {
                         win.parseData();
-                        win.plot.render();
+                        win.render();
                     });
                 dispGroup.add(win._ctrlNormalise);
 
@@ -56,6 +56,9 @@ define([
                 win.parseData();
             };
 
+            win.render = function() {
+                win.plot.render();
+            };
 
             win.plot.drawPlot = function(drawInfo) {
                 var plot = win.plot;
@@ -128,7 +131,7 @@ define([
 
             win.updateAspect = function(aspectId) {
                 win.parseData();
-                win.plot.render();
+                win.render();
             };
 
             win.parseData = function() {

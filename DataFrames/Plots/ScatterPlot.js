@@ -73,7 +73,7 @@ define([
                 })
                     .addNotificationHandler(function() {
                         win._opacity = Math.pow(opacityCheck.getValue(),1.5);
-                        win.plot.render();
+                        win.render();
                     });
                 dispGroup.add(opacityCheck);
 
@@ -86,13 +86,13 @@ define([
                     text: _TRL('Point size')
                 })
                     .addNotificationHandler(function() {
-                        win.plot.render();
+                        win.render();
                     });
                 dispGroup.add(win.ctrl_PointSize);
 
                 win.ctrl_showOutline = Controls.Check({text: _TRL('Point outline'), checked: false})
                     .addNotificationHandler(function() {
-                        win.plot.render();
+                        win.render();
                     });
                 dispGroup.add(win.ctrl_showOutline);
 
@@ -107,6 +107,10 @@ define([
                 dispGroup.add(btLine);
 
             };
+
+            win.render = function() {
+                win.plot.render();
+            }
 
             win.plot.getToolTipInfo = function (px, py) {
                 if (!win.hasAspectProperty('tooltip'))
@@ -168,7 +172,7 @@ define([
                 }
                 if ((aspectId == 'color') || all)
                     win.updateColorLegend();
-                win.plot.render();
+                win.render();
             };
 
 
@@ -391,7 +395,7 @@ define([
             win.addCurve = function() {
                 SimplePopups.TextEditBox('', _TRL('Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")'), _TRL('Add curve'), {}, function(expr) {
                     win._curves.push(expr);
-                    win.plot.render();
+                    win.render();
                 });
             };
 

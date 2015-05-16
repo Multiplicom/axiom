@@ -40,17 +40,21 @@ define([
             win.plot._directRedraw = true;
             win.plot.setZoomDirections(true, false);
 
+            win.render = function() {
+                win.plot.render();
+            };
+
             win._createDisplayControls = function(dispGroup) {
 
                 win._scaleCheck = Controls.Check({text: _TRL('Scale to 100%'), checked: false})
                     .addNotificationHandler(function() {
-                        win.plot.render();
+                        win.render();
                     });
                 dispGroup.add(win._scaleCheck);
 
                 win.ctrlSortType = Controls.DropList({}).addNotificationHandler(function() {
                     win.parseData();
-                    win.plot.render();
+                    win.render();
                 });
                 win.ctrlSortType.addState('val', _TRL("Alphabetical"));
                 win.ctrlSortType.addState('count', _TRL("Count"));
@@ -192,7 +196,7 @@ define([
 
             win.updateAspect = function(aspectId) {
                 win.parseData();
-                win.plot.render();
+                win.render();
             };
 
             win.parseData = function() {

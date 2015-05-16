@@ -386,6 +386,7 @@ define([
                 var str = '';
                 str += '#RD_TEXT\n';
                 str += '# datatype: {tpe}\n'.AXMInterpolate({tpe: dataFrame.getObjectType().getTypeId()});
+                str += '# key: {colid}\n'.AXMInterpolate({tpe: dataFrame.getObjectType().getPrimKey()});
                 $.each(dataFrame.getProperties(), function(idx, propInfo) {
                     str += '# column: ' + propInfo.getId() + '\t' + propInfo.getDispName() + '\t' + propInfo.getDataType().getId() + '\n';
                 });

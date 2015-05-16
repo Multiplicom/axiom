@@ -51,12 +51,16 @@ define([
                 })
                     .addNotificationHandler(function() {
                         win.parseData();
-                        win.plot.render();
+                        win.render();
                     });
                 dispGroup.add(win.ctrl_Resolution);
 
                 win.infoCtrl = Controls.Static({});
                 dispGroup.add(win.infoCtrl);
+            };
+
+            win.render = function() {
+                win.plot.render();
             };
 
             win.initPlot = function() {
@@ -130,7 +134,7 @@ define([
 
             win.updateAspect = function(aspectId) {
                 win.parseData();
-                win.plot.render();
+                win.render();
             };
 
             win.parseData = function() {
