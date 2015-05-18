@@ -148,7 +148,7 @@ define([
                 content += '<h3>Negative</h3>Count= {ct}<br>Average= {av}<br>Standard deviation= {stdev}<br>'.AXMInterpolate({ct: dfNeg.getCount(), av: dfNeg.getMean(), stdev: dfNeg.getStdev() });
                 var dfPos = Stats.NormDfEstimator(valsPos);
                 dfPos.calcParametric();
-                content += '<h3>Negative</h3>Count= {ct}<br>Average= {av}<br>Standard deviation= {stdev}<br>'.AXMInterpolate({ct: dfPos.getCount(), av: dfPos.getMean(), stdev: dfPos.getStdev() });
+                content += '<h3>Positive</h3>Count= {ct}<br>Average= {av}<br>Standard deviation= {stdev}<br>'.AXMInterpolate({ct: dfPos.getCount(), av: dfPos.getMean(), stdev: dfPos.getStdev() });
 
                 content += '<h3>Distance</h3>Difference= {diff}<br><b>Weighted difference= {wdiff}</b>'.AXMInterpolate({
                     diff: Math.abs(dfNeg.getMean()-dfPos.getMean()),
