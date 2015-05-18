@@ -126,6 +126,22 @@ define([
             panel.xScaler = Scaler();
             panel.yScaler = Scaler();
 
+            panel.getXRangeMin = function() {
+                return panel.xScaler.getMinVisibleRange();
+            };
+
+            panel.getXRangeMax = function() {
+                return panel.xScaler.getMaxVisibleRange();
+            };
+
+            panel.getYRangeMin = function() {
+                return panel.yScaler.getMinVisibleRange();
+            };
+
+            panel.getYRangeMax = function() {
+                return panel.yScaler.getMaxVisibleRange();
+            };
+
             panel.setXRange = function(minval, maxval) {
                 panel.xScaler.setRange(minval, maxval);
             };

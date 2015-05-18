@@ -106,6 +106,12 @@ define([
                 }).addNotificationHandler(win.addCurve);
                 dispGroup.add(btLine);
 
+                var btSetRange = Controls.Button({
+                    text: _TRL('Set range'),
+                    //icon: 'fa-line-chart'
+                }).addNotificationHandler(win.setRange);
+                dispGroup.add(btSetRange);
+
             };
 
             win.render = function() {
@@ -402,6 +408,68 @@ define([
                     win._curves.push(expr);
                     win.render();
                 });
+            };
+
+            win.setRange = function() {
+                var pwin = PopupWindow.create({
+                    title: 'Set range',
+                    blocking:true,
+                    autoCenter: true
+                });
+
+                var grp = Controls.Compound.GroupVert({separator:12});
+
+                var btOK = Controls.Button({
+                    text: _TRL('OK'),
+                    icon: 'fa-check'
+                })
+                    .addNotificationHandler(function() {
+                        pwin.onOK();
+                    });
+
+                var btCancel = Controls.Button({
+                    text: _TRL('Cancel'),
+                    icon: 'fa-times'
+                })
+                    .addNotificationHandler(function() {
+                        win.close();
+                    });
+
+                var grd = Controls.Compound.Grid({});
+
+                pwin.ctrlXMin = Controls.Edit({width:80, value: win.plot.getXRangeMin()});
+                pwin.ctrlXMax = Controls.Edit({width:80, value: win.plot.getXRangeMax()});
+                pwin.ctrlYMin = Controls.Edit({width:80, value: win.plot.getYRangeMin()});
+                pwin.ctrlYMax = Controls.Edit({width:80, value: win.plot.getYRangeMax()});
+
+                grd.setItem(0,1, '<b>Min</b>');
+                grd.setItem(0,2, '<b>Max</b>');
+
+                grd.setItem(1,0, '<b>X range</b>');
+                grd.setItem(1,1, pwin.ctrlXMin);
+                grd.setItem(1,2, pwin.ctrlXMax);
+
+                grd.setItem(2,0, '<b>Y range</b>');
+                grd.setItem(2,1, pwin.ctrlYMin);
+                grd.setItem(2,2, pwin.ctrlYMax);
+
+                grp.add(grd);
+
+                grp.add(Controls.Compound.GroupHor({}, [btOK, btCancel]) );
+
+                pwin.onOK = function() {
+                    win.plot.setXRange(parseFloat(pwin.ctrlXMin.getValue()), parseFloat(pwin.ctrlXMax.getValue()));
+                    win.plot.setYRange(parseFloat(pwin.ctrlYMin.getValue()), parseFloat(pwin.ctrlYMax.getValue()));
+                    pwin.close();
+                    win.render();
+                };
+
+                pwin.setRootControl(Controls.Compound.StandardMargin(grp));
+                pwin.start();
+                //SimplePopups.TextEditBox('', _TRL('Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")'), _TRL('Add curve'), {}, function(expr) {
+                //    win._curves.push(expr);
+                //    win.render();
+                //});
             };
 
 
