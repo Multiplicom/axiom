@@ -138,6 +138,7 @@ define([
                 //obj.tableInfo.setOnOpenRow(obj.onOpenedSample);
                 win.tableFrame = PanelTable.createTableViewerFrame('tb_seqruns', win.tableData, win.tableInfo);
                 win.tablePanel = win.tableFrame.getTablePanel();
+                win.tablePanel.setStoreLayout(false);
 
                 rootFrame.addMember(win.tableFrame);
 

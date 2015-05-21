@@ -46,7 +46,12 @@ define([
             panel._columns = [];
 
             panel._accumulatedScrollLineDiff = 0;
+            panel._storeLayout = true;
 
+
+            panel.setStoreLayout = function(newValue) {
+                panel._storeLayout = newValue;
+            };
 
             panel.updateTableInfo = function() {
 
@@ -458,33 +463,38 @@ define([
             };
 
             panel._storeColumnSettings = function() {
-                var colSettings = [];
-                $.each(panel._columns, function(colNr, colInfo) {
-                    colSettings.push({
-                        id: colInfo.getId(),
-                        size: colInfo._dispSize
-                    })
-                });
-                var content = window.btoa(JSON.stringify(colSettings));
-                $.cookie('TableSettings_' + panel.getTypeId(), content);
+                if (panel._storeLayout) {
+                    var colSettings = [];
+                    $.each(panel._columns, function (colNr, colInfo) {
+                        colSettings.push({
+                            id: colInfo.getId(),
+                            size: colInfo._dispSize
+                        })
+                    });
+                    var content = window.btoa(JSON.stringify(colSettings));
+                    if (content.length < appData.maxCookieLength)
+                        $.cookie('TableSettings_' + panel.getTypeId(), content);
+                }
             };
 
             panel._loadColumnSettings = function() {
-                var encodedContent = $.cookie('TableSettings_' + panel.getTypeId());
-                if (!encodedContent)
-                    return;
-                var content = window.atob(encodedContent);
-                var colSettings = JSON.parse(content);
-                var settingMap = {};
-                $.each(colSettings, function(idx, colSetting) {
-                    settingMap[colSetting.id] = colSetting;
-                });
-                $.each(panel._columns, function(colNr, colInfo) {
-                    var colSetting = settingMap[colInfo.getId()];
-                    if (colSetting) {
-                        colInfo.setDispSize(colSetting.size);
-                    }
-                });
+                if (panel._storeLayout) {
+                    var encodedContent = $.cookie('TableSettings_' + panel.getTypeId());
+                    if (!encodedContent)
+                        return;
+                    var content = window.atob(encodedContent);
+                    var colSettings = JSON.parse(content);
+                    var settingMap = {};
+                    $.each(colSettings, function (idx, colSetting) {
+                        settingMap[colSetting.id] = colSetting;
+                    });
+                    $.each(panel._columns, function (colNr, colInfo) {
+                        var colSetting = settingMap[colInfo.getId()];
+                        if (colSetting) {
+                            colInfo.setDispSize(colSetting.size);
+                        }
+                    });
+                }
             };
 
             //panel._handleCellDoubleClicked = function($El) {
