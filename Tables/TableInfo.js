@@ -130,6 +130,11 @@ define([
                     tabledef._columns.splice(colIdx, 1);
             };
 
+            tabledef.hasColumn = function(colId) {
+                var colInfo = tabledef._map_columns[colId];
+                return !!colInfo;
+            };
+
             tabledef.getColumn = function(colId) {
                 var colInfo = tabledef._map_columns[colId];
                 if (!colInfo)
