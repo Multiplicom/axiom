@@ -556,7 +556,7 @@ define([
                     reader.addEventListener("load", function(event) {
                         var textFile = event.target;
                         var txt = textFile.result;
-                        Module.loadFromText(file.name, txt);
+                        Module.loadFromText(file.name, txt, true);
                     });
 
                     reader.readAsText(file);
