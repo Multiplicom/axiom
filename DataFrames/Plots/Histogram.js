@@ -147,7 +147,7 @@ define([
                 var count = 0;
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
                     var val = dataVal[rowNr];
-                    if (val !== null) {
+                    if (val !== null && !(isNaN(val))) {
                         values.push(val);
                         if (val<minVal) minVal = val;
                         if (val>maxVal) maxVal = val;
