@@ -21,7 +21,7 @@ define([
         "AXM/Tables/TableData", "AXM/Tables/TableInfo",
         "AXM/Controls/Controls", "AXM/Controls/Compound",
         "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelCanvas", "AXM/Panels/PanelCanvasZoomPan", "AXM/Panels/PanelCanvasXYPlot", "AXM/Panels/PanelHtml",
-        "AXM/Windows/RootWindow", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Windows/LogViewer",
+        "AXM/Windows/RootWindow", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Windows/LogViewer", "AXM/Windows/DocViewer",
         "AXM/DataFrames/DataFrame"
     ],
     function (
@@ -31,7 +31,7 @@ define([
         TableData, TableInfo,
         Controls, Compound,
         Frame, PanelForm, PanelTable, PanelCanvas, PanelCanvasZoomPan, PanelCanvasXYPlot, PanelHtml,
-        RootWindow, PopupWindow, SimplePopups, LogViewer,
+        RootWindow, PopupWindow, SimplePopups, LogViewer, DocViewer,
         DataFrame
     ) {
 
@@ -61,7 +61,8 @@ define([
                 RootWindow: RootWindow,
                 PopupWindow: PopupWindow,
                 SimplePopups: SimplePopups,
-                LogViewer: LogViewer
+                LogViewer: LogViewer,
+                DocViewer: DocViewer
             },
             DataFrame: DataFrame
         };
