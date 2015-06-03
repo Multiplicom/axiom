@@ -414,6 +414,10 @@ define([
             return __AXMTextDecoration;
         };
 
+        Module.makeStartCapital = function(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        };
+
         _TRL = function(txt) {
             var reg = new RegExp(/{_.*?_}/g);
             var tokens = [];
