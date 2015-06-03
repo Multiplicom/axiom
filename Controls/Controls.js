@@ -247,6 +247,17 @@ define([
             return control;
         };
 
+        Module.OpenButton = function() {
+            var control = Module.Button({
+                icon:'fa-external-link-square',
+                buttonClass: 'AXMButtonCommandBar',
+                width:25,
+                height:20,
+                iconSizeFraction: 0.75
+            });
+            return control;
+        };
+
         Module.EditTextItemButton = function() {
             var control = Module.Button({
                 icon:'fa-pencil',
