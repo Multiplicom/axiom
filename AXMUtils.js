@@ -98,6 +98,13 @@ define([
             return newStr;
         };
 
+        Module.limitStringHtml = function(str, len){
+            if (str.length > len)
+                return str.substring(0,Math.max(1,len-4))+'&hellip;';
+            else
+                return str;
+        };
+
 
         Module.log = function(line) {
             if (!console || !console.log)

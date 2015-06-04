@@ -281,6 +281,26 @@ define([
             return wrapper;
         };
 
+        Module.BackgroundIcon = function(ctrl, icon) {
+            var wrapper = Module.WrapperControlBase(ctrl);
+
+            wrapper.createHtml = function() {
+                var divContainer = DOM.Div({id: wrapper._id});
+                divContainer.addStyle('position', 'relative');
+                var str = '<div style="position:absolute;top:-15px;left:-7px;z-index:0"><i class="fa fa-history" style="font-size: 80px;color:rgb(225, 240, 253)"></i></div>';
+                divContainer.addElem(str);
+                var divBody = DOM.Div({parent: divContainer});
+                divBody.addStyle('position', 'relative');
+                //divBody.addStyle('top', '0px');
+                divBody.addStyle('z-index', '1');
+                divBody.addElem(wrapper._member.createHtml());
+                return divContainer.toString();
+            };
+
+            return wrapper;
+        };
+
+
         Module.VScroller = function(ctrl, heigth) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
@@ -378,6 +398,13 @@ define([
             return wrapper;
         };
 
+        Module.BigIcon = function(icon) {
+            var wrapper = Module.DecoratorBase();
+            wrapper.createHtml = function() {
+                return '<i class="AXMBigIcon fa {icon}"></i>'.AXMInterpolate({icon: icon});
+            };
+            return wrapper;
+        };
 
         return Module;
     });

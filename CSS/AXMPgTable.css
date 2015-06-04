@@ -19,9 +19,9 @@
 
 
 .AXMPgTableRight th, .AXMPgTableRight td, .AXMPgTableLeft th, .AXMPgTableLeft td {
-    height: 22px;
+    height: 24px;
     empty-cells: show;
-    line-height: 21px;
+    line-height: 23px;
     padding: 0 4px 0 4px;
     vertical-align: top;
     outline-width: 0;
@@ -32,8 +32,8 @@
     overflow: hidden;
 
 
-    border-right: 1px solid rgb(226,226,226);
-    border-bottom: 1px solid rgb(226,226,226);
+    border-right: 1px solid rgb(232, 232, 232);
+    border-bottom: 1px solid rgb(232, 232, 232);
 
     background-color: #FFF;
 
@@ -41,11 +41,11 @@
 
 
 .AXMPgTableRight th, .AXMPgTableLeft th {
-    height:27px;
+    height:30px;
     padding-top: 4px;
     padding-right: 17px;
     text-align:left;
-
+    color: rgb(100,100,100);
 }
 
 /************ Set colour for top & left headers ****************/

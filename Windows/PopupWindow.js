@@ -26,7 +26,7 @@ define([
         Module.gripSize = 6;
         Module.gripOverlap = 2;
         Module.gripCornerLength = 35;
-        Module.headerHeight = 30;
+        Module.headerHeight = 36;
 
         Module._activeWindows = [];
 
@@ -40,6 +40,7 @@ define([
             var window = { _id: AXMUtils.getUniqueID()};
             window.zIndex = AXMUtils.getNextZIndex();
             window._title = settings.title||'';
+            window._headerIcon = settings.headerIcon||null;
             window._minSizeX = 150;
             window._minSizeY = 100;
             window._defaultSizeX = settings.sizeX||500;
@@ -111,8 +112,14 @@ define([
                 if (window.resizable)
                     rootDiv.addStyle('width', Math.min(browserSize.sizeX, window._defaultSizeX)+'px').addStyle('height', Math.min(browserSize.sizeY, window._defaultSizeY)+'px');
 
-                if (window._title)
-                    headerDiv = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowHeader').addElem(window._title);
+                if (window._title) {
+                    var headerDiv = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowHeader');
+                    if (window._headerIcon) {
+                        var str = '<div style="display: inline-block; padding-top:4px;padding-right:16px;vertical-align: top"><i class="AXMPopupHeaderIcon fa {icon}" style=""></i></div>'.AXMInterpolate({icon:window._headerIcon});
+                        headerDiv.addElem(str);
+                    }
+                    headerDiv.addElem('<span style="vertical-align: middle">' + window._title + '</span>');
+                }
 
                 var divClient = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowClient');
                 if (window._rootFrame)

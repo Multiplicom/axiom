@@ -606,7 +606,7 @@ define([
 
         Module.FrameTabber = function () {
             var frame = Module.FrameStacker();
-            frame._stackHeaderOffset = 34;
+            frame._stackHeaderOffset = 34+4;
 
             frame.isTabber = function() { return true; };
 
@@ -762,7 +762,7 @@ define([
 
 
         Module.FrameFinalCommands = function(iPanel) {
-            var controlsH = 35;
+            var controlsH = 40;
             var frame = Module.FrameSplitterVert();
             frame.setHalfSplitterSize(2);
             frame._panelControls = require('AXM/Panels/PanelForm').create(iPanel.getId()+'_commands');
@@ -778,7 +778,7 @@ define([
             frame.addCommand = function(settings, action) {
                 settings.height = controlsH-1;
                 if (!settings.width)
-                    settings.width = 35;
+                    settings.width = 40;
                 if (!settings.buttonClass)
                     settings.buttonClass = 'AXMButtonCommandBar';
                 var bt = Controls.Button(settings);
