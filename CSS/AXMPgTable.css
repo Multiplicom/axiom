@@ -125,7 +125,7 @@
 
 
 .AXMPgTableHightlightRow td {
-    background-color:rgb(210,240,255);
+    background-color: rgb(224, 245, 255);
     /*border-bottom: 1px solid rgb(255,0,0);*/
     text-shadow: 0px 0px 1px rgba(50, 50, 50, 0.5);
 }
