@@ -49,6 +49,11 @@ define([
                 return coldef;
             };
 
+            coldef.disableSort = function() {
+                coldef._canSort = false;
+                return coldef;
+            };
+
             coldef.enableSort = function() {
                 coldef._canSort = true;
                 return coldef;

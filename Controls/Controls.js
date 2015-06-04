@@ -264,7 +264,7 @@ define([
                 buttonClass: 'AXMButtonCommandBar',
                 width:25,
                 height:20,
-                iconSizeFraction: 0.75
+                iconSizeFraction: 0.85
             });
             return control;
         };
