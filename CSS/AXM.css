@@ -391,3 +391,7 @@ body {
     text-shadow: 1px 1px 8px rgba(0, 0, 0, 1);
     font-size: 44px
 }
+
+.AXMDisabledText {
+    color: rgb(150,150,150);
+}

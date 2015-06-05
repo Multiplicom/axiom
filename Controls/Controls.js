@@ -290,7 +290,9 @@ define([
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
             control._height = settings.height || 45;
-            //control._buttonClass = settings.buttonClass || 'AXMCheck';
+            control._enabled = true;
+            if (settings.enabled === false)
+                control._enabled = false;
             control._value = settings.checked || false;
             control._checkedClass = settings.checkedClass || null;
 
@@ -310,6 +312,7 @@ define([
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
                 control._checkCheckedClass();
+                control._updateEnabledState();
             };
 
             control._onClicked = function(ev) {
@@ -317,6 +320,23 @@ define([
                 control._checkCheckedClass();
                 control.performNotify();
             };
+
+            control._updateEnabledState = function() {
+                if (control._enabled) {
+                    control._getSub$El('').prop('disabled', false);
+                    control._getSub$El('label').removeClass('AXMDisabledText');
+                }
+                else {
+                    control._getSub$El('').prop('disabled', true);
+                    control._getSub$El('label').addClass('AXMDisabledText');
+                }
+            };
+
+            control.setEnabled = function(newStatus) {
+                control._enabled = newStatus;
+                control._updateEnabledState();
+            };
+
 
             control.getValue = function () {
                 if (control._getSub$El('').length>0)
