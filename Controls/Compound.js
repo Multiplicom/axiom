@@ -135,7 +135,7 @@ define([
 
             grid._rows = [];
             grid.sepH = settings.sepH || 12;
-            grid.sepV = settings.sepV || 5;
+            grid.sepV = settings.sepV || 7;
 
 
             grid.set = null; //not applicable here

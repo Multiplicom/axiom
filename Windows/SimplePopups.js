@@ -252,7 +252,16 @@ define([
             });
 
             var grp = Controls.Compound.GroupVert({separator:12});
-            grp.add(Controls.Static({text: header}));
+
+
+
+            if (settings.helpId)
+                grp.add(Controls.Compound.GroupHor({verticalAlignCenter: true}, [
+                    header,
+                    Controls.HelpButton(settings.helpId)
+                ]) );
+            else
+                grp.add(header);
 
             var btOK = Controls.Button({
                 text: _TRL('OK'),

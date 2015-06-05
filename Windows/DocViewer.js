@@ -99,6 +99,7 @@ define([
                     .done(function (data) {
                         SimplePopups.stopBlockingBusy(busyid);
                         var content = $('<div/>').append(data).find('.AXMDocContent').html();
+                        content = _TRL(content);
                         win._loadContent('<div style="margin:8px">' + content + '</div>', scrollPos);
                     })
                     .fail(function () {
@@ -110,6 +111,8 @@ define([
 
             win._loadContent = function(content, scrollPos) {
                 win.panelContent.setContent(content);
+                if (Utils.isSuperUser())
+                win.panelContent.get$El().find('.SuperUserOnly').css('display', 'inherit');
                 if (scrollPos)
                     win.panelContent.get$El().scrollTop(scrollPos);
                 else

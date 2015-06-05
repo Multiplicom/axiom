@@ -453,7 +453,9 @@ define([
             return txt;
         };
 
-
+        Module.isSuperUser = function() {
+            return false;
+        };
 
         return Module;
     });
