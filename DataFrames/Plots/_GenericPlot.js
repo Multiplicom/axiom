@@ -316,7 +316,7 @@ define([
                     var rootFrame = Frame.FrameSplitterHor();
 
                     var formHeader = PanelForm.create('intro', {scrollY: true});
-                    rootFrame.addMember(Frame.FrameFinal(formHeader)).setFixedDimSize(Frame.dimX, 280);
+                    rootFrame.addMember(Frame.FrameFinal(formHeader)).setFixedDimSize(Frame.dimX, 290);
 
                     var headerGroup = Controls.Compound.GroupVert({}).setSeparator(12);
                     formHeader.setRootControl(headerGroup);
