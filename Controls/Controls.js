@@ -286,6 +286,43 @@ define([
 
 
 
+        Module.HyperLink = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control._class = settings.class || 'AXMHyperLinkButton';
+            control._extraClasses = [];
+
+            control.addClass = function(className) {
+                control._extraClasses.push(className);
+                return control;
+            };
+
+            control.createHtml = function() {
+                var div = DOM.Create('div', { id:control._getSubId('') });
+                div.addCssClass(control._class);
+                $.each(control._extraClasses, function(idx, className) {
+                    div.addCssClass(className);
+                });
+
+                div.addElem(settings.text);
+
+                return div.toString();
+            };
+
+
+            control.attachEventHandlers = function() {
+                control._getSub$El('').click(control._onClicked);
+            };
+
+            control._onClicked = function(ev) {
+                control.performNotify();
+                ev.stopPropagation();
+                return false;
+            };
+
+            return control;
+        };
+
+
         Module.Check = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;

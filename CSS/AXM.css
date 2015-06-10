@@ -395,3 +395,8 @@ body {
 .AXMDisabledText {
     color: rgb(150,150,150);
 }
+
+.AXMHyperLinkButton {
+    cursor: pointer;
+    color: rgb(37, 103, 216);
+}
