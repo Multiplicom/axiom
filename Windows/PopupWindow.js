@@ -51,6 +51,7 @@ define([
             window._blocking = settings.blocking||false;
             window._closeOnEscape = settings.closeOnEscape||false;
             window._transpBlocking = settings.blockingTransparent||false;
+            window._opaqueBlocking = settings.blockingOpaque||false;
             window._autoCenter = settings.autoCenter||false;
             window._autoCenterTop = settings.autoCenterTop||false;
             window._canClose = !(settings.preventClose);
@@ -79,6 +80,8 @@ define([
                     background.addCssClass('AXMBlockingBackGround');
                     if (window._transpBlocking)
                         background.addCssClass('AXMBlockingBackGroundTransp');
+                    if (window._opaqueBlocking)
+                        background.addCssClass('AXMBlockingBackGroundOpaque');
                     background.addStyle('z-index', window.zIndex-1);
                     $('.AXMContainer').append(background.toString());
                     var blockerEl = $('#'+blockerid);

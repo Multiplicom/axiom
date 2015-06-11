@@ -343,7 +343,7 @@ define([
             panel._renderPager = function() {
                 var rowFirst = panel._tableOffset;
                 var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
-                panel._pagerInfo.modifyText('<span style="font-size:80%">Current: {start}-{stop}<br>Total: {total}</span>'.AXMInterpolate({
+                panel._pagerInfo.modifyText('<span style="font-size:90%">Current: {start}-{stop}<br>Total: {total}</span>'.AXMInterpolate({
                     start:rowFirst+1,
                     stop:rowLast+1,
                     total:panel._tableRowCount
