@@ -106,6 +106,7 @@ body {
 }
 
 .AXMFrameTabElement {
+    font-size: 105%;
     font-weight:bold;
     height:22px;
     padding-top:6px;
