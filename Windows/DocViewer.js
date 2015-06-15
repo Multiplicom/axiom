@@ -100,7 +100,7 @@ define([
                         SimplePopups.stopBlockingBusy(busyid);
                         var content = $('<div/>').append(data).find('.AXMDocContent').html();
                         content = _TRL(content);
-                        win._loadContent('<div style="margin:8px">' + content + '</div>', scrollPos);
+                        win._loadContent('<div class="AXMDocContent">' + content + '</div>', scrollPos);
                     })
                     .fail(function () {
                         SimplePopups.stopBlockingBusy(busyid);
