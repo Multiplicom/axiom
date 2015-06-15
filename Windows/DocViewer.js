@@ -7,6 +7,25 @@ define([
 
         var Module = {};
 
+        Module.fetchDocument = function(docId, onCompleted, onFailed, settings) {
+            var url = '/static/docs/{id}.html'.AXMInterpolate({id: docId});
+            if (settings.blocking)
+                var busyid = SimplePopups.setBlockingBusy('Fetching document');
+            $.get(url, {})
+                .done(function (data) {
+                    if (busyid)
+                        SimplePopups.stopBlockingBusy(busyid);
+                    var content = $('<div/>').append(data).find('.AXMDocContent').html();
+                    content = _TRL(content);
+                    onCompleted(content);
+                })
+                .fail(function () {
+                    if (busyid)
+                        SimplePopups.stopBlockingBusy(busyid);
+                    if (onFailed)
+                        onFailed();
+                });
+        };
 
         Module.create = function(docId) {
 
@@ -92,6 +111,8 @@ define([
                 win._loadDocUrlSub(url);
                 win._updateButtons();
             };
+
+
 
             win._loadDocUrlSub = function(url, scrollPos) {
                 var busyid = SimplePopups.setBlockingBusy('Fetching document');
