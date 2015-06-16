@@ -34,8 +34,8 @@ define([
 
             var win = Popupwin.create({
                 title: 'Documentation',
-                sizeX: 600,
-                sizeY: 500,
+                sizeX: 700,
+                sizeY: 600,
                 autoCenter: true,
                 closeOnEscape:true
             });
