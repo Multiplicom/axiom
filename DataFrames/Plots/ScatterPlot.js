@@ -432,7 +432,7 @@ define([
                     icon: 'fa-times'
                 })
                     .addNotificationHandler(function() {
-                        win.close();
+                        pwin.close();
                     });
 
                 var grd = Controls.Compound.Grid({});
