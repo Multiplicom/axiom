@@ -15,11 +15,11 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_", "jquery_cookie",
+        "require", "jquery", "_", "jquery_cookie", "blob", "filesaver",
         "AXM/Test",
     ],
     function (
-        require, $, _, dummy_jquery_cookie,
+        require, $, _, dummy_jquery_cookie, Blob, FileSaver,
         Test
     ) {
 
@@ -465,6 +465,12 @@ define([
             if (Module._useTextDecoration())
                 txt = '‘' + txt + "’";
             return txt;
+        };
+
+
+        Module.saveTextFile = function(data, fileName) {
+            var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+            FileSaver(blob, fileName);
         };
 
         Module.isSuperUser = function() {
