@@ -177,6 +177,10 @@ define([
             $.each(actions, function(idx, action) {
                 var bt = Controls.Button({
                     text: action.name,
+                    icon: action.icon || null,
+                    width:140,
+                    height: 65,
+                    iconSizeFraction: 1.4
 //                    icon: settings.iconYes || 'fa-check'
                 })
                     .addNotificationHandler(function() {
