@@ -50,6 +50,8 @@ define([
                     }
                     if (logLine.indexOf('<SECT<') == 0) {
                         var tme = new Date(timeStamp.replace(/-/g, "/")).getTime();
+                        if (sectionStack.length == 0)
+                            Utils.reportBug('Closing section is not matched by opening section on line '+idx);
                         var sectionInfo = sectionStack.pop();
                         var timeDiff = (tme-sectionInfo.tme)/1000;
                         var timeDiffStr = timeDiff%60+'s';
