@@ -272,7 +272,7 @@ define([
 
             panel.renderCell = function(rowNr, colNr, rowData, colInfo) {
                 if (colInfo.isOpener) {
-                    var cell = '<div class="AXMPgTableLinkCell">';
+                    var cell = '<div class="AXMPgTableLinkCell" title="{txt}">'.AXMInterpolate({txt:_TRL('Open this item')});
                     cell += '<div class="AXMPgTableLinkIcon"><i class="fa fa-external-link-square"></i></div>';
                     cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"/>';
                     cell += '</div>';
@@ -280,7 +280,7 @@ define([
                 }
                 if (colInfo.isSelector) {
                     var rowId = rowData[panel._tableData.getPrimKey()];
-                    var cell = '<div class="AXMPgTableSelectorCell">';
+                    var cell = '<div class="AXMPgTableSelectorCell" title="{txt}">'.AXMInterpolate({txt:_TRL('Select this item')});
                     if (!panel._tableData.isItemSelected(rowId))
                         cell += '<div class="AXMPgTableSelectorIcon"><i class="fa fa-circle-thin"></i></div>';
                     else

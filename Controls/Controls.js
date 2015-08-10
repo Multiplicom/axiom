@@ -273,9 +273,9 @@ define([
             var control = Module.Button({
                 icon: 'fa-question-circle',
                 buttonClass: 'AXMButtonHelp',
-                width:28,
-                height:22,
-                iconSizeFraction: 1.3
+                width:26,
+                height:20,
+                iconSizeFraction: 1.1
 
             });
             control.addNotificationHandler(function() {
