@@ -46,6 +46,9 @@ define([
             });
             if (confirmMessage)
                 return confirmMessage;
+            else {
+                Msg.broadcast('ExecuteExit');
+            }
         };
 
         // Intialises the app
