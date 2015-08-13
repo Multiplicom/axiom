@@ -36,6 +36,23 @@ define([
             });
         });
 
+        /**
+         * Closes all active popups
+         */
+        Module.closeAll = function() {
+            var activeWindows = [];
+            $.each(Module._activeWindows, function(idx, win) {
+                activeWindows.push(win);
+            });
+            for (var i=activeWindows.length-1; i>=0; i--)
+                activeWindows[i].close();
+        };
+
+        /**
+         * Creates a new popup window
+         * @param {Object} settings Object containing the settings defining the properties of the popup
+         * @returns {PopupWindow} popup window class instance
+         */
         Module.create = function(settings) {
             var window = { _id: AXMUtils.getUniqueID()};
             window.zIndex = AXMUtils.getNextZIndex();
