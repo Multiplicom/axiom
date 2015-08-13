@@ -355,7 +355,7 @@ define([
                 var rowFirst = panel._tableOffset;
                 var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
 
-                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent))
+                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent, panel.renderFail))
                     return;
 
                 var $ElRightBody = $('#'+panel._divid_rightBody);
@@ -376,6 +376,10 @@ define([
                 if (!panel._sizeMeasured)
                     panel._measureSize();
             };
+
+            panel.renderFail = function() {
+                panel._pagerInfo.modifyText('<span style="color:red">Failed to load data</span>');
+            }
 
             panel._renderHighlightRowNr = function() {
                 var $ElRightBody = $('#'+panel._divid_rightBody);
@@ -582,7 +586,7 @@ define([
                 var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
                 diff = panel._tableOffset - tableOffsetPrev; // Corrected difference
 
-                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent))
+                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent, panel.renderFail))
                     return; // We need to fetch data first - no fast update here - full rendering will happen
 
                 if (diff > 0) {
