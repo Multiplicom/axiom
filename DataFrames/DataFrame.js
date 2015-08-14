@@ -503,7 +503,7 @@ define([
                     if(line.indexOf(columnString) == 0){
                         var columnProperties = line.substr(columnString.length).split('\t');
                         if(columnProperties.length != 3)
-                            AXMUtils.reportBug(_TRL('RD file column header does no have exactly three properties: id, description, type'));
+                            AXMUtils.reportBug(_TRL('RD file column header does not have exactly three properties: id, description, type'));
                         if(!DataTypes[columnProperties[2]])
                             AXMUtils.reportBug(_TRL('RD file column header type is not supported'));
                         dataFrame.addProperty(columnProperties[0], columnProperties[1], DataTypes[columnProperties[2]]);

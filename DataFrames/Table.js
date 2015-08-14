@@ -215,7 +215,7 @@ define([
                 var btSaveLocal = Controls.Button({
                     width: 160,
                     height: 60,
-                    text: _TRL('Save to local machine'),
+                    text: _TRL('Save to local computer'),
                     icon: 'fa-cloud-download'
                 })
                     .addNotificationHandler(function() {
