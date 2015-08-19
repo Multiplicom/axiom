@@ -314,9 +314,12 @@ define([
                     AXMUtils.Test.reportBug('Unable to get row data');
                 $.each(panel._columns, function (colNr, colInfo) {
                     var bkcolor = colInfo.content2BackgroundColor(rowData[colInfo.getId()], rowData);
+                    var fgcolor = colInfo.content2ForegroundColor(rowData[colInfo.getId()], rowData);
                     var styles = '';
                     if (bkcolor)
                         styles += 'background-color:'+bkcolor.toString();
+                    if (fgcolor)
+                        styles += 'color:'+fgcolor.toString();
                     var titleText = '';
                     if ((!colInfo.isOpener) && (!colInfo.isSelector) )
                         titleText = colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);

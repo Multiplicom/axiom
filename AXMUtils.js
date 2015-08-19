@@ -439,6 +439,13 @@ define([
             return str.charAt(0).toUpperCase() + str.slice(1);
         };
 
+        /**
+         * Interpolates a text string by replacing {_xxx_} tokens with snippets taken from Module._textInterpolators
+         * For future use: translates the string using a translation table
+         * @param {string} txt - Text to be translated and interpolated
+         * @returns {string} - Result text
+         * @private
+         */
         _TRL = function(txt) {
             var reg = new RegExp(/{_.*?_}/g);
             var tokens = [];

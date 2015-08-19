@@ -93,6 +93,11 @@ define([
                 return null;
             };
 
+            //overridable (should return an AXM.Color object):
+            coldef.content2ForegroundColor = function(content) {
+                return null;
+            };
+
             return coldef;
         };
 
