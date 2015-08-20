@@ -54,6 +54,24 @@ define([
             return (typeof v == 'function');
         };
 
+        Module.isASCIIText = function(v) {
+            if (!Module.isString(v))
+                return false;
+            for (var i = 0; i < v.length; i++)
+                if (v.charCodeAt(i) > 127)
+                    return false;
+            return true;
+        };
+
+
+        Module.isValidLoginName = function(v) {
+            if (!Module.isString(v))
+                return false;
+            var ascii = /^[!-~]+$/;
+            return ascii.test(v);
+        };
+
+
         Module.getUrlParameters = function() {
             var urlParams;
             var match,
