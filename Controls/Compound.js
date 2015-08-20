@@ -22,8 +22,20 @@ define([
         require, $, _,
         AXMUtils, DOM) {
 
+
+        /**
+         * Module encapsulating a set of classes that represent HTML controls that group other controls
+         * @type {{}}
+         */
         var Module = {};
 
+
+        /**
+         * Automatically converts a string to a static control. if the input was not a strung (e.g. a control), it is returned
+         * @param {string} ctrl - string to be converted
+         * @returns {AXM.Controls.Controls.Static}
+         * @private
+         */
         Module._autoDecorateString = function(ctrl) {
             if (typeof ctrl != 'string')
                 return ctrl;
@@ -33,6 +45,11 @@ define([
         };
 
 
+        /**
+         * Base class for all compound controls
+         * @returns {Object}
+         * @constructor
+         */
         Module.CompoundControlBase = function() {
             var compound = AXMUtils.object('@Control');
             compound._id = 'CT'+AXMUtils.getUniqueID();

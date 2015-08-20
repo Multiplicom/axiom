@@ -22,24 +22,55 @@ define([
         require, $, _,
         AXMUtils, DOM, Compound) {
 
+
+        /**
+         * Module encapsulating a set of classes that represent HTML controls
+         * @type {{}}
+         */
         var Module = {
             Compound: Compound
         };
 
+
+        /**
+         * Base class for a single control
+         * @returns {Object}
+         * @constructor
+         */
         Module.SingleControlBase = function() {
             var control = AXMUtils.object('@Control');
             control._id = 'CT'+AXMUtils.getUniqueID();
             control._hasDefaultFocus = false;
             control._notificationHandlers = [];
 
+
+            /**
+             * Returns the element ID of a subcomponent
+             * @param {string} extension - subcomponent id
+             * @returns {string}
+             * @private
+             */
             control._getSubId = function (extension) {
                 return control._id+extension;
             };
 
+
+            /**
+             * Returns a jQuery element of a subcomponent
+             * @param {string} extension - subcomponent id
+             * @returns {jQuer-HTMLElement}
+             * @private
+             */
             control._getSub$El = function (extension) {
                 return $('#' + control._getSubId(extension));
             };
 
+
+            /**
+             * Adds a handler function that is called when the status of the control changes
+             * @param {function} handlerFunc - callback
+             * @returns {Object} - self
+             */
             control.addNotificationHandler = function(handlerFunc) {
                 if (!handlerFunc)
                     debugger;
@@ -47,32 +78,53 @@ define([
                 return control;
             };
 
-            //Defines this control to have the focus
+            /**
+             * Call this function to assign default focus to the control upon initialisation
+             * @returns {Object} - self
+             */
             control.setHasDefaultFocus = function () {
                 control._hasDefaultFocus = true;
                 return control;
-            }
+            };
 
 
+            /**
+             * Empty base class function
+             */
             control.attachEventHandlers = function() {
             };
 
 
+            /**
+             * Notifies all notification handlers
+             * @param {{}} msg - notification message
+             */
             control.performNotify = function(msg) {
                 $.each(control._notificationHandlers, function(idx, fnc) {
-                    if (!fnc)
-                        debugger;
-                    fnc(msg);
+                    if (fnc)
+                        fnc(msg);
                 });
-            }
+            };
 
             return control;
         };
 
+
+        /**
+         * Implements a static text control
+         * @param {{}} settings - control settings
+         * @param {string} settings.text - control text
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.Static = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._text = settings.text || '';
 
+            /**
+             * Creates the html of the control
+             * @returns {String}
+             */
             control.createHtml = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('display', 'inline-block').addStyle('vertical-align','middle');
@@ -84,6 +136,11 @@ define([
                 return div.toString();
             };
 
+
+            /**
+             * Modifies the text of the control
+             * @param {string} newText - new text content
+             */
             control.modifyText = function(newText) {
                 control._text = newText;
                 $('#'+control._id).html(newText);
@@ -93,6 +150,12 @@ define([
         };
 
 
+        /**
+         * Implements a control representing HTML content
+         * @param {string} content - html content
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.RawHtml = function(content) {
             var control = Module.SingleControlBase({});
 
@@ -104,7 +167,21 @@ define([
         };
 
 
-
+        /**
+         * Implements a button control
+         * @param {{}} settings - control settings
+         * @param {int} settings.width - (optional) button width
+         * @param {int} settings.height - (optional) button height
+         * @param {string} settings.buttonClass - (optional) css class of the button
+         * @param {boolean} settings.enabled - (optional) initial enabled state of the control
+         * @param {string} settings.icon - (optional) name of the icon displayed in the button
+         * @param {float} settings.iconSizeFraction - (optional) icon magnification factor
+         * @param {string} settings.text - (optional) button text
+         * @param {string} settings.hint - (optional) button hover hint
+         * @param {string} settings.helpId - (optional) document Id of a help text associated with the control. displayed as a little help icon on top of the button
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.Button = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 130;
@@ -118,12 +195,22 @@ define([
             if (settings.checked)
                 control._checked = true;
 
+
+            /**
+             * Adds a css class to the button html
+             * @param {string} className - css class
+             * @returns {Object} - self
+             */
             control.addClass = function(className) {
                 control._extraClasses.push(className);
                 return control;
-            }
+            };
 
 
+            /**
+             * Creates the control html
+             * @returns {String}
+             */
             control.createHtml = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('width',control._width+'px')
@@ -195,10 +282,14 @@ define([
                     helpDiv.addElem('<i class="fa fa-question-circle"></i>');
                 }
 
-
                 return div.toString();
             };
 
+
+            /**
+             * Updates the html for a change in enabled state
+             * @private
+             */
             control._updateEnabledState = function() {
                 if (control._enabled)
                     control._getSub$El('').css('opacity', 1);
@@ -206,11 +297,21 @@ define([
                     control._getSub$El('').css('opacity', 0.4);
             };
 
+
+            /**
+             * Modifies the enabled state of the button
+             * @param {boolean} newStatus - new enabled status
+             */
             control.setEnabled = function(newStatus) {
                 control._enabled = newStatus;
                 control._updateEnabledState();
             };
 
+
+            /**
+             * Updates the html for a change in checked state
+             * @private
+             */
             control._updateCheckedState = function() {
                 if (control._checked)
                     control._getSub$El('').addClass('AXMButtonChecked');
@@ -218,11 +319,20 @@ define([
                     control._getSub$El('').removeClass('AXMButtonChecked');
             };
 
+
+            /**
+             * Modifies the checked state of the button
+             * @param {boolean} newStatus - new checked state
+             */
             control.setChecked = function(newStatus) {
                 control._checked = newStatus;
                 control._updateCheckedState();
             };
 
+
+            /**
+             * Attaches html event handlers after DOM insertion
+             */
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
                 control._getSub$El('').find('.AXMButtonHelp').click(control._onHelp);
@@ -230,6 +340,13 @@ define([
                 control._updateCheckedState();
             };
 
+
+            /**
+             * Handles the on click event
+             * @param ev
+             * @returns {boolean}
+             * @private
+             */
             control._onClicked = function(ev) {
                 if (!control._enabled)
                     return;
@@ -238,6 +355,13 @@ define([
                 return false;
             };
 
+
+            /**
+             * Handles the on click event for the optional help button
+             * @param ev
+             * @returns {boolean}
+             * @private
+             */
             control._onHelp = function(ev) {
                 require('AXM/Windows/DocViewer').create(settings.helpId);
                 ev.stopPropagation();
@@ -247,6 +371,12 @@ define([
             return control;
         };
 
+
+        /**
+         * Creates a standard template button displaying an 'open' action
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.OpenButton = function() {
             var control = Module.Button({
                 icon:'fa-external-link-square',
@@ -258,6 +388,12 @@ define([
             return control;
         };
 
+
+        /**
+         * Creates a standard template button displaying an 'edit' action
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.EditTextItemButton = function() {
             var control = Module.Button({
                 icon:'fa-pencil',
