@@ -119,7 +119,7 @@ define([
 
             win.render = function() {
                 win.plot.render();
-            }
+            };
 
             win.plot.getToolTipInfo = function (px, py) {
                 var dataX = win.getAspectProperty('xvalue').data;
@@ -488,7 +488,13 @@ define([
                 var dataX = win.getAspectProperty('xvalue').data;
                 var dataY = win.getAspectProperty('yvalue').data;
                 var correlation = Stats.correlationCoefficient(dataX, dataY);
+                var slope_intercept = Stats.slopeIntercept(dataX, dataY);
+                var slope = slope_intercept[0];
+                var intercept = slope_intercept[1];
+                var correlation = Stats.correlationCoefficient(dataX, dataY);
                 var str = 'Correlation: ' + correlation + '<br>';
+                str += 'Slope: ' + slope + '<br>';
+                str += 'Intercept: ' + intercept + '<br>';
                 win.infoCtrl.modifyText(str);
             };
 

@@ -56,8 +56,7 @@ define([
             return that;
         };
 
-        Module.correlationCoefficient = function(dataX, dataY) {
-            var correlation = 'NaN';
+        Module.selectValidValues = function(dataX, dataY){
             var valuesX = [];
             var valuesY = [];
             for (var rowNr = 0; rowNr < dataX.length; rowNr++) {
@@ -68,6 +67,14 @@ define([
                     valuesY.push(valY);
                 }
             }
+            return [valuesX, valuesY]
+        };
+
+        Module.correlationCoefficient = function(dataX, dataY) {
+            var correlation = 'NaN';
+            var dataXY = Module.selectValidValues(dataX, dataY);
+            var valuesX = dataXY[0];
+            var valuesY = dataXY[1];
 
             if (valuesX.length > 1) {
                 var dfX = Module.NormDfEstimator(valuesX);
@@ -83,6 +90,29 @@ define([
             }
 
             return correlation;
+        };
+
+        Module.slopeIntercept = function(dataX, dataY) {
+            var slope = 'NaN';
+            var intercept = 'NaN';
+            var correlation = Module.correlationCoefficient(dataX, dataY);
+            if (correlation != 'NaN'){
+                var dataXY = Module.selectValidValues(dataX, dataY);
+                var valuesX = dataXY[0];
+                var valuesY = dataXY[1];
+
+                if (valuesX.length > 1) {
+                    var dfX = Module.NormDfEstimator(valuesX);
+                    dfX.calcParametric();
+                    var dfY = Module.NormDfEstimator(valuesY);
+                    dfY.calcParametric();
+                    if (dfX.getStdev() != 0){
+                        slope = correlation * dfY.getStdev() / dfX.getStdev();
+                        intercept = dfY.getMean() - slope * dfX.getMean();
+                    }
+                }
+            }
+            return [slope, intercept];
         };
 
         return Module;
