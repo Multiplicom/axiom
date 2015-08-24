@@ -484,6 +484,9 @@ define([
                 win.parseData();
             };
 
+            /**
+             * Parse data, calculate properties and display them in the Display section of the plot.
+             */
             win.parseData = function() {
                 var dataX = win.getAspectProperty('xvalue').data;
                 var dataY = win.getAspectProperty('yvalue').data;

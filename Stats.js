@@ -56,7 +56,14 @@ define([
             return that;
         };
 
-        Module.selectValidValues = function(dataX, dataY){
+        /**
+         * Selects rows from the passed lists that contain valid floating point values and omits
+         * null or NaN values. Does not test for strings.
+         * @param {[]} dataX: list of floats
+         * @param {[]} dataY: list of floats
+         * @returns {*[]}: array of 2 elements: sublist of dataX, sublist of dataY.
+         */
+        Module._selectValidValues = function(dataX, dataY){
             var valuesX = [];
             var valuesY = [];
             for (var rowNr = 0; rowNr < dataX.length; rowNr++) {
@@ -70,9 +77,15 @@ define([
             return [valuesX, valuesY]
         };
 
+        /**
+         * Calculates the pearson correlation coefficient for a set of data points.
+         * @param {[]} dataX: list of floats
+         * @param {[]} dataY: list of floats
+         * @returns {string or float}: correlation coefficient or 'NaN' if unable to calculate
+         */
         Module.correlationCoefficient = function(dataX, dataY) {
             var correlation = 'NaN';
-            var dataXY = Module.selectValidValues(dataX, dataY);
+            var dataXY = Module._selectValidValues(dataX, dataY);
             var valuesX = dataXY[0];
             var valuesY = dataXY[1];
 
@@ -92,12 +105,18 @@ define([
             return correlation;
         };
 
+        /**
+         * Calculates slope and intercept of linear fit through a set of data points.
+         * @param {[]} dataX: list of floats
+         * @param {[]} dataY: list of floats
+         * @returns {*[]}: [slope, intercept] or ['NaN', 'NaN'] if not able to calculate
+         */
         Module.slopeIntercept = function(dataX, dataY) {
             var slope = 'NaN';
             var intercept = 'NaN';
             var correlation = Module.correlationCoefficient(dataX, dataY);
             if (correlation != 'NaN'){
-                var dataXY = Module.selectValidValues(dataX, dataY);
+                var dataXY = Module._selectValidValues(dataX, dataY);
                 var valuesX = dataXY[0];
                 var valuesY = dataXY[1];
 
