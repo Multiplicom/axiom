@@ -334,6 +334,9 @@ define([
                     var selGroup = Controls.Compound.GroupVert({}).setSeparator(12);
                     headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(selGroup), _TRL("Selection")));
                     win._createSelectionControls(selGroup);
+                    if (win._appendSelectionControls) {
+                        win._appendSelectionControls(selGroup);
+                    }
 
                     var rightGroup = Frame.FrameSplitterVert().setHalfSplitterSize(0);
                     win._rightGroup = rightGroup;

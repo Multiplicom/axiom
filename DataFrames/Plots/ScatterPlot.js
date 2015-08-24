@@ -100,8 +100,11 @@ define([
                 win.colorLegendCtrl = Controls.Static({});
                 dispGroup.add(win.colorLegendCtrl);
 
-                win.infoCtrl = Controls.Static({});
-                dispGroup.add(win.infoCtrl);
+                win.corrCtrl = Controls.Static({});
+                dispGroup.add(win.corrCtrl);
+
+                win.corrSelectCtrl = Controls.Static({});
+                dispGroup.add(win.corrSelectCtrl);
 
                 var btLine = Controls.Button({
                     text: _TRL('Add curve'),
@@ -114,13 +117,13 @@ define([
                     //icon: 'fa-line-chart'
                 }).addNotificationHandler(win.setRange);
                 dispGroup.add(btSetRange);
+            };
 
+            win._appendSelectionControls = function(selGroup) {
                 var btLinearFit = Controls.Button({
-                    text: _TRL('Draw linear fit'),
-                    //icon: 'fa-line-chart'
+                    text: _TRL('Draw linear fit')
                 }).addNotificationHandler(win.drawLinearFit);
-                dispGroup.add(btLinearFit);
-
+                selGroup.add(btLinearFit);
             };
 
             win.render = function() {
@@ -491,11 +494,13 @@ define([
             };
 
             /**
-             * Parse data, calculate properties and display them in the Display section of the plot.
+             * Create text for display in info section of the plot
+             * @param {[]} dataX: list of floats
+             * @param {[]} dataY: list of floats
+             * @returns {String}: info text to display
+             * @private
              */
-            win.parseData = function() {
-                var dataX = win.getAspectProperty('xvalue').data;
-                var dataY = win.getAspectProperty('yvalue').data;
+            win._infoText = function(dataX, dataY) {
                 var correlation = Stats.correlationCoefficient(dataX, dataY);
                 var slope_intercept = Stats.slopeIntercept(dataX, dataY);
                 var slope = slope_intercept[0];
@@ -503,23 +508,73 @@ define([
                 var str = 'Correlation: ' + correlation + '<br>';
                 str += 'Slope: ' + slope + '<br>';
                 str += 'Intercept: ' + intercept + '<br>';
-                win.infoCtrl.modifyText(str);
+                return str
             };
 
             /**
-             * Draw a linear fit through the current data
+             * Parse data, calculate properties and display them in the Display section of the plot.
              */
-            win.drawLinearFit = function(){
+            win.parseData = function() {
                 var dataX = win.getAspectProperty('xvalue').data;
                 var dataY = win.getAspectProperty('yvalue').data;
-                var slope_intercept = Stats.slopeIntercept(dataX, dataY);
-                var slope = slope_intercept[0];
-                var intercept = slope_intercept[1];
-                if (slope != 'NaN'){
-                    var expr = 'y=' + slope.toString() + ' * x + ' + intercept.toString();
-                    win._curves.push(expr);
-                    win.render();
+                var correlation = Stats.correlationCoefficient(dataX, dataY);
+                var str = win._infoText(dataX, dataY);
+                win.corrCtrl.modifyText(str);
+                win.parseSelectedData();
+            };
+
+            /**
+             * Parse selected data, calculate properties and display them in the Display section of the plot.
+             */
+            win.parseSelectedData = function() {
+                var dataX = win.getAspectProperty('xvalue').data;
+                var dataY = win.getAspectProperty('yvalue').data;
+                var dataPrimKey = win.getPrimKeyProperty().data;
+                var dataSelX = [];
+                var dataSelY = [];
+                var rowSelGet = win.dataFrame.objectType.rowSelGet;
+                for (var rowNr = 0; rowNr < dataX.length; rowNr++){
+                    if (rowSelGet(dataPrimKey[rowNr])){
+                        dataSelX.push(dataX[rowNr]);
+                        dataSelY.push(dataY[rowNr]);
+                    }
                 }
+                var str = 'Selection: '.bold() + '<br>';
+                str += win._infoText(dataSelX, dataSelY);
+                win.corrSelectCtrl.modifyText(str);
+            };
+
+            /**
+             * Draw a linear fit through the current selected data
+             */
+            win.drawLinearFit = function(){
+                if (win.dataFrame.objectType.rowSelGetList().length > 0){
+                    var dataX = win.getAspectProperty('xvalue').data;
+                    var dataY = win.getAspectProperty('yvalue').data;
+                    var dataPrimKey = win.getPrimKeyProperty().data;
+                    var dataSelX = [];
+                    var dataSelY = [];
+                    var rowSelGet = win.dataFrame.objectType.rowSelGet;
+                    var selCount = 0;
+                    for (var rowNr = 0; rowNr < dataX.length; rowNr++){
+                        if (rowSelGet(dataPrimKey[rowNr])){
+                            dataSelX.push(dataX[rowNr]);
+                            dataSelY.push(dataY[rowNr]);
+                        }
+                    }
+                    var slope_intercept = Stats.slopeIntercept(dataSelX, dataSelY);
+                    var slope = slope_intercept[0];
+                    var intercept = slope_intercept[1];
+                    if (!isNaN(slope)){
+                        var expr = 'y=' + slope.toString() + ' * x + ' + intercept.toString();
+                        win._curves.push(expr);
+                        win.render();
+                    }
+                    else
+                        SimplePopups.ErrorBox(_TRL('Fit could not be calculated for current selection.'));
+                }
+                else
+                    SimplePopups.ErrorBox(_TRL('No points are selected.'));
             };
 
             var propX = win.getAspectProperty('xvalue');
@@ -532,6 +587,10 @@ define([
             win.plot.setYLabel(propY.getDispName());
             win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
             win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
+            win.listen('DataFrameRowSelChanged', function(objectTypeId) {
+                if (objectTypeId == win.dataFrame.objectType.typeId)
+                    win.parseSelectedData();
+            });
 
             win.init();
         };
