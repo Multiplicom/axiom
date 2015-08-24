@@ -117,13 +117,13 @@ define([
                     //icon: 'fa-line-chart'
                 }).addNotificationHandler(win.setRange);
                 dispGroup.add(btSetRange);
+            };
 
+            win._appendSelectionControls = function(selGroup) {
                 var btLinearFit = Controls.Button({
-                    text: _TRL('Draw linear fit'),
-                    //icon: 'fa-line-chart'
+                    text: _TRL('Draw linear fit')
                 }).addNotificationHandler(win.drawLinearFit);
-                dispGroup.add(btLinearFit);
-
+                selGroup.add(btLinearFit);
             };
 
             win.render = function() {
@@ -545,19 +545,36 @@ define([
             };
 
             /**
-             * Draw a linear fit through the current data
+             * Draw a linear fit through the current selected data
              */
             win.drawLinearFit = function(){
-                var dataX = win.getAspectProperty('xvalue').data;
-                var dataY = win.getAspectProperty('yvalue').data;
-                var slope_intercept = Stats.slopeIntercept(dataX, dataY);
-                var slope = slope_intercept[0];
-                var intercept = slope_intercept[1];
-                if (slope != 'NaN'){
-                    var expr = 'y=' + slope.toString() + ' * x + ' + intercept.toString();
-                    win._curves.push(expr);
-                    win.render();
+                if (win.dataFrame.objectType.rowSelGetList().length > 0){
+                    var dataX = win.getAspectProperty('xvalue').data;
+                    var dataY = win.getAspectProperty('yvalue').data;
+                    var dataPrimKey = win.getPrimKeyProperty().data;
+                    var dataSelX = [];
+                    var dataSelY = [];
+                    var rowSelGet = win.dataFrame.objectType.rowSelGet;
+                    var selCount = 0;
+                    for (var rowNr = 0; rowNr < dataX.length; rowNr++){
+                        if (rowSelGet(dataPrimKey[rowNr])){
+                            dataSelX.push(dataX[rowNr]);
+                            dataSelY.push(dataY[rowNr]);
+                        }
+                    }
+                    var slope_intercept = Stats.slopeIntercept(dataSelX, dataSelY);
+                    var slope = slope_intercept[0];
+                    var intercept = slope_intercept[1];
+                    if (slope != 'NaN'){
+                        var expr = 'y=' + slope.toString() + ' * x + ' + intercept.toString();
+                        win._curves.push(expr);
+                        win.render();
+                    }
+                    else
+                        SimplePopups.ErrorBox(_TRL('Fit could not be calculated for current selection.'));
                 }
+                else
+                    SimplePopups.ErrorBox(_TRL('No points are selected.'));
             };
 
             var propX = win.getAspectProperty('xvalue');
