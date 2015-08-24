@@ -115,6 +115,12 @@ define([
                 }).addNotificationHandler(win.setRange);
                 dispGroup.add(btSetRange);
 
+                var btLinearFit = Controls.Button({
+                    text: _TRL('Draw linear fit'),
+                    //icon: 'fa-line-chart'
+                }).addNotificationHandler(win.drawLinearFit);
+                dispGroup.add(btLinearFit);
+
             };
 
             win.render = function() {
@@ -494,11 +500,26 @@ define([
                 var slope_intercept = Stats.slopeIntercept(dataX, dataY);
                 var slope = slope_intercept[0];
                 var intercept = slope_intercept[1];
-                var correlation = Stats.correlationCoefficient(dataX, dataY);
                 var str = 'Correlation: ' + correlation + '<br>';
                 str += 'Slope: ' + slope + '<br>';
                 str += 'Intercept: ' + intercept + '<br>';
                 win.infoCtrl.modifyText(str);
+            };
+
+            /**
+             * Draw a linear fit through the current data
+             */
+            win.drawLinearFit = function(){
+                var dataX = win.getAspectProperty('xvalue').data;
+                var dataY = win.getAspectProperty('yvalue').data;
+                var slope_intercept = Stats.slopeIntercept(dataX, dataY);
+                var slope = slope_intercept[0];
+                var intercept = slope_intercept[1];
+                if (slope != 'NaN'){
+                    var expr = 'y=' + slope.toString() + ' * x + ' + intercept.toString();
+                    win._curves.push(expr);
+                    win.render();
+                }
             };
 
             var propX = win.getAspectProperty('xvalue');
