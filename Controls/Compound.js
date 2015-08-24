@@ -56,6 +56,11 @@ define([
             compound._members = [];
 
 
+            /**
+             * Sets the list of controls that are member of this compound control
+             * @param [] ctrlSet - list of member controls
+             * @returns {Object} - self
+             */
             compound.set = function(ctrlSet) {
                 compound._members = [];
                 $.each(ctrlSet, function(idx, ctrl) {
@@ -66,6 +71,12 @@ define([
                 return compound;
             };
 
+
+            /**
+             * Adds a control to the list of member controls
+             * @param {{}} ctrl - controll to add
+             * @returns {Object} - added control
+             */
             compound.add = function(ctrl) {
                 ctrl = Module._autoDecorateString(ctrl);
                 AXMUtils.Test.checkIsType(ctrl, '@Control');
@@ -73,6 +84,10 @@ define([
                 return ctrl;
             };
 
+
+            /**
+             * Attaches member controls html event handlers after DOM insertion
+             */
             compound.attachEventHandlers = function() {
                 $.each(compound._members, function(idx, member) {
                     member.attachEventHandlers();
@@ -82,6 +97,15 @@ define([
             return compound;
         };
 
+
+        /**
+         * Implements a compound control grouping members controls vertically
+         * @param {{}} settings - control settings
+         * @param {int} settings.separator - size of the vertical separation between members
+         * @param [Object] members - list of member controls
+         * @returns {Object} - compound control instance
+         * @constructor
+         */
         Module.GroupVert = function(settings, members) {
             var compound = Module.CompoundControlBase();
             if (!settings)
@@ -90,11 +114,22 @@ define([
             if (members)
                 compound.set(members);
 
+
+            /**
+             * Specifies the vertical separation size between the members
+             * @param {int} sep - separations size
+             * @returns {Object} - self
+             */
             compound.setSeparator = function(sep) {
                 compound._separator = sep;
                 return compound;
-            }
+            };
 
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             compound.createHtml = function() {
                 var div = DOM.Div();
                 $.each(compound._members, function(idx, member) {
@@ -108,11 +143,18 @@ define([
                 return div.toString();
             };
 
-
             return compound;
         };
 
 
+        /**
+         * Implements a compound control grouping members controls horizontally
+         * @param {{}} settings - control settings
+         * @param {int} settings.separator - size of the horizontal separation between members
+         * @param [Object] members - list of member controls
+         * @returns {Object} - compound control instance
+         * @constructor
+         */
         Module.GroupHor = function(settings, members) {
             var compound = Module.CompoundControlBase();
             if (!settings)
@@ -121,11 +163,22 @@ define([
             if (members)
                 compound.set(members);
 
+
+            /**
+             * Specifies the horizontal separation size between the members
+             * @param {int} sep - separations size
+             * @returns {Object} - self
+             */
             compound.setSeparator = function(sep) {
                 compound._separator = sep;
                 return compound;
-            }
+            };
 
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             compound.createHtml = function() {
                 var div = DOM.Div();
                 div.addStyle('white-space', 'nowrap');
@@ -140,10 +193,18 @@ define([
                 return div.toString();
             };
 
-
             return compound;
         };
 
+
+        /**
+         * Implements a compound control grouping member controls in a grid way
+         * @param {{}} settings - control settings
+         * @param {int} settings.sepH - horizontal separation size between columns
+         * @param {int} settings.sepV - vertical separation size between rows
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.Grid = function(settings) {
             var grid = Module.CompoundControlBase();
 
@@ -159,6 +220,14 @@ define([
             grid._parentAdd = grid.add;
             grid.add = null; //not applicable here
 
+
+            /**
+             * Sets the member control for an individual cell
+             * @param {int} rowNr - row number
+             * @param {int} colNr - column number
+             * @param {Object} ctrl - member control to set
+             * @returns {AXM.Controls.Controls.Static|*}
+             */
             grid.setItem = function(rowNr, colNr, ctrl) {
                 ctrl = Module._autoDecorateString(ctrl);
                 grid._parentAdd(ctrl);
@@ -170,10 +239,20 @@ define([
                 return ctrl;
             };
 
+
+            /**
+             * Returns the number of rows
+             * @returns {Number}
+             */
             grid.getRowCount = function() {
                 return grid._rows.length;
             };
 
+
+            /**
+             * Returns the html implementing the control
+             * @returns {String|string|*}
+             */
             grid.createHtml = function() {
                 var div = DOM.Div();
                 div.addStyle('display','inline-block');
@@ -204,16 +283,31 @@ define([
 
         ///////////////////////////////////////////////////////////////////////////////////
 
+
+        /**
+         * Base class for a control that wraps a single other control
+         * @param {Object} ctrl - control to be wrapped
+         * @returns {*|Object}
+         * @constructor
+         */
         Module.WrapperControlBase = function(ctrl) {
             var wrapper = AXMUtils.object('@Control');
             AXMUtils.Test.checkIsType(ctrl, '@Control');
             wrapper._id = 'CT'+AXMUtils.getUniqueID();
             wrapper._member = ctrl;
 
+
+            /**
+             * Attaches the wrapped control html event handlers after DOM insertion
+             */
             wrapper.attachEventHandlers = function() {
                 wrapper._member.attachEventHandlers();
             };
 
+            /**
+             * Gets the jQuery element of the wrapper control
+             * @returns {jQuery}
+             */
             wrapper.get$El = function() {
                 return $('#' + wrapper._id);
             };
@@ -223,9 +317,21 @@ define([
         };
 
 
+        /**
+         * Wraps a control in a styled DIV
+         * @param {Object} ctrl - control to be wrapped
+         * @param {string} styleClass - css class name
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.WrapperStyled = function(ctrl, styleClass) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
+
+            /**
+             * Returns the html implementing the wrapped control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var div = DOM.Div({id: wrapper._id});
                 div.addCssClass(styleClass);
@@ -236,9 +342,21 @@ define([
             return wrapper;
         };
 
+
+        /**
+         * Wraps a margin around a control
+         * @param {Object} ctrl - control to be wrapped
+         * @param {int} marginLeft - margin size
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.Margin = function(ctrl, marginLeft) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
+            /**
+             * Returns the html implementing the wrapped control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var div = DOM.Div({id: wrapper._id});
                 div.addStyle('margin', marginLeft+'px');
@@ -250,9 +368,20 @@ define([
             return wrapper;
         };
 
+
+        /**
+         * Wraps a standard sized margin around a control
+         * @param {Object} ctrl - control to be wrapped
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.StandardMargin = function(ctrl) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
+            /**
+             * Returns the html implementing the wrapped control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var div = DOM.Div({id: wrapper._id});
                 div.addCssClass('AXMFormStandardMargin')
@@ -263,11 +392,22 @@ define([
             };
 
             return wrapper;
-        }
+        };
 
+
+        /**
+         * Wraps a control in a right align box
+         * @param {Object} ctrl - control to be wrapped
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.AlignRight = function(ctrl) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
+            /**
+             * Returns the html implementing the wrapped control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var div = DOM.Div({id: wrapper._id});
                 div.addStyle('position', 'absolute');
@@ -281,10 +421,22 @@ define([
             return wrapper;
         };
 
+
+        /**
+         * Wraps a control in a section with a header
+         * @param {Object} ctrl - wrapped control
+         * @param {string} title - section title
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.Section = function(ctrl, title) {
             var wrapper = Module.WrapperControlBase(ctrl);
             wrapper._title = title;
 
+            /**
+             * Returns the html implementing the wrapped control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var divContainer = DOM.Div({id: wrapper._id});
                 var divTitle = DOM.Div({parent: divContainer});
@@ -298,9 +450,21 @@ define([
             return wrapper;
         };
 
+
+        /**
+         * Creates an icon in the background of a control
+         * @param {Object} ctrl - wrapped control
+         * @param {string} icon - icon name
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.BackgroundIcon = function(ctrl, icon) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
+            /**
+             * Returns the html implementing the wrapped control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var divContainer = DOM.Div({id: wrapper._id});
                 divContainer.addStyle('position', 'relative');
@@ -318,9 +482,20 @@ define([
         };
 
 
+        /**
+         * Wraps a scrollable DIV around a control
+         * @param {Object} ctrl - wrapped control
+         * @param {int} heigth - DIV height
+         * @returns {Object} - object instance
+         * @constructor
+         */
         Module.VScroller = function(ctrl, heigth) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
+            /**
+             * Returns the html implementing the wrapped control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var div = DOM.Div({id: wrapper._id});
                 div.addCssClass('AXMFormVScroller');
@@ -332,10 +507,22 @@ define([
             return wrapper;
         };
 
+
+        /**
+         * Wraps a DIV around a control that can be dynamically shown or hidden
+         * @param {Object} ctrl - wrapped control
+         * @param {boolean} hidden - default DIV visibility
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.Hider = function(ctrl, hidden) {
             var wrapper = Module.WrapperControlBase(ctrl);
             wrapper._show = !hidden;
 
+            /**
+             * Returns the html implementing the wrapped control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var div = DOM.Div({id: wrapper._id});
                 if (!wrapper._show)
@@ -344,6 +531,11 @@ define([
                 return div.toString();
             };
 
+
+            /**
+             * Changes the visibility of the control
+             * @param {boolean} status - new visibility
+             */
             wrapper.show = function(status) {
                 if (wrapper._show != status) {
                     wrapper._show = status;
@@ -361,6 +553,12 @@ define([
 
         ///////////////////////////////////////////////////////////////////////////////////
 
+
+        /**
+         * Base class implementing a decoration element control
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.DecoratorBase = function() {
             var wrapper = AXMUtils.object('@Control');
             wrapper._id = 'CT'+AXMUtils.getUniqueID();
@@ -372,9 +570,18 @@ define([
         };
 
 
+        /**
+         * Implements a horizontal divider element control
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.DividerH = function() {
             var wrapper = Module.DecoratorBase();
 
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var div = DOM.Div()
                     .addStyle('display','inline-block')
@@ -392,8 +599,19 @@ define([
         };
 
 
+        /**
+         * Implements a horizontal separation control
+         * @param {int} w - horizontal size
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.SeparatorH = function(w) {
             var wrapper = Module.DecoratorBase();
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var div = DOM.Div()
                     .addStyle('display','inline-block')
@@ -404,19 +622,43 @@ define([
             return wrapper;
         };
 
+
+        /**
+         * Implements a vertical separation control
+         * @param {int} h - vertical size
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.SeparatorV = function(h) {
             var wrapper = Module.DecoratorBase();
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 var div = DOM.Div()
                     .addStyle('width','1px')
-                    .addStyle('height',h + 'px')
+                    .addStyle('height',h + 'px');
                 return div.toString();
             };
             return wrapper;
         };
 
+
+        /**
+         * Implements a control displaying an icon
+         * @param {string} icon - icon name
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.BigIcon = function(icon) {
             var wrapper = Module.DecoratorBase();
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             wrapper.createHtml = function() {
                 return '<i class="AXMBigIcon fa {icon}"></i>'.AXMInterpolate({icon: icon});
             };
