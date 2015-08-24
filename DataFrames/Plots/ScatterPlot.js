@@ -565,7 +565,7 @@ define([
                     var slope_intercept = Stats.slopeIntercept(dataSelX, dataSelY);
                     var slope = slope_intercept[0];
                     var intercept = slope_intercept[1];
-                    if (slope != 'NaN'){
+                    if (!isNaN(slope)){
                         var expr = 'y=' + slope.toString() + ' * x + ' + intercept.toString();
                         win._curves.push(expr);
                         win.render();

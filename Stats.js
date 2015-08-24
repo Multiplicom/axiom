@@ -81,10 +81,10 @@ define([
          * Calculates the pearson correlation coefficient for a set of data points.
          * @param {[]} dataX: list of floats
          * @param {[]} dataY: list of floats
-         * @returns {string or float}: correlation coefficient or 'NaN' if unable to calculate
+         * @returns {string or float}: correlation coefficient or NaN if unable to calculate
          */
         Module.correlationCoefficient = function(dataX, dataY) {
-            var correlation = 'NaN';
+            var correlation = Number.NaN;
             var dataXY = Module._selectValidValues(dataX, dataY);
             var valuesX = dataXY[0];
             var valuesY = dataXY[1];
@@ -109,13 +109,13 @@ define([
          * Calculates slope and intercept of linear fit through a set of data points.
          * @param {[]} dataX: list of floats
          * @param {[]} dataY: list of floats
-         * @returns {*[]}: [slope, intercept] or ['NaN', 'NaN'] if not able to calculate
+         * @returns {*[]}: [slope, intercept] or [NaN, NaN] if not able to calculate
          */
         Module.slopeIntercept = function(dataX, dataY) {
-            var slope = 'NaN';
-            var intercept = 'NaN';
+            var slope = Number.NaN;
+            var intercept = Number.NaN;
             var correlation = Module.correlationCoefficient(dataX, dataY);
-            if (correlation != 'NaN'){
+            if (!isNaN(correlation)){
                 var dataXY = Module._selectValidValues(dataX, dataY);
                 var valuesX = dataXY[0];
                 var valuesY = dataXY[1];
