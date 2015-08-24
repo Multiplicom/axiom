@@ -97,7 +97,7 @@ define([
 
             /**
              * Notifies all notification handlers
-             * @param {{}} msg - notification message
+             * @param {{}} msg - (optional) notification message
              */
             control.performNotify = function(msg) {
                 $.each(control._notificationHandlers, function(idx, fnc) {
@@ -168,7 +168,7 @@ define([
 
 
         /**
-         * Implements a button control
+         * Implements a button control. clicking the button invokes a notification
          * @param {{}} settings - control settings
          * @param {int} settings.width - (optional) button width
          * @param {int} settings.height - (optional) button height
@@ -405,6 +405,13 @@ define([
             return control;
         };
 
+
+        /**
+         * Creates a standard template button
+         * @param {string} helpId - doc id of the help text
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.HelpButton = function(helpId) {
             var control = Module.Button({
                 icon: 'fa-question-circle',
@@ -421,17 +428,35 @@ define([
         };
 
 
-
+        /**
+         * Implements a hyperlink control. clicking on the link invokes a notification
+         * @param {{}} settings - control settings
+         * @param {string} settings.text - hyperlink text
+         * @param {string} settings.class - (optional) hyperlink css class
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.HyperLink = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._class = settings.class || 'AXMHyperLinkButton';
             control._extraClasses = [];
 
+
+            /**
+             * Adds a css class to the hyperlink
+             * @param {string} className
+             * @returns {Object} - self
+             */
             control.addClass = function(className) {
                 control._extraClasses.push(className);
                 return control;
             };
 
+
+            /**
+             * Creates the control html
+             * @returns {string} - html
+             */
             control.createHtml = function() {
                 var div = DOM.Create('div', { id:control._getSubId('') });
                 div.addCssClass(control._class);
@@ -445,10 +470,20 @@ define([
             };
 
 
+            /**
+             * Attached the html event handlers after DOM insertion
+             */
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
             };
 
+
+            /**
+             * Handles the on click event
+             * @param ev
+             * @returns {boolean}
+             * @private
+             */
             control._onClicked = function(ev) {
                 control.performNotify();
                 ev.stopPropagation();
@@ -459,6 +494,16 @@ define([
         };
 
 
+        /**
+         * Implements a check box control. changing the checked state invokes a notification
+         * @param {{}} settings - control settings
+         * @param {boolean} settings.enabled - (optional) initial enabled state
+         * @param {boolean} settings.checked - (optional) initial checked state
+         * @param {string} settings.checkedClass - (optional) css class of the checked state
+         * @param {string} settings.text - text of the control
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.Check = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
@@ -482,18 +527,33 @@ define([
                 return rootEl.toString();
             };
 
+
+            /**
+             * Attaches the html event handlers after DOM insertion
+             */
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
                 control._checkCheckedClass();
                 control._updateEnabledState();
             };
 
+
+            /**
+             * Handles the on click event
+             * @param ev
+             * @private
+             */
             control._onClicked = function(ev) {
                 control.isChecked = control._getSub$El('').is(':checked');
                 control._checkCheckedClass();
                 control.performNotify();
             };
 
+
+            /**
+             * Updates the html reflecting the enabled state
+             * @private
+             */
             control._updateEnabledState = function() {
                 if (control._enabled) {
                     control._getSub$El('').prop('disabled', false);
@@ -505,12 +565,21 @@ define([
                 }
             };
 
+
+            /**
+             * Modifies the enabled state of the control
+             * @param {boolean} newStatus - new state
+             */
             control.setEnabled = function(newStatus) {
                 control._enabled = newStatus;
                 control._updateEnabledState();
             };
 
 
+            /**
+             * Returns the current checked state of the control
+             * @returns {boolean}
+             */
             control.getValue = function () {
                 if (control._getSub$El('').length>0)
                     control.isChecked = control._getSub$El('').is(':checked');
@@ -518,6 +587,11 @@ define([
             };
 
 
+            /**
+             * Modifies the checked state of the control
+             * @param {boolean} newVal - new checked state
+             * @param {boolean} preventNotify - if true, no notification will be invoked for this change
+             */
             control.setValue = function(newVal, preventNotify) {
                 if (newVal == control.getValue()) return false;
                 control._value = newVal;
@@ -532,6 +606,10 @@ define([
             };
 
 
+            /**
+             * Modifies the css checked class
+             * @private
+             */
             control._checkCheckedClass = function() {
                 if (!control._checkedClass)
                     return;
@@ -546,6 +624,15 @@ define([
         };
 
 
+        /**
+         * Implements a drop-down list control. changing the selected state invokes a notification
+         * @param {{}} settings - control settings
+         * @param {int} settings.width - width of the box
+         * @param {int} settings.height - height of the box
+         * @param {int} settings.value - initial state id
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.DropList = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
@@ -553,52 +640,61 @@ define([
             control._states = [];
             control._value = settings.value || '';
 
-            control.clearStates = function(id, name) {
+
+            /**
+             * Removes all the states from the list
+             */
+            control.clearStates = function() {
                 control._states = [];
                 control._getSub$El('').html(control._buildSelectContent());
             };
 
+
+            /**
+             * Add a new state to the list
+             * @param {string} id - state id
+             * @param {string} name - state display name
+             * @param {string} group - (optional) group name the state should belong to
+             */
             control.addState = function(id, name, group) {
                 if (!group) group = '';
                 control._states.push({id:id, name:name, group:group});
                 control._getSub$El('').html(control._buildSelectContent());
             };
 
-            control.setValue = function(newVal, preventNotify) {
-                if (newVal == control.getValue()) return false;
-                control._value = newVal;
-                control._getSub$El('').html(control._buildSelectContent());
-                if (!preventNotify)
-                    control.performNotify();
-                return true;
-            };
 
+            /**
+             * Returns the current active state
+             * @returns {boolean}
+             */
             control.getValue = function () {
                 var item = control._getSub$El('').find(":selected");
                 if (item.length>0)
                     control._value = item.attr('value');
                 return control._value;
-            }
+            };
 
+
+            /**
+             * Returns the html implementing this control
+             * @returns {string}
+             */
             control.createHtml = function() {
-
                 var wrapper = DOM.Div();
                 wrapper.addStyle('display', 'inline-block');
-                //wrapper.setCssClass('DQXSelectWrapper');
-
                 var cmb = DOM.Create('select', { id: control._getSubId(''), parent: wrapper });
                 if (control._width)
                     cmb.addStyle('width',control._width+'px');
-                //if (this._hint)
-                //    cmb.addHint(this._hint);
                 cmb.addElem(control._buildSelectContent());
-                //var label = DocEl.Label({ target: this.getFullID('Label') });
-                //label.addElem(this.myLabel);
-                //return label.toString() + ' ' + wrapper.toString();
-
                 return wrapper.toString();
             };
 
+
+            /**
+             * Helper function building the content of the select control
+             * @returns {string}
+             * @private
+             */
             control._buildSelectContent = function() {
                 var st = '';
                 var lastGroupName = '';
@@ -617,18 +713,26 @@ define([
                         selected: (state.id == control._value) ? 'selected="selected"' : ''
                     });
                 });
-
-                if (lastGroupName)
+               if (lastGroupName)
                     st += '</optgroup>';
                 return st;
             };
 
+
+            /**
+             * Attached the html event handlers after DOM insertion
+             */
             control.attachEventHandlers = function() {
                 var target = 'change.controlevent';
                 control._getSub$El('').unbind(target).bind(target, control._onChange);
                 //control._getSub$El('').click(control._onClicked);
             };
 
+
+            /**
+             * Html handler implementing the state change event
+             * @private
+             */
             control._onChange = function(ev) {
                 var oldVal = control._value;
                 var newVal = control.getValue();
@@ -637,13 +741,15 @@ define([
             };
 
 
+            /**
+             * Sets a new active state
+             * @param {string} newVal - new state id
+             * @param {boolean} preventNotify - if true, no notification is issued about the state change
+             */
             control.setValue = function(newVal, preventNotify) {
                 if (newVal == control.getValue()) return false;
                 control._value = newVal;
-                if (control._value)
-                    control._getSub$El('').attr('checked', 'checked');
-                else
-                    control._getSub$El('').removeAttr('checked');
+                control._getSub$El('').html(control._buildSelectContent());
                 if (!preventNotify)
                     control.performNotify();
                 return true;
@@ -653,11 +759,25 @@ define([
         };
 
 
+        /**
+         * Implements a text edit control. a notification is sent each time the content of the edit box changes
+         * @param {{}} settings - control settings
+         * @param {int} settings.width - width of the edit box
+         * @param {int} settings.height - height of the edit box
+         * @param {string} settings.value - initial content of the edit box
+         * @param {boolean} settings.passWord - if true, a password control is created
+         * @param {boolean} settings.disabled - if true, the edit control is disabled
+         * @param {boolean} settings.bold - if true, text in the control appears in bold
+         * @param {boolean} settings.hasClearButton - if true, the control also has a button that clears the content when the user clicks it
+         * @param {string} settings.nonEmptyClass - (optional) a css style class automatically attached to the box if the content is not empty
+         * @param {string} settings.placeHolder - (optional) a text that appears as a place holder in the box if the content is empty
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.Edit = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
             control._height = settings.height || 20;
-            //control._buttonClass = settings.buttonClass || 'AXMEdit';
             control._value = settings.value || '';
             control._isPassWord = settings.passWord || false;
             control._disabled = settings.disabled || false;
@@ -676,6 +796,11 @@ define([
                     control._clearButton.setEnabled(false);
                 });
 
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             control.createHtml = function() {
 
                 var rootEl = DOM.Create("input", {id: control._getSubId('')});
@@ -695,7 +820,6 @@ define([
                     rootEl.addAttribute("type", 'text');
                 else
                     rootEl.addAttribute("type", 'password');
-                //that.addAttribute("pattern", "[0-9]*");
                 rootEl.addAttribute("value", control._value);
                 if (settings.placeHolder)
                     rootEl.addAttribute("placeholder", settings.placeHolder);
@@ -706,6 +830,10 @@ define([
                 return str;
             };
 
+
+            /**
+             * Attaches the html event handlers after DOM insertion
+             */
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
                 control._getSub$El('').bind("propertychange input paste", control._onModified);
@@ -717,6 +845,12 @@ define([
                     control._clearButton.attachEventHandlers();
             };
 
+
+            /**
+             * Handles the html on modified event
+             * @param ev
+             * @private
+             */
             control._onModified = function(ev) {
                 var txt = control.getValue();
                 if (control._clearButton) {
@@ -726,6 +860,11 @@ define([
                 control.performNotify();
             };
 
+
+            /**
+             * Updates the empty box css class
+             * @private
+             */
             control._checkNonEmptyClass = function() {
                 if (!control._nonEmptyClass)
                     return;
@@ -737,17 +876,30 @@ define([
             };
 
 
+            /**
+             * Sets the focus to the edit box
+             */
             control.setFocus = function() {
                 control._getSub$El('').select();
             };
 
+
+            /**
+             * Returns the current content of the edit box
+             * @returns {string}
+             */
             control.getValue = function () {
                 if (control._getSub$El('').length>0)
                     control._value = control._getSub$El('').val();
                 return control._value;
-            }
+            };
 
 
+            /**
+             * Modifies the current content of the edit box
+             * @param {string} newVal - new content
+             * @param {boolean} preventNotify - if true, no notification is issued about the content change
+             */
             control.setValue = function(newVal, preventNotify) {
                 if (newVal == control.getValue()) return false;
                 control._value = newVal;
@@ -765,6 +917,17 @@ define([
         };
 
 
+        /**
+         * Implements a multi-line text box control
+         * @param {{}} settings - control settings
+         * @param {int} settings.width - width of the edit box
+         * @param {int} settings.lineCount - number of lines of the text box
+         * @param {boolean} settings.fixedFont - if true, a fixed space font is used
+         * @param {boolean} settings.noWrap - if true, text is not automatically wrapped over multiple lines
+         * @param {string} settings.value - initial content of the control
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.TextArea = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
@@ -772,15 +935,17 @@ define([
             control._value = settings.value || '';
             control._fixedfont = settings.fixedfont || false;
             control._noWrap = settings._noWrap || false;
-            control._accepttabs = settings.accepttabs || false;
 
 
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             control.createHtml = function() {
 
                 var rootEl = DOM.Create("textarea", {id: control._getSubId('')});
                 rootEl.addCssClass('AXMEdit');
 
-//                rootEl.addAttribute('cols', control._width);
                 rootEl.addAttribute('rows', control._lineCount);
 
                 if (control._disabled)
@@ -789,7 +954,6 @@ define([
                 if (control._width)
                     rootEl.addStyle('width',control._width+'px');
 
-                //rootEl.addAttribute("value", control._value);
                 rootEl.addElem(control._value);
 
                 rootEl.addAttribute('autocorrect', "off");
@@ -813,6 +977,10 @@ define([
                 return str;
             };
 
+
+            /**
+             * Attaches the html event handlers after DOM insertion
+             */
             control.attachEventHandlers = function() {
                 control._getSub$El('').click(control._onClicked);
                 control._getSub$El('').bind("propertychange input paste", control._onModified);
@@ -824,6 +992,12 @@ define([
                     control._clearButton.attachEventHandlers();
             };
 
+
+            /**
+             * Handler the html on modified event
+             * @param ev
+             * @private
+             */
             control._onModified = function(ev) {
                 var txt = control.getValue();
                 if (control._clearButton) {
@@ -833,28 +1007,39 @@ define([
                 control.performNotify();
             };
 
+
+            /**
+             * Currently not implemented
+             * @private
+             */
             control._checkNonEmptyClass = function() {
-                if (!control._nonEmptyClass)
-                    return;
-                var txt = control.getValue();
-                if (txt.length>0)
-                    control._getSub$El('').addClass(control._nonEmptyClass);
-                else
-                    control._getSub$El('').removeClass(control._nonEmptyClass);
             };
 
 
+            /**
+             * Sets the focus to this control
+             */
             control.setFocus = function() {
                 control._getSub$El('').select();
             };
 
+
+            /**
+             * Returns the current content of the edit box
+             * @returns {string}
+             */
             control.getValue = function () {
                 if (control._getSub$El('').length>0)
                     control._value = control._getSub$El('').val();
                 return control._value;
-            }
+            };
 
 
+            /**
+             * Modifies the content of the edit box
+             * @param {string} newVal - new content
+             * @param {boolean} preventNotify - if true, no change notification is sent
+             */
             control.setValue = function(newVal, preventNotify) {
                 if (newVal == control.getValue()) return false;
                 control._value = newVal;
@@ -872,6 +1057,15 @@ define([
         };
 
 
+        /**
+         * Implements a file drag & drop area
+         * @param {{}} settings - control settings
+         * @param {int} settings.width - width of the drop area
+         * @param {int} settings.height - height of the drop area
+         * @param {string} settings.text - text displayed in the drop area
+         * @returns {Object} - returns the control instance
+         * @constructor
+         */
         Module.FileDrop = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 160;
@@ -879,34 +1073,54 @@ define([
             control._text = settings.text || 'Drop file(s)';
             control._files = null;
 
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             control.createHtml = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('width',control._width+'px')
                     .addStyle('height',control._height+'px')
-                    //.addStyle('line-height',control._height+'px')
                     .addStyle('white-space', 'normal')
                     .addStyle('position', 'relative');
                 div.addCssClass('AXMFileDrop');
                 var txtDiv = DOM.Div({parent: div});
-                //txtDiv.addStyle('line-height','3px')
                 txtDiv.addElem(control._text);
                 return div.toString();
             };
 
-            control.onDragOver = function(ev) {
+
+            /**
+             * Handles the drag over html event
+             */
+            control.onDragOver = function() {
                 control._getSub$El('').addClass('AXMFileDropDragOver');
             };
 
-            control.onDragLeave = function(ev) {
+
+            /**
+             * Handles the drag leave html event
+             */
+            control.onDragLeave = function() {
                 control._getSub$El('').removeClass('AXMFileDropDragOver');
             };
 
+
+            /**
+             * Handles the drop html event
+             * @param ev
+             */
             control.onDrop = function(ev) {
                 control._getSub$El('').removeClass('AXMFileDropDragOver');
                 control._files = ev.originalEvent.dataTransfer.files;
                 control.performNotify();
             };
 
+
+            /**
+             * Attaches the html events after DOM insertion
+             */
             control.attachEventHandlers = function() {
                 control._getSub$El('')
                     .on("dragover", control.onDragOver)
@@ -914,6 +1128,11 @@ define([
                     .on("drop", control.onDrop);
             };
 
+
+            /**
+             * Returns the set of files currently dropped in the area
+             * @returns {FileList}
+             */
             control.getValue = function () {
                 return control._files;
             };
@@ -922,6 +1141,18 @@ define([
         };
 
 
+        /**
+         * Implements a value slider control
+         * @param {{}} settings - control settings
+         * @param {int} settings.width - width of the slider
+         * @param {float} settings.minValue - minimum value of the slider value
+         * @param {float} settings.maxValue - maximum value of the slider value
+         * @param {float} settings.steps - increment of the slider value
+         * @param {float} settings.value - initial slider value
+         * @param {string} settings.text - displayed text
+         * @returns {Object} - control instance
+         * @constructor
+         */
         Module.Slider = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 160;
@@ -933,6 +1164,11 @@ define([
 
             control._value = Math.round(control._value/control._step)*control._step;
 
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
             control.createHtml = function() {
 
                 var div = DOM.Div({ id:control._getSubId('') })
@@ -945,7 +1181,6 @@ define([
                 DOM.Create('Span', {parent:div}).addElem(control._text);
                 DOM.Create('Span', {id: control._getSubId('value'), parent:div})
                     .addStyle('float', 'right');
-
 
                 var slider = DOM.Create("input", {id: control._getSubId('slider'), parent: div});
                 slider.addAttribute('type', 'range')
@@ -961,21 +1196,39 @@ define([
             };
 
 
+            /**
+             * Attached the html events after DOM creation
+             */
             control.attachEventHandlers = function() {
                 control._getSub$El('slider').change(control._onChange);
                 control._setNewValue();
             };
 
+
+            /**
+             * Handles the html on change event
+             * @private
+             */
             control._onChange = function() {
                 control._value = parseFloat(control._getSub$El('slider').val());
                 control._setNewValue();
                 control.performNotify();
             };
 
+
+            /**
+             * Sets the new displayed value
+             * @private
+             */
             control._setNewValue = function() {
                 control._getSub$El('value').text(control._value);
             };
 
+
+            /**
+             * Returns the current value of the slider
+             * @returns {float}
+             */
             control.getValue = function () {
                 if (control._getSub$El('slider').length>0)
                     control._value = parseFloat(control._getSub$El('slider').val());
