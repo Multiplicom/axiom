@@ -21,57 +21,129 @@ define([
         require, $, _,
         AXMUtils, Controls, ControlsCompound, DOM) {
 
+        /**
+         * Module implementing frame classes, used to organise web application client area in smaller components
+         * @type {{}}
+         */
         var Module = {};
 
+
+        /**
+         * The height of a frame title bar
+         * @type {number}
+         */
         Module.titleBarH = 25;
 
+        /**
+         * Index of the X dimension, used in 2D properties
+         * @type {number}
+         */
         Module.dimX = 0;
+
+        /**
+         * Index of the Y dimension, used in 2D properties
+         * @type {number}
+         */
         Module.dimY = 1;
+
+        /**
+         * Verifies that a dimension is valid. throws an exception if not
+         * @param {int} dim - dimension
+         */
         Module.checkValidDim = function (dim) {
             if ((dim !== Module.dimX) && (dim !== Module.dimY))
                 AXMUtils.reportBug("Invalid dimension ID");
         };
 
 
+        /**
+         * Creates a helper class object that contains information and functionality about the range of possible sizes an object can have in a single dimension
+         * @returns {Object} - object instance
+         * @constructor
+         */
         Module.dimSizeInfo = function() {
             var sizeInfo = AXMUtils.object('@FrameDimSizeInfo');
             sizeInfo._min = 120;
             sizeInfo._max = 999999;
             sizeInfo._autoSize = false;
 
+            /**
+             * Sets the minimum size
+             * @param {int} sz
+             * @returns {Object} - self
+             */
             sizeInfo.setMinSize = function (sz) {
                 sizeInfo._min = sz;
                 return sizeInfo;
             };
+
+            /**
+             * Sets the size to be fixed
+             * @param {int} sz - fixed size
+             * @returns {Object} - self
+             */
             sizeInfo.setFixedSize = function (sz) {
                 sizeInfo._min = sz;
                 sizeInfo._max = sz;
                 return sizeInfo;
             };
+
+            /**
+             * Defines the size as being determined automatically
+             * @returns {Object} - self
+             */
             sizeInfo.setAutoSize = function () {
                 sizeInfo._min = 0;
                 sizeInfo._autoSize = true;
                 return sizeInfo;
             };
+
+            /**
+             * Determines if the size if fixed
+             * @returns {boolean}
+             * @private
+             */
             sizeInfo._isFixedSize = function () {
                 if (sizeInfo._autoSize)
                     return true;
                 return sizeInfo._max == sizeInfo._min;
             };
+
+            /**
+             * Returns the minimum size
+             * @returns {int}
+             * @private
+             */
             sizeInfo._getMinSize = function () {
                 return sizeInfo._min;
             };
+
+            /**
+             * Returns the maximum size
+             * @returns {int}
+             * @private
+             */
             sizeInfo._getMaxSize = function () {
                 return sizeInfo._max;
             };
+
+            /**
+             * Determines if the size is set to be automatic
+             * @returns {boolean}
+             */
             sizeInfo.isAutoSize = function() {
                 return sizeInfo._autoSize;
-            }
+            };
 
             return sizeInfo;
-        }
+        };
 
 
+        /**
+         * Base class implementing a frame
+         * @returns {Object} - frame instance
+         * @constructor
+         */
         Module.FrameGeneric = function () {
             var frame = AXMUtils.object("@Frame");
             frame._parentFrame = null;
@@ -81,24 +153,48 @@ define([
             frame._title = '';
             frame._sizeInfos = [Module.dimSizeInfo(), Module.dimSizeInfo()]; //allowed frame size range in X and Y dimension
 
+            /**
+             * Returns the unique identifier of the frame
+             * @returns {string}
+             */
             frame.getId = function() {
                 return frame._id;
             };
 
+            /**
+             * Returns the ID of the DIV containing the frame title
+             * @returns {string}
+             */
             frame.getTitleDivId = function() {
                 return frame._id+'_title';
             };
 
+            /**
+             * Sets the relative size of the frame with respect to its siblings, used in case the frame is member of a parent frame that groups its members horizontally or vertically
+             * @param {float} fr - relative size
+             * @returns {Object} - self
+             */
             frame.setSizeFraction = function(fr) {
                 AXMUtils.Test.checkIsNumber(fr);
                 frame._sizeFraction = fr;
                 return frame;
             };
 
+
+            /**
+             * Returns the relative size of the frame with respect to its siblings, used in case the frame is member of a parent frame that groups its members horizontally or vertically
+             * @returns {float}
+             */
             frame.getSizeFraction = function() {
                 return frame._sizeFraction;
             };
 
+
+            /**
+             * Sets the title of the frame
+             * @param {string} iTitle
+             * @returns {Object} - self
+             */
             frame.setTitle = function(iTitle) {
                 AXMUtils.Test.checkIsString(iTitle);
                 frame._hasTitle = true;
@@ -106,20 +202,42 @@ define([
                 return frame;
             };
 
+
+            /**
+             * Determines if the frame has a title bar
+             * @returns {boolean}
+             */
             frame.hasTitleBar = function() {
                 if (!frame._hasTitle)
                     return false;
                 if (frame._parentFrame && frame._parentFrame.isTabber())
                     return false;
                 return true;
-            }
+            };
 
+
+            /**
+             * Returns the title of the frame
+             * @returns {string}
+             */
             frame.getTitle = function() {
                 return frame._title;
-            }
+            };
 
+
+            /**
+             * Determines if the frame is a compound frame, and groups its members as tabs (to be overriden in derived classes)
+             * @returns {boolean}
+             */
             frame.isTabber = function() { return false; };
 
+
+            /**
+             * Specifies the minimum size of the frame in a dimension
+             * @param {int} dim - dimension index (Module.dimX or Module.dimY)
+             * @param {int} sze - size
+             * @returns {Object} - self
+             */
             frame.setMinDimSize = function (dim, sze) {
                 Module.checkValidDim(dim);
                 AXMUtils.Test.checkIsNumber(sze);
@@ -127,13 +245,24 @@ define([
                 return frame;
             };
 
+            /**
+             * Defines a dimension as automatically scaled
+             * @param {int} dim - dimension index (Module.dimX or Module.dimY)
+             * @returns {Object} - self
+             */
             frame.setAutoSize = function (dim) {
                 Module.checkValidDim(dim);
                 frame._sizeInfos[dim].setAutoSize();
                 return frame;
-            }
+            };
 
 
+            /**
+             * Defines a dimension as being fixed in size
+             * @param {int} dim - dimension index (Module.dimX or Module.dimY)
+             * @param {int} sz - fixed size
+             * @returns {Object} - self
+             */
             frame.setFixedDimSize = function (dim, sz) {
                 Module.checkValidDim(dim);
                 AXMUtils.Test.checkIsNumber(sz);
@@ -141,15 +270,26 @@ define([
                 return frame;
             };
 
+
+            /**
+             * In case the frame is scaled automatically along a dimension, returns its computed size
+             * @param {int} dim - dimension index (Module.dimX or Module.dimY)
+             * @returns {int} - size
+             * @private
+             */
             frame._getAutoSize = function (dim) {
                 Module.checkValidDim(dim);
                 var sze = frame._getClientAutoSize(dim);
-                //if (this._parentFrame)   !!!todo: include parent separator?
-                //    sze += frame._parentFrame._separatorSize / 2;
                 return sze;
-            }
+            };
 
 
+            /**
+             * Returns the minimum frame size along a dimension
+             * @param {int} dim - dimension index (Module.dimX or Module.dimY)
+             * @returns {int} - minumum size
+             * @private
+             */
             frame._getMinSize = function (dim) {
                 Module.checkValidDim(dim);
                 if (frame._sizeInfos[dim].isAutoSize())
@@ -160,11 +300,24 @@ define([
                 );
             };
 
+
+            /**
+             * Returns the minumum size of the client area of a frame
+             * @param {int} dim - dimension index (Module.dimX or Module.dimY)
+             * @returns {number} - minimum client size
+             * @private
+             */
             frame._getClientMinSize = function(dim) {
                 return 0;
             };
 
 
+            /**
+             * Returns the maximum frame size along a dimension
+             * @param {int} dim - dimension index (Module.dimX or Module.dimY)
+             * @returns {Number}
+             * @private
+             */
             frame._getMaxSize = function (dim) {
                 Module.checkValidDim(dim);
                 if (frame._sizeInfos[dim].isAutoSize())
@@ -173,6 +326,10 @@ define([
             };
 
 
+            /**
+             * Returns the html implementing thee frame
+             * @returns {string}
+             */
             frame.createHtml = function() {
                 var frameDiv = DOM.Div({id: frame._id});
                 frameDiv.addCssClass('AXMFrame');
@@ -185,10 +342,18 @@ define([
                 return frameDiv.toString();
             };
 
+
+            /**
+             * Attached the html handlers to after DOM insertion
+             */
             frame.attachEventHandlers = function(params) {
                 frame.$ElContainer = $('#' + frame._id);
             };
 
+
+            /**
+             * Automatically pdates the positioning of the frame, including the client area content
+             */
             frame.updatePosition = function() {
                 var _digest = function(vl) {
                     if (vl.indexOf('px', vl.length - 2) >= 0)
@@ -204,6 +369,14 @@ define([
 
             };
 
+
+            /**
+             * Changes the positioning of the frame
+             * @param {int} x0 - left x position
+             * @param {int} y0 - top y position
+             * @param {int} xl - x width
+             * @param {int} yl - y width
+             */
             frame.setPosition = function(x0, y0, xl, yl, params) {
                 AXMUtils.Test.checkIsNumber(x0, y0, xl, yl);
                 frame.$ElContainer.css('left', x0 + 'px');
@@ -225,18 +398,35 @@ define([
                     frame.setPositionClient(xl, yl-frame._clientVOffset, params);
             };
 
-            frame.activatePanelTypeId = function(panelTypeId) {
-                return false;
-            }; //in general: do nothing
 
+            /**
+             * Activates a specific panel in the hierarchical frame structure (used for tabbed containers). to be implemented in derived classes
+             * @param panelTypeId
+             * @returns {boolean}
+             */
+            frame.activatePanelTypeId = function(panelTypeId) {
+                //in general: do nothing
+                return false;
+            };
 
             return frame;
         };
 
+
+        /**
+         * Base class implementing the behaviour of a compound frame (i.e. a frame grouping member frames)
+         * @returns {Object} - object instance
+         * @constructor
+         */
         Module.FrameCompound = function () {
             var frame = Module.FrameGeneric();
             frame._memberFrames = [];
 
+            /**
+             * Adds a new member frame
+             * @param {Module.Frame} memberFrame
+             * @returns {Module.Frame} - member frame
+             */
             frame.addMember = function(memberFrame) {
                 AXMUtils.Test.checkIsType(memberFrame, '@Frame');
                 frame._memberFrames.push(memberFrame);
@@ -245,13 +435,22 @@ define([
             };
 
             var _super_attachEventHandlers = frame.attachEventHandlers;
+            /**
+             * Attached the html event handlers after DOM insertion
+             */
             frame.attachEventHandlers = function(params) {
-                _super_attachEventHandlers(params);
+                _super_attachEventHandlers(params); // calls the implementation of the parent class
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     memberFrame.attachEventHandlers(params);
                 });
             };
 
+
+            /**
+             * Activates an individual panel inside the hierarchical frame structure
+             * @param {string} panelTypeId - ID of the panel
+             * @returns {boolean} - determines whether or not the panel was found
+             */
             frame.activatePanelTypeId = function(panelTypeId) {
                 var found = false;
                 $.each(frame._memberFrames, function(idx, memberFrame) {
@@ -265,6 +464,12 @@ define([
         };
 
 
+        /**
+         * Implements a compound frame that organises member frame by aligning them horizontally or vertically, with splitters between them
+         * @param {int} dim - splitter dimenion (can be Module.dimX or Module.dimY)
+         * @returns {Object} - object instance
+         * @constructor
+         */
         Module.FrameSplitter = function (dim) {
             var frame = Module.FrameCompound();
             Module.checkValidDim(dim);
@@ -272,15 +477,36 @@ define([
             frame._hSplitterSize = 3;
 
 
+            /**
+             * Defines half the size of the splitters between the member frames
+             * @param {int} hSize
+             * @returns {Object} - self
+             */
             frame.setHalfSplitterSize = function(hSize) {
                 AXMUtils.Test.checkIsNumber(hSize);
                 frame._hSplitterSize = hSize;
                 return frame;
             };
 
+            /**
+             * Determines if the frame is a horizontal splitter
+             * @returns {boolean}
+             */
             frame.isHorSplitter = function() { return frame._dim==Module.dimX; };
+
+            /**
+             * Determines if the frame is a vertical splitter
+             * @returns {boolean}
+             */
             frame.isVertSplitter = function() { return frame._dim==Module.dimY; };
 
+
+            /**
+             * Returns the automatic size calculation of the client area in a dimension
+             * @param {int} dim - dimension (can be Module.dimX or Module.dimY)
+             * @returns {number} - computed automatic client size
+             * @private
+             */
             frame._getClientAutoSize = function(dim) {
                 Module.checkValidDim(dim);
                 if (dim==frame._dim) {
@@ -299,6 +525,13 @@ define([
                 }
             };
 
+
+            /**
+             * Returns the minimum size calculation of the client area in a dimension
+             * @param {int} dim - dimension (can be Module.dimX or Module.dimY)
+             * @returns {number} - computed minumum client size
+             * @private
+             */
             frame._getClientMinSize = function(dim) {
                 Module.checkValidDim(dim);
                 if (dim==frame._dim) {
@@ -318,13 +551,24 @@ define([
             };
 
 
-
+            /**
+             * Returns the ID of a splitter DIV
+             * @param {int} sepnr - splitter index number
+             * @returns {string} - ID
+             */
             frame.getSplitterDivId = function(sepnr) {
                 if ((sepnr<1) || (sepnr>=frame._memberFrames.length))
                     AXMUtils.reportBug('Invalid separator number');
                 return 'FSP_'+frame._id+'_'+sepnr;
             };
 
+
+            /**
+             * Determines if a splitter is fixed or moveable by the user
+             * @param {int} splitterNr - splitter index number
+             * @returns {boolean}
+             * @private
+             */
             frame._isFixedSplitter = function(splitterNr) {
                 if ((splitterNr<1) || (splitterNr>=frame._memberFrames.length))
                     AXMUtils.reportBug('Invalid separator number');
@@ -335,6 +579,11 @@ define([
                 return false;
             };
 
+
+            /**
+             * Returns the html of the client area
+             * @returns {string}
+             */
             frame.createHtmlClient = function() {
                 frame._normaliseSizeFractions();
                 var html = '';
@@ -355,6 +604,11 @@ define([
                 return html;
             };
 
+
+            /**
+             * Normalises the member frame relative sizes
+             * @private
+             */
             frame._normaliseSizeFractions = function() {
                 var totalFraction = 0;
                 $.each(frame._memberFrames, function(idx, memberFrame) {
@@ -368,6 +622,11 @@ define([
             };
 
 
+            /**
+             * Calculates the positions of the member frame splitters, given a total available length
+             * @param {int}length
+             * @returns {[int]} - positions
+             */
             frame.calcSplitterPositions = function(length) {
                 AXMUtils.Test.checkIsNumber(length);
                 if (frame._memberFrames.length == 1) return [];
@@ -383,11 +642,17 @@ define([
             };
 
             var _super_attachEventHandlers = frame.attachEventHandlers;
+            /**
+             * Attaches the html event handlers after DOM insertion
+             */
             frame.attachEventHandlers = function(params) {
                 _super_attachEventHandlers(params);
                 frame._attachEventHandlers_Splitters(params)
-            }
+            };
 
+            /**
+             * Attaches the html event handlers for ths splitters after DOM insertion
+             */
             frame._attachEventHandlers_Splitters = function(params) {
                 var initialiseMoveSplitter = function(splitterNr, splitter$El) {
                     frame._temp_dragSplitter_splitterNr = splitterNr;
@@ -420,6 +685,13 @@ define([
             };
 
 
+            /**
+             * Calculates the new member frame relative sizes after a splitter position was moved by the user
+             * @param {int} splitterNr - moved splitter index
+             * @param {int} newPos - new position of the splitter
+             * @param {int} totSize - total available size
+             * @private
+             */
             frame._calculateNewFrameSizeFractions = function(splitterNr, newPos, totSize) {
                 var posits = [0];
                 var ps = 0;
