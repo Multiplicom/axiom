@@ -43,7 +43,7 @@ define([
 
             that.getCount = function() {
                 return values.length;
-            }
+            };
 
             that.getMean = function() {
                 return that.average;
@@ -56,6 +56,34 @@ define([
             return that;
         };
 
+        Module.correlationCoefficient = function(dataX, dataY) {
+            var correlation = 'NaN';
+            var valuesX = [];
+            var valuesY = [];
+            for (var rowNr = 0; rowNr < dataX.length; rowNr++) {
+                var valX = dataX[rowNr];
+                var valY = dataY[rowNr];
+                if (valX !== null && !(isNaN(valX)) && valY !== null && !(isNaN(valY))) {
+                    valuesX.push(valX);
+                    valuesY.push(valY);
+                }
+            }
+
+            if (valuesX.length > 1) {
+                var dfX = Module.NormDfEstimator(valuesX);
+                dfX.calcParametric();
+                var dfY = Module.NormDfEstimator(valuesY);
+                dfY.calcParametric();
+                var covariance = 0;
+                for (var rowNr = 0; rowNr < dfX.getCount(); rowNr++){
+                    covariance += (valuesX[rowNr] - dfX.getMean()) * (valuesY[rowNr] - dfY.getMean());
+                }
+                covariance = covariance / (dfX.getCount());
+                correlation = covariance / (dfX.getStdev() * dfY.getStdev());
+            }
+
+            return correlation;
+        };
 
         return Module;
     });

@@ -18,14 +18,14 @@ define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Color", "AXM/Panels/PanelCanvasXYPlot", "AXM/Windows/PopupWindow", "AXM/Controls/Controls", "AXM/Windows/SimplePopups",
         "AXM/DataFrames/Plots/_GenericPlot",
-        "AXM/DataFrames/DataTypes", "AXM/DataFrames/ViewRow"
+        "AXM/DataFrames/DataTypes", "AXM/DataFrames/ViewRow", "AXM/Stats"
 
     ],
     function (
         require, $, _,
         AXMUtils, Color, PanelCanvasXYPlot, PopupWindow, Controls, SimplePopups,
         _GenericPlot,
-        DataTypes, ViewRow
+        DataTypes, ViewRow, Stats
     ) {
 
         var PlotType = _GenericPlot.createPlotType('scatterplot', _TRL('Scatter plot'), 'fa-line-chart');
@@ -99,6 +99,9 @@ define([
 
                 win.colorLegendCtrl = Controls.Static({});
                 dispGroup.add(win.colorLegendCtrl);
+
+                win.infoCtrl = Controls.Static({});
+                dispGroup.add(win.infoCtrl);
 
                 var btLine = Controls.Button({
                     text: _TRL('Add curve'),
@@ -180,6 +183,9 @@ define([
                     win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
                     win.plot.setYLabel(win.getAspectProperty('yvalue').getDispName());
                     win._curves = [];
+                }
+                if ((aspectId == 'xvalue') || aspectId == 'yvalue' || all){
+                    win.parseData();
                 }
                 if ((aspectId == 'color') || all)
                     win.updateColorLegend();
@@ -475,6 +481,15 @@ define([
 
             win.initPlot = function() {
                 win.updateColorLegend();
+                win.parseData();
+            };
+
+            win.parseData = function() {
+                var dataX = win.getAspectProperty('xvalue').data;
+                var dataY = win.getAspectProperty('yvalue').data;
+                var correlation = Stats.correlationCoefficient(dataX, dataY);
+                var str = 'Correlation: ' + correlation + '<br>';
+                win.infoCtrl.modifyText(str);
             };
 
             var propX = win.getAspectProperty('xvalue');
