@@ -178,6 +178,9 @@ define([
                     }
                 });
 
+                if (minVal == maxVal)
+                    binSize = minVal * 0.1;
+
                 win._binSize = binSize;
                 win._binOffset = Math.floor(minVal/binSize)*binSize;
                 win._binCount = Math.floor((maxVal-win._binOffset)/binSize)+1;
