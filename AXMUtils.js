@@ -449,6 +449,10 @@ define([
             Module._textInterpolators = dct;
         };
 
+        Module.addTextInterpolator = function(key, value) {
+            Module._textInterpolators[key] = value;
+        };
+
         Module._useTextDecoration = function() {
             if(typeof __AXMTextDecoration === "undefined")
                 return false;
