@@ -157,26 +157,30 @@ define([
 
                 var resolMultFac = Math.exp(2*win.ctrl_Resolution.getValue());
 
-                var jumpPrototypes = [1, 2, 5];
-                var optimalbincount = Math.floor(Math.sqrt(count))*resolMultFac;
-                optimalbincount = Math.max(optimalbincount, 2);
-                optimalbincount = Math.min(optimalbincount, 200);
-                var optimalbinsize = (maxVal-minVal)*1.0/optimalbincount;
-                var mindist = 1.0e99;
                 var binSize = 1;
-                $.each(jumpPrototypes, function(idx, jumpPrototype) {
-                    var q=Math.floor(Math.log10(optimalbinsize/jumpPrototype));
-                    var TryJump1A = Math.pow(10, q) * jumpPrototype;
-                    var TryJump1B = Math.pow(10, q + 1) * jumpPrototype;
-                    if (Math.abs(TryJump1A - optimalbinsize) < mindist) {
-                        mindist = Math.abs(TryJump1A - optimalbinsize);
-                        binSize = TryJump1A;
-                    }
-                    if (Math.abs(TryJump1B - optimalbinsize) < mindist) {
-                        mindist = Math.abs(TryJump1B - optimalbinsize);
-                        binSize = TryJump1B;
-                    }
-                });
+                if (minVal == maxVal)
+                    binSize = minVal * 0.1;
+                else {
+                    var jumpPrototypes = [1, 2, 5];
+                    var optimalbincount = Math.floor(Math.sqrt(count))*resolMultFac;
+                    optimalbincount = Math.max(optimalbincount, 2);
+                    optimalbincount = Math.min(optimalbincount, 200);
+                    var optimalbinsize = (maxVal-minVal)*1.0/optimalbincount;
+                    var mindist = 1.0e99;
+                    $.each(jumpPrototypes, function(idx, jumpPrototype) {
+                        var q=Math.floor(Math.log10(optimalbinsize/jumpPrototype));
+                        var TryJump1A = Math.pow(10, q) * jumpPrototype;
+                        var TryJump1B = Math.pow(10, q + 1) * jumpPrototype;
+                        if (Math.abs(TryJump1A - optimalbinsize) < mindist) {
+                            mindist = Math.abs(TryJump1A - optimalbinsize);
+                            binSize = TryJump1A;
+                        }
+                        if (Math.abs(TryJump1B - optimalbinsize) < mindist) {
+                            mindist = Math.abs(TryJump1B - optimalbinsize);
+                            binSize = TryJump1B;
+                        }
+                    });
+                }
 
                 win._binSize = binSize;
                 win._binOffset = Math.floor(minVal/binSize)*binSize;

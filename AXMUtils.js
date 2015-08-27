@@ -95,6 +95,8 @@ define([
             range.getMax = function() { return range._maxValue; };
             range.extendFraction = function(fr) {
                 var ext = (range._maxValue - range._minValue) * fr/2;
+                if (ext == 0)
+                    ext = range._minValue * fr/2;
                 range._minValue -= ext;
                 range._maxValue += ext;
             };
