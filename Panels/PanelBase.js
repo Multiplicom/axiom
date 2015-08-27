@@ -21,30 +21,67 @@ define([
         require, $, _,
         AXMUtils, DOM) {
 
+
+        /**
+         * Module encapsulating a base class for a panel. a panel is a client area containing a specific type of content (e.g. a table view)
+         * @type {{}}
+         */
         var Module = {};
 
+
+        /**
+         * Implements a base class for a panel. a panel is a client area containing a specific type of content (e.g. a table view)
+         * @param {string} typeId - identifier of the type of panel
+         * @returns {Object} - panel instance
+         * @constructor
+         */
         Module.create = function(typeId) {
             var panel = AXMUtils.object('@Panel');
             panel._id = AXMUtils.getUniqueID();
             panel._typeId = typeId;
 
+            /**
+             * Defines the parent frame containing this panel
+             * @param {Object} iFrame - parent frame
+             * @private
+             */
             panel._setFrame = function(iFrame) {
                 AXMUtils.Test.checkIsType(iFrame, '@Frame');
                 panel._frame = iFrame;
             };
 
+
+            /**
+             * Returns the unique identifier of this panel
+             * @returns {string}
+             */
             panel.getId = function() {
                 return panel._id;
             };
 
+            /**
+             * Returns the identifier of the panel type
+             * @returns {string}
+             */
             panel.getTypeId = function() {
                 return panel._typeId;
             };
 
+
+            /**
+             * Returns the html implementing the panel (implemented in derived classes)
+             * @returns {string}
+             */
             panel.createHtml = function() {
                 return '';
             };
 
+
+            /**
+             * Resizes the panel (implemented in derived classes)
+             * @param {int} xl - new x dimension
+             * @param {int} yl - new y dimension
+             */
             panel.resize = function(xl, yl) {
             };
 

@@ -27,8 +27,20 @@ define([
         TableInfo
     ) {
 
+        /**
+         * Module encapsulating a panel that contains a paged table
+         * @type {{}}
+         */
         var Module = {};
 
+        /**
+         * Implements a panel that contains a paged table
+         * @param {string} id - panel type id
+         * @param {AXM.Tables.TableData} tableData - object containing the data of the table (content of the cells)
+         * @param {AXM.Tables.TableData} tableInfo - object containing the definition of the table (column definitions)
+         * @returns {Object} - panel instance
+         * @constructor
+         */
         Module.create = function(id, tableData, tableInfo) {
             var panel = PanelBase.create(id);
             AXMUtils.Test.checkIsType(tableData, '@TableData');
@@ -49,10 +61,18 @@ define([
             panel._storeLayout = true;
 
 
+            /**
+             * Defines wether or not the user-adjusted layout should be stored
+             * @param {boolean} newValue
+             */
             panel.setStoreLayout = function(newValue) {
                 panel._storeLayout = newValue;
             };
 
+
+            /**
+             * To be called to reflect changes in the table info
+             */
             panel.updateTableInfo = function() {
 
                 panel._columns = [];
@@ -101,6 +121,11 @@ define([
                 return $('#' + panel._getColSubId(colNr, ext));
             };
 
+
+            /**
+             * Returns the html implementing the panel
+             * @returns {string}
+             */
             panel.createHtml = function() {
 
                 panel._divid_leftHeadRow = panel._getSubId('leftheadrow');
@@ -120,17 +145,19 @@ define([
                 return divRoot.toString();
             };
 
+            /**
+             * Returns the html implementing the table body
+             * @returns {string}
+             */
             panel.createHtmlBody = function() {
                 panel._loadColumnSettings();
 
                 var divLeftTableContainer = DOM.Div({ id: panel._getSubId('leftTableScrollContainer')})
-                    //.addStyle('width','100px')
                     .addStyle('height','100%')
                     .addStyle('display', 'inline-block')
                     .addStyle('background-color','rgb(247,247,247)');
 
                 var divRightTableContainer = DOM.Div({ id: panel._getSubId('rightTableScrollContainer')})
-                    //.addStyle('width','100%')
                     .addStyle('height','100%')
                     .addStyle('overflow-x','scroll')
                     .addStyle('overflow-y','hidden')
@@ -167,11 +194,13 @@ define([
                         .addStyle('overflow','hidden')
                 });
 
-
-
                 return divLeftTableContainer.toString() + divRightTableContainer.toString();
             };
 
+
+            /**
+             * Attached the html event handlers after DOM insertion
+             */
             panel.attachEventHandlers = function() {
                 var $ElLeftHeadRow = $('#'+panel._divid_leftHeadRow);
                 var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
@@ -256,20 +285,18 @@ define([
                     return false;
                 });
 
-                //$ElLeftHeadRow.find('th').bind('mouseenter', function(){
-                //    var $this = $(this);
-                //    $this.attr('title', $this.text());
-                //});
-                //$ElRightHeadRow.find('th').bind('mouseenter', function(){
-                //    var $this = $(this);
-                //    $this.attr('title', $this.text());
-                //});
-
                 panel._updateSortStatus();
                 panel.renderTableContent();
             };
 
 
+            /**
+             * Returns the html code for a single cell content
+             * @param {int} rowNr - row number
+             * @param {int} colNr - column number
+             * @param {{}} rowData - content of the row
+             * @param {AXM.TableInfo.colInfo} colInfo - column information
+             */
             panel.renderCell = function(rowNr, colNr, rowData, colInfo) {
                 if (colInfo.isOpener) {
                     var cell = '<div class="AXMPgTableLinkCell" title="{txt}">'.AXMInterpolate({txt:_TRL('Open this item')});
@@ -302,6 +329,13 @@ define([
                 return 'rowright_'+panel.getId()+'_'+rowNr;
             };
 
+
+            /**
+             * Returns the html code for a single row in the table
+             * @param {int} rowNr - table row number
+             * @returns {{left: string, right: string}}
+             * @private
+             */
             panel._renderTableRow = function(rowNr) {
                 if (rowNr < 0)
                     AXMUtils.Test.reportBug('Negative row number');
@@ -343,6 +377,11 @@ define([
                 }
             };
 
+
+            /**
+             * Sets the html code for the table pager control
+             * @private
+             */
             panel._renderPager = function() {
                 var rowFirst = panel._tableOffset;
                 var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
@@ -353,6 +392,10 @@ define([
                 }));
             };
 
+
+            /**
+             * Sets the html code for the table content
+             */
             panel.renderTableContent = function() {
                 panel._tableRowCount = panel._tableData.getRowCount();
                 var rowFirst = panel._tableOffset;
@@ -380,10 +423,19 @@ define([
                     panel._measureSize();
             };
 
+
+            /**
+             * Renders an error message
+             */
             panel.renderFail = function() {
                 panel._pagerInfo.modifyText('<span style="color:red">Failed to load data</span>');
-            }
+            };
 
+
+            /**
+             * Renders the highlight for the highlighted row
+             * @private
+             */
             panel._renderHighlightRowNr = function() {
                 var $ElRightBody = $('#'+panel._divid_rightBody);
                 var $ElLeftBody = $('#'+panel._divid_leftBody);
@@ -394,6 +446,13 @@ define([
 
             };
 
+
+            /**
+             * Handles the clicking on an individual cell html element
+             * @param {jquery} $El - clicked element
+             * @param {{}} settings
+             * @private
+             */
             panel._handleCellClicked = function($El, settings) {
                 var cellInfo = panel._findTableCell$El($El);
                 if (cellInfo) {
@@ -406,10 +465,15 @@ define([
                         if (colInfo.isSelector)
                             panel._handleSelectorClicked(cellInfo.rowNr, settings);
                     }
-                    //alert('Clicked '+cellInfo.rowNr+' '+cellInfo.colNr);
                 }
             };
 
+            /**
+             * Handles the clicking on the icon maintaining the row selection state
+             * @param {int} rowNr - table row number
+             * @param {{}} settings
+             * @private
+             */
             panel._handleSelectorClicked = function(rowNr, settings) {
                 var rowId = panel._tableData.getRowId(rowNr);
                 if (rowId === null)
@@ -428,15 +492,24 @@ define([
                 panel._tableData.notifySelectionModified();
             };
 
+
+            /**
+             * Updates the table pager offset
+             * @private
+             */
             panel._updateScrollLineDiff = function() {
                 if (panel._accumulatedScrollLineDiff) {
                     panel.navigateLineDiff(panel._accumulatedScrollLineDiff);
                     panel._accumulatedScrollLineDiff = 0;
                 }
             };
-            //panel._throttled_updateScrollLineDiff = AXMUtils.debounce2(panel._updateScrollLineDiff, 20);
 
 
+            /**
+             * Handles the mouse scroll wheel event
+             * @param params
+             * @private
+             */
             panel._handleScrolled = function(params) {
                 if (params.deltaY < 0)
                     panel._accumulatedScrollLineDiff += 3;
@@ -445,13 +518,23 @@ define([
                 panel._updateScrollLineDiff();
             };
 
+
+            /**
+             * Handles the toggling of the sort state for an individuale column
+             * @param {string} colId - column id
+             * @private
+             */
             panel._toggleSortByField = function(colId) {
                 panel._tableData._toggleSortByField(colId);
                 panel.resetView();
-                //panel.renderTableContent();
                 panel._updateSortStatus();
             };
 
+
+            /**
+             * Updates the row sort status
+             * @private
+             */
             panel._updateSortStatus = function() {
                 $.each(panel._columns, function(colNr, colInfo) {
                     var $ElColHeader =panel._getColSub$El('header', colNr);
@@ -469,6 +552,10 @@ define([
                 });
             };
 
+            /**
+             * Stores the column layout settings as a local cookie
+             * @private
+             */
             panel._storeColumnSettings = function() {
                 if (panel._storeLayout) {
                     var colSettings = [];
@@ -484,6 +571,11 @@ define([
                 }
             };
 
+
+            /**
+             * Loads the column layout settings from a local cookie, if present
+             * @private
+             */
             panel._loadColumnSettings = function() {
                 if (panel._storeLayout) {
                     var encodedContent = $.cookie('TableSettings_' + panel.getTypeId());
@@ -504,13 +596,13 @@ define([
                 }
             };
 
-            //panel._handleCellDoubleClicked = function($El) {
-            //    var cellInfo = panel._findTableCell$El($El);
-            //    if (cellInfo) {
-            //        alert('h');
-            //    }
-            //};
 
+            /**
+             * Returns row & column number of a cell, given the jquery cell element
+             * @param {jquery} $El
+             * @returns {rowNr, colNr}
+             * @private
+             */
             panel._findTableCell$El = function($El) {
                 if ($El.length == 0)
                     return null;
@@ -528,6 +620,10 @@ define([
 
             };
 
+
+            /**
+             * Clears the content of the table
+             */
             panel.emptyContent = function() {
                 var $ElRightBody = $('#'+panel._divid_rightBody);
                 var $ElLeftBody = $('#'+panel._divid_leftBody);
@@ -535,6 +631,10 @@ define([
                 $ElRightBody.html('');
             };
 
+
+            /**
+             * Resets the table pager to top view
+             */
             panel.resetView = function() {
                 panel._tableOffset = 0;
                 panel._lastSelClickedRowNr = null;
@@ -542,15 +642,26 @@ define([
                 panel.invalidate();
             };
 
+
+            /**
+             * Forces an update of the displayed table content, refreshing any available cache
+             */
             panel.reloadContent = function() {
                 panel._tableData.resetBuffer();
                 panel.invalidate();
             };
 
+            /**
+             * Re-renders the table content
+             */
             panel.invalidate = function() {
                 panel.renderTableContent();
             };
 
+
+            /**
+             * Navigates the pager to the first page
+             */
             panel.navigateFirstPage = function() {
                 panel._tableOffset = 0;
                 panel._lastSelClickedRowNr = null;

@@ -710,8 +710,11 @@ define([
             };
 
 
-
-
+            /**
+             * Adjusts the relative sizes of the member frames according to a new total available size
+             * @param {int} totSize - available size
+             * @private
+             */
             frame._adjustFrameSizeFractions = function(totSize) {
                 var widths = [];
                 var widths_min = [];
@@ -754,7 +757,10 @@ define([
             };
 
 
-
+            /**
+             * Positions the member frames inside the available client area of the frame
+             * @private
+             */
             frame._setPositionSubframes = function(params) {
                 var xl = frame.$ElContainer.find('.AXMFrameClient').width();
                 var yl = frame.$ElContainer.find('.AXMFrameClient').height();
@@ -765,10 +771,23 @@ define([
             return frame;
         };
 
+
+
+        /**
+         * Implements a compound frame that organises member frame by aligning them horizontally, with splitters between them
+         * @returns {Object} - object instance
+         * @constructor
+         */
         Module.FrameSplitterHor = function () {
             var frame = Module.FrameSplitter(0);
 
 
+            /**
+             * Positions the member frame with respect to the client area of the frame
+             * @param {int} xl - client area width
+             * @param {int} yl - client area height
+             * @param {{}} params
+             */
             frame.setPositionClient = function(xl, yl, params) {
                 AXMUtils.Test.checkIsNumber(xl, yl);
                 frame._adjustFrameSizeFractions(xl);
@@ -797,9 +816,21 @@ define([
 
 
 
+        /**
+         * Implements a compound frame that organises member frame by aligning them horizontally, with splitters between them
+         * @returns {Object} - object instance
+         * @constructor
+         */
         Module.FrameSplitterVert = function () {
             var frame = Module.FrameSplitter(1);
 
+
+            /**
+             * Positions the member frame with respect to the client area of the frame
+             * @param {int} xl - client area width
+             * @param {int} yl - client area height
+             * @param {{}} params
+             */
             frame.setPositionClient = function(xl, yl, params) {
                 AXMUtils.Test.checkIsNumber(xl, yl);
                 frame._adjustFrameSizeFractions(yl);
@@ -829,11 +860,21 @@ define([
 
 
 
+        /**
+         * Base class implementing a compound frame that organises member frame by stacking them in the client area, with only one member frame visible at any time
+         * @returns {Object} - object instance
+         * @constructor
+         */
         Module.FrameStacker = function () {
             var frame = Module.FrameCompound();
             frame._activeMemberNr = 0;
             frame._stackHeaderOffset = 0;
 
+
+            /**
+             * Returns the html for the client area
+             * @returns {string}
+             */
             frame.createHtmlClient = function() {
                 var html = '';
 
@@ -843,6 +884,12 @@ define([
                 return html;
             };
 
+            /**
+             * Positions the member frames in the client area
+             * @param {int} xl - client area width
+             * @param {int} yl - client area height
+             * @param {{}} params
+             */
             frame.setPositionClient = function(xl, yl, params) {
                 AXMUtils.Test.checkIsNumber(xl, yl);
                 $.each(frame._memberFrames, function(idx, memberFrame) {
@@ -851,6 +898,11 @@ define([
                 frame._updateMemberVisibility();
             };
 
+
+            /**
+             * Updates the visibility of the member frames
+             * @private
+             */
             frame._updateMemberVisibility = function() {
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     memberFrame.$ElContainer.css('visibility',
@@ -859,34 +911,58 @@ define([
                 });
             };
 
-            frame.activatePanelTypeId = function(panelTypeId) { // returns true if the panel was found in this frame
+
+            /**
+             * Activates (= makes visible) a member frame containing a panel with a specific ID
+             * @param {string} panelTypeId - panel ID of the frame to be activated
+             */
+            frame.activatePanelTypeId = function(panelTypeId) {
                 var actFrameNr = -1;
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     if (memberFrame.activatePanelTypeId(panelTypeId))
                         actFrameNr = idx;
                 });
-                if (actFrameNr != -1)
+                if (actFrameNr != -1) {
                     if (frame.activateStackNr)
                         frame.activateStackNr(actFrameNr);
+                    return true
+                }
+                else
+                    return false;
             };
 
-
             return frame;
+        };
 
 
-        }
 
+        /**
+         * Implements a compound frame that organises member frame by stacking them in the client area, with only one member frame visible at any time, and a tabber control allowing the user to select the visible member frame
+         * @returns {Object} - object instance
+         * @constructor
+         */
         Module.FrameTabber = function () {
             var frame = Module.FrameStacker();
             frame._stackHeaderOffset = 34+4;
 
             frame.isTabber = function() { return true; };
 
+
+            /**
+             * Returns a unique html element ID for each tab in the tabber
+             * @param tabNr
+             * @returns {string}
+             * @private
+             */
             frame._getTabId = function(tabNr) {
                 return 'frametab_'+frame._id+'_'+tabNr;
             };
 
             var _super_createHtmlClient = frame.createHtmlClient;
+            /**
+             * Returns the html implementing the client area
+             * @returns {string}
+             */
             frame.createHtmlClient = function() {
                 var html = '';
 
@@ -897,15 +973,16 @@ define([
                         .addCssClass('AXMFrameTabElement');
                     tablElDiv.addElem(memberFrame.getTitle());
                 });
-
                 html += tabDiv.toString();
-
                 html += _super_createHtmlClient();
-
                 return html;
             };
 
             var _super_attachEventHandlers = frame.attachEventHandlers;
+            /**
+             * Attaches the html event handlers after DOM insertion
+             * @param params
+             */
             frame.attachEventHandlers = function(params) {
                 _super_attachEventHandlers(params);
                 $.each(frame._memberFrames, function(fnr, memberFrame) {
@@ -917,6 +994,10 @@ define([
                 frame.activateStackNr(0);
             };
 
+            /**
+             * Activates an individual member frame
+             * @param {int} fnr - member frame number
+             */
             frame.activateStackNr = function(fnr) {
                 if ((fnr<0) || (fnr>=frame._memberFrames.length))
                     AXMUtils.reportBug('Invalid TAB nr');
@@ -932,6 +1013,12 @@ define([
             };
 
             var _super_setPositionClient = frame.setPositionClient;
+            /**
+             * Positions the member frames inside the available client space
+             * @param {int} xl - client space width
+             * @param {int} yl - client space height
+             * @param params
+             */
             frame.setPositionClient = function(xl, yl, params) {
                 AXMUtils.Test.checkIsNumber(xl, yl);
                 frame.$ElContainer.find('.AXMFrameTabContainer')
@@ -961,20 +1048,26 @@ define([
                 _super_setPositionClient(xl, yl, params);
             };
 
-
             return frame;
         };
 
 
-
-
-
-
+        /**
+         * Implements a frame containing a panel
+         * @param {AXM.Panels.PanelBase} iPanel - panel to be contained in the frame
+         * @returns {Object} - frame instance
+         * @constructor
+         */
         Module.FrameFinal = function (iPanel) {
             var frame = Module.FrameGeneric();
             frame._panel = iPanel;
             iPanel._setFrame(frame);
 
+
+            /**
+             * Returns the html implementing the client area
+             * @returns {string}
+             */
             frame.createHtmlClient = function() {
                 var div = DOM.Div({id: frame._id+'_finalclient'});
                 div.addCssClass('AXMFrameFinalClientArea');
@@ -983,17 +1076,13 @@ define([
                 return div.toString();
             };
 
+            /**
+             * Returns the automatically computed client size in a given dimension
+             * @param {int} dim - dimension index (Module.dimX or Module.dimY)
+             * @returns {int}
+             * @private
+             */
             frame._getClientAutoSize = function(dim) {
-                //var obj = document.getElementById(frame._id+'_finalclient');
-                //if (obj) {
-                //    if (dim==Module.dimX)
-                //        return obj.offsetWidth;
-                //    else
-                //        return obj.offsetHeight;
-                //}
-                //else
-                //    return 0;
-
                 var $ElClient = frame.$ElContainer.find('.AXMFrameFinalClientArea');
                 var ht = $ElClient.html();
                 if (dim==Module.dimX)
@@ -1004,11 +1093,22 @@ define([
 
 
             var _super_attachEventHandlers = frame.attachEventHandlers;
+            /**
+             * Attached the html event handlers after DOM insertion
+             * @param params
+             */
             frame.attachEventHandlers = function(params) {
                 _super_attachEventHandlers(params);
                 frame._panel.attachEventHandlers(params);
             };
 
+
+            /**
+             * Positions the panel in the client area
+             * @param {int} xl - client area width
+             * @param {int} yl - client area height
+             * @param params
+             */
             frame.setPositionClient = function(xl, yl, params) {
                 if (!params)
                     debugger;
@@ -1020,10 +1120,21 @@ define([
                 frame._panel.resize(xl, yl, params);
             };
 
+
+            /**
+             * Returns the panel contained by this frame
+             * @returns {AXM.Panels.PanelBase}
+             */
             frame.getPanel = function() {
                 return frame._panel;
             };
 
+
+            /**
+             * Activates a frame containing a specific panel ID (this function only needs to return the presence of this panel)
+             * @param {int} panelTypeId - panel ID
+             * @returns {boolean} - presence of this panel
+             */
             frame.activatePanelTypeId = function(panelTypeId) {
                 return frame._panel.getTypeId() == panelTypeId;
             };
@@ -1033,6 +1144,13 @@ define([
         };
 
 
+
+        /**
+         * Implements a frame containing a panel, with a button command bar on top
+         * @param {AXM.Panels.PanelBase} iPanel - panel to be contained in the frame
+         * @returns {Object} - frame instance
+         * @constructor
+         */
         Module.FrameFinalCommands = function(iPanel) {
             var controlsH = 40;
             var frame = Module.FrameSplitterVert();
@@ -1047,6 +1165,13 @@ define([
 
             frame._commandButtonsList = [];
 
+
+            /**
+             * Adds a command to the command bar
+             * @param {{}} settings - same settings as for a AXM.Controls.Button
+             * @param {function} action - called when the command is invoked by the user
+             * @returns {Object}
+             */
             frame.addCommand = function(settings, action) {
                 settings.height = controlsH-1;
                 if (!settings.width)
@@ -1060,16 +1185,24 @@ define([
                 return bt;
             };
 
+
+            /**
+             * Adds a general control to the top command bar
+             * @param {Object} ctrl
+             */
             frame.addControl = function(ctrl) {
                 frame._controlGroup.add(ctrl);
             };
 
+
+            /**
+             * Adds a horizontal separator to the top command bar
+             */
             frame.addSeparator = function() {
                 frame._controlGroup.add(ControlsCompound.DividerH());
 
             };
 
-            //sf1
             return frame;
         };
 

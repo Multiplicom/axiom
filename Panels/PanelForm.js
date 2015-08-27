@@ -21,8 +21,22 @@ define([
         require, $, _,
         AXMUtils, DOM, PanelBase) {
 
+        /**
+         * Module encapsulating a panel that contains a form, containing a (set of) control(s)
+        * @type {{}}
+         */
         var Module = {};
 
+        /**
+         * Implements a panel that contains a form, containing a (set of) control(s)
+         * @param {string} id - panel type id
+         * @param {{}} settings - panel settings
+         * @param {boolean} settings.scrollX - form has a horizontal scroll bar
+         * @param {boolean} settings.scrollY - form has a vertical scroll bar
+         * @param {boolean} settings.autoScrollY - form has an automatic vertical scroll bar
+         * @returns {Object} - panel instance
+         * @constructor
+         */
         Module.create = function(id, settings) {
             var panel = PanelBase.create(id);
             panel._rootControl = null;
@@ -35,11 +49,20 @@ define([
             }
 
 
+            /**
+             * Sets the single root control that appears on the form (note: this may be a compound control)
+             * @param {{}} ctrl - root control
+             */
             panel.setRootControl = function(ctrl) {
                 AXMUtils.Test.checkIsType(ctrl, '@Control');
                 panel._rootControl = ctrl;
             };
 
+
+            /**
+             * Returns the html implementing this panel
+             * @returns {string}
+             */
             panel.createHtml = function() {
                 var rootDiv = DOM.Div({id: 'frm' + panel._id});
                 rootDiv.addStyle('width', '100%');
@@ -53,11 +76,19 @@ define([
                 return rootDiv.toString();
             };
 
+
+            /**
+             * Attaches the html event handlers after DOM insertion
+             */
             panel.attachEventHandlers = function() {
                 if (panel._rootControl)
                     return panel._rootControl.attachEventHandlers();
             };
 
+
+            /**
+             * Re-creates the html to reflect a change in the control(s)
+             */
             panel.reCreate = function() {
                 if (panel._rootControl)
                     $('#frm'+panel._id).html(panel._rootControl.createHtml());

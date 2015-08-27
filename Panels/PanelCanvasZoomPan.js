@@ -22,6 +22,13 @@ define([
         AXMUtils, DOM, PanelCanvas) {
 
 
+        /**
+         * Returns a helper class implementing a scaler object, containing a total range and a variable subrange within this total range
+         * This is used to define a zoomed range (subrange) within a complete range (canvas)
+         * @param {Scaler} iScaler - (optional) another scaler object from which settings should be copied
+         * @returns {{}} - object instance
+         * @constructor
+         */
         var Scaler = function(iScaler) {
             var scaler = {};
 
@@ -31,7 +38,12 @@ define([
                 scaler.range =  iScaler.range;
                 scaler.offset = iScaler.offset;
             }
-            
+
+            /**
+             * Sets the range of the scaler
+             * @param {float} minVal
+             * @param {float} maxVal
+             */
             scaler.setRange = function(minVal, maxVal) {
                 scaler.minVal = minVal;
                 scaler.maxVal = maxVal;
@@ -40,26 +52,52 @@ define([
                 scaler.isZoomed = false;
             };
 
+            /**
+             * Returns the range size
+             * @returns {float}
+             */
             scaler.getRange = function() {
                 return scaler.range;
             };
 
+            /**
+             * Returns the subrange offset
+             * @returns {float}
+             */
             scaler.getOffset = function() {
                 return scaler.offset;
             };
 
+            /**
+             * Returns the minimum value of the subrange
+             * @returns {float}
+             */
             scaler.getMinVisibleRange = function() {
                 return scaler.offset;
             };
 
+            /**
+             * Returns the maximum value of the subrange
+             * @returns {float}
+             */
             scaler.getMaxVisibleRange = function() {
                 return scaler.offset+scaler.range;
             };
 
+            /**
+             * Converts a value into a fractional position within the subrange
+             * @param {float} vl - value
+             * @returns {number} - fraction
+             */
             scaler.toFraction = function(vl) {
                 return (vl-scaler.offset)/scaler.range;
             };
 
+
+            /**
+             * Returns the min and max position of the subrange as fractional positions within the entire range
+             * @returns {{mn: number, mx: number}}
+             */
             scaler.getViewPortFraction = function() {
                 return {
                     mn: (scaler.offset-scaler.minVal) / (scaler.maxVal-scaler.minVal),
@@ -67,6 +105,10 @@ define([
                 }
             };
 
+
+            /**
+             * Clips the subrange to the complete range
+             */
             scaler.clipRange = function() {
                 if (scaler.range>scaler.maxVal-scaler.minVal)
                     scaler.range = scaler.maxVal-scaler.minVal;
@@ -82,6 +124,11 @@ define([
             };
 
 
+            /**
+             * Zooms the subrange
+             * @param {float} fac - zoom factor
+             * @param {float} centerFrac - relative position of the zoom center
+             */
             scaler.zoom = function(fac, centerFrac) {
                 var fixedPosValue = centerFrac*scaler.range + scaler.offset;
                 scaler.range /= fac;
@@ -91,6 +138,11 @@ define([
                     scaler.isZoomed = true;
             };
 
+
+            /**
+             * Shifts the subrange
+             * @param {float} fr - shift distance as a fraction of the total range
+             */
             scaler.panFraction = function(fr) {
                 scaler.offset += fr*scaler.range;
                 scaler.clipRange();
@@ -101,11 +153,26 @@ define([
         };
 
 
-        
-        
-        
+
+
+
+        /**
+         * Implements a panel that contains a html5 canvas element
+         * @param {string} id - panel type id
+         * @returns {Object} - panel instance
+         * @constructor
+         */
         var Module = {};
 
+        /**
+         * Implements a panel that contains a zoom-and-drag html5 canvas element
+         * @param {string} id - panel type id
+         * @param {{}} settings - panel settings
+         * @param {int} settings.scaleMarginY - size of margin used to draw the scale
+         * @param {boolean} settings.selectXDirOnly - if true, only x direction can be zoomed and scrolled
+         * @returns {Object} - panel instance
+         * @constructor
+         */
         Module.create = function(id, settings) {
             var panel = PanelCanvas.create(id);
 
@@ -123,7 +190,16 @@ define([
             panel._toolTipInfo = { ID: null };
             //panel._directRedraw = true;
 
+            /**
+             * The X zoom range scaler
+             * @type {Scaler}
+             */
             panel.xScaler = Scaler();
+
+            /**
+             * The Y zoom range scaler
+             * @type {Scaler}
+             */
             panel.yScaler = Scaler();
 
             panel.getXRangeMin = function() {
@@ -161,27 +237,48 @@ define([
                 return (panel.drawSizeY - panel.scaleMarginY) - panel.yScaler.getOffset()*panel.getYScale();
             };
 
+            /**
+             * Specifies in what direction the canvas can zoom
+             * @param {boolean} canZoomX
+             * @param {boolean} canZoomY
+             */
             panel.setZoomDirections = function(canZoomX, canZoomY) {
                 panel._canZoomX = canZoomX;
                 panel._canZoomY = canZoomY;
             };
 
-            // override:
+            /**
+             * Drawing function, to be implemented in derived classes
+             * @param drawInfo
+             */
             panel.drawCenter = function(drawInfo) {
-
             };
 
-            // Override this function. Should return an object with members ID, px,py, content
+            /**
+             * Returns tooltip information for a location
+             * Optionally to be implemented in a direved class
+             * @param {int} px - x position
+             * @param {int} py - y position
+             * @returns {{ID, px, py, content}} - tooltip info (may be null if no tooltip is to be shown)
+             */
             panel.getToolTipInfo = function (px, py) {
                 return null;
             };
 
-            // Override this function to get informed about clicks
+            /**
+             * Optionally to be implemented by a derived class to be notified about clicks
+             * @param {{}} ev - event handler
+             * @param info
+             */
             panel.onMouseClick = function(ev, info) {
 
             };
 
 
+            /**
+             * Draws the canvas
+             * @param drawInfo
+             */
             panel.draw = function(drawInfo) {
                 panel.drawSizeX = drawInfo.sizeX;
                 panel.drawSizeY = drawInfo.sizeY;
@@ -189,6 +286,11 @@ define([
                 panel.drawScale(drawInfo);
             };
 
+
+            /**
+             * Draws the scale(s)
+             * @param drawInfo
+             */
             panel.drawScale = function(drawInfo) {
                 panel.drawSizeX = drawInfo.sizeX;
                 panel.drawSizeY = drawInfo.sizeY;
@@ -210,8 +312,12 @@ define([
                 var vpFraction = panel.yScaler.getViewPortFraction();
                 var imH = drawInfo.sizeY-panel.scaleMarginY;
                 ctx.fillRect(0, (1-vpFraction.mx)*imH, 5,(vpFraction.mx-vpFraction.mn)*imH);
-            }
+            };
 
+
+            /**
+             * Updates the scale drawings
+             */
             panel.renderScale = function() {
                 var ctx = panel.getCanvasElement('main').getContext("2d");
                 ctx.fillStyle="#FFFFFF";
@@ -224,6 +330,12 @@ define([
                 panel.drawScale(drawInfo);
             };
 
+
+            /**
+             * Display a tooltip
+             * @param tooltipInfo
+             * @private
+             */
             panel._showToolTip = function(tooltipInfo) {
                 panel._hideToolTip();
                 panel._toolTipInfo = tooltipInfo;
@@ -241,11 +353,20 @@ define([
                 }
             };
 
+
+            /**
+             * Hides a displayed tooltip, if any
+             * @private
+             */
             panel._hideToolTip = function() {
                 panel._toolTipInfo.ID = null;
                 $('.AXMContainer').find('.AXMToolTip').remove();
             };
 
+
+            /**
+             * Finalises a zoom & pan action
+             */
             panel.finishZoomPan = function() {
                 if (panel.zoompanProcessing) {
                     panel.zoompanProcessing = false;
@@ -254,6 +375,12 @@ define([
             };
 
             panel.ThrottledFinishZoomPan = AXMUtils.debounce(panel.finishZoomPan, 250);
+            /**
+             * Adjusts the scalers according to a new position
+             * @param {Scaler} newXScaler - new X scaler
+             * @param {Scaler} newYScaler - new Y scaler
+             * @private
+             */
             panel._setNewScalers = function(newXScaler, newYScaler) {
                 if (panel._directRedraw) {
                     panel.xScaler = newXScaler;
@@ -304,6 +431,12 @@ define([
             };
 
 
+            /**
+             * Draws a selection rectangle
+             * @param {x,y} firstPoint - top left corner
+             * @param {x,y}secondPoint - bottom right corner
+             * @private
+             */
             panel._drawSelRect = function(firstPoint, secondPoint) {
                 var selCanvas = panel.getCanvasElement('selection');
                 var ctx = selCanvas.getContext("2d");
@@ -331,8 +464,14 @@ define([
                 }
             };
 
-            
 
+            /**
+             * Handles a zoom action
+             * @param {float} scaleFactor - zoom factor
+             * @param {float} px - center x position
+             * @param {float} py - center y position
+             * @private
+             */
             panel._handleZoom = function(scaleFactor, px, py) {
                 var centerFracX = (px-panel.scaleMarginX)*1.0/(panel.drawSizeX-panel.scaleMarginX);
                 var centerFracY = (panel.drawSizeY-panel.scaleMarginY-py)/(panel.drawSizeY-panel.scaleMarginY);
@@ -347,8 +486,13 @@ define([
                     newYScaler.zoom(scaleFactor, centerFracY);
                 }
                 panel._setNewScalers(newXScaler, newYScaler);
-            }
-            
+            };
+
+            /**
+             * Handles the mouse scrolled event
+             * @param {{}} params - mouse scroll parameters
+             * @private
+             */
             panel._handleScrolled = function(params) {
                 var delta = params.deltaY;
                 if (delta!=0) {
@@ -363,6 +507,11 @@ define([
             };
 
 
+            /**
+             * Initialises a panning action (initiated by a mouse button down event)
+             * @param params
+             * @private
+             */
             panel._panningStart = function(params) {
                 panel._hideToolTip();
                 panel._isRectSelecting = params.shiftPressed;
@@ -382,6 +531,12 @@ define([
                 }
             };
 
+
+            /**
+             * Handles a panning change action (initiated by a mouse drag event)
+             * @param dragInfo
+             * @private
+             */
             panel._panningDo = function(dragInfo) {
                 if (panel._isRectSelecting) {
                     panel._rectSelectPoint2 = {
@@ -405,6 +560,10 @@ define([
                 }
             };
 
+            /**
+             * Handles a panning stop action (initiated by a mouse button up event)
+             * @private
+             */
             panel._panningStop = function() {
                 if (panel._isRectSelecting) {
                     panel._drawSelRect(null, null);
@@ -426,6 +585,12 @@ define([
 
             };
 
+
+            /**
+             * Html mouse move event handler
+             * @param ev
+             * @private
+             */
             panel._onMouseMove = function(ev) {
                 if (panel._lassoSelecting)
                     return;
@@ -450,6 +615,12 @@ define([
                 panel.getCanvas$El('selection').css('cursor', pointerType);
             };
 
+
+            /**
+             * Html mouse click event handler
+             * @param ev
+             * @private
+             */
             panel._onClick = function(ev) {
                 if (panel._lassoSelecting)
                     return;
@@ -543,6 +714,9 @@ define([
             };
 
             var _super_attachEventHandlers = panel.attachEventHandlers;
+            /**
+             * Attached the html event handlers after DOM insertion
+             */
             panel.attachEventHandlers = function() {
                 _super_attachEventHandlers();
                 var clickLayer$El = panel.getCanvas$El('selection');

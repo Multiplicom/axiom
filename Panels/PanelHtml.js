@@ -21,31 +21,65 @@ define([
         require, $, _,
         AXMUtils, DOM, PanelBase) {
 
+
+        /**
+         * Module encapsulating a panel that contains raw html code
+         * @type {{}}
+         */
         var Module = {};
 
+
+        /**
+         * Implements a panel that contains raw html code
+         * @param {string} id - panel id
+         * @returns {id}
+         */
         Module.create = function(id) {
             var panel = PanelBase.create(id);
             panel._content = '';
 
+
+            /**
+             * Enables a vertical scroll bar for the panel
+             * @returns {Object} - self
+             */
             panel.enableVScrollBar = function() {
                 panel._scrollbarV  = true;
                 return panel;
             };
 
+            /**
+             * Enables a horizontal scroll bar for the panel
+             * @returns {Object} - self
+             */
             panel.enableHScrollBar = function() {
                 panel._scrollbarH  = true;
                 return panel;
             };
 
+            /**
+             * Sets the html content of the panel
+             * @param {string} content - html content
+             */
             panel.setContent = function(content) {
                 panel._content = content;
                 panel.get$El().html(content);
             };
 
+
+            /**
+             * Returns the jquery element of the html content
+             * @returns {jQuery}
+             */
             panel.get$El = function() {
                 return $('#' + panel.getId() + '_content');
             };
 
+
+            /**
+             * Returns the html implementing the panel
+             * @returns {string}
+             */
             panel.createHtml = function() {
                 var rootDiv = DOM.Div({id: panel.getId()+'_content'});
                 rootDiv.addCssClass('AXMHtmlPanelBody');
@@ -60,6 +94,10 @@ define([
                 return rootDiv.toString();
             };
 
+
+            /**
+             * Attaches the html event handlers after DOM insertion
+             */
             panel.attachEventHandlers = function() {
                 if (panel._rootControl)
                     return panel._rootControl.attachEventHandlers();

@@ -24,21 +24,46 @@ define([
 
 
 
+        /**
+         * Module encapsulating a panel with a html5 canvas element with X-Y plotting features
+         * @type {{}}
+         */
         var Module = {};
 
+        /**
+         * Implements a panel that contains a html5 canvas element with X-Y plotting features
+         * @param {string} id - panel type id
+         * @param {{}} - settings
+         * @returns {Object} - panel instance
+         * @constructor
+         */
         Module.create = function(id, settings) {
             var panel = PanelCanvasZoomPan.create(id, settings);
             panel._xLabel = '';
             panel._yLabel = '';
 
+            /**
+             * Define x label
+             * @param {string} txt - label
+             */
             panel.setXLabel = function(txt) {
                 panel._xLabel = txt;
             };
 
+
+            /**
+             * Define y label
+             * @param {string} txt - label
+             */
             panel.setYLabel = function(txt) {
                 panel._yLabel = txt;
             };
 
+
+            /**
+             * Draw the X scale
+             * @param drawInfo
+             */
             panel.drawXScale = function(drawInfo) {
                 var ctx = drawInfo.ctx;
                 var scaleX = panel.getXScale();
@@ -84,6 +109,10 @@ define([
             };
 
 
+            /**
+             * Draw the y scale
+             * @param drawInfo
+             */
             panel.drawYScale = function(drawInfo) {
                 var ctx = drawInfo.ctx;
                 var scaleY = panel.getYScale();
@@ -144,30 +173,63 @@ define([
                 ctx.restore();
             };
 
+            /**
+             * Converts logical x coordinate to window x coordinate
+             * @param {float} vlx - logical coordinate
+             * @returns {float} - window coordinate
+             */
             panel.coordXLogic2Win = function(vlx) {
                 return vlx * panel.scaleX + panel.offsetX;
             };
 
+
+            /**
+             * Converts logical y coordinate to window y coordinate
+             * @param {float} vly - logical coordinate
+             * @returns {float} - window coordinate
+             */
             panel.coordYLogic2Win = function(vly) {
                 return vly * panel.scaleY + panel.offsetY;
             };
 
+
+            /**
+             * Converts window x coordinate to logical x coordinate
+             * @param {float} vlx - window coordinate
+             * @returns {float} - logical coordinate
+             */
             panel.coordXWin2Logic = function(vlx) {
                 return (vlx - panel.offsetX ) / panel.scaleX ;
             };
 
+
+            /**
+             * Converts window y coordinate to logical y coordinate
+             * @param {float} vly - window coordinate
+             * @returns {float} - logical coordinate
+             */
             panel.coordYWin2Logic = function(vly) {
                 return (vly - panel.offsetY ) / panel.scaleY;
             };
 
-            // Override to create a plot
+            /**
+             * To be implemented by derived class to define the plot
+             * @param drawInfo
+             */
             panel.drawPlot = function(drawInfo) {
 
             };
 
+            /**
+             * Draws an individual selected point
+             * @param drawInfo
+             * @param {float} vlx - logical x coordinae
+             * @param {float} vly - logical y coordinate
+             * @param {float} size - point size
+             */
             panel.drawSel = function(drawInfo, vlx, vly, size) {
-                var px = /*Math.round*/(vlx * drawInfo.scaleX + drawInfo.offsetX);
-                var py = /*Math.round*/(vly * drawInfo.scaleY + drawInfo.offsetY);
+                var px = (vlx * drawInfo.scaleX + drawInfo.offsetX);
+                var py = (vly * drawInfo.scaleY + drawInfo.offsetY);
                 var ctx = drawInfo.ctx;
                 ctx.beginPath();
                 ctx.arc(px, py, size, 0, 2 * Math.PI, false);
@@ -175,6 +237,13 @@ define([
                 ctx.stroke();
             };
 
+            /**
+             * Draws an individual  point
+             * @param drawInfo
+             * @param {float} vlx - logical x coordinae
+             * @param {float} vly - logical y coordinate
+             * @param {float} size - point size
+             */
             panel.drawPoint = function(drawInfo, vlx, vly, size, drawOutline) {
                 if (size < 0)
                     debugger;
@@ -189,13 +258,27 @@ define([
                     ctx.stroke();
             };
 
+
+            /**
+             * Draws a text labe;
+             * @param drawInfo
+             * @param {float} vlx - logical x coordinate
+             * @param {float} vly - logical y coordinate
+             * @param {float} offset - offset of the label
+             * @param {string} content - label text
+             */
             panel.drawLabel = function(drawInfo, vlx, vly, offset, content) {
-                var px = /*Math.round*/(vlx * drawInfo.scaleX + drawInfo.offsetX);
-                var py = /*Math.round*/(vly * drawInfo.scaleY + drawInfo.offsetY);
+                var px = (vlx * drawInfo.scaleX + drawInfo.offsetX);
+                var py = (vly * drawInfo.scaleY + drawInfo.offsetY);
                 var ctx = drawInfo.ctx;
                 ctx.fillText(content, px+offset, py+offset);
             };
 
+
+            /**
+             * Implements drawing the plot
+             * @param drawInfo
+             */
             panel.drawCenter = function(drawInfo) {
                 var ctx = drawInfo.ctx;
                 var scaleX = panel.getXScale();
@@ -206,10 +289,6 @@ define([
                 drawInfo.scaleY = scaleY; drawInfo.offsetY = offsetY;
                 panel.scaleX = scaleX; panel.offsetX = offsetX;
                 panel.scaleY = scaleY; panel.offsetY = offsetY;
-                //var plotLimitXMin = win.plot.xScaler.getMinVisibleRange();
-                //var plotLimitXMax = win.plot.xScaler.getMaxVisibleRange();
-                //var plotLimitYMin = win.plot.yScaler.getMinVisibleRange();
-                //var plotLimitYMax = win.plot.yScaler.getMaxVisibleRange();
 
                 ctx.fillStyle="#FFFFFF";
                 ctx.fillRect(0, 0, drawInfo.sizeX,  drawInfo.sizeY);
