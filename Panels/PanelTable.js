@@ -668,24 +668,37 @@ define([
                 panel.renderTableContent();
             };
 
+            /**
+             * Navigates the pager to the previous page
+             */
             panel.navigatePreviousPage = function() {
                 panel._tableOffset = Math.max(0, panel._tableOffset-panel._tableLineCount);
                 panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
 
+            /**
+             * Navigates the pager to the next page
+             */
             panel.navigateNextPage = function() {
                 panel._tableOffset = Math.min(Math.max(0, panel._tableRowCount-panel._tableLineCount+2), panel._tableOffset+panel._tableLineCount);
                 panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
 
+            /**
+             * Navigates the pager to the last page
+             */
             panel.navigateLastPage = function() {
                 panel._tableOffset = Math.max(0, panel._tableRowCount-panel._tableLineCount+2);
                 panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
 
+            /**
+             * Navigates the pager over a number of lines (positive or negative
+             * @param {int} diff - number of lines to change the offset
+             */
             panel.navigateLineDiff = function(diff) {
                 var $ElRightBody = $('#'+panel._divid_rightBody);
                 var $ElLeftBody = $('#'+panel._divid_leftBody);
@@ -728,23 +741,12 @@ define([
                 }
 
                 panel._renderPager();
-
-                //var rowFirst = panel._tableOffset;
-                //var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
-                //
-                //if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent))
-                //    return;
-                //
-                //var bodyLeftHtml = '';
-                //var bodyRightHtml = '';
-                //for (var rowNr = rowFirst; rowNr <= rowLast; rowNr ++) {
-                //    bodyLeftHtml += '<tr id="' + panel._getRowLeftId(rowNr) + '">';
-                //    bodyRightHtml += '<tr id="' + panel._getRowRightId(rowNr) + '">';
-
-                //panel._lastSelClickedRowNr = null;
-                //panel.renderTableContent();
             };
 
+
+            /**
+             * Saves the table content to the client's machine
+             */
             panel.saveLocal = function() {
                 SimplePopups.ConfirmationBox('Do you want to download the table content<br>to your local computer?', 'Download', {}, function() {
                     panel._maxDownloadRowCount = 9999;
@@ -753,6 +755,11 @@ define([
                 });
             };
 
+
+            /**
+             * Executes saving the data to the client's machine
+             * @private
+             */
             panel._exec_Save = function() {
                 var cnt = Math.min(panel._maxDownloadRowCount, panel._tableData.getRowCount());
                 var data = '';
@@ -783,13 +790,24 @@ define([
                     SimplePopups.ErrorBox('Download was restricted to the first {cnt} rows'.AXMInterpolate({cnt: cnt}));
             };
 
+
+            /**
+             * Resizes the panel
+             * @param {int} xl - new x size
+             * @param {int} yl - new y size
+             */
             panel.resize = function(xl, yl) {
                 AXMUtils.Test.checkIsNumber(xl, yl);
                 panel._availableWidth = xl;
                 panel._availableHeight = yl;
                 panel._measureSize();
-            }
+            };
 
+
+            /**
+             * Measures the available size for the table, and automatically adjusts the number of lines in the table
+             * @private
+             */
             panel._measureSize = function() {
                 if (!panel._availableHeight)
                     return;
@@ -808,8 +826,6 @@ define([
                     panel.renderTableContent();
                 }
             };
-
-            //todo: tear down these events listeners in the proper tear down function
 
             Msg.listen('', 'UpdateTableRecordContent', function(msg) {
                 if (msg.tableId==panel._tableInfo.tableId) {
@@ -844,6 +860,14 @@ define([
         } ;
 
 
+        /**
+         * Creates a frame that contains a table panel
+         * @param {string} id - panel type id
+         * @param {AXM.Tables.TableData} tableData - object containing the data of the table (content of the cells)
+         * @param {AXM.Tables.TableData} tableInfo - object containing the definition of the table (column definitions)
+         * @returns {Object} - frame instance
+         * @constructor
+         */
         Module.createTableViewerFrame = function(id, tableData, tableInfo) {
             AXMUtils.Test.checkIsString(id);
             AXMUtils.Test.checkIsType(tableData, '@TableData');
@@ -856,9 +880,6 @@ define([
                 hint: _TRL("Download table content to local machine")
             }, thePanel.saveLocal);
 
-            //theFrame.addCommand({
-            //    icon: "fa-filter"
-            //}, thePanel.navigateLastPage);
 
             theFrame.addSeparator();
 
@@ -889,7 +910,7 @@ define([
 
             theFrame.getTablePanel = function() {
                 return thePanel;
-            }
+            };
 
             return theFrame;
         };
