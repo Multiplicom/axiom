@@ -818,7 +818,10 @@ define([
                 var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
                 var $ElRightBody = $('#'+panel._divid_rightBody);
                 var tableHeight = $ElRightBody.height();
-                var rowHeight = tableHeight*1.0/panel._tableLineCount;
+                var rowFirst = panel._tableOffset;
+                var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
+                var displayedLineCount = Math.max(1, rowLast - rowFirst + 1);
+                var rowHeight = tableHeight*1.0/displayedLineCount;
                 var headerHeight = $ElRightHeadRow.height();
                 if (rowHeight>0) {
                     panel._tableLineCount = Math.max(1, Math.floor((panel._availableHeight - headerHeight) / rowHeight) - 1);
