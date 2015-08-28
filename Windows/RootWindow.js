@@ -23,8 +23,18 @@ define([
         AXMUtils, Msg, Frame
     ) {
 
+        /**
+         * Module encapsulating the functionality for the one and only Axiom window that represents the full web app client area
+         * @type {{}}
+         */
         var Module = {};
 
+        /**
+         * Creates the root window
+         * @param {AXM.Panels.Frame} iFrameRoot - root frame to be placed in the root window
+         * @returns {{}} - root window object
+         * @constructor
+         */
         Module.create = function(iFrameRoot) {
             var rootWindow = {};
             rootWindow._rootFrame = iFrameRoot;

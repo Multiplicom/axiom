@@ -5,8 +5,21 @@ define([
         require, $, _,
         Utils, Frame, PanelForm, PanelHtml, Popupwin, SimplePopups, Controls) {
 
+
+        /**
+         * Module encapsulating a popup window that is displaying static documentation content
+         * @type {{}}
+         */
         var Module = {};
 
+        /**
+         * Fetches a document from the server in an async way
+         * @param {string} docId - document identifier
+         * @param {function} onCompleted - called when the fetch was completed (content provided as argument)
+         * @param {function} onFailed - called when the fetch failed
+         * @param {{}} settings
+         * @param {boolean} settings.blocking - if true, a blocking message is displayed for the duration of the fetching process
+         */
         Module.fetchDocument = function(docId, onCompleted, onFailed, settings) {
             var url = '/static/docs/{id}.html'.AXMInterpolate({id: docId});
             if (settings.blocking)
@@ -27,6 +40,13 @@ define([
                 });
         };
 
+
+        /**
+         * Creates a popup window that is displaying static documentation content
+         * @param {string} docId - identifier of the documentation item to be shown
+         * @returns {{}} - popup window instance
+         * @constructor
+         */
         Module.create = function(docId) {
 
             Module.topicStack = [];
@@ -41,6 +61,10 @@ define([
             });
 
 
+            /**
+             * Initialises the popup
+             * @private
+             */
             var _init = function() {
                 var rootFrame = Frame.FrameSplitterVert();
 
@@ -62,11 +86,6 @@ define([
 
                 rootFrame.addMember(Frame.FrameFinal(form1)).setFixedDimSize(Frame.dimY,42);
 
-                //var formContent = PanelForm.create('content');
-                //win.ctrl_content = Controls.Static({text:
-                //    '<div style="overflow-y: scroll;height:100%"><div style="margin:5px;" class="doccontent"></div></div>'
-                //});
-                //formContent.setRootControl(win.ctrl_content);
                 win.panelContent = PanelHtml.create();
                 win.panelContent.enableVScrollBar();
                 rootFrame.addMember(Frame.FrameFinal(win.panelContent));
@@ -77,6 +96,9 @@ define([
             };
 
 
+            /**
+             * Navigates to the previously accessed documentation topic
+             */
             win.onPrevious = function() {
                 if (Module.topicStackPointer > 0) {
                     Module.topicStackPointer--;
@@ -85,6 +107,10 @@ define([
                 }
             };
 
+
+            /**
+             * When the user navigated back to the previously accessed documentation topic, nagivates forward to the topic before this back navigation
+             */
             win.onNext = function() {
                 if (Module.topicStackPointer < Module.topicStack.length - 1) {
                     Module.topicStackPointer++;
@@ -93,15 +119,28 @@ define([
                 }
             };
 
+            /**
+             * Updates the enabled state of the navigation buttons
+             * @private
+             */
             win._updateButtons = function() {
                 win.bt_previous.setEnabled(Module.topicStackPointer > 0);
                 win.bt_next.setEnabled(Module.topicStackPointer < Module.topicStack.length - 1);
             };
 
+
+            /**
+             * Loads the content of the documentation item
+             * @param {string} docId - documentation item id
+             */
             win.loadDocId = function(docId) {
                 win.loadDocUrl('/static/docs/{docid}.html'.AXMInterpolate({docid: docId}));
-            }
+            };
 
+            /**
+             * Loads the content of an url
+             * @param {string} url - url providing the content
+             */
             win.loadDocUrl = function(url) {
                 if (Module.topicStackPointer >= 0)
                     Module.topicStack[Module.topicStackPointer].scrollPos = win.panelContent.get$El().scrollTop();
@@ -113,7 +152,12 @@ define([
             };
 
 
-
+            /**
+             * Implements loading the content of an url
+             * @param {string} url
+             * @param {int} scrollPos - vertical scroll position
+             * @private
+             */
             win._loadDocUrlSub = function(url, scrollPos) {
                 var busyid = SimplePopups.setBlockingBusy('Fetching document');
                 $.get(url, {})
@@ -130,6 +174,12 @@ define([
                 win._updateButtons();
             };
 
+            /**
+             * Sets content to the popup
+             * @param {string} content - html content
+             * @param {int} scrollPos
+             * @private
+             */
             win._loadContent = function(content, scrollPos) {
                 win.panelContent.setContent(content);
                 if (Utils.isSuperUser())

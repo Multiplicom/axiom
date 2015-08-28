@@ -21,13 +21,42 @@ define([
         require, $, _,
         AXMUtils, Msg, DOM) {
 
+        /**
+         * Module encapsulating a class that creates a popup window in the web application's client area
+         * @type {{}}
+         */
         var Module = {};
 
+        /**
+         * Size of the resizing grip
+         * @type {number}
+         */
         Module.gripSize = 6;
+
+        /**
+         * Overlap between the sizing grip and the popup border
+         * @type {number}
+         */
         Module.gripOverlap = 2;
+
+        /**
+         * Length of the resizing corner grips
+         * @type {number}
+         */
         Module.gripCornerLength = 35;
+
+        /**
+         * Heigth of the popup header
+         * @type {number}
+         */
         Module.headerHeight = 36;
 
+
+        /**
+         * A list of all currently active windows
+         * @type {Array}
+         * @private
+         */
         Module._activeWindows = [];
 
         Msg.listen('', 'MsgBrowserResized', function(ev) {
@@ -50,8 +79,19 @@ define([
 
         /**
          * Creates a new popup window
-         * @param {Object} settings Object containing the settings defining the properties of the popup
-         * @returns {PopupWindow} popup window class instance
+         * @param {Object} settings - Object containing the settings defining the properties of the popup
+         * @param {string} settings.title - title of the popup
+         * @param {string} settings.headerIcon - icon name displayed in the header
+         * @param {int} settings.sizeX - default X size of the popup
+         * @param {int} settings.sizeY - default Y size of the popup
+         * @param {boolean} settings.closeOnEscape - if true, pressing the escape button closes the popup
+         * @param {boolean} settings.blocking - if true, the popup blocks the content behind (= becomes inaccessible to the user, default using a semi-transparent overlay as visual hint)
+         * @param {boolean} settings.blockingTransparent - if true, the blocking does not result in any visual indication
+         * @param {boolean} settings.blockingOpaque - if true, the blocking renders the background completely invisible
+         * @param {boolean} settings.autoCenter - if true, popup is automatically centered on the browser client area
+         * @param {boolean} settings.autoCenterTop - if true, the popup is automatically horizontally centered on the browser client area, and appears on the top edge
+         * @param {boolean} settings.preventClose - if true, the uer cannot close the popup
+         * @returns {PopupWindow} - popup window class instance
          */
         Module.create = function(settings) {
             var window = { _id: AXMUtils.getUniqueID()};
@@ -76,19 +116,37 @@ define([
             window._listeners = [];
 
 
+            /**
+             * Defines the root frame to be displayed in the popup (popup will be window style, containing frames and will be resizeable)
+             * @param {AXM.Frame} iFrame
+             */
             window.setRootFrame = function(iFrame) {
                 window._rootFrame = iFrame;
                 window.resizable = true;
             };
 
+
+            /**
+             * Defines the root control to be displayed in the popup (popup will be dialog style, containing controls and will not be resizeable)
+             * @param iControl
+             */
             window.setRootControl = function(iControl) {
                 window._rootControl = iControl;
             };
 
+
+            /**
+             * Defines a handler function called when the user pressed enter in the popup
+             * @param {function} hnd
+             */
             window.setHandler_OnPressedEnter = function(hnd) {
                 window._onPressedEnter = hnd;
             };
 
+
+            /**
+             * Starts the popup, making it visible in the application
+             */
             window.start = function() {
 
                 if (window._blocking) {
@@ -208,6 +266,12 @@ define([
                 Module._activeWindows.push(window);
             };
 
+
+            /**
+             * Handles the html on key down event
+             * @param ev
+             * @private
+             */
             window._onKeyDown = function(ev) {
                 if (ev.isEscape && (window._canClose))
                     window.close();
@@ -216,6 +280,10 @@ define([
             };
 
 
+            /**
+             * Helper function registering handlers for moving
+             * @private
+             */
             window._installMoveHandler = function() {
                 AXMUtils.create$ElDragHandler(window._$ElContainer.find('.AXMPopupWindowHeader'),
                     function() {            // initialise
@@ -245,6 +313,11 @@ define([
                 );
             };
 
+
+            /**
+             * Helper function registering handlers for resizing
+             * @private
+             */
             window._installResizeHandlers = function() {
 
                 var initialiseResize = function() {
@@ -350,6 +423,12 @@ define([
 
             };
 
+
+            /**
+             * Registers a message listening callback handler that lives as long as the popup lives
+             * @param msgId
+             * @param callbackFunction
+             */
             window.listen = function(msgId, callbackFunction) {
                 var eventid = AXMUtils.getUniqueID();
                 window._listeners.push(eventid);
@@ -358,10 +437,18 @@ define([
 
             window._verifyCanClose = function() { return true; };
 
+            /**
+             * Sets a callback that is executed if the popup is about to close. if the callback returns false, the popup is not closed
+             * @param {function} handler
+             */
             window.setVerifyCanClose = function(handler) {
                 window._verifyCanClose = handler;
             };
 
+
+            /**
+             * Closes the popup
+             */
             window.close = function() {
                 if (!window._verifyCanClose())
                     return;
@@ -385,11 +472,18 @@ define([
             };
 
 
+            /**
+             * Brings the popup to the top of the z-order of elements
+             */
             window.bringToTop = function() {
                 window._$ElContainer.css('z-index',AXMUtils.getNextZIndex());
             };
 
 
+            /**
+             * Handles popup resizing events
+             * @param params
+             */
             window.onResize = function(params) {
                 var sizeX = window._$ElContainer.width();
                 var sizeY = window._$ElContainer.height();
@@ -501,6 +595,9 @@ define([
             };
 
 
+            /**
+             * Automatically corrects html elements after resizing
+             */
             window.autoCorrectAfterSize = function() {
                 if (!window.resizable)
                     return;
