@@ -18,12 +18,22 @@ define([
     "AXM/AXMUtils", "AXM/Test"
 ],
     function (AXMUtils, Test) {
+
+        /**
+         * Module encapsulating functionality to send and receive messages
+         * @type {{}}
+         */
         var Msg = {};
 
         Msg._listeners = [];
         Msg._listeneridmap = {};
 
-        //Broadcasts a message (does not put any constraints on the number of recipients receiving the message)
+        /**
+         * Broadcasts a message (does not put any constraints on the number of recipients receiving the message)
+         * @param {string} msgId - message ID
+         * @param {{}} content - message content
+         * @returns {Array} - results returned by each recipient
+         */
         Msg.broadcast = function (msgId, content) {
             var results = [];
             for (var lnr = 0; lnr < Msg._listeners.length; lnr++) {
@@ -37,7 +47,12 @@ define([
             return results;
         };
 
-        //Send a message (requires the message to be received by exactly one recipient)
+        /**
+         * Sends a message (requires the message to be received by exactly one recipient)
+         * @param {string} msgId - message ID
+         * @param {{}} content - message content
+         * @returns {*} - result returned by recipient
+         */
         Msg.send = function (msgId, content) {
             var results = Msg.broadcast(msgId, content);
             var receiverCount = results.length;
@@ -48,7 +63,12 @@ define([
             return results[0];
         };
 
-        //eventid: optional unique identifier to avoid duplicate entry of the same listener
+        /**
+         * Subscribes to a specific message
+         * @param {string} eventid - id of this subscription (can be empty)
+         * @param {string} msgId - message ID to listen to
+         * @param {function} callbackFunction - called when the message was sent
+         */
         Msg.listen = function (eventid, msgId, callbackFunction) {
             if (typeof (eventid) != 'string')
                 Test.reportBug('Listener event id not provided');
@@ -65,6 +85,11 @@ define([
             Msg._listeners.push({ eventid: eventid, msgId: msgId, callbackFunction: callbackFunction });
         };
 
+
+        /**
+         * Removes a subscription
+         * @param {string} eventid - id of the subscription
+         */
         Msg.delListener = function(eventid) {
             if (eventid in Msg._listeneridmap) {
                 var idx = Msg._listeneridmap[eventid];

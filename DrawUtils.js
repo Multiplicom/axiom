@@ -23,11 +23,21 @@ define([
         Test
     ) {
 
+
+        /**
+         * Module encapsulatinh some tools assisting drawing
+         * @type {{Test: *}}
+         */
         var Module = {
             Test: Test
         };
 
-// Produces a minor/major scale tick set that matches the desired minor jump distance as close as possible
+
+        /**
+         * Produces a minor/major scale tick set that matches the desired minor jump distance as close as possible
+         * @param {float} DesiredJump1 - desired minor tick jump distance
+         * @returns {{Jump1 {float} - minor tick jump distance, JumpReduc {int} - number of grouped jumps for a major tick}}
+         */
         Module.getScaleJump = function (DesiredJump1) {
             var JumpPrototypes = [{ Jump1: 1, JumpReduc: 5 }, { Jump1: 2, JumpReduc: 5 }, { Jump1: 5, JumpReduc: 4}];
             var mindist = 1.0e99;
@@ -57,10 +67,10 @@ define([
                 }
                 else
                     return val.toFixed(this.textDecimalCount);
-            }
+            };
 
             return bestjump;
-        }
+        };
 
 
         return Module;

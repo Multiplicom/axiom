@@ -21,10 +21,25 @@ define([
 
         var Module = {};
 
+
+        /**
+         * Estimates the parameters of a normal distribution from a set of observations
+         * @param [float] values - list of observations
+         * @returns {{}} - Normal df class instance
+         * @constructor
+         */
         Module.NormDfEstimator = function(values) {
+
+            /**
+             * Object instance
+             * @type {{}}
+             */
             var that = {};
             that.values = values;
 
+            /**
+             * Parametric estimation of average and standard deviation
+             */
             that.calcParametric = function() {
                 if (values.length == 0)
                     return;
@@ -41,14 +56,26 @@ define([
                 that.stdev = stdev;
             };
 
+            /**
+             * Returns number of values
+             * @returns {int}
+             */
             that.getCount = function() {
                 return values.length;
             };
 
+            /**
+             * Returns distribution average
+             * @returns {float}
+             */
             that.getMean = function() {
                 return that.average;
             };
 
+            /**
+             * Returns distribution standard deviation
+             * @returns {float}
+             */
             that.getStdev = function() {
                 return that.stdev;
             };
@@ -79,9 +106,9 @@ define([
 
         /**
          * Calculates the pearson correlation coefficient for a set of data points.
-         * @param {[]} dataX: list of floats
-         * @param {[]} dataY: list of floats
-         * @returns {string or float}: correlation coefficient or NaN if unable to calculate
+         * @param {[]} dataX - list of floats
+         * @param {[]} dataY - list of floats
+         * @returns {float} - correlation coefficient or NaN if unable to calculate
          */
         Module.correlationCoefficient = function(dataX, dataY) {
             var correlation = Number.NaN;
@@ -105,11 +132,12 @@ define([
             return correlation;
         };
 
+        
         /**
          * Calculates slope and intercept of linear fit through a set of data points.
-         * @param {[]} dataX: list of floats
-         * @param {[]} dataY: list of floats
-         * @returns {*[]}: [slope, intercept] or [NaN, NaN] if not able to calculate
+         * @param {[]} dataX - list of floats
+         * @param {[]} dataY - list of floats
+         * @returns {[]} - [slope, intercept] or [NaN, NaN] if not able to calculate
          */
         Module.slopeIntercept = function(dataX, dataY) {
             var slope = Number.NaN;
