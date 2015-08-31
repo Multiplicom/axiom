@@ -23,20 +23,42 @@ define([
         AXMUtils, Test, RootWindow, Msg
     ) {
 
+        /**
+         * Module encapsulating the one and only global application object
+         * @type {{}}
+         */
         var Module = {};
 
+        /**
+         * The one and only global application object
+         * @type {{}}
+         */
         var theApp = {};
 
-        // Sets the one and only root frame for the app window
+        /**
+         * Sets the one and only root frame for the app window
+         * @param {AXM.Panels.Frame} iRootFrame - frame object
+         */
         theApp.setRootFrame = function(iRootFrame) {
             Test.checkIsType(iRootFrame, "@Frame");
             theApp._rootFrame = iRootFrame;
         };
 
+
+        /**
+         * Returns the one and only application root frame
+         * @returns {AXM.Panels.Frame}
+         */
         theApp.getRootFrame = function() {
             return theApp._rootFrame;
         };
 
+
+        /**
+         * Handles the html event associated with closing the app
+         * @param ev
+         * @returns {*}
+         */
         theApp.confirmExit = function(ev) {
             var confirmMessage = null;
             var results = Msg.broadcast('ConfirmExit');
@@ -51,7 +73,9 @@ define([
             }
         };
 
-        // Intialises the app
+        /**
+         * Initialises the app
+         */
         theApp.init = function() {
             Test.checkDefined(theApp._rootFrame, "No root frame defined. Call Application.setRootFrame first.");
             theApp._rootWindow = RootWindow.create(theApp._rootFrame);
@@ -69,12 +93,15 @@ define([
                 e.preventDefault();
             },false);
 
-        }
+        };
 
-        // Returns the one and only app instance
+        /**
+         * Returns the one and only app instance
+         * @returns {{}}
+         */
         Module.get = function() {
             return theApp;
-        }
+        };
 
         return Module;
     });

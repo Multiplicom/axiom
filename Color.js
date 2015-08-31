@@ -19,9 +19,24 @@ define([
     function (
         require, $, _, Test) {
 
+
+        /**
+         * Module encapsulating an RGB color class
+         * @type {{}}
+         */
         var Module = {
         };
 
+
+        /**
+         * Returns an rgb color class
+         * @param {float} r - red value (range: 0-1)
+         * @param {float} g - green value (range: 0-1)
+         * @param {float} b - blue value (range: 0-1)
+         * @param {float} a - opacity value (range: 0-1)
+         * @returns {{}} - color class instance
+         * @constructor
+         */
         Module.Color = function (r, g, b, a) {
             var that = {};
             that.r = (typeof r == 'undefined') ? 0 : r;
@@ -30,51 +45,108 @@ define([
             that.a = (typeof a == 'undefined') ? 1 : a;
             that.f = 1.0;
 
-            that.getR = function () { return this.r / this.f; }
-            that.getG = function () { return this.g / this.f; }
-            that.getB = function () { return this.b / this.f; }
-            that.getA = function () { return this.a / this.f; }
+            /**
+             * Returns the red component
+             * @returns {number}
+             */
+            that.getR = function () { return this.r / this.f; };
+            /**
+             * Returns the green component
+             * @returns {number}
+             */
+            that.getG = function () { return this.g / this.f; };
+            /**
+             * Returns the blue component
+             * @returns {number}
+             */
+            that.getB = function () { return this.b / this.f; };
+            /**
+             * Returns the opacity component
+             * @returns {number}
+             */
+            that.getA = function () { return this.a / this.f; };
 
+            /**
+             * Returns a html string representing the color
+             * @returns {string}
+             */
             that.toString = function () {
                 if (this.a > 0.999)
                     return 'rgb(' + Math.round(this.getR() * 255) + ',' + Math.round(this.getG() * 255) + ',' + Math.round(this.getB() * 255) + ')';
                 else
                     return 'rgb(' + this.getR().toFixed(3) + ',' + this.getG().toFixed(3) + ',' + this.getB().toFixed(3) + ',' + this.getA().toFixed(3) + ')';
-            }
+            };
+
+            /**
+             * Returns a html string representing the color, usable in a html5 canvas element
+             * @returns {string}
+             */
             that.toStringCanvas = function () {
                 if (this.a > 0.999)
                     return 'rgb(' + Math.round(this.getR() * 255) + ',' + Math.round(this.getG() * 255) + ',' + Math.round(this.getB() * 255) + ')';
                 else
                     return 'rgba(' + Math.round(this.getR() * 255) + ',' + Math.round(this.getG() * 255) + ',' + Math.round(this.getB() * 255) + ',' + this.getA().toFixed(3) + ')';
-            }
+            };
 
+
+            /**
+             * Returns a color string using HEX notation
+             * @returns {string}
+             */
             that.toStringHEX = function () {
                 return (Math.round(this.getR() * 255)).toString(16) + (Math.round(this.getG() * 255)).toString(16) + (Math.round(this.getB() * 255)).toString(16);
-            }
+            };
 
+
+            /**
+             * Determines if the color is black
+             * @returns {boolean}
+             */
             that.isBlack = function() {
                 return (that.r<1.0e-9) && (that.g<1.0e-9) && (that.b<1.0e-9);
-            }
+            };
 
-            //Returns a darkened version of the color, amount between 0 and 1
+            /**
+             * Returns a darkened version of the color, amount between 0 and 1
+             * @param {float} amount
+             * @returns {AXM.Color}
+             */
             that.darken = function (amount) {
                 var fc = 1.0 - amount;
                 return Module.Color(fc * this.r, fc * this.g, fc * this.b, this.a);
-            }
+            };
 
-            //Returns a lightened version of the color, amount between 0 and 1
+            /**
+             * Returns a lightened version of the color, amount between 0 and 1
+             * @param {float} amount
+             * @returns {AXM.Color}
+             */
             that.lighten = function (amount) {
                 var fc = amount;
                 return Module.Color((1 - fc) * this.r + fc, (1 - fc) * this.g + fc, (1 - fc) * this.b + fc, this.a);
-            }
+            };
 
+            /**
+             * Returns a version of the color with a new opacity
+             * @param {float} opacity
+             * @returns {AXM.Color}
+             */
             that.changeOpacity = function (opacity) {
                 return Module.Color(this.getR(), this.getG(), this.getB(), opacity);
-            }
+            };
 
             return that;
-        }
+        };
 
+
+        /**
+         * Converts HSL to a color object
+         * @param {float} h - hue (range: 0-1)
+         * @param {float} s - saturation (range: 0-1)
+         * @param {float} l - lightness (range: 0-1)
+         * @returns {AXM.Color}
+         * @constructor
+         */
         Module.HSL2Color = function(h,s,l) {
             var r, g, b;
             if(s == 0){
@@ -97,7 +169,12 @@ define([
             return Module.Color(r,g,b);
         };
 
-        //converts a html color string to a Module.Color
+        /**
+         * converts a html color string to a Module.Color
+         * @param {string} colorstring
+         * @param {AXM.Color} faildefault - color to return in case conversion fails
+         * @returns {AXM.Color}
+         */
         Module.parseColorString = function (colorstring, faildefault) {
             try {
                 var parts = colorstring.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
@@ -114,7 +191,10 @@ define([
         };
 
 
-
+        /**
+         * A list of commonly used standard colors
+         * @type {[AXM.Color]}
+         */
         Module.standardColors = [
             Module.Color(0.2,0.2,1.0),
             Module.Color(1.0,0.3,0.3),

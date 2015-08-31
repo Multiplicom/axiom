@@ -23,10 +23,20 @@ define([
         Test
     ) {
 
+        /**
+         * Module encapsulating a number of utility functions
+         * @type {{Test: *}}
+         */
         var Module = {
             Test: Test
         };
 
+
+        /**
+         * Returns a generic Axiom object
+         * @param {string} typeStr - object type id
+         * @returns {{}}
+         */
         Module.object = function(typeStr) {
             var obj = {
                 __typeStrings: [typeStr]
@@ -34,26 +44,61 @@ define([
             return obj;
         };
 
+
+        /**
+         * Determines if a value is an array
+         * @param v
+         * @returns {boolean}
+         */
         Module.isArray = function(v) {
             return (v && v.constructor && (v.constructor == Array));
         };
 
+
+        /**
+         * Determines if a value is a string
+         * @param v
+         * @returns {boolean}
+         */
         Module.isString = function(v) {
             return (typeof v == 'string');
         };
 
+
+        /**
+         * Determines if a value is a boolean
+         * @param v
+         * @returns {boolean}
+         */
         Module.isBoolean = function(v) {
             return (typeof v == 'boolean');
         };
 
+
+        /**
+         * Determines if a value is a number
+         * @param v
+         * @returns {boolean}
+         */
         Module.isNumber = function(v) {
             return (typeof v == 'number');
         };
 
+
+        /**
+         * Determines if a value is a function
+         * @param v
+         * @returns {boolean}
+         */
         Module.isFunction = function(v) {
             return (typeof v == 'function');
         };
 
+        /**
+         * Determines if a string contains ASCII text only
+         * @param v
+         * @returns {boolean}
+         */
         Module.isASCIIText = function(v) {
             if (!Module.isString(v))
                 return false;
@@ -64,6 +109,11 @@ define([
         };
 
 
+        /**
+         * Determines if a string contains ASCII text only, and no spaces or tabs
+         * @param v
+         * @returns {boolean}
+         */
         Module.isValidLoginName = function(v) {
             if (!Module.isString(v))
                 return false;
@@ -72,6 +122,10 @@ define([
         };
 
 
+        /**
+         * Returns the query parameters for the url provided to run this app
+         * @returns {{}} - paramaters key-value pairs
+         */
         Module.getUrlParameters = function() {
             var urlParams;
             var match,
@@ -87,6 +141,12 @@ define([
         };
 
 
+        /**
+         * Returns a value range object
+         * @param {number} minValue - minimum value
+         * @param {number}maxValue - maximum value
+         * @returns {{}} - value range object
+         */
         Module.valueRange = function(minValue, maxValue) {
             var range = Module.object('@ValueRange');
             range._minValue = minValue;
@@ -104,7 +164,12 @@ define([
         };
 
 
-        //Sort helpers
+        /**
+         * Sort helper
+         * @param {string} prop
+         * @returns {Function}
+         * @constructor
+         */
         Module.ByProperty = function (prop) {
             return function (a, b) {
                 if (typeof a[prop] == "number") {
@@ -114,6 +179,14 @@ define([
                 }
             };
         };
+
+
+        /**
+         * Sort helper
+         * @param {string} prop
+         * @returns {Function}
+         * @constructor
+         */
         Module.ByPropertyReverse = function (prop) {
             return function (b, a) {
                 if (typeof a[prop] == "number") {
@@ -124,6 +197,12 @@ define([
             };
         };
 
+        /**
+         * Augments the string class with a function that interpolates tokens of the style {token}
+         * @param {{}} args - key-value pairs with interpolation tokens
+         * @returns {String} - interpolated string
+         * @constructor
+         */
         String.prototype.AXMInterpolate = function (args) {
             var newStr = this;
             for (var key in args) {
@@ -132,6 +211,12 @@ define([
             return newStr;
         };
 
+        /**
+         * Limits a string to a certain number of characters, using html ellipsis
+         * @param {string} str - input string
+         * @param {int} len - maxmimum number of characters
+         * @returns {string} - limited string
+         */
         Module.limitStringHtml = function(str, len){
             if (str.length > len)
                 return str.substring(0,Math.max(1,len-4))+'&hellip;';
@@ -140,20 +225,34 @@ define([
         };
 
 
+        /**
+         * Logs a line to the browser console
+         * @param {string} line
+         */
         Module.log = function(line) {
             if (!console || !console.log)
                 return;
             console.log(line);
-        }
+        };
 
+
+        /**
+         * Returns the url of an Axiom predefined bitmap
+         * @param {string} bmpId - bitmap id
+         * @returns {string} - url
+         * @constructor
+         */
         Module.BmpFile = function(bmpId) {
-            //var st = '/static/js/AXM/Bitmaps/'+bmpId+'.png';
-            //return st;
             return require.toUrl('AXM/Bitmaps/'+bmpId+'.png');
         };
 
 
-        // Returns a throttled function that wraps around the argument function fn, making sure it is called not more often than delay specifies
+        /**
+         * Returns a throttled function that wraps around the argument function, making sure it is called not more often than delay specifies
+         * @param {function} fn - argument function to be throttled
+         * @param {int} delay - minimum delay (ms)
+         * @returns {Function} - throttled function
+         */
         Module.debounce = function(fn, delay) {
             var timer = null;
             return function () {
@@ -165,7 +264,12 @@ define([
             };
         };
 
-        // Returns a throttled function that wraps around the argument function fn, making sure it is called not more often than delay specifies
+        /**
+         * Returns a throttled function that wraps around the argument function, making sure it is called not more often than delay specifies
+         * @param {function} fn - argument function to be throttled
+         * @param {int} delay - minimum delay (ms)
+         * @returns {Function} - throttled function
+         */
         Module.debounce2 = function(fn, delay) {
             var timer = null;
             return function () {
@@ -182,6 +286,11 @@ define([
 
         Module._uniqueID = 0;
 
+
+        /**
+         * Returns a session-wide unique string
+         * @returns {string}
+         */
         Module.getUniqueID = function () {
             Module._uniqueID++;
             return 'ID' + Module._uniqueID;
@@ -189,18 +298,30 @@ define([
 
         Module._zindex = 0;
 
+        /**
+         * Returns an ever increasing number, used to keep track of stacking of z-indexes
+         * @returns {number}
+         */
         Module.getNextZIndex = function () {
             Module._zindex+=100;
             return Module._zindex;
         };
 
 
+        /**
+         * Reports a bug
+         * @param msg
+         */
         Module.reportBug = function(msg) {
             alert(msg);
             debugger;
         };
 
 
+        /**
+         * Returns the size of the browser client area
+         * @returns {{sizeX: number, sizeY: number}}
+         */
         Module.getBrowserSize = function() {
             return {
                 sizeX: $(window).width(),
@@ -209,6 +330,13 @@ define([
         };
 
 
+        /**
+         * Creates a drag handler for a jquery element
+         * @param {jQuery} $El - jQuery element
+         * @param {function} handlerStart - called when dragging starts
+         * @param {function} handlerMove - called when dragging moves
+         * @param {function} handlerStop - called when dragging stops
+         */
         Module.create$ElDragHandler = function($El, handlerStart, handlerMove, handlerStop) {
 
             var handlerId = 'DGH'+Module.getUniqueID();
@@ -256,6 +384,11 @@ define([
         };
 
 
+        /**
+         * Creates a mouse scroll handler for a jQuery element
+         * @param {jQuery} $El - jQuery element
+         * @param {function} handler - called when scrolling happens
+         */
         Module.create$ElScrollHandler = function($El, handler) {
 
             var getMouseWheelDeltaY = function (ev) {
@@ -271,7 +404,7 @@ define([
                 else
                 if (ev1.detail) { delta = -ev1.detail / 3; }
                 return delta;
-            }
+            };
 
             var getMouseWheelDeltaX = function (ev) {
                 var ev1 = ev;
@@ -282,7 +415,7 @@ define([
                         return ev1.wheelDeltaX / 120;
                 }
                 return 0;
-            }
+            };
 
             $El.bind('DOMMouseScroll mousewheel', function(ev) {
                 //console.log('scrollevent');
@@ -333,14 +466,22 @@ define([
 
         $(document).keydown(_onKeyDown);
 
-        // A class helping the scheduling of functions that execute asynchronously
+        /**
+         * Creates a class helping the scheduling of functions that execute asynchronously
+         * @returns {{}} - class instance
+         * @constructor
+         */
         Module.Scheduler = function() {
             var sched = {};
 
             sched.scheduledFunctions = [];
             sched.completedTokens = {}
 
-            // Add a scheduled function. The execution will only start if all required tokens are marked as completed
+            /**
+             * Add a scheduled function. The execution will only start if all required tokens are marked as completed
+             * @param requiredTokens
+             * @param func
+             */
             sched.add = function(requiredTokens, func) {
                 sched.scheduledFunctions.push({
                     requiredList: requiredTokens,
@@ -348,7 +489,10 @@ define([
                 });
             };
 
-            // Call this function to mark a token as being completed
+            /**
+             * Call this function to mark a token as being completed
+             * @param token
+             */
             sched.setCompleted = function(token) {
                 sched.completedTokens[token] = true;
             };
@@ -377,7 +521,9 @@ define([
                     setTimeout(sched._tryNext, 50);
             };
 
-            // Start the execution of the scheduled functions
+            /**
+             * Start the execution of the scheduled functions
+             */
             sched.execute = function() {
                 sched._tryNext();
             };
@@ -386,7 +532,12 @@ define([
         };
 
 
-
+        /**
+         * Returns a class helping with persistent association of elements in a variable context
+         * @param itemCount
+         * @returns {{}}
+         * @constructor
+         */
         Module.PersistentAssociator = function(itemCount) {
             var assoc = {};
             assoc.itemCount = itemCount;
@@ -445,10 +596,21 @@ define([
 
         Module._textInterpolators = {};
 
+
+        /**
+         * Defines the set of text interpolators tokens used for the _TRL function
+         * @param dct
+         */
         Module.setTextInterpolators = function(dct) {
             Module._textInterpolators = dct;
         };
 
+
+        /**
+         * Adds a new text interpolator token
+         * @param key
+         * @param value
+         */
         Module.addTextInterpolator = function(key, value) {
             Module._textInterpolators[key] = value;
         };
@@ -459,6 +621,12 @@ define([
             return __AXMTextDecoration;
         };
 
+
+        /**
+         * Converts the first character of a string to a capital
+         * @param {string} str - input string
+         * @returns {string} - result string
+         */
         Module.makeStartCapital = function(str) {
             return str.charAt(0).toUpperCase() + str.slice(1);
         };
@@ -499,11 +667,21 @@ define([
         };
 
 
+        /**
+         * Saves content to a local file on the client's computer
+         * @param {string} data - file content
+         * @param {string} fileName - file name
+         */
         Module.saveTextFile = function(data, fileName) {
             var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
             FileSaver(blob, fileName);
         };
 
+
+        /**
+         * (To be overwritten) Determines if the user has universal privileges
+         * @returns {boolean}
+         */
         Module.isSuperUser = function() {
             return false;
         };

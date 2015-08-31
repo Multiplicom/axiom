@@ -21,8 +21,18 @@ define([
         require, $, _,
         Utils, Test, Popupwin, Frame, PanelHtml, Controls) {
 
+        /**
+         * Module encapsulating a popup window that is displaying a structured log file
+         * @type {{}}
+         */
         var Module = {};
 
+        /**
+         * Creates a popup window that is displaying a structured log file
+         * @param {string} title - popup title
+         * @param {string} logContent - structured log content
+         * @constructor
+         */
         Module.create = function(title, logContent) {
 
             var fmtLogContent = '';
@@ -101,6 +111,10 @@ define([
                 sizeY: 500
             });
 
+
+            /**
+             * Initialises the popup
+             */
             win.init = function() {
 
                 win.panelHtml = PanelHtml.create('intro');

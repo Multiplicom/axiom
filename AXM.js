@@ -35,6 +35,10 @@ define([
         DataFrame
     ) {
 
+        /**
+         * Module encapsulating a hierarchical tree of all Axiom modules
+         * @type {{}}
+         */
         var Module = {
             Msg: Msg,
             DOM: DOM,
@@ -66,11 +70,6 @@ define([
             },
             DataFrame: DataFrame
         };
-
-        //Module.Panels = {
-        //    Frame: require("AXM/Frame")
-        //};
-
 
 
         return Module;

@@ -21,8 +21,21 @@ define([
         require, $, _,
         Utils, Popupwin, Controls) {
 
+
+        /**
+         * Module encapsulating a number of commonly used stock popup windows
+         * @type {{}}
+         */
         var Module = {};
 
+        /**
+         * Creates a classical message box
+         * @param {string} content - content of the box
+         * @param {string} title - title
+         * @param {function} onProceed - called when the user clicks OK
+         * @returns {{}} - the popup window instance
+         * @constructor
+         */
         Module.MessageBox = function(content, title, onProceed) {
             if (!title)
                 title = _TRL("Message");
@@ -59,6 +72,20 @@ define([
         };
 
 
+        /**
+         * Creates a confirmation popup box
+         * @param {string} content
+         * @param {string} title
+         * @param {{}} settings
+         * @param {string} settings.textOK - txt on the OK button
+         * @param {string} settings.iconOK - icon of the OK button
+         * @param {string} settings.textCancel - txt on the Cancel button
+         * @param {string} settings.iconCancel - icon of the Cancel button
+         * @param {function} onOK - called when the user clicks the OK button
+         * @param {function} onCancel - called when te user clicks the Cancel button
+         * @constructor
+         * @returns {{}} - the popup window instance
+         */
         Module.ConfirmationBox = function(content, title, settings, onOK, onCancel) {
             if (!title)
                 title = _TRL("Confirmation");
@@ -103,6 +130,21 @@ define([
         };
 
 
+        /**
+         * Creates a popup with options "Yes", "No", "Cancel"
+         * @param {string} content - popup content
+         * @param {string} title - popup title
+         * @param {{}} settings
+         * @param {string} settings.textYes - txt on the Yes button
+         * @param {string} settings.iconYes - icon of the Yes button
+         * @param {string} settings.textNo - txt on the No button
+         * @param {string} settings.iconNo - icon of the No button
+         * @param {function} onYes - called when the user clicks Yes
+         * @param {function} onNo - called when the user clicks No
+         * @param {function} onCancel - called when the user clicks Cancel
+         * @constructor
+         * @returns {{}} - the popup window instance
+         */
         Module.YesNoCancelBox = function(content, title, settings, onYes, onNo, onCancel) {
             if (!title)
                 title = _TRL("Confirmation");
@@ -156,6 +198,15 @@ define([
         };
 
 
+        /**
+         * Creates a popup presenting a number of choices as buttons
+         * @param {string} title
+         * @param {string} intro - intro text above the acion buttons
+         * @param {[{name, icon, action}]} actions - list of actions (action = handler function)
+         * @param {{}} settings
+         * @constructor
+         * @returns {{}} - the popup window instance
+         */
         Module.ActionChoiceBox = function(title, intro, actions, settings) {
             if (!title)
                 title = _TRL("Action");
@@ -181,7 +232,6 @@ define([
                     width:140,
                     height: 65,
                     iconSizeFraction: 1.4
-//                    icon: settings.iconYes || 'fa-check'
                 })
                     .addNotificationHandler(function() {
                         win.close();
@@ -200,7 +250,17 @@ define([
         };
 
 
-
+        /**
+         * Creates a popup with a text edit box
+         * @param {string} value - initial content of the edit box
+         * @param {string} header - text displayed above the edit box
+         * @param {string} title - title of the popup
+         * @param {{}} settings
+         * @param {function} onOK - called when the user clicks OK (new content provided as argument)
+         * @param {function} onCancel - called when the user clicks Cancel
+         * @constructor
+         * @returns {{}} - the popup instance
+         */
         Module.TextEditBox = function(value, header, title, settings, onOK, onCancel) {
 
             var win = Popupwin.create({
@@ -248,6 +308,17 @@ define([
         };
 
 
+        /**
+         * Creates a popup presenting a drop-down list with a number of choices
+         * @param {string} value - initial value of chocie ID
+         * @param {[{}]} choices - list of choices (see AXM.Controls.DropList for details)
+         * @param {string} header - text above the drop down
+         * @param {string} title - popup title
+         * @param {{}} settings
+         * @param {function} onOK - called when the user clicks OK (active choice id provided as an argument)
+         * @param {function} onCancel - called when the user clicks Cancel
+         * @constructor
+         */
         Module.MultipleChoiceBox = function(value, choices, header, title, settings, onOK, onCancel) {
 
             var win = Popupwin.create({
@@ -257,8 +328,6 @@ define([
             });
 
             var grp = Controls.Compound.GroupVert({separator:12});
-
-
 
             if (settings.helpId)
                 grp.add(Controls.Compound.GroupHor({verticalAlignCenter: true}, [
@@ -307,6 +376,14 @@ define([
         };
 
 
+        /**
+         * Creates a popup window containing an error message
+         * @param {string} content - content of the error box
+         * @param {string} title
+         * @param {function} onProceed - called when the user closes the error box
+         * @constructor
+         * @returns {{}} - popup instance
+         */
         Module.ErrorBox = function(content, title, onProceed) {
             if (!title)
                 title = _TRL("Error");
@@ -346,6 +423,12 @@ define([
 
         Module.busyWin = null;
 
+
+        /**
+         * Displays a busy message that blocks the entire app UI
+         * @param {string} msg - message content
+         * @returns {string} -  id if the busy message
+         */
         Module.setBlockingBusy = function(msg) {
             var id = Utils.getUniqueID();
             Module.blockingBusy_list.push({id: id, msg: msg});
@@ -354,6 +437,11 @@ define([
             return id;
         };
 
+
+        /**
+         * Removes a blocking busy message
+         * @param {string} id - id of the busy message as returned by setBlockingBusy
+         */
         Module.stopBlockingBusy = function(id) {
             var idx = -1;
             $.each(Module.blockingBusy_list, function(i, data) {
@@ -366,6 +454,10 @@ define([
             }
         };
 
+
+        /**
+         * Updates the status of the blocking busy popup(s). Internal usage only
+         */
         Module.updateBusyWin = function() {
             if ( (!Module.busyWin) && (Module.blockingBusy_list.length>0) )
                 Module.createBusyWin(Module.blockingBusy_list[0]);
@@ -388,6 +480,11 @@ define([
             }
         };
 
+
+        /**
+         * Creates a new busy popup (internal only)
+         * @param data
+         */
         Module.createBusyWin = function(data) {
             var win = Popupwin.create({
                 blocking:true,
