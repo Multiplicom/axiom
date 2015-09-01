@@ -132,7 +132,7 @@ define([
             return correlation;
         };
 
-        
+
         /**
          * Calculates slope and intercept of linear fit through a set of data points.
          * @param {[]} dataX - list of floats

@@ -645,14 +645,15 @@ define([
             while (match = reg.exec(txt))
                 tokens.push(match[0]);
             $.each(tokens,function(idx, token) {
-                if (token.length < 5)
-                    Module.Test.reportBug('Invalid token: '+token);
+                if (token.length < 5) {
+                    //Module.Test.reportBug('Invalid token: '+token);
+                }
                 var tokenString = token.substring(2, token.length-2);
                 var isCapital = (tokenString[0] != tokenString[0].toLowerCase());
                 tokenString = tokenString.toLowerCase();
                 var replacement = Module._textInterpolators[tokenString];
                 if (!replacement) {
-                    Module.Test.reportBug('Invalid token: '+token);
+                    //Module.Test.reportBug('Invalid token: '+token);
                     replacement = tokenString;
                 }
                 if (isCapital)
