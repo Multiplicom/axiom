@@ -313,8 +313,8 @@ define([
          * @param msg
          */
         Module.reportBug = function(msg) {
-            alert(msg);
-            debugger;
+            //alert(msg);
+            //debugger;
         };
 
 
