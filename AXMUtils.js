@@ -230,9 +230,9 @@ define([
          * @param {string} line
          */
         Module.log = function(line) {
-            if (!console || !console.log)
-                return;
-            console.log(line);
+            //if (!console || !console.log)
+            //    return;
+            //console.log(line);
         };
 
 
