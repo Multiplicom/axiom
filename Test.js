@@ -31,7 +31,7 @@ define([
                 Module.reportBug(error);
         };
 
-        Module.checkIsString = function(obj) {
+        Module.checkIsString = function() {
             $.each(arguments, function(idx, obj) {
                 if(!(typeof obj == 'string'))
                     Module.reportBug('Variable is not a string');
