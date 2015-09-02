@@ -243,19 +243,21 @@ define([
                     $ElColHeader.find('.AXMPgTableColSortBox').mousedown(function() {
                         panel._toggleSortByField(colInfo._id);
                     });
-                    var dispSizeStart = 0;
-                    AXMUtils.create$ElDragHandler($ElColDrag,
-                        function() {
-                            dispSizeStart = colInfo._dispSize;
-                        },
-                        function(params) {
-                            colInfo._dispSize = Math.max(35, dispSizeStart + params.diffTotalX);
-                            $ElCol.width(colInfo._dispSize);
-                        },
-                        function() {
-                            panel._storeColumnSettings();
-                        }
-                    )
+                    if (panel._colIsRightPart(colInfo)) {
+                        var dispSizeStart = 0;
+                        AXMUtils.create$ElDragHandler($ElColDrag,
+                            function() {
+                                dispSizeStart = colInfo._dispSize;
+                            },
+                            function(params) {
+                                colInfo._dispSize = Math.max(35, dispSizeStart + params.diffTotalX);
+                                $ElCol.width(colInfo._dispSize);
+                            },
+                            function() {
+                                panel._storeColumnSettings();
+                            }
+                        )
+                    }
                 });
 
                 $ElLeftBody.click(function(event) {
