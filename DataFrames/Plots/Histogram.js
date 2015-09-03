@@ -168,7 +168,7 @@ define([
                     var optimalbinsize = (maxVal-minVal)*1.0/optimalbincount;
                     var mindist = 1.0e99;
                     $.each(jumpPrototypes, function(idx, jumpPrototype) {
-                        var q=Math.floor(Math.log10(optimalbinsize/jumpPrototype));
+                        var q=Math.floor(AXMUtils.log10(optimalbinsize/jumpPrototype));
                         var TryJump1A = Math.pow(10, q) * jumpPrototype;
                         var TryJump1B = Math.pow(10, q + 1) * jumpPrototype;
                         if (Math.abs(TryJump1A - optimalbinsize) < mindist) {

@@ -123,6 +123,16 @@ define([
 
 
         /**
+         * Calculates the logarithm with base 10
+         * @param {float} v - argument
+         * @returns {number} - result
+         */
+        Module.log10 = function(v) {
+            return Math.log(v)/Math.log(10);
+        };
+
+
+        /**
          * Returns the query parameters for the url provided to run this app
          * @returns {{}} - paramaters key-value pairs
          */
