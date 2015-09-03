@@ -663,7 +663,6 @@ define([
                     var shift = frame.isHorSplitter() ? params.diffTotalX : params.diffTotalY;
                     var $ElClient = frame.$ElContainer.find('.AXMFrameClient');
                     var totsize = frame.isHorSplitter() ? $ElClient.width() : $ElClient.height();
-                    //shift = 0;//!!!
                     frame._calculateNewFrameSizeFractions(frame._temp_dragSplitter_splitterNr, frame._temp_dragSplitter_origPosit+shift, totsize);
                     frame._setPositionSubframes({resizing: true});
                 };

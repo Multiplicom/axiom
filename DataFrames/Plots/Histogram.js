@@ -35,7 +35,7 @@ define([
             var win = PlotType.createGeneric(dataFrame, aspectMap);
 
             win.plot = PanelCanvasXYPlot.create('', {selectXDirOnly: true});
-            win.plot._directRedraw = true; //!!!
+            win.plot._directRedraw = true; //might be changed
             win._opacity = 0.40;
 
 
