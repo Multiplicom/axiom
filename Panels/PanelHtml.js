@@ -77,6 +77,15 @@ define([
 
 
             /**
+             * Returns the ID of the element with the content
+             * @returns {string}
+             */
+            panel.getContentElementId = function() {
+                return panel.getId() + '_content';
+            };
+
+
+            /**
              * Returns the html implementing the panel
              * @returns {string}
              */
