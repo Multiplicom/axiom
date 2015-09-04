@@ -169,7 +169,7 @@ define([
                     })
                     .fail(function () {
                         SimplePopups.stopBlockingBusy(busyid);
-                        alert("Failed to download Module item '" + docId + "'");
+                        alert("Failed to download documentation item '" + docId + "'");
                     });
                 win._updateButtons();
             };
