@@ -924,6 +924,7 @@ define([
          * @param {int} settings.lineCount - number of lines of the text box
          * @param {boolean} settings.fixedFont - if true, a fixed space font is used
          * @param {boolean} settings.noWrap - if true, text is not automatically wrapped over multiple lines
+         * @param {boolean} settings.noResize - if true, text box cannot be resized
          * @param {string} settings.value - initial content of the control
          * @returns {Object} - control instance
          * @constructor
@@ -935,6 +936,9 @@ define([
             control._value = settings.value || '';
             control._fixedfont = settings.fixedfont || false;
             control._noWrap = settings._noWrap || false;
+            if (settings.noWrap)
+                control._noWrap = true;
+            control._noResize = settings.noResize || false;
 
 
             /**
@@ -959,6 +963,8 @@ define([
                 rootEl.addAttribute('autocorrect', "off");
                 rootEl.addAttribute('autocapitalize', "off");
                 rootEl.addAttribute('autocomplete', "off");
+                if (control._noResize)
+                    rootEl.addAttribute('resize', "none");
                 if (control._noWrap) {
                     rootEl.addStyle('overflow-x','scroll');
                     rootEl.addStyle('white-space','pre');
