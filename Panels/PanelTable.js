@@ -37,7 +37,7 @@ define([
          * Implements a panel that contains a paged table
          * @param {string} id - panel type id
          * @param {AXM.Tables.TableData} tableData - object containing the data of the table (content of the cells)
-         * @param {AXM.Tables.TableData} tableInfo - object containing the definition of the table (column definitions)
+         * @param {AXM.Tables.TableInfo} tableInfo - object containing the definition of the table (column definitions)
          * @returns {Object} - panel instance
          * @constructor
          */
@@ -62,7 +62,7 @@ define([
 
 
             /**
-             * Defines wether or not the user-adjusted layout should be stored
+             * Defines whether or not the user-adjusted layout should be stored
              * @param {boolean} newValue
              */
             panel.setStoreLayout = function(newValue) {
@@ -869,7 +869,7 @@ define([
          * Creates a frame that contains a table panel
          * @param {string} id - panel type id
          * @param {AXM.Tables.TableData} tableData - object containing the data of the table (content of the cells)
-         * @param {AXM.Tables.TableData} tableInfo - object containing the definition of the table (column definitions)
+         * @param {AXM.Tables.TableInfo} tableInfo - object containing the definition of the table (column definitions)
          * @returns {Object} - frame instance
          * @constructor
          */

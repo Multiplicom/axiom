@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Msg"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Msg", "AXM/Test"],
     function (
         require, $, _,
-        AXMUtils, DOM, Msg) {
+        AXMUtils, DOM, Msg, Test) {
 
         var Module = {};
 
@@ -85,19 +85,19 @@ define([
             };
 
             tableData.resetBuffer = function() {
-                reportError('Not implemented');
+                Test.reportBug('Not implemented');
             };
 
             tableData.getRowCount = function() {
-                reportError('Not implemented');
+                Test.reportBug('Not implemented');
             };
 
             tableData.getRow = function(rowNr) {
-                reportError('Not implemented');
+                Test.reportBug('Not implemented');
             };
 
             tableData.requireRowRange = function(rowFirst, rowLast, onAvailable) {
-                reportError('Not implemented');
+                Test.reportBug('Not implemented');
             };
 
 
