@@ -12,6 +12,17 @@ define([
          */
         var Module = {};
 
+
+        Module._docRoot = '/static/docs';
+
+        /**
+         * Sets the root folder where documentation is located
+         * @param {string docRoot - documentation root
+         */
+        Module.setDocRoot = function(docRoot) {
+            Module._docRoot = docRoot
+        };
+
         /**
          * Fetches a document from the server in an async way
          * @param {string} docId - document identifier
@@ -21,7 +32,7 @@ define([
          * @param {boolean} settings.blocking - if true, a blocking message is displayed for the duration of the fetching process
          */
         Module.fetchDocument = function(docId, onCompleted, onFailed, settings) {
-            var url = '/static/docs/{id}.html'.AXMInterpolate({id: docId});
+            var url = Module._docRoot + '/{id}.html'.AXMInterpolate({id: docId});
             if (settings.blocking)
                 var busyid = SimplePopups.setBlockingBusy('Fetching document');
             $.get(url, {})
@@ -134,7 +145,7 @@ define([
              * @param {string} docId - documentation item id
              */
             win.loadDocId = function(docId) {
-                win.loadDocUrl('/static/docs/{docid}.html'.AXMInterpolate({docid: docId}));
+                win.loadDocUrl(Module._docRoot + '/{docid}.html'.AXMInterpolate({docid: docId}));
             };
 
             /**
