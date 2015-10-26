@@ -186,7 +186,7 @@ define([
                     var elemDiv = DOM.Div({parent:div});
                     elemDiv.addStyle('display', 'inline-block');
                     elemDiv.addStyle('vertical-align', (settings.verticalAlignCenter)?'center':'top');
-                    div.addStyle('white-space', 'normal');
+                    elemDiv.addStyle('white-space', 'normal');
                     elemDiv.addStyle('margin-right', compound._separator+'px');
                     elemDiv.addElem(member.createHtml());
                 });
