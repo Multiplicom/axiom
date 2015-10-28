@@ -77,6 +77,8 @@ define([
                 activeWindows[i].close();
         };
 
+        Module.docker = null;
+
         /**
          * Creates a new popup window
          * @param {Object} settings - Object containing the settings defining the properties of the popup
@@ -117,12 +119,31 @@ define([
 
 
             /**
+             * Returns the title of the popup
+             * @returns {string}
+             */
+            window.getTitle = function() {
+                return window._title;
+            }
+
+            /**
              * Defines the root frame to be displayed in the popup (popup will be window style, containing frames and will be resizeable)
              * @param {AXM.Frame} iFrame
              */
             window.setRootFrame = function(iFrame) {
                 window._rootFrame = iFrame;
                 window.resizable = true;
+            };
+
+
+            /**
+             * Returns the root frame of the popup (throws an error if not present)
+             * @returns {AXM.Frame}
+             */
+            window.getRootFrame = function() {
+                if (!window._rootFrame)
+                    AXMUtils.reportBug('Popup does not have a root frame');
+                return window._rootFrame;
             };
 
 
@@ -184,6 +205,7 @@ define([
                 var rootDiv = DOM.Div({id: window._id});
                 rootDiv.addStyle('z-index', window.zIndex);
                 rootDiv.addCssClass('AXMPopupWindowContainer');
+                rootDiv.addStyle('opacity', 0);
 
                 var browserSize = AXMUtils.getBrowserSize();
 
@@ -199,9 +221,15 @@ define([
                     headerDiv.addElem('<span style="vertical-align: middle">' + window._title + '</span>');
                 }
 
+                var transfer$Elem = null;
                 var divClient = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowClient');
-                if (window._rootFrame)
-                    divClient.addElem(window._rootFrame.createHtml());
+                if (window._rootFrame) {
+                    if (window._rootFrame.getRoot$El().length>0) { // frame already present and rendered - we move it
+                        transfer$Elem = window._rootFrame.getRoot$El();
+                    }
+                    else
+                        divClient.addElem(window._rootFrame.createHtml());
+                }
                 if (window._rootControl)
                     divClient.addElem(window._rootControl.createHtml());
 
@@ -227,10 +255,18 @@ define([
                 }
 
                 if (window._canClose)
-                    rootDiv.addElem('<img class="SWXPopupWindowCloseBox" src="{bitmap}">'.AXMInterpolate({bitmap:AXMUtils.BmpFile('close')}));
+                    rootDiv.addElem('<span class="SWXPopupWindowCloseBox"><i class="fa fa-times-circle"></i></span>');
+
+                if (Module.docker)
+                    rootDiv.addElem('<span class="SWXPopupWindowDockBox"><i class="fa fa-arrow-circle-left"></i></span>');
 
                 $('.AXMContainer').append(rootDiv.toString());
                 window._$ElContainer = $('#' + window._id);
+
+
+                if (transfer$Elem) {
+                    window._$ElContainer.children('.AXMPopupWindowClient').append(transfer$Elem.detach());
+                }
 
                 if (window._autoCenter || window._autoCenterTop) {
                     var windowSizeX = window._$ElContainer.width();
@@ -245,8 +281,10 @@ define([
                         .css('top', Math.max(0, (browserSize.sizeY-windowSizeY)/2));
                 }
 
-                if (window._rootFrame)
-                    window._rootFrame.attachEventHandlers();
+                if (window._rootFrame) {
+                    if (!transfer$Elem)
+                        window._rootFrame.attachEventHandlers();
+                }
                 if (window._rootControl)
                     window._rootControl.attachEventHandlers();
 
@@ -260,12 +298,24 @@ define([
                 if (window._canClose)
                     window._$ElContainer.find('.SWXPopupWindowCloseBox').click(window.close);
 
+                window._$ElContainer.find('.SWXPopupWindowDockBox').click(function() {
+                    Module.docker(window);
+                });
 
                 window._installMoveHandler();
                 window._installResizeHandlers();
                 Module._activeWindows.push(window);
+
+                window._$ElContainer.fadeTo(250,1);
+
             };
 
+
+            window.get$El = function() {
+                if (!window._$ElContainer)
+                    AXMUtils.reportBug("Popup is not yet started");
+                return window._$ElContainer;
+            }
 
             /**
              * Handles the html on key down event
@@ -449,9 +499,21 @@ define([
             /**
              * Closes the popup
              */
-            window.close = function() {
-                if (!window._verifyCanClose())
-                    return;
+            window.close = function(doNotRemoveFrame) {
+                if (!doNotRemoveFrame) {
+                    if (!window._verifyCanClose())
+                        return;
+
+                    if (window._rootFrame) {
+                        var closePreventReason = window._rootFrame._getAnyClosePreventReason();
+                        if (closePreventReason) {
+                            alert('Cannot close: '+closePreventReason);
+                            return;
+                        }
+                        window._rootFrame.informWillClose();
+                    }
+                }
+
                 $.each(window._listeners, function(idx, eventid) {
                     Msg.delListener(eventid);
                 });
@@ -459,16 +521,18 @@ define([
                 $('#blocker_'+window._id).remove();
                 AXMUtils.removeKeyDownHandler(window._onKeyDown);
 
-                window._$ElContainer.remove();
-                var winNr=-1;
-                $.each(Module._activeWindows, function(idx, win) {
-                    if (window._id == win._id)
-                        winNr = idx;
+                window._$ElContainer.fadeTo(250,0, function() {
+                    window._$ElContainer.remove();
+                    var winNr=-1;
+                    $.each(Module._activeWindows, function(idx, win) {
+                        if (window._id == win._id)
+                            winNr = idx;
+                    });
+                    if (winNr>=0)
+                        Module._activeWindows.splice(winNr,1);
+                    Msg.broadcast('CloseWindow', window);
                 });
-                if (winNr>=0)
-                    Module._activeWindows.splice(winNr,1);
 
-                Msg.broadcast('CloseWindow', window);
             };
 
 

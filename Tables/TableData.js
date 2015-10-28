@@ -189,7 +189,7 @@ define([
             tableData.getRow = function(rowNr) {
                 if ((rowNr<0) || (rowNr>=rowCount))
                     AXMUtils.reportBug('Invalid row number');
-                ranseed = rowNr;
+                ranseed = iranseed+rowNr;
                 var rowInfo =  {
                     index: rowNr+1
                 };

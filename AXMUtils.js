@@ -697,6 +697,56 @@ define([
             return false;
         };
 
+
+        Module.animateBoxTransition = function(elementFrom, elementTo, settings, onStarted, onCompleted) {
+            var transId = '_transientAnim_' + Module.getUniqueID();
+            var px0 = elementFrom.offset().left;
+            var py0 = elementFrom.offset().top;
+            var lx0 = elementFrom.outerWidth();
+            var ly0 = elementFrom.outerHeight();
+
+
+            var px1 = elementTo.offset().left;
+            var py1 = elementTo.offset().top;
+            var lx1 = elementTo.outerWidth();
+            var ly1 = elementTo.outerHeight();
+
+            //var thebox = DOM.Div({ id: transId });
+            //thebox.addStyle("position", "absolute");
+            //thebox.addStyle("left", px0 + 'px');
+            //thebox.addStyle("top", py0 + 'px');
+            //thebox.addStyle("width", lx0 + 'px');
+            //thebox.addStyle("height", ly0 + 'px');
+            //thebox.addStyle('border', '4px solid black');
+            //thebox.addStyle('z-index', Module.getNextZIndex());
+
+            var theBox = '<div id="{id}" style="position:absolute;opacity:0.3;left:{left};top:{top};width:{width};height:{height};border:{border};z-index:{zindex}"></div>'.AXMInterpolate({
+                id: transId,
+                left: px0 + 'px',
+                top: py0 + 'px',
+                width: lx0 + 'px',
+                height: ly0 + 'px',
+                border: '4px solid black',
+                zindex: Module.getNextZIndex()
+            });
+
+            $('.AXMContainer').append(theBox);
+
+            var animationSpeed = 300;
+            if (settings && settings.slow)
+                animationSpeed = 500;
+
+            if (onStarted)
+                onStarted();
+            $('#'+transId).animate({left:px1+'px', top:py1+'px', width:lx1+'px', height:ly1+'px'}, animationSpeed, function() {
+                $('#'+transId).remove();
+                if (onCompleted)
+                    onCompleted();
+            });
+
+        };
+
+
         return Module;
     });
 

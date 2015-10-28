@@ -152,6 +152,7 @@ define([
             frame._hasTitle = false;
             frame._title = '';
             frame._sizeInfos = [Module.dimSizeInfo(), Module.dimSizeInfo()]; //allowed frame size range in X and Y dimension
+            frame.splitterColor = "rgb(230,230,230)";
 
             /**
              * Returns the unique identifier of the frame
@@ -325,6 +326,9 @@ define([
                 return frame._sizeInfos[dim]._getMaxSize();
             };
 
+            frame.getRoot$El = function() {
+                return $('#'+frame._id);
+            };
 
             /**
              * Returns the html implementing thee frame
@@ -340,6 +344,13 @@ define([
                 if (frame.createHtmlClient)
                     frameClient.addElem(frame.createHtmlClient());
                 return frameDiv.toString();
+            };
+
+            frame.updateHtml = function() {
+                if (frame.createHtmlClient) {
+                    var content = frame.createHtmlClient();
+                    frame.$ElContainer.find('.AXMFrameClient').html(content);
+                }
             };
 
 
@@ -409,6 +420,44 @@ define([
                 return false;
             };
 
+
+            /**
+             * If a frame cannot be closed, returns a reason why not. This calls getClosePreventReason for the current frame and any of its members
+             * @param msg
+             * @returns {string}
+             * @private
+             */
+            frame._getAnyClosePreventReason = function(msg) {
+                return frame.getClosePreventReason(msg);
+            };
+
+
+            /**
+             * If a frame cannot be closed, returns a reason why not. override in derived classes
+             * @param msg
+             * @returns {string}
+             */
+            frame.getClosePreventReason = function(msg) {
+                return null;
+            };
+
+
+            /**
+             * Call this function to inform the frame or any of its members that it will close
+             * @param msg
+             */
+            frame.informWillClose = function(msg) {
+                frame.willClose();
+            };
+
+            /**
+             * Called when the frame is about to close. override in derived classes
+             * @param msg
+             */
+            frame.willClose = function(msg) {
+
+            };
+
             return frame;
         };
 
@@ -433,6 +482,14 @@ define([
                 memberFrame._parentFrame = frame;
                 return memberFrame;
             };
+
+            /**
+             * Returns the number of member frames
+             * @returns {int}
+             */
+            frame.getmemberFrameCount = function() {
+                return frame._memberFrames.length;
+            }
 
             var _super_attachEventHandlers = frame.attachEventHandlers;
             /**
@@ -459,6 +516,27 @@ define([
                 });
                 return found;
             };
+
+            frame._getAnyClosePreventReason = function(msg) {
+                var rs = frame.getClosePreventReason(msg);
+                if (rs)
+                    return rs;
+                $.each(frame._memberFrames, function(idx, memberFrame) {
+                    rs = memberFrame._getAnyClosePreventReason(msg);
+                    if (rs)
+                        return rs;
+                });
+                return null;
+            };
+
+            frame.informWillClose = function(msg) {
+                frame.willClose();
+                $.each(frame._memberFrames, function(idx, memberFrame) {
+                    memberFrame.informWillClose(msg);
+                });
+            };
+
+
 
             return frame;
         };
@@ -596,6 +674,7 @@ define([
                         if (frame.isVertSplitter())
                             splitdiv.addCssClass('AXMSplitterV');
                     }
+                    splitdiv.addStyle('background-color', frame.splitterColor);
                     html += splitdiv.toString();
                 }
                 $.each(frame._memberFrames, function(idx, memberFrame) {
@@ -897,6 +976,49 @@ define([
                 frame._updateMemberVisibility();
             };
 
+            /**
+             * Positions the member frames inside the available client area of the frame
+             * @private
+             */
+            frame._setPositionSubframes = function(params) {
+                var xl = frame.$ElContainer.children('.AXMFrameClient').width();
+                var yl = frame.$ElContainer.children('.AXMFrameClient').height();
+                frame.setPositionClient(xl,yl, params);
+            };
+
+
+            /**
+             * Dynamically adds a member frame when the stacker is live displayed
+             * @param {{}} theFrame - new member frame to be added
+             */
+            frame.dynAddMember = function(theFrame) {
+                frame.addMember(theFrame);
+                //frame._activeMemberNr = frame._memberFrames.length-1;
+                var $elClient = frame.$ElContainer.children('.AXMFrameClient');
+                if (theFrame.getRoot$El().length>0) {
+                    theFrame.getRoot$El().css('visibility', 'hidden');
+                    $elClient.append(theFrame.getRoot$El().detach());
+                }
+                else {
+                    $elClient.append(theFrame.createHtml());
+                    theFrame.getRoot$El().css('visibility', 'hidden');
+                    theFrame.attachEventHandlers();
+                }
+                frame._setPositionSubframes({resizing: false});
+            };
+
+            /**
+             * Dynamically removes a member from the stacker while live displayed
+             * Note that the corresponding html is not removed
+             * @param {{}} stackNr - index of the member to be removed
+             */
+            frame.dynDelMember = function(stackNr) {
+                if ((stackNr<0) || (frame._memberFrames>=frame._memberFrames))
+                    AXMUtils.reportBug('Invalid stack number');
+                frame._memberFrames.splice(stackNr, 1);
+                if (frame._activeMemberNr>stackNr)
+                    frame._activeMemberNr--;
+            };
 
             /**
              * Updates the visibility of the member frames
@@ -906,10 +1028,24 @@ define([
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     memberFrame.$ElContainer.css('visibility',
                         (idx==frame._activeMemberNr) ? 'visible' : 'hidden');
+                    //if (idx==frame._activeMemberNr)
+                    //    memberFrame.$ElContainer.css('display', 'initial');
+                    //else
+                    //    memberFrame.$ElContainer.css('display', 'none');
 
                 });
             };
 
+            /**
+             * Activates an individual member frame
+             * @param {int} fnr - member frame number
+             */
+            frame.activateStackNr = function(fnr) {
+                if ((fnr<0) || (fnr>=frame._memberFrames.length))
+                    AXMUtils.reportBug('Invalid TAB nr');
+                frame._activeMemberNr = fnr;
+                frame._updateMemberVisibility();
+            };
 
             /**
              * Activates (= makes visible) a member frame containing a panel with a specific ID
