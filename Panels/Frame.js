@@ -1226,12 +1226,24 @@ define([
 
 
             /**
+             * Adds a css class to the fame content
+             * @param className
+             */
+            frame.setCssClass = function(className) {
+                frame._cssClass = className;
+                return frame;
+            };
+
+
+            /**
              * Returns the html implementing the client area
              * @returns {string}
              */
             frame.createHtmlClient = function() {
                 var div = DOM.Div({id: frame._id+'_finalclient'});
                 div.addCssClass('AXMFrameFinalClientArea');
+                if (frame._cssClass)
+                    div.addCssClass(frame._cssClass);
                 div.addElem(frame._panel.createHtml());
 
                 return div.toString();

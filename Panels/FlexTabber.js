@@ -28,7 +28,7 @@ define([
         var Module = {};
 
 
-        Module.createTab = function(parentContainer, headerInfo, tabFrame, stackNr) {
+        Module.createTab = function(parentContainer, headerInfo, tabFrame, stackNr, settings) {
             var tabInfo = {};
             AXMUtils.Test.checkIsType(headerInfo, 'headerinfo');
             tabInfo.headerInfo = headerInfo;
@@ -36,6 +36,7 @@ define([
             tabInfo.tabFrame = tabFrame;
             tabInfo.stackNr = stackNr;
             tabInfo.tabId = AXMUtils.getUniqueID();
+            tabInfo._isFixed = !!settings.isFixed;
 
             tabInfo.createHtml = function() {
                 var tabDiv = DOM.Div({id: tabInfo.tabId});
@@ -54,13 +55,15 @@ define([
                 textDiv.addCssClass('AXMFlexTabText');
                 textDiv.addElem(tabInfo.headerInfo.title1 + '<br>' + tabInfo.headerInfo.title2);
 
-                var closeDiv = DOM.Create('span', {parent: tabDiv});
-                closeDiv.addCssClass('AXMFlexTabCloser');
-                closeDiv.addElem('<i class="fa fa-times-circle"/>');
+                if (!tabInfo._isFixed) {
+                    var closeDiv = DOM.Create('span', {parent: tabDiv});
+                    closeDiv.addCssClass('AXMFlexTabCloser');
+                    closeDiv.addElem('<i class="fa fa-times-circle"/>');
 
-                var popupDiv = DOM.Create('span', {parent: tabDiv});
-                popupDiv.addCssClass('AXMFlexTabToPopup');
-                popupDiv.addElem('<i class="fa fa-arrow-circle-right"/>');
+                    var popupDiv = DOM.Create('span', {parent: tabDiv});
+                    popupDiv.addCssClass('AXMFlexTabToPopup');
+                    popupDiv.addElem('<i class="fa fa-arrow-circle-right"/>');
+                }
 
                 return tabDiv.toString();
             };
@@ -125,7 +128,7 @@ define([
                 AXMUtils.Test.checkIsType(headerInfo, 'headerinfo');
                 if (settings.autoActivate!==false)
                     frame._activeTab = frame._myTabs.length;
-                var tabInfo = Module.createTab(frame, headerInfo, theFrame, frame._frameStacker.getmemberFrameCount());
+                var tabInfo = Module.createTab(frame, headerInfo, theFrame, frame._frameStacker.getmemberFrameCount(), settings);
                 frame._myTabs.push(tabInfo);
                 frame._frameStacker.dynAddMember(theFrame);
 

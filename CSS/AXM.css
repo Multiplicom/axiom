@@ -79,6 +79,10 @@ body {
     overflow: hidden;
 }
 
+.AXMFrameClientAreaGrey {
+    background-color: rgb(230,230,230);
+}
+
 
 .AXMFrameTitle, .AXMFrameTabElementActive {
     background: rgb(200, 200, 200); /* Old browsers */
