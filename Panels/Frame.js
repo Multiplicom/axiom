@@ -1020,40 +1020,46 @@ define([
                     frame._activeMemberNr--;
             };
 
+            frame._firstVisibilityUpdate = true;
             /**
              * Updates the visibility of the member frames
              * @private
              */
             frame._updateMemberVisibility = function() {
-                var currentVisible = null;
-                var newVisible = null;
-                $.each(frame._memberFrames, function(idx, memberFrame) {
-                    if (memberFrame.$ElContainer.css('visibility') == 'visible')
-                        currentVisible = memberFrame;
-                    if (idx==frame._activeMemberNr)
-                        newVisible = memberFrame;
-                });
-                if (currentVisible!=newVisible) {
-                    if (currentVisible) {
-                        currentVisible.$ElContainer.fadeTo(200,0, function() {
-                            currentVisible.$ElContainer.css('visibility','hidden');
+                if (frame._firstVisibilityUpdate) {
+                    $.each(frame._memberFrames, function(idx, memberFrame) {
+                        memberFrame.$ElContainer.css('visibility',
+                            (idx==frame._activeMemberNr) ? 'visible' : 'hidden');
+                    });
+                    frame._firstVisibilityUpdate = false;
+                } else {
+                    var currentVisible = null;
+                    var newVisible = null;
+                    $.each(frame._memberFrames, function(idx, memberFrame) {
+                        if (memberFrame.$ElContainer.css('visibility') == 'visible')
+                            currentVisible = memberFrame;
+                        if (idx==frame._activeMemberNr)
+                            newVisible = memberFrame;
+                    });
+                    if (currentVisible!=newVisible) {
+                        if (currentVisible) {
+                            currentVisible.$ElContainer.fadeTo(200,0, function() {
+                                currentVisible.$ElContainer.css('visibility','hidden');
+                                if (newVisible) {
+                                    newVisible.$ElContainer.css('visibility','visible');
+                                    newVisible.$ElContainer.fadeTo(200,1)
+                                }
+                            })
+                        }
+                        else {
                             if (newVisible) {
+                                newVisible.$ElContainer.css('opacity','0');
                                 newVisible.$ElContainer.css('visibility','visible');
                                 newVisible.$ElContainer.fadeTo(200,1)
                             }
-                        })
-                    }
-                    else {
-                        if (newVisible) {
-                            newVisible.$ElContainer.css('visibility','visible');
-                            newVisible.$ElContainer.fadeTo(200,1)
                         }
                     }
                 }
-                //$.each(frame._memberFrames, function(idx, memberFrame) {
-                //    memberFrame.$ElContainer.css('visibility',
-                //        (idx==frame._activeMemberNr) ? 'visible' : 'hidden');
-                //});
             };
 
             /**

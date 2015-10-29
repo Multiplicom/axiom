@@ -160,6 +160,7 @@ define([
             if (!settings)
                 settings = {};
             compound._separator = settings.separator || 0;
+            compound._noWrap = settings.noWrap || false;
             if (members)
                 compound.set(members);
 
@@ -181,7 +182,8 @@ define([
              */
             compound.createHtml = function() {
                 var div = DOM.Div();
-                div.addStyle('white-space', 'nowrap');
+                if (compound._noWrap)
+                    div.addStyle('white-space', 'nowrap');
                 $.each(compound._members, function(idx, member) {
                     var elemDiv = DOM.Div({parent:div});
                     elemDiv.addStyle('display', 'inline-block');

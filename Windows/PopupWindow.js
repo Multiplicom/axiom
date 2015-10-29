@@ -114,6 +114,7 @@ define([
             window._autoCenter = settings.autoCenter||false;
             window._autoCenterTop = settings.autoCenterTop||false;
             window._canClose = !(settings.preventClose);
+            window._canDock = settings.canDock||false;
 
             window._listeners = [];
 
@@ -269,7 +270,7 @@ define([
                 if (window._canClose)
                     rootDiv.addElem('<span class="SWXPopupWindowCloseBox"><i class="fa fa-times-circle"></i></span>');
 
-                if (Module.docker)
+                if (Module.docker && window._canDock)
                     rootDiv.addElem('<span class="SWXPopupWindowDockBox"><i class="fa fa-arrow-circle-left"></i></span>');
 
                 $('.AXMContainer').append(rootDiv.toString());

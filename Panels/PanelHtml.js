@@ -49,6 +49,15 @@ define([
             };
 
             /**
+             * Enables a vertical scrolling without scrollbar
+             * @returns {Object} - self
+             */
+            panel.enableVScrollingNoBar = function() {
+                panel._scrollVNoBar  = true;
+                return panel;
+            };
+
+            /**
              * Enables a horizontal scroll bar for the panel
              * @returns {Object} - self
              */
@@ -105,11 +114,29 @@ define([
 
 
             /**
+             * Scrolls to the bottom of the content
+             */
+            panel.scrollToBottom = function() {
+                var el = panel.get$El();
+                el.animate({ scrollTop: el.height()}, 250);
+            };
+
+
+            /**
              * Attaches the html event handlers after DOM insertion
              */
             panel.attachEventHandlers = function() {
-                if (panel._rootControl)
-                    return panel._rootControl.attachEventHandlers();
+                //if (panel._rootControl)
+                //    return panel._rootControl.attachEventHandlers();
+
+                if (panel._scrollVNoBar) {
+                    var el = panel.get$El();
+                    AXMUtils.create$ElScrollHandler(el, function(data) {
+                        //el.animate({ scrollTop: el.scrollTop()+data.deltaY*16}, 25);
+                        panel.get$El().scrollTop(panel.get$El().scrollTop()+data.deltaY*16);
+                    });
+                }
+
             };
 
 

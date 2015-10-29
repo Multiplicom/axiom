@@ -102,6 +102,7 @@ define([
 
 
             frame._panelTabs = PanelHtml.create(frame._id + 'flexTabberLeft');
+            frame._panelTabs.enableVScrollingNoBar();
 
             frame._frameTabs = frame.addMember(Frame.FrameFinal(frame._panelTabs));
             frame._frameTabs.setFixedDimSize(Frame.dimX, 160);
@@ -109,12 +110,14 @@ define([
 
             frame._myTabs = [];
             frame._activeTab = -1;
+            frame._history_tabId = [];
 
             frame._panelTabs.setContent('<div class="flexTabWrapperFull"><div class="flexTabWrapper"></div></div>');
 
+
             /**
              * Adds a new tab to the frame
-             * @param theTitle - title of the tabl
+             * @param headerInfo - AXM.Icon.HeaderInfo
              * @param theFrame - frame content
              * @returns {string} - ID of the tab
              */
@@ -127,6 +130,9 @@ define([
                 frame._frameStacker.dynAddMember(theFrame);
 
                 tabInfo.parentContainer._panelTabs.get$El().find('.flexTabWrapper').append(tabInfo.createHtml());
+                setTimeout(function() {
+                    frame._panelTabs.scrollToBottom();
+                }, 200);
 
                 tabInfo.get$El().slideDown(200, function() {
                     tabInfo.get$El().removeClass('AXMFlexTabInActiveHighlight');
@@ -139,13 +145,18 @@ define([
             };
 
 
-            frame._tabId2Nr = function(tabId) {
+            frame._tabId2Nr_noFail = function(tabId) {
                 var tabNr = -1;
                 $.each(frame._myTabs, function(idx, _tabInfo) {
                     if (_tabInfo.tabId == tabId) {
                         tabNr = idx;
                     }
                 });
+                return tabNr;
+            };
+
+            frame._tabId2Nr = function(tabId) {
+                var tabNr = frame._tabId2Nr_noFail(tabId);
                 if (tabNr<0)
                     AXMUtils.reportBug("Invalid tab ID");
                 return tabNr;
@@ -162,6 +173,7 @@ define([
                 frame._frameStacker.activateStackNr(tabInfo.stackNr);
                 frame._activeTab = tabNr;
                 frame.updateTabStates();
+                frame._history_tabId.push(tabInfo.tabId);
             };
 
 
@@ -181,6 +193,15 @@ define([
             frame.closeTab_byID = function(tabId, doNotRemoveFrame, onCompleted) {
                 var tabNr = frame._tabId2Nr(tabId);
                 var tabInfo = frame._myTabs[tabNr];
+
+                //remove tab from history
+                for (var idx=0; idx<frame._history_tabId.length;) {
+                    if (frame._history_tabId[idx] == tabId)
+                        frame._history_tabId.splice(idx, 1);
+                    else
+                        idx++;
+                }
+
                 if (!doNotRemoveFrame) {
                     var closePreventReason = tabInfo.tabFrame._getAnyClosePreventReason();
                     if (closePreventReason) {
@@ -201,8 +222,18 @@ define([
                     }
                     frame._myTabs.splice(tabNr, 1);
                     if (tabNr==frame._activeTab) {
-                        if (frame._activeTab>=frame._myTabs.length)
-                            frame._activeTab--;
+                        //We need to change the current tab
+                        var newTabNr = -1;
+                        //First try the most recent historic tab
+                        if (frame._history_tabId.length>0) {
+                            newTabNr = frame._tabId2Nr_noFail(frame._history_tabId[frame._history_tabId.length-1]);
+                        }
+                        if (newTabNr<0) {//If that failed, just use the next tab available
+                            newTabNr = frame._activeTab;
+                            if (newTabNr >= frame._myTabs.length)
+                                newTabNr--;
+                        }
+                        frame._activeTab = newTabNr;
                         if (frame._activeTab>=0)
                             frame.activateTab_byID(frame._myTabs[frame._activeTab].tabId);
                     }
@@ -223,7 +254,8 @@ define([
                 var popup = PopupWindow.create({
                     //title: tabInfo.headerInfo.title1,
                     blocking:false,
-                    autoCenter: true
+                    autoCenter: true,
+                    canDock: true
                 });
 
                 popup.setHeaderInfo(tabInfo.headerInfo);
