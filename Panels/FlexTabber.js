@@ -272,6 +272,26 @@ define([
             };
 
 
+            /**
+             * Defines this flex tabber as the one and only tabber that can be used to dock popup windows
+             */
+            frame.setAsPopupDocker = function() {
+                PopupWindow.docker = function (popup) {
+                    var tabId = frame.addTabFrame(popup.getHeaderInfo(), popup.getRootFrame(), {
+                        autoActivate: false
+                    });
+                    setTimeout(function () {
+                        AXMUtils.animateBoxTransition(
+                            popup.get$El(),
+                            frame.getTabInfo_byId(tabId).get$El(),
+                            {},
+                            function () {
+                                popup.close(true);
+                            });
+                    }, 100);
+                };
+            };
+
 
             return frame;
         };
