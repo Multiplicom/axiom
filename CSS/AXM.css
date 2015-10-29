@@ -423,8 +423,7 @@ body {
     margin-right:-10px;
     position:relative;
     box-sizing: border-box;
-    z-index: 0;
-    color: rgb(130,130,130);
+    /*z-index: 0;*/
     margin-left: 3px;
     border-top-left-radius: 7px;
     border-bottom-left-radius: 7px;
@@ -435,6 +434,24 @@ body {
 .AXMFlexTabContent {
     padding-left:7px;
     padding:10px;
+    white-space:nowrap;
+    vertical-align: top;
+}
+
+
+.AXMFlexTabIcon {
+    display:inline-block;
+    padding-right:8px;
+    vertical-align: top;
+    color: rgb(41, 139, 163);
+    opacity: 0.45;
+}
+
+.AXMFlexTabText {
+    display:inline-block;
+    vertical-align: top;
+    color: black;
+    opacity: 0.45;
 }
 
 .AXMFlexTabActive {
@@ -444,13 +461,21 @@ body {
     /*border-top: 1px solid rgb(220,220,220);*/
     /*border-bottom: 1px solid rgb(220,220,220);*/
     box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.35);
-    z-index: 2;
+    /*z-index: 2;*/
+}
+
+.AXMFlexTabActive .AXMFlexTabIcon {
+    opacity: 1;
+}
+
+.AXMFlexTabActive .AXMFlexTabText {
+    opacity: 1;
 }
 
 .AXMFlexTabInactive {
 }
 
-.AXMFlexTabInactive:hover {
+.AXMFlexTabInActive:hover {
     background-color: rgb(250,242,235);
 }
 

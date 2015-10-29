@@ -22,16 +22,16 @@ define([
         AXMUtils, Frame, PanelHtml, Controls, ControlsCompound, PopupWindow, DOM) {
 
         /**
-         * Module implementing FlaxTabber classes, used to organise web application client area in smaller components
+         * Module implementing FlexTabber classes, used to organise the web application client area in a dynamic way
          * @type {{}}
          */
         var Module = {};
 
 
-
-        Module.createTab = function(parentContainer, title, tabFrame, stackNr) {
+        Module.createTab = function(parentContainer, headerInfo, tabFrame, stackNr) {
             var tabInfo = {};
-            tabInfo.title = title;
+            AXMUtils.Test.checkIsType(headerInfo, 'headerinfo');
+            tabInfo.headerInfo = headerInfo;
             tabInfo.parentContainer = parentContainer;
             tabInfo.tabFrame = tabFrame;
             tabInfo.stackNr = stackNr;
@@ -40,11 +40,19 @@ define([
             tabInfo.createHtml = function() {
                 var tabDiv = DOM.Div({id: tabInfo.tabId});
                 tabDiv.addCssClass('AXMFlexTab');
+                tabDiv.addCssClass('AXMFlexTabInActive');
                 tabDiv.addCssClass('AXMFlexTabInActiveHighlight');
                 tabDiv.addStyle('display', 'none');
                 var tabContent = DOM.Div({parent: tabDiv});
                 tabContent.addCssClass('AXMFlexTabContent');
-                tabContent.addElem(tabInfo.title);
+
+                var iconDiv = DOM.Div({parent:tabContent});
+                iconDiv.addCssClass('AXMFlexTabIcon');
+                iconDiv.addElem(tabInfo.headerInfo.icon.renderHtml());
+
+                var textDiv = DOM.Div({parent:tabContent});
+                textDiv.addCssClass('AXMFlexTabText');
+                textDiv.addElem(tabInfo.headerInfo.title1 + '<br>' + tabInfo.headerInfo.title2);
 
                 var closeDiv = DOM.Create('span', {parent: tabDiv});
                 closeDiv.addCssClass('AXMFlexTabCloser');
@@ -110,10 +118,11 @@ define([
              * @param theFrame - frame content
              * @returns {string} - ID of the tab
              */
-            frame.addTabFrame = function(theTitle, theFrame, settings) {
+            frame.addTabFrame = function(headerInfo, theFrame, settings) {
+                AXMUtils.Test.checkIsType(headerInfo, 'headerinfo');
                 if (settings.autoActivate!==false)
                     frame._activeTab = frame._myTabs.length;
-                var tabInfo = Module.createTab(frame, theTitle, theFrame, frame._frameStacker.getmemberFrameCount());
+                var tabInfo = Module.createTab(frame, headerInfo, theFrame, frame._frameStacker.getmemberFrameCount());
                 frame._myTabs.push(tabInfo);
                 frame._frameStacker.dynAddMember(theFrame);
 
@@ -159,53 +168,11 @@ define([
             frame.updateTabStates = function() {
                 frame._panelTabs.get$El().find('.AXMFlexTab')
                     .removeClass('AXMFlexTabActive')
-                    .addClass('AXMFlexTabInactive');
+                    .addClass('AXMFlexTabInActive');
                 if ((frame._activeTab>=0) && (frame._activeTab<frame._myTabs.length))
                     $('#'+frame._myTabs[frame._activeTab].tabId)
-                        .removeClass('AXMFlexTabInactive')
+                        .removeClass('AXMFlexTabInActive')
                         .addClass('AXMFlexTabActive');
-
-                //var inactivecol = "rgb(230,230,230)";
-                //var bordercols = "rgb(160,160,160)";
-                //var bordercolw = "rgb(210,210,210)";
-                //var activecol = "white";
-                //$.each(frame._myTabs, function(idx, tabInfo) {
-                //    var el = tabInfo.get$El();
-                //    if (idx!=frame._activeTab) {
-                //        el.css('background-color', inactivecol);
-                //        el.css('border-right-color', bordercols);
-                //        if (idx<frame._activeTab) {
-                //            el.css('border-top-color', inactivecol);
-                //            el.css('border-bottom-color', bordercolw);
-                //            if (idx==frame._activeTab-1)
-                //                el.css('border-bottom-color', bordercols);
-                //        }
-                //        else {
-                //            el.css('border-top-color', bordercolw);
-                //            if (idx==frame._activeTab+1)
-                //                el.css('border-top-color', bordercols);
-                //            el.css('border-bottom-color', inactivecol);
-                //            if (idx==frame._myTabs.length-1)
-                //                el.css('border-bottom-color', bordercolw);
-                //        }
-                //        if (idx==frame._activeTab-1)
-                //            el.css('border-bottom-right-radius', '15px');
-                //        else
-                //            el.css('border-bottom-right-radius', '0px');
-                //        if (idx==frame._activeTab+1)
-                //            el.css('border-top-right-radius', '15px');
-                //        else
-                //            el.css('border-top-right-radius', '0px');
-                //        //tabInfo.get$El().removeClass('AXMFlexTabActive').addClass('AXMFlexTabInactive');
-                //    }
-                //    else {
-                //        el.css('background-color', activecol);
-                //        el.css('border-color', activecol);
-                //        if (idx==frame._myTabs.length-1)
-                //            el.css('border-bottom-color', bordercols);
-                //        //tabInfo.get$El().removeClass('AXMFlexTabInActive').addClass('AXMFlexTabActive');
-                //    }
-                //});
 
             };
 
@@ -254,15 +221,18 @@ define([
                 var tabInfo = frame._myTabs[tabNr];
 
                 var popup = PopupWindow.create({
-                    title: tabInfo.title,
+                    //title: tabInfo.headerInfo.title1,
                     blocking:false,
                     autoCenter: true
                 });
+
+                popup.setHeaderInfo(tabInfo.headerInfo);
 
                 popup.setRootFrame(tabInfo.tabFrame);
 
                 popup.start();
                 tabInfo.tabFrame.getRoot$El().css('visibility', 'visible'); // make sure the frame if visible, in case the tab was hidden
+                tabInfo.tabFrame.getRoot$El().css('opacity', 1); // make sure the frame if visible, in case the tab was hidden
 
                 AXMUtils.animateBoxTransition(tabInfo.get$El(), popup.get$El(), {}, function() {
                     frame.closeTab_byID(tabId, true);

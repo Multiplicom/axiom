@@ -1025,15 +1025,35 @@ define([
              * @private
              */
             frame._updateMemberVisibility = function() {
+                var currentVisible = null;
+                var newVisible = null;
                 $.each(frame._memberFrames, function(idx, memberFrame) {
-                    memberFrame.$ElContainer.css('visibility',
-                        (idx==frame._activeMemberNr) ? 'visible' : 'hidden');
-                    //if (idx==frame._activeMemberNr)
-                    //    memberFrame.$ElContainer.css('display', 'initial');
-                    //else
-                    //    memberFrame.$ElContainer.css('display', 'none');
-
+                    if (memberFrame.$ElContainer.css('visibility') == 'visible')
+                        currentVisible = memberFrame;
+                    if (idx==frame._activeMemberNr)
+                        newVisible = memberFrame;
                 });
+                if (currentVisible!=newVisible) {
+                    if (currentVisible) {
+                        currentVisible.$ElContainer.fadeTo(200,0, function() {
+                            currentVisible.$ElContainer.css('visibility','hidden');
+                            if (newVisible) {
+                                newVisible.$ElContainer.css('visibility','visible');
+                                newVisible.$ElContainer.fadeTo(200,1)
+                            }
+                        })
+                    }
+                    else {
+                        if (newVisible) {
+                            newVisible.$ElContainer.css('visibility','visible');
+                            newVisible.$ElContainer.fadeTo(200,1)
+                        }
+                    }
+                }
+                //$.each(frame._memberFrames, function(idx, memberFrame) {
+                //    memberFrame.$ElContainer.css('visibility',
+                //        (idx==frame._activeMemberNr) ? 'visible' : 'hidden');
+                //});
             };
 
             /**

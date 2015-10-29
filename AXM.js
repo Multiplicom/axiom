@@ -16,7 +16,7 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/Msg", "AXM/AXMUtils", "AXM/Color", "AXM/DOM", "AXM/DrawUtils",
+        "AXM/Msg", "AXM/AXMUtils", "AXM/Color", "AXM/DOM", "AXM/DrawUtils", "AXM/Icon",
         "AXM/Application",
         "AXM/Tables/TableData", "AXM/Tables/TableInfo",
         "AXM/Controls/Controls", "AXM/Controls/Compound",
@@ -26,7 +26,7 @@ define([
     ],
     function (
         require, $, _,
-        Msg, Utils, Color, DOM, DrawUtils,
+        Msg, Utils, Color, DOM, DrawUtils, Icon,
         Application,
         TableData, TableInfo,
         Controls, Compound,
@@ -46,6 +46,7 @@ define([
             Color: Color,
             DrawUtils: DrawUtils,
             Test: Utils.Test,
+            Icon: Icon,
             Application: Application,
             Tables: {
                 TableData:TableData,

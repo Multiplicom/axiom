@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Msg", "AXM/DOM"],
+        "AXM/AXMUtils", "AXM/Msg", "AXM/DOM", "AXM/Icon"],
     function (
         require, $, _,
-        AXMUtils, Msg, DOM) {
+        AXMUtils, Msg, DOM, Icon) {
 
         /**
          * Module encapsulating a class that creates a popup window in the web application's client area
@@ -118,13 +118,25 @@ define([
             window._listeners = [];
 
 
+            window.setHeaderInfo = function(headerInfo) {
+                window._headerInfo = headerInfo;
+                window._title = headerInfo.getSingleTitle();
+            };
+
+            window.getHeaderInfo = function() {
+                if (window._headerInfo)
+                    return window._headerInfo;
+                else
+                    return Icon.createHeaderInfo(Icon.createEmpty(), window._title, "");
+            };
+
             /**
              * Returns the title of the popup
              * @returns {string}
              */
             window.getTitle = function() {
                 return window._title;
-            }
+            };
 
             /**
              * Defines the root frame to be displayed in the popup (popup will be window style, containing frames and will be resizeable)
