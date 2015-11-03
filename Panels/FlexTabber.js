@@ -127,6 +127,17 @@ define([
 
 
             /**
+             * Call this function to allw the FlexTabber to use the browser history
+             */
+            frame.setUseBrowserHistory = function() {
+                frame._useBrowserHistory = true;
+                window.onpopstate = function (event) {
+                    if (event.state)
+                        frame.activateTab_byID(event.state.viewId, true);
+                };
+            };
+
+            /**
              * Adds a new tab to the frame
              * @param headerInfo - AXM.Icon.HeaderInfo
              * @param theFrame - frame content
@@ -190,12 +201,20 @@ define([
                 return frame._myTabs[tabNr];
             };
 
-            frame.activateTab_byID = function(tabId) {
+            frame.activateTab_byID = function(tabId, noUpdateHistory) {
                 var tabNr = frame._tabId2Nr(tabId);
                 var tabInfo = frame._myTabs[tabNr];
+                if (!tabInfo)
+                    return;
                 frame._frameStacker.activateStackNr(tabInfo.stackNr);
                 frame._activeTab = tabNr;
                 frame.updateTabStates();
+                if (frame._useBrowserHistory) {
+                    if (!noUpdateHistory) {
+                        if (history)
+                            history.pushState({viewId: tabInfo.tabId}, "");
+                    }
+                }
                 frame._history_tabId.push(tabInfo.tabId);
             };
 
