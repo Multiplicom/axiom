@@ -33,12 +33,40 @@ define([
             return icon;
         };
 
-        Module.createFA = function(name) {
+        Module.createFA = function(name, baseSizeFactor) {
             var icon = AXMUtils.object('icon');
-            icon.name = name;
+            icon._name = name;
+            icon._baseSize = 20;
+            if (baseSizeFactor)
+                icon._baseSize *= baseSizeFactor;
+            icon._sizeFactor = 1;
+
+            icon.clone = function() {
+                var dupl = Module.createFA(icon._name);
+                dupl._baseSize = icon._baseSize;
+                dupl._sizeFactor =icon._sizeFactor;
+                return dupl;
+            };
+
+            icon.setSize = function(newSize) {
+                icon._sizeFactor = newSize;
+                return icon;
+            };
+
+            icon.changeSize = function(sizeFactor) {
+                icon._sizeFactor *= sizeFactor;
+                return icon;
+            };
 
             icon.renderHtml = function() {
-                return '<i style="font-size:20px" class="fa {name}"/>'.AXMInterpolate({name:name});
+                return '<i style="font-size:{size}px" class="fa {name}"/>'.AXMInterpolate({
+                    name:icon._name,
+                    size:Math.round(icon._sizeFactor*icon._baseSize)
+                });
+            };
+
+            icon.getSize = function() {
+                return icon._size;
             };
 
             return icon;
@@ -55,6 +83,10 @@ define([
             headerInfo.getSingleTitle = function() {
                 return headerInfo.title1+' '+headerInfo.title2;
             };
+
+            headerInfo.getIcon = function() {
+                return headerInfo.icon;
+            }
 
             return headerInfo;
         };

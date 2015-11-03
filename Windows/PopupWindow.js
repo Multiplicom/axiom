@@ -122,6 +122,8 @@ define([
             window.setHeaderInfo = function(headerInfo) {
                 window._headerInfo = headerInfo;
                 window._title = headerInfo.getSingleTitle();
+                window._headerIcon = headerInfo.getIcon().clone();
+                window._headerIcon.setSize(1.5);
             };
 
             window.getHeaderInfo = function() {
@@ -228,8 +230,14 @@ define([
                 if (window._title) {
                     var headerDiv = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowHeader');
                     if (window._headerIcon) {
-                        var str = '<div style="display: inline-block; padding-top:4px;padding-right:16px;vertical-align: top"><i class="AXMPopupHeaderIcon fa {icon}" style=""></i></div>'.AXMInterpolate({icon:window._headerIcon});
-                        headerDiv.addElem(str);
+                        if (AXMUtils.isObjectType(window._headerIcon, 'icon')) {
+                            var iconDiv = DOM.Div({parent:headerDiv});
+                            iconDiv.addCssClass("AXMPopupHeaderIcon");
+                            iconDiv.addElem(window._headerIcon.renderHtml());
+                        } else {
+                            var str = '<div style="display: inline-block; padding-top:4px;padding-right:16px;vertical-align: top"><i class="AXMPopupHeaderIcon fa {icon}" style=""></i></div>'.AXMInterpolate({icon:window._headerIcon});
+                            headerDiv.addElem(str);
+                        }
                     }
                     headerDiv.addElem('<span style="vertical-align: middle">' + window._title + '</span>');
                 }
@@ -320,6 +328,12 @@ define([
                 Module._activeWindows.push(window);
 
                 window._$ElContainer.fadeTo(250,1);
+
+                if (window._blocking && !window._transpBlocking && !window._opaqueBlocking)
+                    $('#blocker_'+window._id).fadeTo(250,0.5);
+
+
+
 
             };
 
@@ -531,7 +545,16 @@ define([
                     Msg.delListener(eventid);
                 });
                 window._listeners = [];
-                $('#blocker_'+window._id).remove();
+
+                if (window._blocking) {
+                    if (!window._transpBlocking && !window._opaqueBlocking)
+                        $('#blocker_' + window._id).fadeTo(250, 0.0, function () {
+                            $('#blocker_' + window._id).remove();
+                        });
+                    else
+                        $('#blocker_' + window._id).remove();
+                }
+
                 AXMUtils.removeKeyDownHandler(window._onKeyDown);
 
                 window._$ElContainer.fadeTo(250,0, function() {

@@ -396,7 +396,11 @@ body {
 .AXMPopupHeaderIcon {
     color: rgb(220, 238, 242);
     text-shadow: 1px 1px 8px rgba(0, 0, 0, 1);
-    font-size: 44px
+    font-size: 44px;
+    display: inline-block;
+    padding-top:4px;
+    padding-right:16px;
+    vertical-align: top;
 }
 
 .AXMDisabledText {

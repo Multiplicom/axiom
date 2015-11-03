@@ -17,10 +17,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Compound"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Controls/Compound"],
     function (
         require, $, _,
-        AXMUtils, DOM, Compound) {
+        AXMUtils, DOM, Icon, Compound) {
 
 
         /**
@@ -174,7 +174,7 @@ define([
          * @param {int} settings.height - (optional) button height
          * @param {string} settings.buttonClass - (optional) css class of the button
          * @param {boolean} settings.enabled - (optional) initial enabled state of the control
-         * @param {string} settings.icon - (optional) name of the icon displayed in the button
+         * @param {AXM.Icon|string} settings.icon - (optional) icon displayed in the button
          * @param {float} settings.iconSizeFraction - (optional) icon magnification factor
          * @param {string} settings.text - (optional) button text
          * @param {string} settings.hint - (optional) button hover hint
@@ -194,6 +194,19 @@ define([
             control._checked = false;
             if (settings.checked)
                 control._checked = true;
+
+            control._icon = null;//default: no icon
+            if (settings.icon) {
+                if (AXMUtils.isObjectType(settings.icon, "icon"))
+                    control._icon = settings.icon.clone();
+                else {
+                    control._icon = Icon.createFA(settings.icon);
+                }
+                var sizeFactor = 1.0;
+                if (settings.iconSizeFraction)
+                    sizeFactor *= settings.iconSizeFraction;
+                control._icon.changeSize(sizeFactor);
+            }
 
 
             /**
@@ -227,18 +240,16 @@ define([
                     .addStyle('height', '100%')
                     .addStyle('width', '1px');
 
-                if (settings.icon && !settings.text) {
-                    var iconSize = 17;
-                    if (settings.iconSizeFraction)
-                        iconSize = Math.round(iconSize * settings.iconSizeFraction);
-                    div.addStyle('text-align','center')
+                if (control._icon && !settings.text) {
+                    var iconSize = control._icon.getSize();
+                    div.addStyle('text-align','center');
                     var divIcon = DOM.Div({parent: div})
-                        .addCssClass('fa').addCssClass(settings.icon).addCssClass('AXMButtonIcon')
-                        .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle')
-                        .addStyle('font-size', iconSize + 'px');
+                        .addCssClass('AXMButtonIcon')
+                        .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle');
+                    divIcon.addElem(control._icon.renderHtml());
                 }
 
-                if (!settings.icon && settings.text) {
+                if (!control._icon && settings.text) {
                     //div.addStyle('text-align','center');
                     var divText = DOM.Div({parent: div})
                         .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle')
@@ -248,18 +259,16 @@ define([
                         divText.addStyle('max-width', (control._width-12)+'px');
                 }
 
-                if (settings.icon && settings.text) {
+                if (control._icon && settings.text) {
                     var iconWidth = Math.round(control._height*0.75);
-                    var iconSize = 17;
-                    if (settings.iconSizeFraction)
-                        iconSize = Math.round(iconSize * settings.iconSizeFraction);
-                    if (settings.icon) {
+                    var iconSize = control._icon.getSize();
+                    if (control._icon) {
                         var divIcon = DOM.Div({parent: div})
-                            .addCssClass('fa').addCssClass(settings.icon).addCssClass('AXMButtonIcon')
+                            .addCssClass('AXMButtonIcon')
                             .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle')
-                            .addStyle('font-size', iconSize + 'px')
                             .addStyle('width', iconWidth + 'px')
                             .addStyle('text-align','center');
+                        divIcon.addElem(control._icon.renderHtml());
                     }
                     if (settings.text) {
                         var divText = DOM.Div({parent: div})

@@ -44,6 +44,17 @@ define([
             return obj;
         };
 
+        Module.isObjectType = function(obj, typeStr) {
+            if (!obj)
+                return false;
+            if (!obj.__typeStrings)
+                return false;
+            if (obj.__typeStrings.indexOf(typeStr)<0)
+                return false;
+            return true;
+        };
+
+
 
         /**
          * Determines if a value is an array
