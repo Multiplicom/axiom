@@ -158,6 +158,18 @@ define([
                 return tabNr;
             };
 
+            frame.getCurrentTabId = function() {
+                if ((frame._activeTab<0) || (frame._activeTab>=frame._myTabs.length))
+                    return "";
+                return frame._myTabs[frame._activeTab].tabId;
+            };
+
+            frame.getCurrentTabInfo = function() {
+                if ((frame._activeTab<0) || (frame._activeTab>=frame._myTabs.length))
+                    return null;
+                return frame._myTabs[frame._activeTab];
+            };
+
             frame._tabId2Nr = function(tabId) {
                 var tabNr = frame._tabId2Nr_noFail(tabId);
                 if (tabNr<0)
@@ -184,10 +196,13 @@ define([
                 frame._panelTabs.get$El().find('.AXMFlexTab')
                     .removeClass('AXMFlexTabActive')
                     .addClass('AXMFlexTabInActive');
-                if ((frame._activeTab>=0) && (frame._activeTab<frame._myTabs.length))
+                if ((frame._activeTab>=0) && (frame._activeTab<frame._myTabs.length)) {
                     $('#'+frame._myTabs[frame._activeTab].tabId)
                         .removeClass('AXMFlexTabInActive')
                         .addClass('AXMFlexTabActive');
+                    if (frame.hiderCloseView)
+                        frame.hiderCloseView.show(!frame.getCurrentTabInfo()._isFixed);
+                }
 
             };
 
@@ -278,7 +293,7 @@ define([
             /**
              * Defines this flex tabber as the one and only tabber that can be used to dock popup windows
              */
-            frame.setAsPopupDocker = function() {
+            frame.setAsPopupDocker = function(buttonCloseView, hiderCloseView) {
                 PopupWindow.docker = function (popup) {
                     var tabId = frame.addTabFrame(popup.getHeaderInfo(), popup.getRootFrame(), {
                         autoActivate: false
@@ -293,6 +308,18 @@ define([
                             });
                     }, 100);
                 };
+
+                if (buttonCloseView) {
+                    frame.hiderCloseView = hiderCloseView;
+                    buttonCloseView.addNotificationHandler(function() {
+                        var currentTabId = frame.getCurrentTabId();
+                        if (currentTabId) {
+                            var tabInfo = frame.getTabInfo_byId(currentTabId);
+                            if (!tabInfo._isFixed)
+                                frame.closeTab_byID(currentTabId);
+                        }
+                    })
+                }
             };
 
 
