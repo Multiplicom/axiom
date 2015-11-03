@@ -27,6 +27,8 @@ define([
          */
         var Module = {};
 
+        Module.leftPartSize = 160;
+
 
         Module.createTab = function(parentContainer, headerInfo, tabFrame, stackNr, settings) {
             var tabInfo = {};
@@ -53,7 +55,13 @@ define([
 
                 var textDiv = DOM.Div({parent:tabContent});
                 textDiv.addCssClass('AXMFlexTabText');
-                textDiv.addElem(tabInfo.headerInfo.title1 + '<br>' + tabInfo.headerInfo.title2);
+                var textLine1Div = DOM.Div({parent: textDiv});
+                textLine1Div.addElem(tabInfo.headerInfo.title1);
+                var textLine2Div = DOM.Div({parent: textDiv});
+                textLine2Div.addStyle("max-width", (Module.leftPartSize-40)+"px");
+                textLine2Div.addStyle("overflow", "hidden");
+                textLine2Div.addStyle("text-overflow", "ellipsis");
+                textLine2Div.addElem(tabInfo.headerInfo.title2);
 
                 if (!tabInfo._isFixed) {
                     var closeDiv = DOM.Create('span', {parent: tabDiv});
@@ -108,7 +116,7 @@ define([
             frame._panelTabs.enableVScrollingNoBar();
 
             frame._frameTabs = frame.addMember(Frame.FrameFinal(frame._panelTabs));
-            frame._frameTabs.setFixedDimSize(Frame.dimX, 160);
+            frame._frameTabs.setFixedDimSize(Frame.dimX, Module.leftPartSize);
             frame._frameStacker = frame.addMember(Frame.FrameStacker());
 
             frame._myTabs = [];
@@ -204,6 +212,20 @@ define([
                         frame.hiderCloseView.show(!frame.getCurrentTabInfo()._isFixed);
                 }
 
+                if (frame.viewTitle) {
+                    var newTitle = "";
+                    if (frame.getCurrentTabInfo()) {
+                        var currentTabInfo = frame.getCurrentTabInfo();
+                        if (currentTabInfo.headerInfo.showTitle)
+                            newTitle = frame.getCurrentTabInfo().headerInfo.getSingleTitle();
+                    }
+                    frame.viewTitle.get$El().fadeTo(200,0, function() {
+                        frame.viewTitle.modifyText(newTitle);
+                        if (newTitle)
+                            frame.viewTitle.get$El().fadeTo(200,1);
+                    });
+                }
+
             };
 
 
@@ -293,7 +315,7 @@ define([
             /**
              * Defines this flex tabber as the one and only tabber that can be used to dock popup windows
              */
-            frame.setAsPopupDocker = function(buttonCloseView, hiderCloseView) {
+            frame.setAsPopupDocker = function(buttonCloseView, hiderCloseView, viewTitle) {
                 PopupWindow.docker = function (popup) {
                     var tabId = frame.addTabFrame(popup.getHeaderInfo(), popup.getRootFrame(), {
                         autoActivate: false
@@ -320,6 +342,8 @@ define([
                         }
                     })
                 }
+
+                frame.viewTitle = viewTitle;
             };
 
 

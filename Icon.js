@@ -73,12 +73,15 @@ define([
         };
 
 
-        Module.createHeaderInfo = function(icon, title1, title2) {
+        Module.createHeaderInfo = function(icon, title1, title2, settings) {
             AXMUtils.Test.checkIsType(icon, 'icon');
             var headerInfo = AXMUtils.object('headerinfo');
             headerInfo.icon = icon;
             headerInfo.title1 = title1;
             headerInfo.title2 =  title2;
+            if (!settings)
+                settings = {};
+            headerInfo.showTitle = settings.showTitle!==false;
 
             headerInfo.getSingleTitle = function() {
                 return headerInfo.title1+' '+headerInfo.title2;
@@ -86,7 +89,7 @@ define([
 
             headerInfo.getIcon = function() {
                 return headerInfo.icon;
-            }
+            };
 
             return headerInfo;
         };

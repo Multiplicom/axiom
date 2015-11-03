@@ -138,6 +138,14 @@ define([
 
 
             /**
+             * Returns the jQuery element containing the control
+             * @returns {jQuery}
+             */
+            control.get$El = function() {
+                return $("#" + control._getSubId(''));
+            };
+
+            /**
              * Modifies the text of the control
              * @param {string} newText - new text content
              */
