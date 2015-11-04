@@ -455,7 +455,7 @@ define([
              */
             frame.setAsPopupDocker = function(buttonCloseView, hiderCloseView, viewTitle) {
                 PopupWindow.docker = function (popup) {
-                    var tabId = frame.addTabFrame(popup.getHeaderInfo(), popup.getRootFrame(), {
+                    var tabId = frame.addTabFrame(popup.__originalFlexTabberId, popup.getHeaderInfo(), popup.getRootFrame(), {
                         autoActivate: false
                     });
                     setTimeout(function () {
