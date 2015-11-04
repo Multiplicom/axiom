@@ -30,14 +30,25 @@ define([
         Module.leftPartSize = 160;
 
 
-        Module.createTab = function(parentContainer, headerInfo, tabFrame, stackNr, settings) {
+        /**
+         * Creates a new tab Info object
+         * @param {string} tabId
+         * @param {AXM.Panel.FlexTabber} parentContainer - FlexTabber frame frame this tab will belong to
+         * @param {AXM.Iconn.HeaderInfo} headerInfo - object containing info about the header of the tab (icon, title, ...)
+         * @param {AXM.Frame} tabFrame - frame that whill be shown in the tab
+         * @param {int} stackNr - index of the tab in the stack of tabs
+         * @param {{}} settings - extra settings
+         * @param {boolean} settings.isFixed - if true, the tab cannot be removed
+         * @returns {{}} - tab info object
+         */
+        Module.createTabInfo = function(tabId, parentContainer, headerInfo, tabFrame, stackNr, settings) {
             var tabInfo = {};
             AXMUtils.Test.checkIsType(headerInfo, 'headerinfo');
             tabInfo.headerInfo = headerInfo;
             tabInfo.parentContainer = parentContainer;
             tabInfo.tabFrame = tabFrame;
             tabInfo.stackNr = stackNr;
-            tabInfo.tabId = AXMUtils.getUniqueID();
+            tabInfo.tabId = tabId;
             tabInfo._isFixed = !!settings.isFixed;
 
             tabInfo.createHtml = function() {
@@ -139,15 +150,21 @@ define([
 
             /**
              * Adds a new tab to the frame
+             * @param tabId {string|null} - Identifier of the tab (might be null)
              * @param headerInfo - AXM.Icon.HeaderInfo
              * @param theFrame - frame content
              * @returns {string} - ID of the tab
              */
-            frame.addTabFrame = function(headerInfo, theFrame, settings) {
+            frame.addTabFrame = function(tabId, headerInfo, theFrame, settings) {
+                if (!tabId)
+                    tabId = 'TB_' + AXMUtils.getUniqueID();
+                else
+                    if (frame.hasTabId(tabId))
+                        AXMUtils.Test.reportBug("Tab is already present: " + tabId);
                 AXMUtils.Test.checkIsType(headerInfo, 'headerinfo');
                 if (settings.autoActivate!==false)
                     frame._activeTab = frame._myTabs.length;
-                var tabInfo = Module.createTab(frame, headerInfo, theFrame, frame._frameStacker.getmemberFrameCount(), settings);
+                var tabInfo = Module.createTabInfo(tabId, frame, headerInfo, theFrame, frame._frameStacker.getmemberFrameCount(), settings);
                 frame._myTabs.push(tabInfo);
                 frame._frameStacker.dynAddMember(theFrame);
 
@@ -187,6 +204,16 @@ define([
                 if ((frame._activeTab<0) || (frame._activeTab>=frame._myTabs.length))
                     return null;
                 return frame._myTabs[frame._activeTab];
+            };
+
+
+            /**
+             * Determines if a tab is present
+             * @param {string} tabId
+             * @returns {boolean}
+             */
+            frame.hasTabId = function(tabId) {
+                return frame._tabId2Nr_noFail(tabId) >= 0;
             };
 
             frame._tabId2Nr = function(tabId) {
@@ -248,7 +275,12 @@ define([
             };
 
 
-
+            /**
+             * Closes a tab, provided an ID
+             * @param {string} tabId - id of the tab to be removed
+             * @param {boolean} doNotRemoveFrame - if true, the frame contained in the tab is not removed (used in the case the frame is transferred to a popup window)
+             * @param {function} onCompleted - executed when the animation of the removal is completed
+             */
             frame.closeTab_byID = function(tabId, doNotRemoveFrame, onCompleted) {
                 var tabNr = frame._tabId2Nr(tabId);
                 var tabInfo = frame._myTabs[tabNr];
@@ -306,6 +338,10 @@ define([
             };
 
 
+            /**
+             * Converts a tab to a popup window
+             * @param {string} tabId - id of the tab to be converted
+             */
             frame.convertToPopup_byID = function(tabId) {
                 var tabNr = frame._tabId2Nr(tabId);
                 var tabInfo = frame._myTabs[tabNr];
@@ -316,6 +352,7 @@ define([
                     autoCenter: true,
                     canDock: true
                 });
+                popup.__originalFlexTabberId = tabId;
 
                 popup.setHeaderInfo(tabInfo.headerInfo);
 
@@ -328,6 +365,29 @@ define([
                 AXMUtils.animateBoxTransition(tabInfo.get$El(), popup.get$El(), {}, function() {
                     frame.closeTab_byID(tabId, true);
                 });
+            };
+
+
+            /**
+             * Attempts to activate a tab or a popup window, according to a tab id
+             * @param tabId
+             * @returns {boolean} - determines whether the tab was found and activated
+             */
+            frame.tryActivateTabId = function(tabId) {
+                if (frame.hasTabId(tabId)) {
+                    frame.activateTab_byID(tabId);
+                    return true;
+                }
+                var popupWindow = null;
+                $.each(PopupWindow.getActiveWindowList(), function(idx, popup) {
+                    if (popup.__originalFlexTabberId == tabId)
+                        popupWindow = popup;
+                });
+                if (popupWindow) {
+                    popupWindow.bringToTop();
+                    return true;
+                }
+                return false;
             };
 
 

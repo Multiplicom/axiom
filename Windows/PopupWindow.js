@@ -59,6 +59,15 @@ define([
          */
         Module._activeWindows = [];
 
+
+        /**
+         * Returns a list of all active windows
+         * @returns {Array}
+         */
+        Module.getActiveWindowList = function() {
+            return Module._activeWindows
+        };
+
         Msg.listen('', 'MsgBrowserResized', function(ev) {
             $.each(Module._activeWindows, function(idx, window) {
                 window.autoCorrectAfterSize(ev);
