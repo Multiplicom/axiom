@@ -996,12 +996,12 @@ define([
                 //frame._activeMemberNr = frame._memberFrames.length-1;
                 var $elClient = frame.$ElContainer.children('.AXMFrameClient');
                 if (theFrame.getRoot$El().length>0) {
-                    theFrame.getRoot$El().css('visibility', 'hidden');
+                    theFrame.getRoot$El().css('display', 'none');
                     $elClient.append(theFrame.getRoot$El().detach());
                 }
                 else {
                     $elClient.append(theFrame.createHtml());
-                    theFrame.getRoot$El().css('visibility', 'hidden');
+                    theFrame.getRoot$El().css('display', 'none');
                     theFrame.attachEventHandlers();
                 }
                 frame._setPositionSubframes({resizing: false});
@@ -1028,15 +1028,15 @@ define([
             frame._updateMemberVisibility = function() {
                 if (frame._firstVisibilityUpdate) {
                     $.each(frame._memberFrames, function(idx, memberFrame) {
-                        memberFrame.$ElContainer.css('visibility',
-                            (idx==frame._activeMemberNr) ? 'visible' : 'hidden');
+                        memberFrame.$ElContainer.css('display',
+                            (idx==frame._activeMemberNr) ? '' : 'none');
                     });
-                    frame._firstVisibilityUpdate = false;
+                    frame._firstVisibilityUpdate = false;//!!!
                 } else {
                     var currentVisible = null;
                     var newVisible = null;
                     $.each(frame._memberFrames, function(idx, memberFrame) {
-                        if (memberFrame.$ElContainer.css('visibility') == 'visible')
+                        if (memberFrame.$ElContainer.css('display') != 'none')
                             currentVisible = memberFrame;
                         if (idx==frame._activeMemberNr)
                             newVisible = memberFrame;
@@ -1044,9 +1044,9 @@ define([
                     if (currentVisible!=newVisible) {
                         if (currentVisible) {
                             currentVisible.$ElContainer.fadeTo(200,0, function() {
-                                currentVisible.$ElContainer.css('visibility','hidden');
+                                currentVisible.$ElContainer.css('display','none');
                                 if (newVisible) {
-                                    newVisible.$ElContainer.css('visibility','visible');
+                                    newVisible.$ElContainer.css('display','');
                                     newVisible.$ElContainer.fadeTo(200,1)
                                 }
                             })
@@ -1054,7 +1054,7 @@ define([
                         else {
                             if (newVisible) {
                                 newVisible.$ElContainer.css('opacity','0');
-                                newVisible.$ElContainer.css('visibility','visible');
+                                newVisible.$ElContainer.css('display','');
                                 newVisible.$ElContainer.fadeTo(200,1)
                             }
                         }
