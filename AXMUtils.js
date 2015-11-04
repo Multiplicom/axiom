@@ -41,6 +41,11 @@ define([
             var obj = {
                 __typeStrings: [typeStr]
             };
+
+            obj.extend = function(typeStr) {
+                obj.__typeStrings.push(typeStr);
+            };
+
             return obj;
         };
 

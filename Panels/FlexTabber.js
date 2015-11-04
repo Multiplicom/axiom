@@ -31,7 +31,7 @@ define([
 
 
         /**
-         * Creates a new tab Info object
+         * Creates a new TabInfo object
          * @param {string} tabId
          * @param {AXM.Panel.FlexTabber} parentContainer - FlexTabber frame frame this tab will belong to
          * @param {AXM.Iconn.HeaderInfo} headerInfo - object containing info about the header of the tab (icon, title, ...)
@@ -44,6 +44,9 @@ define([
         Module.createTabInfo = function(tabId, parentContainer, headerInfo, tabFrame, stackNr, settings) {
             var tabInfo = {};
             AXMUtils.Test.checkIsType(headerInfo, 'headerinfo');
+            AXMUtils.Test.checkIsType(parentContainer, "flextabber");
+            AXMUtils.Test.checkIsType(tabFrame, "@Frame");
+
             tabInfo.headerInfo = headerInfo;
             tabInfo.parentContainer = parentContainer;
             tabInfo.tabFrame = tabFrame;
@@ -51,6 +54,10 @@ define([
             tabInfo.tabId = tabId;
             tabInfo._isFixed = !!settings.isFixed;
 
+            /**
+             * Returns the html for the tab header
+             * @returns {string}
+             */
             tabInfo.createHtml = function() {
                 var tabDiv = DOM.Div({id: tabInfo.tabId});
                 tabDiv.addCssClass('AXMFlexTab');
@@ -87,10 +94,18 @@ define([
                 return tabDiv.toString();
             };
 
+            /**
+             * Returns the jQuery element with the tab header
+             * @returns {jQuery}
+             */
             tabInfo.get$El = function() {
                 return $('#'+tabInfo.tabId);
             };
 
+
+            /**
+             * Attach the required event handlers to the tab header after DOM insertion
+             */
             tabInfo.attachEventHandlers = function() {
                 var el = tabInfo.get$El();
                 el.click(function() {
@@ -115,8 +130,13 @@ define([
         };
 
 
+        /**
+         * Creates a FlexTabber frame
+         * @returns {Object}
+         */
         Module.create = function() {
             var frame = Frame.FrameSplitterHor();
+            frame.extend('flextabber');
             frame.setHalfSplitterSize(3);
             frame.splitterColor = "white";
 
@@ -138,7 +158,7 @@ define([
 
 
             /**
-             * Call this function to allw the FlexTabber to use the browser history
+             * Call this to allow the FlexTabber to use the browser history
              */
             frame.setUseBrowserHistory = function() {
                 frame._useBrowserHistory = true;
@@ -184,6 +204,12 @@ define([
             };
 
 
+            /**
+             * Returns the tab index associated with a tab ID, and returns -1 of not present
+             * @param {string} tabId
+             * @returns {number}
+             * @private
+             */
             frame._tabId2Nr_noFail = function(tabId) {
                 var tabNr = -1;
                 $.each(frame._myTabs, function(idx, _tabInfo) {
@@ -194,12 +220,36 @@ define([
                 return tabNr;
             };
 
+
+            /**
+             * Returns the tab index associated with a tab ID, and fails of not present
+             * @param {string} tabId
+             * @returns {number}
+             * @private
+             */
+            frame._tabId2Nr = function(tabId) {
+                var tabNr = frame._tabId2Nr_noFail(tabId);
+                if (tabNr<0)
+                    AXMUtils.reportBug("Invalid tab ID");
+                return tabNr;
+            };
+
+
+            /**
+             * Returns the ID of the currently active tab
+             * @returns {string}
+             */
             frame.getCurrentTabId = function() {
                 if ((frame._activeTab<0) || (frame._activeTab>=frame._myTabs.length))
                     return "";
                 return frame._myTabs[frame._activeTab].tabId;
             };
 
+
+            /**
+             * Returns the TabInfo object of the currently acive tab
+             * @returns {*}
+             */
             frame.getCurrentTabInfo = function() {
                 if ((frame._activeTab<0) || (frame._activeTab>=frame._myTabs.length))
                     return null;
@@ -216,18 +266,23 @@ define([
                 return frame._tabId2Nr_noFail(tabId) >= 0;
             };
 
-            frame._tabId2Nr = function(tabId) {
-                var tabNr = frame._tabId2Nr_noFail(tabId);
-                if (tabNr<0)
-                    AXMUtils.reportBug("Invalid tab ID");
-                return tabNr;
-            };
 
+            /**
+             * Returns the TabInfo object associated with a tab id
+             * @param {string} tabId
+             * @returns {*}
+             */
             frame.getTabInfo_byId = function(tabId) {
                 var tabNr = frame._tabId2Nr(tabId);
                 return frame._myTabs[tabNr];
             };
 
+
+            /**
+             * Activates a tab
+             * @param {string} tabId - tab id
+             * @param {bool} noUpdateHistory - if true, do not update the browser history
+             */
             frame.activateTab_byID = function(tabId, noUpdateHistory) {
                 var tabNr = frame._tabId2Nr(tabId);
                 var tabInfo = frame._myTabs[tabNr];
@@ -235,7 +290,7 @@ define([
                     return;
                 frame._frameStacker.activateStackNr(tabInfo.stackNr);
                 frame._activeTab = tabNr;
-                frame.updateTabStates();
+                frame._updateTabStates();
                 if (frame._useBrowserHistory) {
                     if (!noUpdateHistory) {
                         if (history)
@@ -246,7 +301,11 @@ define([
             };
 
 
-            frame.updateTabStates = function() {
+            /**
+             * Updates the displayed tab state
+             * @private
+             */
+            frame._updateTabStates = function() {
                 frame._panelTabs.get$El().find('.AXMFlexTab')
                     .removeClass('AXMFlexTabActive')
                     .addClass('AXMFlexTabInActive');
