@@ -349,7 +349,7 @@ define([
             frame.updateHtml = function() {
                 if (frame.createHtmlClient) {
                     var content = frame.createHtmlClient();
-                    frame.$ElContainer.find('.AXMFrameClient').html(content);
+                    frame.$ElContainer.children('.AXMFrameClient').html(content);
                 }
             };
 
@@ -399,7 +399,7 @@ define([
                     $('#' + frame.getTitleDivId()).outerWidth(xl).outerHeight(Module.titleBarH)
                     frame._clientVOffset += Module.titleBarH;
                 }
-                frame.$ElContainer.find('.AXMFrameClient').css({
+                frame.$ElContainer.children('.AXMFrameClient').css({
                     left: '0px',
                     top: frame._clientVOffset +'px',
                     width: xl + 'px',
@@ -740,7 +740,7 @@ define([
                 };
                 var doMoveSplitter= function(params) {
                     var shift = frame.isHorSplitter() ? params.diffTotalX : params.diffTotalY;
-                    var $ElClient = frame.$ElContainer.find('.AXMFrameClient');
+                    var $ElClient = frame.$ElContainer.children('.AXMFrameClient');
                     var totsize = frame.isHorSplitter() ? $ElClient.width() : $ElClient.height();
                     frame._calculateNewFrameSizeFractions(frame._temp_dragSplitter_splitterNr, frame._temp_dragSplitter_origPosit+shift, totsize);
                     frame._setPositionSubframes({resizing: true});
@@ -840,8 +840,8 @@ define([
              * @private
              */
             frame._setPositionSubframes = function(params) {
-                var xl = frame.$ElContainer.find('.AXMFrameClient').width();
-                var yl = frame.$ElContainer.find('.AXMFrameClient').height();
+                var xl = frame.$ElContainer.children('.AXMFrameClient').width();
+                var yl = frame.$ElContainer.children('.AXMFrameClient').height();
                 frame.setPositionClient(xl,yl, params);
             };
 
@@ -1155,6 +1155,14 @@ define([
                 frame.activateStackNr(0);
             };
 
+            frame._getTabContainer = function() {
+                var $El = frame.$ElContainer.children('.AXMFrameClient').children('.AXMFrameTabContainer');
+                if ($El.length != 1)
+                if ($El.length != 1)
+                    AXMUtils.Test.reportBug('Tab container bug');
+                return $El;
+            };
+
             /**
              * Activates an individual member frame
              * @param {int} fnr - member frame number
@@ -1164,7 +1172,7 @@ define([
                     AXMUtils.reportBug('Invalid TAB nr');
                 frame._activeMemberNr = fnr;
                 frame._updateMemberVisibility();
-                frame.$ElContainer.find('.AXMFrameTabContainer').find('.AXMFrameTabElement')
+                frame._getTabContainer().children('.AXMFrameTabContainerInner').children('.AXMFrameTabElement')
                     .removeClass('AXMFrameTabElementActive')
                     .addClass('AXMFrameTabElementInActive');
                 $('#'+frame._getTabId(fnr))
@@ -1182,11 +1190,11 @@ define([
              */
             frame.setPositionClient = function(xl, yl, params) {
                 AXMUtils.Test.checkIsNumber(xl, yl);
-                frame.$ElContainer.find('.AXMFrameTabContainer')
+                frame._getTabContainer()
                     .outerWidth(xl)
                     .outerHeight(frame._stackHeaderOffset);
 
-                var availableWidth = frame.$ElContainer.find('.AXMFrameTabContainer').width();
+                var availableWidth = frame._getTabContainer().width();
 
                 var longestTitleLength = 0;
                 $.each(frame._memberFrames, function(idx, memberFrame) {
@@ -1202,7 +1210,7 @@ define([
                             shortTitle = shortTitle.substring(0, maxTitleLength) + '&hellip;';
                         $('#'+frame._getTabId(fnr)).html(shortTitle);
                     });
-                    var consumedWidth = frame.$ElContainer.find('.AXMFrameTabContainerInner').width();
+                    var consumedWidth = frame._getTabContainer().children('.AXMFrameTabContainerInner').width();
                     maxTitleLength--;
                 } while ((consumedWidth > availableWidth) && (maxTitleLength>1))
 
@@ -1256,7 +1264,9 @@ define([
              * @private
              */
             frame._getClientAutoSize = function(dim) {
-                var $ElClient = frame.$ElContainer.find('.AXMFrameFinalClientArea');
+                var $ElClient = frame.$ElContainer.children('.AXMFrameClient').children('.AXMFrameFinalClientArea');
+                if ($ElClient.length != 1)
+                    AXMUtils.Test.reportBug('Bug in getclientautosize');
                 var ht = $ElClient.html();
                 if (dim==Module.dimX)
                     return $ElClient.outerWidth();
@@ -1285,7 +1295,9 @@ define([
             frame.setPositionClient = function(xl, yl, params) {
                 if (!params)
                     debugger;
-                var $ElClient = frame.$ElContainer.find(".AXMFrameFinalClientArea");
+                var $ElClient = frame.$ElContainer.children('.AXMFrameClient').children(".AXMFrameFinalClientArea");
+                if ($ElClient.length != 1)
+                    AXMUtils.Test.reportBug('Bug in setPositionClient');
                 if (!frame._sizeInfos[Module.dimY].isAutoSize())
                     $ElClient.css('height', yl);
                 if (!frame._sizeInfos[Module.dimX].isAutoSize())
