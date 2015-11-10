@@ -85,21 +85,22 @@ body {
 
 
 .AXMFrameTitle, .AXMFrameTabElementActive {
-    background: rgb(200, 200, 200); /* Old browsers */
-    background: -moz-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(200, 200, 200)), color-stop(100%, rgb(230, 230, 230))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* IE10+ */
-    background: linear-gradient(to bottom, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c8c8c8', endColorstr='#e6e6e6', GradientType=0); /* IE6-9 */
+    background-color: rgb(220,220,220) !important;
+    /*background: rgb(200, 200, 200); /!* Old browsers *!/*/
+    /*background: -moz-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /!* FF3.6+ *!/*/
+    /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(200, 200, 200)), color-stop(100%, rgb(230, 230, 230))); /!* Chrome,Safari4+ *!/*/
+    /*background: -webkit-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /!* Chrome10+,Safari5.1+ *!/*/
+    /*background: -o-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /!* Opera 11.10+ *!/*/
+    /*background: -ms-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /!* IE10+ *!/*/
+    /*background: linear-gradient(to bottom, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /!* W3C *!/*/
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c8c8c8', endColorstr='#e6e6e6', GradientType=0); /!* IE6-9 *!/*/
 }
 
 /*************************** Frames tabs  **************************************************/
 
 .AXMFrameTabContainer {
     position:absolute;
-    border-bottom: 3px solid rgb(210,210,210); /* BCK2 */
+    border-bottom: 3px solid rgb(220,220,220); /* BCK2 */
 }
 
 .AXMFrameTabContainerInner {
@@ -119,16 +120,17 @@ body {
     border: 1px solid rgb(180,180,180);
     border-bottom: none;
     display:inline-block;
-    background-color: rgb(240,240,240);
-    color: rgb(120,120,120);
+    background-color: rgb(245,245,245);
+    color: rgb(128, 128, 128);
     overflow: hidden;
     cursor:pointer;
-    margin-top:6px;
+    margin-top:9px;
     margin-right:1px;
-    margin-left:3px;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    margin-left:5px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
     box-shadow: 2px 1px 3px 0px rgba(0,0,0,0.15);
+    transition:background-color 0.15s linear;
 
 }
 
@@ -141,12 +143,21 @@ body {
     border-bottom: none;
     color: rgb(50,50,50);
     box-shadow: 2px 1px 3px 0px rgba(0,0,0,0.25);
-
 }
 
+.AXMFrameTabElement:hover {
+    border-color: rgb(58, 143, 152);
+}
 
 .AXMFrameTabElementInactive {
+}
 
+.AXMFrameTabDisabled, .AXMFrameTabDisabled:hover {
+    background-color: rgb(250,250,250) !important;
+    color: rgb(190,190,190) !important;
+    border-color:rgb(220,220,220) !important;
+    box-shadow: none !important;
+    cursor: default  !important;
 }
 
 /*************************** Button Control  **************************************************/

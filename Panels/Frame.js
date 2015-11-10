@@ -1092,6 +1092,7 @@ define([
                     return false;
             };
 
+
             return frame;
         };
 
@@ -1104,7 +1105,7 @@ define([
          */
         Module.FrameTabber = function () {
             var frame = Module.FrameStacker();
-            frame._stackHeaderOffset = 34+4;
+            frame._stackHeaderOffset = 34+7;
 
             frame.isTabber = function() { return true; };
 
@@ -1132,6 +1133,8 @@ define([
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     var tablElDiv = DOM.Div({parent: tabDivInner, id:frame._getTabId(idx)})
                         .addCssClass('AXMFrameTabElement');
+                    if (memberFrame.__stacker_disabled)
+                        tablElDiv.addCssClass('AXMFrameTabDisabled');
                     tablElDiv.addElem(memberFrame.getTitle());
                 });
                 html += tabDiv.toString();
@@ -1148,7 +1151,7 @@ define([
                 _super_attachEventHandlers(params);
                 $.each(frame._memberFrames, function(fnr, memberFrame) {
                     $('#'+frame._getTabId(fnr)).click(function() {
-                        if (fnr != frame._activeMemberNr)
+                        if ((fnr != frame._activeMemberNr) && (!memberFrame.__stacker_disabled))
                             frame.activateStackNr(fnr);
                     });
                 });
@@ -1162,6 +1165,30 @@ define([
                     AXMUtils.Test.reportBug('Tab container bug');
                 return $El;
             };
+
+
+            /**
+             * disables or enables a member frame of the tabber
+             * @param {string} frameId - id of the affected member frame
+             * @param {boolean} disabled - new state
+             */
+            frame.disableMember_ById = function(frameId, disabled) {
+                var frameNr = -1;
+                $.each(frame._memberFrames, function(idx, memberFrame) {
+                    if (memberFrame.getId() == frameId)
+                        frameNr = idx;
+                });
+                if (frameNr < 0)
+                    AXMUtils.reportBug("member frame id in stacker not found");
+                frame._memberFrames[frameNr].__stacker_disabled = disabled;
+                if (disabled)
+                    $('#'+frame._getTabId(frameNr))
+                        .addClass('AXMFrameTabDisabled');
+                else
+                    $('#'+frame._getTabId(frameNr))
+                        .removeClass('AXMFrameTabDisabled');
+            };
+
 
             /**
              * Activates an individual member frame
