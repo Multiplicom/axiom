@@ -1324,6 +1324,14 @@ define([
                 return frame._panel.getTypeId() == panelTypeId;
             };
 
+            /**
+             * Called when the frame is about to close.
+             * @param msg
+             */
+            frame.willClose = function(msg) {
+                frame._panel.tearDown();
+            };
+
 
             return frame;
         };

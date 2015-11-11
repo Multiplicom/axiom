@@ -85,6 +85,14 @@ define([
             panel.resize = function(xl, yl) {
             };
 
+
+            /**
+             * Called when the panel is about to be closed. Tear down actions should happen here (implemented in derived classes)
+             */
+            panel.tearDown = function() {
+
+            };
+
             return panel;
         };
 
