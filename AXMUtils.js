@@ -762,6 +762,17 @@ define([
 
         };
 
+        /**
+         * Requires an object to be present, and returns it
+         * @param obj
+         * @returns {*}
+         */
+        AXMReq = function(obj) {
+            if (obj===undefined)
+                Test.reportBug("Requered object not present");
+            return obj;
+        };
+
 
         return Module;
     });
