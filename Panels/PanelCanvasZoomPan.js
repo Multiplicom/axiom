@@ -726,6 +726,18 @@ define([
                 clickLayer$El.click(panel._onClick);
             };
 
+            var _super_detachEventHandlers = panel.detachEventHandlers;
+            /**
+             * Detach the html event handlers
+             */
+            panel.detachEventHandlers = function() {
+                _super_detachEventHandlers();
+                var clickLayer$El = panel.getCanvas$El('selection');
+                AXMUtils.remove$ElScrollHandler(clickLayer$El);
+                AXMUtils.remove$ElDragHandler(clickLayer$El);
+                clickLayer$El.unbind('mousemove');
+                clickLayer$El.unbind('click');
+            };
 
 
             return panel;

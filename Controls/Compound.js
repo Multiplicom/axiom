@@ -94,6 +94,25 @@ define([
                 });
             };
 
+            /**
+             * Detaches member controls html event handlers
+             */
+            compound.detachEventHandlers = function() {
+                $.each(compound._members, function(idx, member) {
+                    member.detachEventHandlers();
+                });
+            };
+
+            /**
+             * Called by the framework when a control needs to be teared down.
+             */
+            compound.tearDown = function() {
+                $.each(compound._members, function(idx, member) {
+                    member.tearDown();
+                });
+            };
+
+
             return compound;
         };
 
@@ -307,6 +326,13 @@ define([
             };
 
             /**
+             * Detaches the wrapped control html event handlers
+             */
+            wrapper.detachEventHandlers = function() {
+                wrapper._member.detachEventHandlers();
+            };
+
+            /**
              * Gets the jQuery element of the wrapper control
              * @returns {jQuery}
              */
@@ -314,6 +340,12 @@ define([
                 return $('#' + wrapper._id);
             };
 
+            /**
+             * Called by the framework when a control needs to be teared down.
+             */
+            wrapper.tearDown = function() {
+                wrapper._member.tearDown();
+            };
 
             return wrapper;
         };
@@ -340,6 +372,7 @@ define([
                 div.addElem(wrapper._member.createHtml());
                 return div.toString();
             };
+
 
             return wrapper;
         };
@@ -584,6 +617,18 @@ define([
             wrapper._id = 'CT'+AXMUtils.getUniqueID();
 
             wrapper.attachEventHandlers = function() {
+            };
+
+            /**
+             * Detaches member controls html event handlers
+             */
+            wrapper.detachEventHandlers = function() {
+            };
+
+            /**
+             * Called by the framework when a control needs to be teared down.
+             */
+            wrapper.tearDown = function() {
             };
 
             return wrapper;

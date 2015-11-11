@@ -409,6 +409,10 @@ define([
 
         };
 
+        Module.remove$ElDragHandler = function($El) {
+            $El.unbind('mousedown');
+
+        };
 
         /**
          * Creates a mouse scroll handler for a jQuery element
@@ -451,6 +455,11 @@ define([
                     event: ev
                 });
             });
+        };
+
+
+        Module.remove$ElScrollHandler = function($El) {
+            $El.unbind('DOMMouseScroll mousewheel');
         };
 
         var _keyDownHandlerStack = [];

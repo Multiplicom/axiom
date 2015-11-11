@@ -351,7 +351,7 @@ define([
                 if (!window._$ElContainer)
                     AXMUtils.reportBug("Popup is not yet started");
                 return window._$ElContainer;
-            }
+            };
 
             /**
              * Handles the html on key down event
@@ -426,7 +426,7 @@ define([
                             diffSize = Math.min(diffSize, offset);
                         diffSize = Math.max(diffSize, minSize-origSize);
                         return diffSize;
-                    }
+                    };
 
                     diffSizeX = correctDifference(diffSizeX, window._resizeW0, window._minSizeX, window._resizeX0, window._tmpBrowserSize.sizeX, resizeLeftX);
                     if (resizeLeftX)
@@ -547,7 +547,12 @@ define([
                             return;
                         }
                         window._rootFrame.informWillClose();
+                        window._rootFrame.detachEventHandlers();
                     }
+
+                    if (window._rootControl)
+                        window._rootControl.detachEventHandlers();
+
                 }
 
                 $.each(window._listeners, function(idx, eventid) {
@@ -565,6 +570,8 @@ define([
                 }
 
                 AXMUtils.removeKeyDownHandler(window._onKeyDown);
+
+
 
                 window._$ElContainer.fadeTo(250,0, function() {
                     window._$ElContainer.remove();

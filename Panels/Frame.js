@@ -361,6 +361,11 @@ define([
                 frame.$ElContainer = $('#' + frame._id);
             };
 
+            /**
+             * Detach the html handlers
+             */
+            frame.detachEventHandlers = function() {
+            };
 
             /**
              * Automatically pdates the positioning of the frame, including the client area content
@@ -489,7 +494,7 @@ define([
              */
             frame.getmemberFrameCount = function() {
                 return frame._memberFrames.length;
-            }
+            };
 
             var _super_attachEventHandlers = frame.attachEventHandlers;
             /**
@@ -499,6 +504,17 @@ define([
                 _super_attachEventHandlers(params); // calls the implementation of the parent class
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     memberFrame.attachEventHandlers(params);
+                });
+            };
+
+            var _super_detachEventHandlers = frame.detachEventHandlers;
+            /**
+             * Detach the html event handlers
+             */
+            frame.detachEventHandlers = function() {
+                _super_detachEventHandlers(); // calls the implementation of the parent class
+                $.each(frame._memberFrames, function(idx, memberFrame) {
+                    memberFrame.detachEventHandlers();
                 });
             };
 
@@ -729,6 +745,15 @@ define([
                 frame._attachEventHandlers_Splitters(params)
             };
 
+            var _super_detachEventHandlers = frame.detachEventHandlers;
+            /**
+             * Detaches the html event handlers
+             */
+            frame.detachEventHandlers = function() {
+                _super_detachEventHandlers();
+                frame._detachEventHandlers_Splitters()
+            };
+
             /**
              * Attaches the html event handlers for ths splitters after DOM insertion
              */
@@ -757,6 +782,19 @@ define([
                             doMoveSplitter,
                             finaliseMoveSplitter
                         );
+                    }
+                });
+
+            };
+
+            /**
+             * Detaches the html event handlers
+             */
+            frame._detachEventHandlers_Splitters = function() {
+                $.each(frame._memberFrames, function(fnr, memberFrame) {
+                    if ( (fnr > 0) && (!frame._isFixedSplitter(fnr)) ) {
+                        var splitter$El = $('#'+frame.getSplitterDivId(fnr));
+                        AXMUtils.remove$ElDragHandler(splitter$El);
                     }
                 });
 
@@ -1158,6 +1196,17 @@ define([
                 frame.activateStackNr(0);
             };
 
+            var _super_detachEventHandlers = frame.detachEventHandlers;
+            /**
+             * Detaches the html event handlers
+             */
+            frame.detachEventHandlers = function() {
+                _super_detachEventHandlers();
+                $.each(frame._memberFrames, function(fnr, memberFrame) {
+                    $('#'+frame._getTabId(fnr)).unbind('click');
+                });
+            };
+
             frame._getTabContainer = function() {
                 var $El = frame.$ElContainer.children('.AXMFrameClient').children('.AXMFrameTabContainer');
                 if ($El.length != 1)
@@ -1312,6 +1361,15 @@ define([
                 frame._panel.attachEventHandlers(params);
             };
 
+
+            var _super_detachEventHandlers = frame.detachEventHandlers;
+            /**
+             * Detach the html event handlers
+             */
+            frame.detachEventHandlers = function() {
+                _super_detachEventHandlers();
+                frame._panel.detachEventHandlers();
+            };
 
             /**
              * Positions the panel in the client area

@@ -94,6 +94,11 @@ define([
             control.attachEventHandlers = function() {
             };
 
+            /**
+             * Empty base class function
+             */
+            control.detachEventHandlers = function() {
+            };
 
             /**
              * Notifies all notification handlers
@@ -105,6 +110,11 @@ define([
                         fnc(msg);
                 });
             };
+
+            /**
+             * Called by the framework when a control needs to be teared down. To be implemented in derived classes
+             */
+            control.tearDown = function() {}
 
             return control;
         };
@@ -357,6 +367,13 @@ define([
                 control._updateCheckedState();
             };
 
+            /**
+             * Detaches html event handlers
+             */
+            control.detachEventHandlers = function() {
+                control._getSub$El('').unbind('click');
+                control._getSub$El('').find('.AXMButtonHelp').unbind('click');
+            };
 
             /**
              * Handles the on click event
@@ -494,6 +511,12 @@ define([
                 control._getSub$El('').click(control._onClicked);
             };
 
+            /**
+             * Detach the html event handlers
+             */
+            control.detachEventHandlers = function() {
+                control._getSub$El('').unbind('click');
+            };
 
             /**
              * Handles the on click event
@@ -554,6 +577,12 @@ define([
                 control._updateEnabledState();
             };
 
+            /**
+             * Detach the html event handlers
+             */
+            control.detachEventHandlers = function() {
+                control._getSub$El('').unbind('click');
+            };
 
             /**
              * Handles the on click event
@@ -745,6 +774,13 @@ define([
                 //control._getSub$El('').click(control._onClicked);
             };
 
+            /**
+             * Detach the html event handlers
+             */
+            control.attachEventHandlers = function() {
+                var target = 'change.controlevent';
+                control._getSub$El('').unbind(target);
+            };
 
             /**
              * Html handler implementing the state change event
@@ -862,6 +898,16 @@ define([
                     control._clearButton.attachEventHandlers();
             };
 
+            /**
+             * Detach the html event handlers
+             */
+            control.detachEventHandlers = function() {
+                control._getSub$El('').unbind('click');
+                control._getSub$El('').unbind("propertychange input paste");
+                control._getSub$El('').unbind("keyup");
+                if (control._clearButton)
+                    control._clearButton.detachEventHandlers();
+            };
 
             /**
              * Handles the html on modified event
@@ -1015,6 +1061,17 @@ define([
                     control._clearButton.attachEventHandlers();
             };
 
+            /**
+             * Detaches the html event handlers
+             */
+            control.detachEventHandlers = function() {
+                control._getSub$El('').unbind('click');
+                control._getSub$El('').unbind("propertychange input paste");
+                control._getSub$El('').unbind("keyup");
+                if (control._clearButton)
+                    control._clearButton.detachEventHandlers();
+            };
+
 
             /**
              * Handler the html on modified event
@@ -1151,6 +1208,15 @@ define([
                     .on("drop", control.onDrop);
             };
 
+            /**
+             * Detaches the html events
+             */
+            control.detachEventHandlers = function() {
+                control._getSub$El('')
+                    .off("dragover")
+                    .off("dragleave")
+                    .off("drop");
+            };
 
             /**
              * Returns the set of files currently dropped in the area

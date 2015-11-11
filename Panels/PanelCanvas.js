@@ -106,6 +106,8 @@ define([
             panel.attachEventHandlers = function() {
             };
 
+            panel.detachEventHandlers = function() {
+            };
 
             /**
              * Resizes the panel

@@ -85,6 +85,14 @@ define([
                     return panel._rootControl.attachEventHandlers();
             };
 
+            /**
+             * Detaches the html event handlers
+             */
+            panel.detachEventHandlers = function() {
+                if (panel._rootControl)
+                    return panel._rootControl.detachEventHandlers();
+            };
+
 
             /**
              * Re-creates the html to reflect a change in the control(s)
@@ -97,6 +105,11 @@ define([
 
 
             panel.resize = function(xl, yl) {
+            };
+
+            panel.tearDown = function() {
+                if (panel._rootControl)
+                    panel._rootControl.tearDown();
             };
 
             return panel;

@@ -123,7 +123,16 @@ define([
                     ev.stopPropagation();
                     return null;
                 });
+            };
 
+            /**
+             * Detach the required event handlers to the tab header
+             */
+            tabInfo.detachEventHandlers = function() {
+                var el = tabInfo.get$El();
+                el.unbind('click');
+                el.find('.AXMFlexTabCloser').unbind('click');
+                el.find('.AXMFlexTabToPopup').unbind('click');
             };
 
             return tabInfo;
@@ -361,6 +370,7 @@ define([
                     tabInfo.tabFrame.informWillClose();
                 }
                 tabInfo.get$El().slideUp(200, function() {
+                    frame._myTabs[tabNr].detachEventHandlers();
                     tabInfo.get$El().remove();
                     frame._frameStacker.dynDelMember(tabInfo.stackNr);
                     $.each(frame._myTabs, function(idx, tmp1tabInfo) {
