@@ -443,6 +443,8 @@ define([
              * @returns {boolean} - determines whether the tab was found and activated
              */
             frame.tryActivateTabId = function(tabId) {
+                if (tabId===undefined)
+                    return false;
                 if (frame.hasTabId(tabId)) {
                     frame.activateTab_byID(tabId);
                     return true;

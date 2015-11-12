@@ -326,7 +326,9 @@ define([
                 }
 
                 if (window._canClose)
-                    window._$ElContainer.find('.SWXPopupWindowCloseBox').click(window.close);
+                    window._$ElContainer.find('.SWXPopupWindowCloseBox').click(function() {
+                        window.close();
+                    });
 
                 window._$ElContainer.find('.SWXPopupWindowDockBox').click(function() {
                     Module.docker(window);
@@ -548,6 +550,7 @@ define([
                         }
                         window._rootFrame.informWillClose();
                         window._rootFrame.detachEventHandlers();
+                        window._rootFrame.tearDown();
                     }
 
                     if (window._rootControl)
