@@ -1304,6 +1304,7 @@ define([
          * @constructor
          */
         Module.FrameFinal = function (iPanel) {
+            AXMUtils.Test.checkIsType(iPanel, "@Panel");
             var frame = Module.FrameGeneric();
             frame._panel = iPanel;
             iPanel._setFrame(frame);

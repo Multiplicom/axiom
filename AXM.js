@@ -20,7 +20,7 @@ define([
         "AXM/Application",
         "AXM/Tables/TableData", "AXM/Tables/TableInfo",
         "AXM/Controls/Controls", "AXM/Controls/Compound",
-        "AXM/Panels/Frame", "AXM/Panels/FlexTabber", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelCanvas", "AXM/Panels/PanelCanvasZoomPan", "AXM/Panels/PanelCanvasXYPlot", "AXM/Panels/PanelHtml",
+        "AXM/Panels/Frame", "AXM/Panels/FlexTabber", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelCanvas", "AXM/Panels/PanelCanvasZoomPan", "AXM/Panels/PanelCanvasXYPlot", "AXM/Panels/PanelHtml", "AXM/Panels/FrameTrackViewer",
         "AXM/Windows/RootWindow", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Windows/LogViewer", "AXM/Windows/DocViewer",
         "AXM/DataFrames/DataFrame"
     ],
@@ -30,7 +30,7 @@ define([
         Application,
         TableData, TableInfo,
         Controls, Compound,
-        Frame, FlexTabber, PanelForm, PanelTable, PanelCanvas, PanelCanvasZoomPan, PanelCanvasXYPlot, PanelHtml,
+        Frame, FlexTabber, PanelForm, PanelTable, PanelCanvas, PanelCanvasZoomPan, PanelCanvasXYPlot, PanelHtml, FrameTrackViewer,
         RootWindow, PopupWindow, SimplePopups, LogViewer, DocViewer,
         DataFrame
     ) {
@@ -61,7 +61,8 @@ define([
                 PanelCanvas: PanelCanvas,
                 PanelCanvasZoomPan: PanelCanvasZoomPan,
                 PanelCanvasXYPlot: PanelCanvasXYPlot,
-                PanelHtml: PanelHtml
+                PanelHtml: PanelHtml,
+                FrameTrackViewer: FrameTrackViewer
             },
             Windows: {
                 RootWindow: RootWindow,
