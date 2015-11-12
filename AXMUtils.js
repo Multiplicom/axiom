@@ -454,6 +454,8 @@ define([
                     deltaX: getMouseWheelDeltaX(ev),
                     event: ev
                 });
+                ev.preventDefault();
+                return false;
             });
         };
 

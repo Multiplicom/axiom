@@ -29,12 +29,14 @@ define([
 
         Module._trackOffsetLeft = 20;
         Module._trackOffsetRight = 20;
+        Module._leftRightOffsetMarginH = 1;
+        Module._trackMarginV = 3;
 
         Module.Track = function () {
             var track = AXMUtils.object('@TrackViewTrack');
             track._id = AXMUtils.getUniqueID();
             track._width = 1;
-            track._fixedHeight = 60;
+            track._fixedHeight = -1;
             track.cnvs = Canvas.create(track._id, ['main', 'selection']);
 
             track.getId = function () {
@@ -51,6 +53,20 @@ define([
                 return track._panel;
             };
 
+            track.setFixedHeight = function(h) {
+                track._fixedHeight = h;
+            };
+
+            track.hasFixedHeight = function() {
+                return track._fixedHeight > 0;
+            };
+
+            track.getFixedHeight = function() {
+                if (track._fixedHeight < 0)
+                    AXMUtils.Test.reportBug("Track does not have fixed height");
+                return track._fixedHeight;
+            };
+
             track.getWidth = function() {
                 return track._width;
             };
@@ -60,18 +76,33 @@ define([
                 var rootDiv = DOM.Div({id: 'track_' + track.getId()});
                 //rootDiv.addStyle('width', '100%');
                 rootDiv.addStyle('height', track._fixedHeight + "px");
-                rootDiv.addStyle('border-bottom', "1px solid rgb(220,220,220)");
-                rootDiv.addStyle('background-color', "rgb(240,240,240)");
+                rootDiv.addStyle('border-bottom', "3px solid rgb(220,220,220)");
+                //rootDiv.addStyle('background-color', "rgb(240,240,240)");
+                rootDiv.addStyle('white-space', "nowrap");
+                rootDiv.addStyle('vertical-align', "top");
 
 
                 var leftDiv = DOM.Div({parent: rootDiv});
                 leftDiv.addStyle("display", "inline-block");
-                leftDiv.addStyle("width", Module._trackOffsetLeft + "px");
+                leftDiv.addStyle('vertical-align', "top");
+                leftDiv.addStyle("width", (Module._trackOffsetLeft-1) + "px");
+                leftDiv.addStyle("height", "100%");
+                leftDiv.addStyle("border-right", "1px solid rgb(220,220,220)");
 
                 var centerDiv = DOM.Div({parent: rootDiv});
+                centerDiv.addCssClass("TrackCenter");
                 centerDiv.addStyle("display", "inline-block");
+                centerDiv.addStyle('vertical-align', "top");
                 centerDiv.addStyle('position', 'relative');
                 centerDiv.addElem(track.cnvs.createHtml());
+
+                var rightDiv = DOM.Div({parent: rootDiv});
+                rightDiv.addStyle("display", "inline-block");
+                rightDiv.addStyle('vertical-align', "top");
+                rightDiv.addStyle("width", (Module._trackOffsetRight-1) + "px");
+                rightDiv.addStyle("border-left", "1px solid rgb(220,220,220)");
+                rightDiv.addStyle("height", "100%");
+
                 return rootDiv.toString();
             };
 
@@ -101,7 +132,20 @@ define([
 
             track.resize = function (xl, yl, params) {
                 track._width = xl;
-                track.cnvs.resize(xl-Module._trackOffsetLeft-Module._trackOffsetRight, track._fixedHeight, params);
+                track._height = yl;
+                if (track.hasFixedHeight())
+                    track._height = track._fixedHeight;
+
+                var centerWidth = xl-Module._trackOffsetLeft-Module._trackOffsetRight-2*Module._leftRightOffsetMarginH;
+
+                var root$El = $('#track_' + track.getId());
+                root$El.height(track._height);
+                root$El.children(".TrackCenter").width(centerWidth);
+
+                track.cnvs.resize(
+                    centerWidth,
+                    track._height,
+                    params);
             };
 
             track.render = function() {
@@ -136,6 +180,7 @@ define([
 
         Module.Track_Position = function () {
             var track = Module.Track();
+            track.setFixedHeight(20);
 
             track.drawMain = function(drawInfo) {
                 var viewerPanel = track.getViewerPanel();
@@ -172,7 +217,7 @@ define([
                     if ((tick.value >= plotLimitXMin) && (tick.value <= plotLimitXMax)) {
                         var px = Math.round(XLogic2Display(tick.value)) - 0.5;
                         if (tick.label) {
-                            ctx.fillText(tick.label, px, 6 + 13);
+                            ctx.fillText(tick.label, px, 4 + 13);
                             //if (tick.label2)
                             //    ctx.fillText(tick.label2, px, drawInfo.sizeY - panel.scaleMarginY + 23);
                             ctx.strokeStyle = "rgba(0,0,0,0.3)";
@@ -218,6 +263,7 @@ define([
             panel._minScaleUnit = 0;
             panel._maxZoomFactor = 1.0e99;
             panel._isrunning = false;
+            panel._canScrollY = false;
 
 
             /**
@@ -235,6 +281,15 @@ define([
              */
             panel.setMaxZoomFactor = function(fact) {
                 panel._maxZoomFactor = fact;
+            };
+
+            /**
+             * Call the function to enable vertical scrolling of tracks if height becomes larger than the viewport
+             */
+            panel.enableScrollY = function() {
+                if (panel._isrunning)
+                    AXMUtils.Test.reportBug("Cannot perform this action when viewer is running");
+                panel._canScrollY = true;
             };
 
 
@@ -299,7 +354,11 @@ define([
                 rootDiv.addCssClass('AXMHtmlPanelBody');
                 rootDiv.addStyle('width', '100%');
                 rootDiv.addStyle('height', '100%');
-                rootDiv.addStyle('overflow', 'hidden');
+                rootDiv.addStyle('overflow-x', 'hidden');
+                if (panel._canScrollY)
+                    rootDiv.addStyle('overflow-y', 'scroll');
+                else
+                    rootDiv.addStyle('overflow-y', 'hidden');
 
                 $.each(panel._tracks, function (idx, track) {
                     rootDiv.addElem(track.createHtml());
@@ -339,8 +398,26 @@ define([
                 panel._height = yl;
                 panel._restrictViewToRange();
 
+                var fixedPortionH = 0;
+                var variablePortionBudget = 0;
+                var hasVariableHeightTracks = false;
                 $.each(panel._tracks, function (idx, track) {
-                    track.resize(xl, null, params);
+                    fixedPortionH += Module._trackMarginV;
+                    if (track.hasFixedHeight())
+                        fixedPortionH += track.getFixedHeight();
+                    else {
+                        hasVariableHeightTracks = true;
+                        variablePortionBudget += 1;
+                    }
+                });
+                if (panel._canScrollY && hasVariableHeightTracks)
+                    AXMUtils.Test.reportBug("Vertical scroll on track viewer is not compatible with auo scalable tracks");
+
+                $.each(panel._tracks, function (idx, track) {
+                    var tyl = null;
+                    if (!track.hasFixedHeight())
+                        tyl = (yl - fixedPortionH)*1.0/variablePortionBudget;
+                    track.resize(xl, tyl, params);
                 });
                 panel.render();
             };
