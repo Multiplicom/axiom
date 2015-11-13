@@ -24,13 +24,7 @@ define([
         var Module = {};
 
         Module.createEmpty = function() {
-            var icon = AXMUtils.object('icon');
-            icon.name = name;
-
-            icon.renderHtml = function() {
-                return '';
-            };
-            return icon;
+            return Module.createFA("")
         };
 
         Module.createFA = function(name, baseSizeFactor) {
