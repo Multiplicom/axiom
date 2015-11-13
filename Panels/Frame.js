@@ -153,6 +153,7 @@ define([
             frame._title = '';
             frame._sizeInfos = [Module.dimSizeInfo(), Module.dimSizeInfo()]; //allowed frame size range in X and Y dimension
             frame.splitterColor = "rgb(230,230,230)";
+            frame._tearDownHanders = [];//List of functions that will be called when the frame isa about to be removed
 
             /**
              * Returns the unique identifier of the frame
@@ -223,6 +224,15 @@ define([
              */
             frame.getTitle = function() {
                 return frame._title;
+            };
+
+
+            /**
+             * Adds a new function that will be called when the frame is about to be removed
+             * @param func
+             */
+            frame.addTearDownHandler = function(func) {
+                frame._tearDownHanders.push(func);
             };
 
 
@@ -447,11 +457,20 @@ define([
             };
 
 
+            frame._executeTearDownHandlers = function() {
+                $.each(frame._tearDownHanders, function(idx, handler) {
+                    handler();
+                }) ;
+                frame._tearDownHanders = [];
+            };
+
+
             /**
              * Call this function to inform the frame or any of its members that it will close
              * @param msg
              */
             frame.informWillClose = function(msg) {
+                frame._executeTearDownHandlers();
                 frame.willClose();
             };
 
@@ -546,6 +565,7 @@ define([
             };
 
             frame.informWillClose = function(msg) {
+                frame._executeTearDownHandlers();
                 frame.willClose();
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     memberFrame.informWillClose(msg);
@@ -1415,8 +1435,8 @@ define([
              * @param msg
              */
             frame.willClose = function(msg) {
-                frame._panel.tearDown();
-            };
+                frame._panel._tearDown();
+             };
 
 
             return frame;

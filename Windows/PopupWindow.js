@@ -550,7 +550,6 @@ define([
                         }
                         window._rootFrame.informWillClose();
                         window._rootFrame.detachEventHandlers();
-                        window._rootFrame.tearDown();
                     }
 
                     if (window._rootControl)

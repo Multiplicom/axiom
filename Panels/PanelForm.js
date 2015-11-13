@@ -107,10 +107,10 @@ define([
             panel.resize = function(xl, yl) {
             };
 
-            panel.tearDown = function() {
+            panel.addTearDownHandler(function() {
                 if (panel._rootControl)
                     panel._rootControl.tearDown();
-            };
+            });
 
             return panel;
         } ;

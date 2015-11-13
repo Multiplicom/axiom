@@ -39,6 +39,7 @@ define([
             var panel = AXMUtils.object('@Panel');
             panel._id = AXMUtils.getUniqueID();
             panel._typeId = typeId;
+            panel._tearDownHanders = [];//List of functions that will be called when the frame isa about to be removed
 
             /**
              * Defines the parent frame containing this panel
@@ -69,6 +70,15 @@ define([
 
 
             /**
+             * Adds a new function that will be called when the frame is about to be removed
+             * @param func
+             */
+            panel.addTearDownHandler = function(func) {
+                panel._tearDownHanders.push(func);
+            };
+
+
+            /**
              * Returns the html implementing the panel (implemented in derived classes)
              * @returns {string}
              */
@@ -86,11 +96,11 @@ define([
             };
 
 
-            /**
-             * Called when the panel is about to be closed. Tear down actions should happen here (implemented in derived classes)
-             */
-            panel.tearDown = function() {
-
+            panel._tearDown = function() {
+                $.each(panel._tearDownHanders, function(idx, handler) {
+                    handler();
+                }) ;
+                panel._tearDownHanders = [];
             };
 
             return panel;
