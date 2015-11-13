@@ -70,8 +70,8 @@ define([
                 return confirmMessage;
             else {
                 Msg.broadcast('ExecuteExit');
-                theApp._rootFrame.informWillClose();
                 theApp._rootFrame.detachEventHandlers();
+                theApp._rootFrame.informWillClose();
             }
         };
 

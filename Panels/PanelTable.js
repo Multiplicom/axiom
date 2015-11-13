@@ -460,6 +460,7 @@ define([
             };
 
 
+
             /**
              * Renders an error message
              */
@@ -894,6 +895,20 @@ define([
                     panel.renderTableContent();
                 }
             });
+
+            // We keep trying to measure the size, because we don't know when data will arrive
+            var autoRetryMeasureSize = function() {
+                if (panel==null)
+                    return;
+                if (panel._sizeMeasured)
+                    return;
+                panel._measureSize();
+                setTimeout(autoRetryMeasureSize, 200)
+            };
+            autoRetryMeasureSize();
+
+            //Remove own object on closing
+            panel.addTearDownHandler(function() { panel = null; });
 
             return panel;
         } ;

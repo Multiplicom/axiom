@@ -420,8 +420,12 @@ define([
                     width: xl + 'px',
                     height: (yl-frame._clientVOffset) + 'px'
                 });
-                if (frame.setPositionClient)
+                if (frame.setPositionClient){
                     frame.setPositionClient(xl, yl-frame._clientVOffset, params);
+                    //setTimeout(function() {
+                    //    frame.setPositionClient(xl, yl-frame._clientVOffset, params);
+                    //}, 10);
+                }
             };
 
 

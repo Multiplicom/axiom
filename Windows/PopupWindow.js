@@ -548,8 +548,8 @@ define([
                             alert('Cannot close: '+closePreventReason);
                             return;
                         }
-                        window._rootFrame.informWillClose();
                         window._rootFrame.detachEventHandlers();
+                        window._rootFrame.informWillClose();
                     }
 
                     if (window._rootControl)
