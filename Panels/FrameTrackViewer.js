@@ -273,8 +273,8 @@ define([
                 var sz = Module._scrollYArrowSize;
                 track._hasArrowScrollYDown = false;
                 track._hasArrowScrollYUp = false;
-                ctx.fillStyle=AXMBaseStyling.color1.changeOpacity(0.3).toStringCanvas();
-                ctx.strokeStyle = Color.Color(0,0,0).changeOpacity(0.3).toStringCanvas();
+                ctx.fillStyle=AXMBaseStyling.color1.changeOpacity(0.4).toStringCanvas();
+                ctx.strokeStyle = Color.Color(0,0,0).changeOpacity(0.1).toStringCanvas();
                 if (track._offsetY>0) {
                     track._hasArrowScrollYDown = true;
                     ctx.beginPath();
@@ -438,6 +438,19 @@ define([
                     pageY: ev.pageY
                 });
             };
+
+
+            track.drawMessage = function(drawInfo, content) {
+                var ctx = drawInfo.ctx;
+                ctx.save();
+                ctx.font = "18px Arial";
+                ctx.fillStyle = "rgba(0,0,0,0.5)";
+                ctx.textAlign = 'center';
+                ctx.fillText(content, drawInfo.sizeX/2, 50);
+
+                ctx.restore();
+
+            }
 
 
             return track;
