@@ -452,6 +452,8 @@ define([
                 handler({
                     deltaY: getMouseWheelDeltaY(ev),
                     deltaX: getMouseWheelDeltaX(ev),
+                    controlPressed: ev.ctrlKey,
+                    altPressed: ev.altKey,
                     event: ev
                 });
                 ev.preventDefault();
