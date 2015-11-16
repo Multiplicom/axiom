@@ -548,6 +548,17 @@ define([
             panel._canScrollY = false;
 
 
+            panel.setViewPosition = function(position, zoomFactor) {
+                panel._zoomfactor = Math.min(zoomFactor, panel._maxZoomFactor);
+                if (!panel._isrunning)
+                    AXMUtils.Test.reportBug("Unable to set track viewer position: not initialised");
+                var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
+                panel._offset = -position+displayWidth/2/panel._zoomfactor;
+                panel._restrictViewToRange();
+                panel.render();
+            };
+
+
             /**
              * Sets the minimum size of a single scale unit, in logical coordinates
              * @param {value} minSize
