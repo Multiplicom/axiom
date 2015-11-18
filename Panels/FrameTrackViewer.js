@@ -548,6 +548,11 @@ define([
             panel._canScrollY = false;
 
 
+            panel.getCenterPosition = function() {
+                var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
+                return -panel._offset + displayWidth/2/panel._zoomfactor;
+            };
+
             panel.setViewPosition = function(position, zoomFactor) {
                 panel._zoomfactor = Math.min(zoomFactor, panel._maxZoomFactor);
                 if (!panel._isrunning)
