@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Panels/PanelBase", "AXM/Panels/Frame", "AXM/Canvas", "AXM/DrawUtils", "AXM/Color"
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Panels/PanelBase", "AXM/Panels/Frame", "AXM/Canvas", "AXM/DrawUtils", "AXM/Color", "AXM/Icon"
     ],
     function (require, $, _,
-              AXMUtils, DOM, PanelBase, Frame, Canvas, DrawUtils, Color
+              AXMUtils, DOM, PanelBase, Frame, Canvas, DrawUtils, Color, Icon
     ) {
 
 
@@ -862,13 +862,13 @@ define([
             };
 
             theFrame.addCommand({
-                icon: "fa-search-minus",
+                icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom out")
             }, function () {
             });
 
             theFrame.addCommand({
-                icon: "fa-search-plus",
+                icon: Icon.createFA("fa-search-minus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom in")
             }, function () {
             });

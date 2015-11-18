@@ -34,11 +34,29 @@ define([
             if (baseSizeFactor)
                 icon._baseSize *= baseSizeFactor;
             icon._sizeFactor = 1;
+            icon._decorators = [];
+
+            icon.addDecorator = function(name, xPos, offsetX, yPos, offsetY, size) {
+                if (['left', 'right'].indexOf(xPos)<0)
+                    AXMUtils.Test.reportBug("Decorator x position should be 'left' or 'right'");
+                if (['top', 'bottom'].indexOf(yPos)<0)
+                    AXMUtils.Test.reportBug("Decorator y position should be 'top' or 'bottom'");
+                icon._decorators.push({
+                    name: name,
+                    xPos: xPos,
+                    yPos: yPos,
+                    offsetX: offsetX,
+                    offsetY: offsetY,
+                    size: size
+                });
+                return icon;
+            };
 
             icon.clone = function() {
                 var dupl = Module.createFA(icon._name);
                 dupl._baseSize = icon._baseSize;
                 dupl._sizeFactor =icon._sizeFactor;
+                dupl._decorators = JSON.parse(JSON.stringify(icon._decorators));
                 return dupl;
             };
 
@@ -53,10 +71,26 @@ define([
             };
 
             icon.renderHtml = function() {
-                return '<i style="font-size:{size}px" class="fa {name}"/>'.AXMInterpolate({
+                var str = '<div style="position:relative">';
+                str +=  '<i style="font-size:{size}px" class="fa {name}"/>'.AXMInterpolate({
                     name:icon._name,
                     size:Math.round(icon._sizeFactor*icon._baseSize)
                 });
+
+                $.each(icon._decorators, function(idx, decor) {
+                    var substr =  '<div style="position:absolute;{xpos}:{left}px;{ypos}:{top}px"><i style="font-size:{size}px" class="fa {name}"/></div>'.AXMInterpolate({
+                        name:decor.name,
+                        xpos: decor.xPos,
+                        ypos: decor.yPos,
+                        left: Math.round(decor.offsetX*icon._sizeFactor),
+                        top: Math.round(decor.offsetY*icon._sizeFactor),
+                        size:Math.round(icon._sizeFactor*icon._baseSize*decor.size)
+                    });
+                    str += substr;
+                });
+                str += "</div>";
+
+                return str;
             };
 
             icon.getSize = function() {
