@@ -127,8 +127,11 @@ define([
                             canvasElement.height = cnvs._cnvHeight*cnvs.ratio;
                         }
                     });
-                    cnvs.render();
                 }
+            };
+
+            cnvs.getHeight = function() {
+                return cnvs._cnvHeight;
             };
 
 

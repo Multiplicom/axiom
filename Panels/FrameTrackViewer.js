@@ -16,9 +16,11 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Panels/PanelBase", "AXM/Panels/Frame", "AXM/Canvas", "AXM/DrawUtils"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Panels/PanelBase", "AXM/Panels/Frame", "AXM/Canvas", "AXM/DrawUtils", "AXM/Color", "AXM/Icon"
+    ],
     function (require, $, _,
-              AXMUtils, DOM, PanelBase, Frame, Canvas, DrawUtils) {
+              AXMUtils, DOM, PanelBase, Frame, Canvas, DrawUtils, Color, Icon
+    ) {
 
 
         /**
@@ -28,9 +30,10 @@ define([
         var Module = {};
 
         Module._trackOffsetLeft = 20;
-        Module._trackOffsetRight = 20;
+        Module._trackOffsetRight = 0;
         Module._leftRightOffsetMarginH = 1;
         Module._trackMarginV = 3;
+        Module._scrollYArrowSize = 20;
 
         Module.Track = function () {
             var track = AXMUtils.object('@TrackViewTrack');
@@ -38,6 +41,58 @@ define([
             track._width = 1;
             track._fixedHeight = -1;
             track.cnvs = Canvas.create(track._id, ['main', 'selection']);
+
+            track._offsetY = 0;
+            track._toolTipInfo = { ID: null };
+
+            track.getOffsetY = function() {
+                return track._offsetY;
+            };
+
+
+            /**
+             * Returns the Y range for vertical scrolling. To be overridden
+             * @returns {number}
+             */
+            track.getYRange = function() {
+                return 0;
+            };
+
+
+            /**
+             * Returns tooltip information for a location
+             * Optionally to be implemented in a direved class
+             * @param {int} px - x position
+             * @param {int} py - y position
+             * @returns {{ID, px, py, content}} - tooltip info (may be null if no tooltip is to be shown)
+             */
+            track.getToolTipInfo = function (px, py) {
+                return null;
+            };
+
+
+            /**
+             * Optionally to be implemented by a derived class to be notified about clicks
+             * @param {{}} ev - event
+             * @param {{}} info - additional info
+             * @param {int} info.x - mouse x position
+             * @param {int} info.y - mouse y position
+             * @param {int} info.pageX - mouse x full page position
+             * @param {int} info.pageY - mouse y full page position
+             */
+            track.onMouseClick = function(ev, info) {
+
+            };
+
+
+
+            track.shiftOffsetY = function(shft, donotUpdate) {
+                track._offsetY += shft;
+                track._offsetY = Math.max(track._offsetY, 0);
+                track._offsetY = Math.min(track._offsetY, track.getYRange());
+                if (!donotUpdate)
+                    track.render();
+            };
 
             track.getId = function () {
                 return track._id;
@@ -106,16 +161,58 @@ define([
                 return rootDiv.toString();
             };
 
+
+            /**
+             * Display a tooltip
+             * @param tooltipInfo
+             * @private
+             */
+            track._showToolTip = function(tooltipInfo) {
+                track._hideToolTip();
+                track._toolTipInfo = tooltipInfo;
+                if (tooltipInfo && tooltipInfo.content) {
+                    AXMReq(tooltipInfo.ID);
+                    AXMReq(tooltipInfo.px);
+                    AXMReq(tooltipInfo.py);
+                    var tooltip = DOM.Div();
+                    tooltip.addCssClass("AXMToolTip");
+                    tooltip.addStyle("position", "absolute");
+                    var screenX = track.cnvs.posXCanvas2Screen(track._toolTipInfo.px);
+                    var screenY = track.cnvs.posYCanvas2Screen(track._toolTipInfo.py);
+                    tooltip.addStyle("left", (screenX + 10) + 'px');
+                    tooltip.addStyle("top", (screenY + 10) + 'px');
+                    tooltip.addStyle("z-index", '9999999');
+                    tooltip.addElem(track._toolTipInfo.content);
+                    $('.AXMContainer').append(tooltip.toString());
+                }
+            };
+
+
+            /**
+             * Hides a displayed tooltip, if any
+             * @private
+             */
+            track._hideToolTip = function() {
+                track._toolTipInfo.ID = null;
+                $('.AXMContainer').find('.AXMToolTip').remove();
+            };
+
+
             /**
              * Attached the html event handlers after DOM insertion
              */
             track.attachEventHandlers = function() {
                 var clickLayer$El = track.cnvs.getCanvas$El('selection');
                 var viewerPanel = track.getViewerPanel();
-                AXMUtils.create$ElScrollHandler(clickLayer$El, viewerPanel._handleScrolled);
-                AXMUtils.create$ElDragHandler(clickLayer$El, viewerPanel._panningStart, viewerPanel._panningDo, viewerPanel._panningStop);
-                //clickLayer$El.mousemove(panel._onMouseMove);
-                //clickLayer$El.click(panel._onClick);
+                AXMUtils.create$ElScrollHandler(clickLayer$El, function(params) { viewerPanel._handleScrolled(params,track) });
+                AXMUtils.create$ElDragHandler(
+                    clickLayer$El,
+                    track._panningStart,
+                    track._panningDo,
+                    track._panningStop
+                );
+                clickLayer$El.mousemove(track._onMouseMove);
+                clickLayer$El.click(track._onClick);
             };
 
             /**
@@ -125,8 +222,8 @@ define([
                 var clickLayer$El = track.cnvs.getCanvas$El('selection');
                 AXMUtils.remove$ElScrollHandler(clickLayer$El);
                 AXMUtils.remove$ElDragHandler(clickLayer$El);
-                //clickLayer$El.unbind('mousemove');
-                //clickLayer$El.unbind('click');
+                clickLayer$El.unbind('mousemove');
+                clickLayer$El.unbind('click');
             };
 
 
@@ -149,6 +246,8 @@ define([
             };
 
             track.render = function() {
+                track._maxOffsetY = track.getYRange()-track.cnvs.getHeight();
+                track._offsetY = Math.max(Math.min(track._offsetY, track._maxOffsetY), 0);
                 track.cnvs.render();
             };
 
@@ -165,10 +264,193 @@ define([
                 drawInfo.ctx.stroke();
             };
 
-            track.cnvs.draw = function(drawInfo) {
-                if (drawInfo.layerId == "main")
-                    track.drawMain(drawInfo);
+
+            track.drawYScrollArrows = function(drawInfo) {
+                var ctx = drawInfo.ctx;
+                var sizeX = drawInfo.sizeX;
+                var sizeY = drawInfo.sizeY;
+                track._arrowScrollYCenterX = sizeX/2;
+                var sz = Module._scrollYArrowSize;
+                track._hasArrowScrollYDown = false;
+                track._hasArrowScrollYUp = false;
+                ctx.fillStyle=AXMBaseStyling.color1.changeOpacity(0.4).toStringCanvas();
+                ctx.strokeStyle = Color.Color(0,0,0).changeOpacity(0.1).toStringCanvas();
+                if (track._offsetY>0) {
+                    track._hasArrowScrollYDown = true;
+                    ctx.beginPath();
+                    ctx.moveTo(track._arrowScrollYCenterX, sizeY);
+                    ctx.lineTo(track._arrowScrollYCenterX+sz, sizeY-sz);
+                    ctx.lineTo(track._arrowScrollYCenterX-sz, sizeY-sz);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+                if (track._offsetY<track._maxOffsetY) {
+                    track._hasArrowScrollYUp = true;
+                    ctx.beginPath();
+                    ctx.moveTo(track._arrowScrollYCenterX, 0);
+                    ctx.lineTo(track._arrowScrollYCenterX+sz, 0+sz);
+                    ctx.lineTo(track._arrowScrollYCenterX-sz, 0+sz);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+                if (track._maxOffsetY>0) {
+                    ctx.fillRect(sizeX-7, sizeY-sizeY*(track._offsetY+sizeY)*1.0/(track._maxOffsetY+sizeY), 7, sizeY*sizeY*1.0/(track._maxOffsetY+sizeY));
+                }
             };
+
+
+            track.cnvs.draw = function(drawInfo) {
+                if (drawInfo.layerId == "main") {
+                    track._drawSizeY = drawInfo.sizeY;
+                    track.drawMain(drawInfo);
+                    track.drawYScrollArrows(drawInfo);
+                }
+            };
+
+
+            track._getEventPos = function (ev) {
+                var ev1 = ev;
+                if (ev.originalEvent)
+                    ev1 = ev.originalEvent;
+                return {
+                    x: ev1.pageX - track.cnvs.getCanvas$El('main').offset().left,
+                    y: ev1.pageY - track.cnvs.getCanvas$El('main').offset().top,
+                };
+            };
+
+
+            track._isInsidescrollYArrowUp = function(posit) {
+                if (!track._hasArrowScrollYUp)
+                    return false;
+                if (Math.abs(posit.x-track._arrowScrollYCenterX)>Module._scrollYArrowSize)
+                    return false;
+                if (posit.y>Module._scrollYArrowSize)
+                    return false;
+                return (posit.y >= Math.abs(posit.x-track._arrowScrollYCenterX));
+            };
+
+
+            track._isInsidescrollYArrowDown = function(posit) {
+                if (!track._hasArrowScrollYDown)
+                    return false;
+                if (Math.abs(posit.x-track._arrowScrollYCenterX)>Module._scrollYArrowSize)
+                    return false;
+                if (posit.y<track._drawSizeY-Module._scrollYArrowSize)
+                    return false;
+                return (posit.y <= track._drawSizeY-Math.abs(posit.x-track._arrowScrollYCenterX));
+            };
+
+
+            track._panningStart = function(params) {
+                track._hideToolTip();
+                var posit = track._getEventPos(params.event);
+
+                track.clickScrollingYUp = false;
+                track.clickScrollingYDown = false;
+
+                if (track._isInsidescrollYArrowUp(posit)) {
+                    track.clickScrollingYUp = true;
+                    var _repeater = function() {
+                        if (!track.clickScrollingYUp)
+                            return;
+                        track.shiftOffsetY(30);
+                        setTimeout(_repeater, 50);
+                    };
+                    _repeater();
+                }
+
+
+                if (track._isInsidescrollYArrowDown(posit)) {
+                    track.clickScrollingYDown = true;
+                    var _repeater = function() {
+                        if (!track.clickScrollingYDown)
+                            return;
+                        track.shiftOffsetY(-30);
+                        setTimeout(_repeater, 50);
+                    };
+                    _repeater();
+                }
+
+
+                if ((!track.clickScrollingYUp) && (!track.clickScrollingYDown)) {
+                    var viewerPanel = track.getViewerPanel();
+                    viewerPanel._panningStart(params, track);
+                }
+
+            };
+
+            track._panningDo = function(params) {
+                if ((!track.clickScrollingYUp) && (!track.clickScrollingYDown)) {
+                    var viewerPanel = track.getViewerPanel();
+                    viewerPanel._panningDo(params);
+                }
+            };
+
+            track._panningStop = function(params) {
+                track.clickScrollingYUp = false;
+                track.clickScrollingYDown = false;
+                if ((!track.clickScrollingYUp) && (!track.clickScrollingYDown)) {
+                    var viewerPanel = track.getViewerPanel();
+                    viewerPanel._panningStop(params);
+                }
+            };
+
+            track._onMouseMove = function(ev) {
+                var viewerPanel = track.getViewerPanel();
+                if (viewerPanel.isPanning()) {
+                    track._hideToolTip();
+                    return;
+                }
+                var posit = track._getEventPos(ev);
+                var showPointer = false;
+                if (track._isInsidescrollYArrowUp(posit) || track._isInsidescrollYArrowDown(posit)) {
+                    track._hideToolTip();
+                    showPointer = true;
+                }
+                else {
+                    var newToolTipInfo = track.getToolTipInfo(posit.x, posit.y);
+                    if (newToolTipInfo) {
+                        if (newToolTipInfo.showPointer)
+                            showPointer = true;
+                        if (track._toolTipInfo.ID != AXMReq(newToolTipInfo.ID))
+                            track._showToolTip(newToolTipInfo);
+                    }
+                    else
+                        track._hideToolTip();
+                }
+                var pointerType = showPointer?"pointer":"auto";
+                track.cnvs.getCanvas$El('main').css('cursor', pointerType);
+                track.cnvs.getCanvas$El('selection').css('cursor', pointerType);
+            };
+
+            track._onClick = function(ev) {
+                var viewerPanel = track.getViewerPanel();
+                if (viewerPanel.hasDragged())
+                    return;
+                var posit = track._getEventPos(ev);
+                track._hideToolTip();
+                track.onMouseClick(ev, {
+                    x: posit.x,
+                    y: posit.y,
+                    pageX: ev.pageX,
+                    pageY: ev.pageY
+                });
+            };
+
+
+            track.drawMessage = function(drawInfo, content) {
+                var ctx = drawInfo.ctx;
+                ctx.save();
+                ctx.font = "18px Arial";
+                ctx.fillStyle = "rgba(0,0,0,0.5)";
+                ctx.textAlign = 'center';
+                ctx.fillText(content, drawInfo.sizeX/2, 50);
+
+                ctx.restore();
+
+            }
 
 
             return track;
@@ -185,7 +467,7 @@ define([
             track.drawMain = function(drawInfo) {
                 var viewerPanel = track.getViewerPanel();
                 var zoomFactor = viewerPanel.getZoomFactor();
-                var XLogic2Display = viewerPanel.XLogic2Display;
+                var XPosLogic2Display = viewerPanel.XPosLogic2Display;
                 var ctx = drawInfo.ctx;
                 var sizeX = drawInfo.sizeX;
                 var sizeY = drawInfo.sizeY;
@@ -215,7 +497,7 @@ define([
                 }
                 $.each(ticks, function (idx, tick) {
                     if ((tick.value >= plotLimitXMin) && (tick.value <= plotLimitXMax)) {
-                        var px = Math.round(XLogic2Display(tick.value)) - 0.5;
+                        var px = Math.round(XPosLogic2Display(tick.value)) - 0.5;
                         if (tick.label) {
                             ctx.fillText(tick.label, px, 4 + 13);
                             //if (tick.label2)
@@ -264,6 +546,22 @@ define([
             panel._maxZoomFactor = 1.0e99;
             panel._isrunning = false;
             panel._canScrollY = false;
+
+
+            panel.getCenterPosition = function() {
+                var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
+                return -panel._offset + displayWidth/2/panel._zoomfactor;
+            };
+
+            panel.setViewPosition = function(position, zoomFactor) {
+                panel._zoomfactor = Math.min(zoomFactor, panel._maxZoomFactor);
+                if (!panel._isrunning)
+                    AXMUtils.Test.reportBug("Unable to set track viewer position: not initialised");
+                var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
+                panel._offset = -position+displayWidth/2/panel._zoomfactor;
+                panel._restrictViewToRange();
+                panel.render();
+            };
 
 
             /**
@@ -341,8 +639,12 @@ define([
                 return xdisp/panel._zoomfactor - panel._offset;
             };
 
-            panel.XLogic2Display = function(xlogic) {
-                return (xlogic+panel._offset)*panel._zoomfactor;
+            panel.XPosLogic2Display = function(xposlogic) {
+                return (xposlogic+panel._offset)*panel._zoomfactor;
+            };
+
+            panel.XLenLogic2Display = function(xlenlogic) {
+                return xlenlogic*panel._zoomfactor;
             };
 
             /**
@@ -457,10 +759,11 @@ define([
                 panel.render();
             };
 
-            panel._handleMoveX = function(offsetDiff) {
+            panel._handleMoveX = function(offsetDiff, donotUpdate) {
                 panel._offset += offsetDiff;
                 panel._restrictViewToRange();
-                panel.render();
+                if (!donotUpdate)
+                    panel.render();
             };
 
             /**
@@ -477,33 +780,71 @@ define([
             };
 
 
-            panel._handleScrolled = function(params) {
-                var delta = params.deltaY;
-                if (delta!=0) {
-                    if (delta < 0)//zoom out
-                        var scaleFactor = 1.0 / (1.0 + 0.2 * Math.abs(delta));
-                    else//zoom in
-                        var scaleFactor = 1.0 + 0.2 * Math.abs(delta);
-                    var px = panel._getEventPosX(params.event);
-                    panel._handleZoom(scaleFactor, px);
+            panel._handleScrolled = function(params, track) {
+                var deltaY = params.deltaY;
+                if (!params.controlPressed) { // Scroll action used for zoom
+                    if (deltaY!=0) {
+                        if (deltaY < 0)//zoom out
+                            var scaleFactor = 1.0 / (1.0 + 0.2 * Math.abs(deltaY));
+                        else//zoom in
+                            var scaleFactor = 1.0 + 0.2 * Math.abs(deltaY);
+                        var px = panel._getEventPosX(params.event);
+                        panel._handleZoom(scaleFactor, px);
+                    }
+                    var deltaX = params.deltaX;
+                    if (deltaX!=0) {
+                        panel._handleMoveX(deltaX*30/panel._zoomfactor);
+                    }
+                }
+                else { // Scroll action used for vertical scrolling
+                    track.shiftOffsetY(deltaY*20);
                 }
             };
 
-            panel._panningStart = function(params) {
+            panel._panningStart = function(params, panningTrack) {
+                panel._hasDragged = false;
                 panel._hasPannedX = false;
+                panel._hasPannedY = false;
                 panel._panning_x0 = 0;
                 panel._panning_y0 = 0;
+                panel._panningTrack = panningTrack;
             };
-            panel._panningDo = function(dragInfo) {
-                if (Math.abs(dragInfo.diffTotalX)>10)
-                    panel._hasPannedX = true;
-                if (panel._hasPannedX) {
-                    panel._handleMoveX((dragInfo.diffTotalX-panel._panning_x0)/panel._zoomfactor);
-                    panel._panning_x0 = dragInfo.diffTotalX;
-                }
-            };
-            panel._panningStop = function() {
 
+            panel._panningDo = function(dragInfo) {
+                var movedY = false;
+                var movedX = false;
+                if (Math.abs(dragInfo.diffTotalX)>5)
+                    panel._hasPannedX = true;
+                if (Math.abs(dragInfo.diffTotalY)>5)
+                    panel._hasPannedY = true;
+                if (panel._hasPannedY) {
+                    panel._panningTrack.shiftOffsetY(dragInfo.diffTotalY-panel._panning_y0, false);
+                    panel._panning_y0 = dragInfo.diffTotalY;
+                    movedY = true;
+                }
+                if (panel._hasPannedX) {
+                    panel._handleMoveX((dragInfo.diffTotalX-panel._panning_x0)/panel._zoomfactor, false);
+                    panel._panning_x0 = dragInfo.diffTotalX;
+                    movedX = true;
+                }
+                if (movedY || movedX) //we need to render explicitly in this case
+                    panel.render();
+                if (panel._hasPannedX || panel._hasPannedY)
+                    panel._hasDragged = true;
+            };
+
+            panel._panningStop = function() {
+                panel._hasPannedX = false;
+                panel._hasPannedY = false;
+                setTimeout(function() { panel._hasDragged=false}, 250);
+            };
+
+            panel.isPanning = function() {
+                return panel._hasPannedX || panel._hasPannedY;
+            };
+
+            panel.hasDragged = function() {
+                return !!panel._hasDragged;
             };
 
 
@@ -521,13 +862,13 @@ define([
             };
 
             theFrame.addCommand({
-                icon: "fa-search-minus",
+                icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom out")
             }, function () {
             });
 
             theFrame.addCommand({
-                icon: "fa-search-plus",
+                icon: Icon.createFA("fa-search-minus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom in")
             }, function () {
             });
