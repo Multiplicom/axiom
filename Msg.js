@@ -70,7 +70,7 @@ define([
          * @param {function} callbackFunction - called when the message was sent
          */
         Msg.listen = function (eventid, msgId, callbackFunction) {
-            if (typeof (eventid) != 'string')
+            if ((typeof (eventid) !== 'string') && (eventid!==null))
                 Test.reportBug('Listener event id not provided');
             if (!callbackFunction)
                 Test.reportBug('No callback function provided for event listener');
@@ -80,7 +80,7 @@ define([
                 Msg._listeners[idx].callbackFunction = callbackFunction;
                 return;
             }
-            if (eventid != '')
+            if (eventid)
                 Msg._listeneridmap[eventid] = Msg._listeners.length;
             Msg._listeners.push({ eventid: eventid, msgId: msgId, callbackFunction: callbackFunction });
         };
