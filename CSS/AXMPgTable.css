@@ -235,3 +235,13 @@
     padding-top: 3px;
     padding-bottom: 3px;
 }
+
+
+.AXMPanelListItem {
+    padding: 7px;
+    cursor: pointer;
+}
+
+.AXMPanelListItemSelected {
+    background-color: rgb(178, 227, 237);
+}
