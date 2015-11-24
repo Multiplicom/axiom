@@ -86,6 +86,13 @@ define([
 
 
 
+            track.setOffsetY = function(newVal, donotUpdate) {
+                track._offsetY = newVal;
+                if (!donotUpdate)
+                    track.render();
+            };
+
+
             track.shiftOffsetY = function(shft, donotUpdate) {
                 track._offsetY += shft;
                 track._offsetY = Math.max(track._offsetY, 0);
@@ -124,6 +131,11 @@ define([
 
             track.getWidth = function() {
                 return track._width;
+            };
+
+
+            track.getHeight = function() {
+                return track._height;
             };
 
 
@@ -251,6 +263,46 @@ define([
                 track.cnvs.render();
             };
 
+            track.DrawTicks = function(drawInfo) {
+                var viewerPanel = track.getViewerPanel();
+                var zoomFactor = viewerPanel.getZoomFactor();
+                var XPosLogic2Display = viewerPanel.XPosLogic2Display;
+                var ctx = drawInfo.ctx;
+                var sizeX = drawInfo.sizeX;
+                var sizeY = drawInfo.sizeY;
+                var plotLimitXMin = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(0-50));
+                var plotLimitXMax = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(sizeX+50));
+
+                var scale = viewerPanel.getXScale();
+
+                var ticks = [];
+                scale.Jump1 = Math.max(viewerPanel._minScaleUnit, scale.Jump1);
+                scale.Jump2 = Math.max(viewerPanel._minScaleUnit, scale.Jump2);
+                for (var i=Math.ceil(plotLimitXMin/scale.Jump1); i<=Math.floor(plotLimitXMax/scale.Jump1); i++) {
+                    var tick = {};
+                    tick.value = i*scale.Jump1;
+                    if (i%scale.JumpReduc==0) {
+                        tick.label = scale.value2String(tick.value);
+                    }
+                    ticks.push(tick);
+                }
+                ctx.strokeStyle = "rgba(0,0,0,0.04)";
+                $.each(ticks, function (idx, tick) {
+                    if ((tick.value >= plotLimitXMin) && (tick.value <= plotLimitXMax)) {
+                        var px = Math.round(XPosLogic2Display(tick.value)) - 0.5;
+                        //if (tick.label) {
+                        //}
+                        //else {
+                        //    ctx.strokeStyle = "rgba(0,0,0,0.05)";
+                        //}
+                        ctx.beginPath();
+                        ctx.moveTo(px, 0);
+                        ctx.lineTo(px, sizeY);
+                        ctx.stroke();
+                    }
+                });
+            }
+
             /**
              * Draws the main view of the track - to be overridden
              * @param drawInfo
@@ -356,7 +408,7 @@ define([
                         if (!track.clickScrollingYUp)
                             return;
                         track.shiftOffsetY(30);
-                        setTimeout(_repeater, 50);
+                        setTimeout(_repeater, 25);
                     };
                     _repeater();
                 }
@@ -430,7 +482,10 @@ define([
                 if (viewerPanel.hasDragged())
                     return;
                 var posit = track._getEventPos(ev);
-                track._hideToolTip();
+                if (track._isInsidescrollYArrowUp(posit))
+                    return;
+                if (track._isInsidescrollYArrowDown(posit))
+                    return;
                 track.onMouseClick(ev, {
                     x: posit.x,
                     y: posit.y,
@@ -478,7 +533,7 @@ define([
                 var plotLimitXMin = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(0-50));
                 var plotLimitXMax = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(sizeX+50));
 
-                var scale = DrawUtils.getScaleJump(30/zoomFactor);
+                var scale = viewerPanel.getXScale();
 
                 ctx.save();
                 ctx.font = "10px Arial";
@@ -645,6 +700,11 @@ define([
 
             panel.XLenLogic2Display = function(xlenlogic) {
                 return xlenlogic*panel._zoomfactor;
+            };
+
+
+            panel.getXScale = function() {
+                return DrawUtils.getScaleJump(30/panel.getZoomFactor());
             };
 
             /**
