@@ -518,6 +518,11 @@ define([
         Module.Track_Position = function () {
             var track = Module.Track();
             track.setFixedHeight(20);
+            track._customLabelConvertor = null;
+
+            track.setCustomLabelConvertor = function(handler) {
+                track._customLabelConvertor = handler;
+            };
 
             track.drawMain = function(drawInfo) {
                 var viewerPanel = track.getViewerPanel();
@@ -554,6 +559,8 @@ define([
                     if ((tick.value >= plotLimitXMin) && (tick.value <= plotLimitXMax)) {
                         var px = Math.round(XPosLogic2Display(tick.value)) - 0.5;
                         if (tick.label) {
+                            if (track._customLabelConvertor)
+                                tick.label = track._customLabelConvertor(tick.value);
                             ctx.fillText(tick.label, px, 4 + 13);
                             //if (tick.label2)
                             //    ctx.fillText(tick.label2, px, drawInfo.sizeY - panel.scaleMarginY + 23);
