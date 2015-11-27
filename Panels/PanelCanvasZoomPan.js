@@ -188,6 +188,8 @@ define([
             panel._canZoomX = true;
             panel._canZoomY = true;
             panel._toolTipInfo = { ID: null };
+            panel._selectionMode = false;
+            panel.handleRectSelection = null;
             //panel._directRedraw = true;
 
             /**
@@ -246,6 +248,25 @@ define([
                 panel._canZoomX = canZoomX;
                 panel._canZoomY = canZoomY;
             };
+
+
+            /**
+             * Enables or disables the selection modus. When enables, mouse dragging sets the selection rather than panning
+             * @param {bool} status
+             */
+            panel.setSelectionMode = function(status) {
+                panel._selectionMode = status;
+            };
+
+
+            /**
+             * Sets the handler that handles selection events
+             * @param {function(pointTopLeft, pointRightbottom)} handler
+             */
+            panel.setHandleRectSelection = function(handler) {
+                panel.handleRectSelection = handler;
+            };
+
 
             /**
              * Drawing function, to be implemented in derived classes
@@ -495,7 +516,7 @@ define([
              */
             panel._handleScrolled = function(params) {
                 var delta = params.deltaY;
-                if (delta!=0) {
+                if ((delta!=0)&&(!panel._selectionMode)) {
                     if (delta < 0)//zoom out
                         var scaleFactor = 1.0 / (1.0 + 0.4 * Math.abs(delta));
                     else//zoom in
@@ -514,7 +535,7 @@ define([
              */
             panel._panningStart = function(params) {
                 panel._hideToolTip();
-                panel._isRectSelecting = params.shiftPressed;
+                panel._isRectSelecting = params.shiftPressed || panel._selectionMode;
                 if (panel._isRectSelecting) {
                     panel._rectSelectPoint1 = {
                         x: panel.getEventPosX(params.event),
@@ -611,6 +632,8 @@ define([
                 else
                     panel._hideToolTip();
                 var pointerType = showPointer?"pointer":"auto";
+                if (panel._selectionMode && (!showPointer))
+                    pointerType = "crosshair";
                 panel.getCanvas$El('main').css('cursor', pointerType);
                 panel.getCanvas$El('selection').css('cursor', pointerType);
             };
