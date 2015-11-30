@@ -371,6 +371,8 @@ define([
             var positStartY = null;
 
             var handleMouseDown = function (ev) {
+                if (_AXM_CloseTransientPopups)
+                    _AXM_CloseTransientPopups();
                 positStartX = ev.pageX;
                 positStartY = ev.pageY;
                 $(document).bind("mouseup."+handlerId, handleMouseUp);
@@ -448,7 +450,8 @@ define([
             };
 
             $El.bind('DOMMouseScroll mousewheel', function(ev) {
-                //console.log('scrollevent');
+                if (_AXM_CloseTransientPopups)
+                    _AXM_CloseTransientPopups();
                 handler({
                     deltaY: getMouseWheelDeltaY(ev),
                     deltaX: getMouseWheelDeltaX(ev),

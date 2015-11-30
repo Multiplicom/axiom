@@ -451,6 +451,10 @@ define([
 
             track._onMouseMove = function(ev) {
                 var viewerPanel = track.getViewerPanel();
+                if (_AXM_HasTransientPopups && _AXM_HasTransientPopups()) {
+                    track._hideToolTip();
+                    return;
+                }
                 if (viewerPanel.isPanning()) {
                     track._hideToolTip();
                     return;
