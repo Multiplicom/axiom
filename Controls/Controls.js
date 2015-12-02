@@ -777,7 +777,7 @@ define([
             /**
              * Detach the html event handlers
              */
-            control.attachEventHandlers = function() {
+            control.detachEventHandlers = function() {
                 var target = 'change.controlevent';
                 control._getSub$El('').unbind(target);
             };
