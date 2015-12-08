@@ -92,9 +92,10 @@ define([
                     window._$ElContainer.find(".AXMTransientContainerArrow").css("left", 16);
                 }
                 else {
+                    var leftX = browserSize.sizeX-windowSizeX-20;
                     window._$ElContainer
-                        .css('left', window.offsetX-windowSizeX+20);
-                    window._$ElContainer.find(".AXMTransientContainerArrow").css("right", 12);
+                        .css('left', leftX);
+                    window._$ElContainer.find(".AXMTransientContainerArrow").css("left", window.offsetX-leftX-10);
                 }
 
 
