@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Controls/Controls", "AXM/Controls/Compound", "AXM/DOM"],
+        "AXM/AXMUtils", "AXM/Controls/Controls", "AXM/Controls/Compound", "AXM/DOM", "AXM/Msg"],
     function (
         require, $, _,
-        AXMUtils, Controls, ControlsCompound, DOM) {
+        AXMUtils, Controls, ControlsCompound, DOM, Msg) {
 
         /**
          * Module implementing frame classes, used to organise web application client area in smaller components
@@ -154,6 +154,7 @@ define([
             frame._sizeInfos = [Module.dimSizeInfo(), Module.dimSizeInfo()]; //allowed frame size range in X and Y dimension
             frame.splitterColor = "rgb(230,230,230)";
             frame._tearDownHanders = [];//List of functions that will be called when the frame isa about to be removed
+            frame._listeners = [];
 
             /**
              * Returns the unique identifier of the frame
@@ -235,6 +236,17 @@ define([
                 frame._tearDownHanders.push(func);
             };
 
+
+            /**
+             * Registers a message listening callback handler that lives as long as the frame lives
+             * @param msgId
+             * @param callbackFunction
+             */
+            frame.listen = function(msgId, callbackFunction) {
+                var eventid = AXMUtils.getUniqueID();
+                frame._listeners.push(eventid);
+                Msg.listen(eventid, msgId, callbackFunction);
+            };
 
             /**
              * Determines if the frame is a compound frame, and groups its members as tabs (to be overriden in derived classes)
@@ -462,6 +474,10 @@ define([
 
 
             frame._executeTearDownHandlers = function() {
+                $.each(frame._listeners, function(idx, eventid) {
+                    Msg.delListener(eventid);
+                });
+                frame._listeners = [];
                 $.each(frame._tearDownHanders, function(idx, handler) {
                     handler();
                 }) ;

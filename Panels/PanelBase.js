@@ -39,7 +39,7 @@ define([
             var panel = AXMUtils.object('@Panel');
             panel._id = AXMUtils.getUniqueID();
             panel._typeId = typeId;
-            panel._tearDownHanders = [];//List of functions that will be called when the frame isa about to be removed
+            panel._tearDownHanders = [];//List of functions that will be called when the panel is about to be removed
             panel._listeners = [];
 
             /**
@@ -79,7 +79,7 @@ define([
             };
 
             /**
-             * Registers a message listening callback handler that lives as long as the popup lives
+             * Registers a message listening callback handler that lives as long as the panel lives
              * @param msgId
              * @param callbackFunction
              */
