@@ -345,6 +345,23 @@ define([
 
             };
 
+            /**
+             * Activates an individual panel inside the hierarchical frame structure
+             * @param {string} panelTypeId - ID of the panel
+             * @returns {boolean} - determines whether or not the panel was found
+             */
+            frame.activatePanelTypeId = function(panelTypeId) {
+                var isFound = false;
+                $.each(frame._myTabs, function(idx, tabInfo) {
+                    if (tabInfo.tabFrame.activatePanelTypeId(panelTypeId)) {
+                        frame.activateTab_byID(tabInfo.tabId);
+                        isFound = true;
+                    }
+                });
+                return isFound;
+            };
+
+
 
             /**
              * Closes a tab, provided an ID
