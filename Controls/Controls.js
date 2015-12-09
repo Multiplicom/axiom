@@ -839,7 +839,7 @@ define([
             if (settings.hasClearButton)
                 control._clearButton = Module.Button({
                     icon: 'fa-times',
-                    width : 25,
+                    width : 20,
                     height: 19,
                     buttonClass : 'AXMButtonCommandBar',
                     iconSizeFraction: 0.9,
