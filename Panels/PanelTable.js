@@ -867,20 +867,20 @@ define([
                 }
             };
 
-            Msg.listen('', 'UpdateTableRecordContent', function(msg) {
+            panel.listen('UpdateTableRecordContent', function(msg) {
                 if (msg.tableId==panel._tableInfo.tableId) {
                     panel.reloadContent();
                 }
             });
 
-            Msg.listen('', 'DeleteTableRecord', function(msg) {
+            panel.listen('DeleteTableRecord', function(msg) {
                 if (msg.tableId==panel._tableInfo.tableId) {
                     panel._tableData.setItemSelected(msg.primKey, false);
                     panel.reloadContent();
                 }
             });
 
-            Msg.listen('', 'UpdateTableInfo', function(tableid) {
+            panel.listen('UpdateTableInfo', function(tableid) {
                 if (tableid==panel._tableInfo.tableId) {
                     panel.updateTableInfo();
                     panel._tableData.resetBuffer();
@@ -890,7 +890,7 @@ define([
                 }
             });
 
-            Msg.listen('', 'TableSelectionModified', function(tableid) {
+            panel.listen('TableSelectionModified', function(tableid) {
                 if (tableid==panel._tableInfo.tableId) {
                     panel.renderTableContent();
                 }
@@ -908,7 +908,9 @@ define([
             autoRetryMeasureSize();
 
             //Remove own object on closing
-            panel.addTearDownHandler(function() { panel = null; });
+            panel.addTearDownHandler(function() {
+                panel = null;
+            });
 
             return panel;
         } ;
