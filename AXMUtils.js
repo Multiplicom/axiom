@@ -421,7 +421,7 @@ define([
          * @param {jQuery} $El - jQuery element
          * @param {function} handler - called when scrolling happens
          */
-        Module.create$ElScrollHandler = function($El, handler) {
+        Module.create$ElScrollHandler = function($El, handler, preventDefault) {
 
             var getMouseWheelDeltaY = function (ev) {
                 var delta = 0;
@@ -459,8 +459,10 @@ define([
                     altPressed: ev.altKey,
                     event: ev
                 });
-                ev.preventDefault();
-                return false;
+                if (preventDefault) {
+                    ev.preventDefault();
+                    return false;
+                }
             });
         };
 
