@@ -75,6 +75,9 @@ define([
                 arrow.addCssClass('AXMTransientContainerArrow');
                 arrow.addCssClass('AXMTransientContainerArrowTop');
 
+                divClient.addElem('<span class="SWXTransientCloseBox"><i class="fa fa-times-circle"></i></span>');
+
+
                 $('.AXMContainer').append(rootDiv.toString());
                 window._$ElContainer = $('#' + window._id);
 
@@ -109,6 +112,11 @@ define([
                     window._$ElContainer.find(".AXMTransientContainerArrow").removeClass("AXMTransientContainerArrowTop").addClass("AXMTransientContainerArrowBottom");
 
                 }
+
+                window._$ElContainer.find('.SWXTransientCloseBox').click(function() {
+                    window.close();
+                });
+
 
                 $(document).bind("mouseup.transientpopup", window._onDocClicked);
 
