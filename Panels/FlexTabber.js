@@ -439,7 +439,9 @@ define([
                     //title: tabInfo.headerInfo.title1,
                     blocking:false,
                     autoCenter: true,
-                    canDock: true
+                    canDock: true,
+                    sizeX: 750,
+                    sizeY:570
                 });
                 popup.__originalFlexTabberId = tabId;
 
