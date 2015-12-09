@@ -182,6 +182,9 @@ define([
              * @param tabId {string|null} - Identifier of the tab (might be null)
              * @param headerInfo - AXM.Icon.HeaderInfo
              * @param theFrame - frame content
+             * @param {{}} settings - settings
+             * @param {boolean} settings.isFixed - if true, the tab cannot be removed
+             * @param {boolean} settings.autoActivate - if true, the tab becomes automatically activate
              * @returns {string} - ID of the tab
              */
             frame.addTabFrame = function(tabId, headerInfo, theFrame, settings) {
