@@ -498,7 +498,7 @@ define([
                     if (cellInfo.colNr != null) {
                         var colInfo = panel._columns[cellInfo.colNr];
                         if (colInfo.isOpener)
-                            panel._tableInfo.callOnOpenRow(cellInfo.rowNr, settings);
+                            panel._tableInfo.callOnOpenRow(cellInfo.rowNr, settings, panel._tableData);
                         if (colInfo.isSelector)
                             panel._handleSelectorClicked(cellInfo.rowNr, settings);
                     }
