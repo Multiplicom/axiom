@@ -155,7 +155,7 @@ define([
                 var ctx = panel.getCanvasElement('main').getContext("2d");
                 ctx.setTransform(1, 0, 0, 1, 0, 0);
                 ctx.scale(panel.ratio, panel.ratio);
-                ctx.fillStyle="#FFFF00";
+                ctx.fillStyle="#FFFFFF";
                 ctx.fillRect(0, 0, panel._cnvWidth,panel._cnvHeight);
                 var drawInfo = {
                     ctx: ctx,
