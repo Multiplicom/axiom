@@ -170,6 +170,7 @@ define([
          * @param {{}} settings - panel settings
          * @param {int} settings.scaleMarginY - size of margin used to draw the scale
          * @param {boolean} settings.selectXDirOnly - if true, only x direction can be zoomed and scrolled
+         * @param {boolean} settings.autoRemoveSelection - if false, the user-drawn selection is not automatically removed
          * @returns {Object} - panel instance
          * @constructor
          */
@@ -190,6 +191,9 @@ define([
             panel._toolTipInfo = { ID: null };
             panel._selectionMode = false;
             panel.handleRectSelection = null;
+            panel._autoRemoveSelection = true;
+            if (settings.autoRemoveSelection === false)
+                panel._autoRemoveSelection = false;
             //panel._directRedraw = true;
 
             /**
@@ -587,7 +591,8 @@ define([
              */
             panel._panningStop = function() {
                 if (panel._isRectSelecting) {
-                    panel._drawSelRect(null, null);
+                    if (panel._autoRemoveSelection)
+                        panel._drawSelRect(null, null);
                     if (panel.handleRectSelection)
                         panel.handleRectSelection(panel._rectSelectPoint1, panel._rectSelectPoint2);
                     setTimeout(function() { // some delay to avoid the click handler to kick in
@@ -606,6 +611,10 @@ define([
 
             };
 
+
+            panel.removeSelection = function() {
+                panel._drawSelRect(null, null);
+            };
 
             /**
              * Html mouse move event handler

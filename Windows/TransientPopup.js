@@ -29,10 +29,17 @@ define([
 
         Module._current = null;
 
+        /**
+         * Creates a transient popup window
+         * @param {{}} settings
+         * @param {{}} settings.event - (optional) mouse click event that created this popup
+         * @returns {{}} - popup window instance
+         */
         Module.create = function(settings) {
             _AXM_CloseTransientPopups();
             var window = {_id: AXMUtils.getUniqueID()};
             window.zIndex = AXMUtils.getNextZIndex();
+            window._tearDownHanders = [];//List of functions that will be called when the window is about to be removed
 
             window.offsetX = 30;
             window.offsetY = 30;
@@ -50,6 +57,13 @@ define([
                 window._rootControl = iControl;
             };
 
+            /**
+             * Adds a new function that will be called when the window is about to be removed
+             * @param func
+             */
+            window.addTearDownHandler = function(func) {
+                window._tearDownHanders.push(func);
+            };
 
             /**
              * Starts the popup, making it visible in the application
@@ -135,6 +149,10 @@ define([
             };
 
             window.close = function() {
+                $.each(window._tearDownHanders, function(idx, handler) {
+                    handler();
+                }) ;
+                window._tearDownHanders = [];
                 if (window._rootControl)
                     window._rootControl.detachEventHandlers();
                 window._$ElContainer.remove();
