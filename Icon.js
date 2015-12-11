@@ -101,6 +101,50 @@ define([
         };
 
 
+        Module.createBitmap = function(name, baseSizeFactor) {
+            var icon = AXMUtils.object('icon');
+            icon._name = name;
+            icon._baseSize = 20;
+            if (baseSizeFactor)
+                icon._baseSize *= baseSizeFactor;
+            icon._sizeFactor = 1;
+
+
+            icon.clone = function() {
+                var dupl = Module.createBitmap(icon._name);
+                dupl._baseSize = icon._baseSize;
+                dupl._sizeFactor =icon._sizeFactor;
+                return dupl;
+            };
+
+            icon.setSize = function(newSize) {
+                icon._sizeFactor = newSize;
+                return icon;
+            };
+
+            icon.changeSize = function(sizeFactor) {
+                icon._sizeFactor *= sizeFactor;
+                return icon;
+            };
+
+            icon.renderHtml = function() {
+                var str = '<div style="position:relative">';
+                str += '<img src="{file}" alt=""/>'.AXMInterpolate({
+                    file: icon._name
+                });
+                str += "</div>";
+
+                return str;
+            };
+
+            icon.getSize = function() {
+                return icon._size;
+            };
+
+            return icon;
+        };
+
+
         Module.createHeaderInfo = function(icon, title1, title2, settings) {
             AXMUtils.Test.checkIsType(icon, 'icon');
             var headerInfo = AXMUtils.object('headerinfo');
