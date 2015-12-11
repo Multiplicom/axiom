@@ -33,6 +33,7 @@ define([
          * Creates a transient popup window
          * @param {{}} settings
          * @param {{}} settings.event - (optional) mouse click event that created this popup
+         * @param {{}} settings.point - (optional) {x, y} pointer position of the transient popup
          * @returns {{}} - popup window instance
          */
         Module.create = function(settings) {
@@ -46,6 +47,10 @@ define([
             if (settings.event) {
                 window.offsetX = settings.event.pageX;
                 window.offsetY = settings.event.pageY;
+            }
+            if (settings.point) {
+                window.offsetX = settings.point.x;
+                window.offsetY = settings.point.y;
             }
 
 
