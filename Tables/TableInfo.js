@@ -165,10 +165,10 @@ define([
                 return tabledef._canSelect;
             };
 
-            tabledef.callOnOpenRow = function(rowNr) {
+            tabledef.callOnOpenRow = function(rowNr, settings, tableData) {
                 if (!tabledef.canOpenRow())
                     AXMUtils.reportBug('No row open handler');
-                tabledef._onOpenRow(rowNr);
+                tabledef._onOpenRow(rowNr, settings, tableData);
             };
 
 

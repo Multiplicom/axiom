@@ -182,6 +182,9 @@ define([
              * @param tabId {string|null} - Identifier of the tab (might be null)
              * @param headerInfo - AXM.Icon.HeaderInfo
              * @param theFrame - frame content
+             * @param {{}} settings - settings
+             * @param {boolean} settings.isFixed - if true, the tab cannot be removed
+             * @param {boolean} settings.autoActivate - if true, the tab becomes automatically activate
              * @returns {string} - ID of the tab
              */
             frame.addTabFrame = function(tabId, headerInfo, theFrame, settings) {
@@ -342,6 +345,23 @@ define([
 
             };
 
+            /**
+             * Activates an individual panel inside the hierarchical frame structure
+             * @param {string} panelTypeId - ID of the panel
+             * @returns {boolean} - determines whether or not the panel was found
+             */
+            frame.activatePanelTypeId = function(panelTypeId) {
+                var isFound = false;
+                $.each(frame._myTabs, function(idx, tabInfo) {
+                    if (tabInfo.tabFrame.activatePanelTypeId(panelTypeId)) {
+                        frame.activateTab_byID(tabInfo.tabId);
+                        isFound = true;
+                    }
+                });
+                return isFound;
+            };
+
+
 
             /**
              * Closes a tab, provided an ID
@@ -419,7 +439,9 @@ define([
                     //title: tabInfo.headerInfo.title1,
                     blocking:false,
                     autoCenter: true,
-                    canDock: true
+                    canDock: true,
+                    sizeX: 750,
+                    sizeY:570
                 });
                 popup.__originalFlexTabberId = tabId;
 

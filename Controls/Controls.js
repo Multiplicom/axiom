@@ -777,7 +777,7 @@ define([
             /**
              * Detach the html event handlers
              */
-            control.attachEventHandlers = function() {
+            control.detachEventHandlers = function() {
                 var target = 'change.controlevent';
                 control._getSub$El('').unbind(target);
             };
@@ -839,7 +839,7 @@ define([
             if (settings.hasClearButton)
                 control._clearButton = Module.Button({
                     icon: 'fa-times',
-                    width : 25,
+                    width : 20,
                     height: 19,
                     buttonClass : 'AXMButtonCommandBar',
                     iconSizeFraction: 0.9,

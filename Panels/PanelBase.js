@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Msg"],
     function (
         require, $, _,
-        AXMUtils, DOM) {
+        AXMUtils, DOM, Msg) {
 
 
         /**
@@ -39,7 +39,8 @@ define([
             var panel = AXMUtils.object('@Panel');
             panel._id = AXMUtils.getUniqueID();
             panel._typeId = typeId;
-            panel._tearDownHanders = [];//List of functions that will be called when the frame isa about to be removed
+            panel._tearDownHanders = [];//List of functions that will be called when the panel is about to be removed
+            panel._listeners = [];
 
             /**
              * Defines the parent frame containing this panel
@@ -77,6 +78,17 @@ define([
                 panel._tearDownHanders.push(func);
             };
 
+            /**
+             * Registers a message listening callback handler that lives as long as the panel lives
+             * @param msgId
+             * @param callbackFunction
+             */
+            panel.listen = function(msgId, callbackFunction) {
+                var eventid = AXMUtils.getUniqueID();
+                panel._listeners.push(eventid);
+                Msg.listen(eventid, msgId, callbackFunction);
+            };
+
 
             /**
              * Returns the html implementing the panel (implemented in derived classes)
@@ -97,6 +109,10 @@ define([
 
 
             panel._tearDown = function() {
+                $.each(panel._listeners, function(idx, eventid) {
+                    Msg.delListener(eventid);
+                });
+                panel._listeners = [];
                 $.each(panel._tearDownHanders, function(idx, handler) {
                     handler();
                 }) ;

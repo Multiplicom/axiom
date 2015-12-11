@@ -216,7 +216,7 @@ define([
             track.attachEventHandlers = function() {
                 var clickLayer$El = track.cnvs.getCanvas$El('selection');
                 var viewerPanel = track.getViewerPanel();
-                AXMUtils.create$ElScrollHandler(clickLayer$El, function(params) { viewerPanel._handleScrolled(params,track) });
+                AXMUtils.create$ElScrollHandler(clickLayer$El, function(params) { viewerPanel._handleScrolled(params,track) }, true);
                 AXMUtils.create$ElDragHandler(
                     clickLayer$El,
                     track._panningStart,
@@ -451,6 +451,10 @@ define([
 
             track._onMouseMove = function(ev) {
                 var viewerPanel = track.getViewerPanel();
+                if (_AXM_HasTransientPopups && _AXM_HasTransientPopups()) {
+                    track._hideToolTip();
+                    return;
+                }
                 if (viewerPanel.isPanning()) {
                     track._hideToolTip();
                     return;
