@@ -538,6 +538,7 @@ define([
              * @private
              */
             panel._panningStart = function(params) {
+                panel.bubbleMessage("Activated");
                 panel._hideToolTip();
                 panel._isRectSelecting = params.shiftPressed || panel._selectionMode;
                 if (panel._isRectSelecting) {
@@ -545,6 +546,7 @@ define([
                         x: panel.getEventPosX(params.event),
                         y: panel.getEventPosY(params.event)
                     };
+                    panel._rectSelectPoint2 = null;
                 }
                 panel._isPanning = !params.shiftPressed;
                 if (panel._isPanning) {
@@ -591,13 +593,15 @@ define([
              */
             panel._panningStop = function() {
                 if (panel._isRectSelecting) {
-                    if (panel._autoRemoveSelection)
-                        panel._drawSelRect(null, null);
-                    if (panel.handleRectSelection)
-                        panel.handleRectSelection(panel._rectSelectPoint1, panel._rectSelectPoint2);
-                    setTimeout(function() { // some delay to avoid the click handler to kick in
-                        panel._isRectSelecting = false;
-                    },100);
+                    if (panel._rectSelectPoint2) {
+                        if (panel._autoRemoveSelection)
+                            panel._drawSelRect(null, null);
+                        if (panel.handleRectSelection)
+                            panel.handleRectSelection(panel._rectSelectPoint1, panel._rectSelectPoint2);
+                        setTimeout(function() { // some delay to avoid the click handler to kick in
+                            panel._isRectSelecting = false;
+                        },100);
+                    }
                 }
                 if (panel._isPanning) {
                     panel._isPanning = false;

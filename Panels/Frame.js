@@ -441,6 +441,16 @@ define([
             };
 
 
+            frame.bubbleMessage = function(msgId, msgContent) {
+                if (frame._parentFrame)
+                    frame._parentFrame.bubbleMessage(msgId, msgContent);
+                else {
+                    if (frame.__parentWindow)
+                        frame.__parentWindow.bubbleMessage(msgId, msgContent);
+                }
+            };
+
+
             /**
              * Activates a specific panel in the hierarchical frame structure (used for tabbed containers). to be implemented in derived classes
              * @param panelTypeId

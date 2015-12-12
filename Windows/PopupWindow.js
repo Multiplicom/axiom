@@ -156,6 +156,7 @@ define([
              */
             window.setRootFrame = function(iFrame) {
                 window._rootFrame = iFrame;
+                iFrame.__parentWindow = window;
                 window.resizable = true;
             };
 
@@ -512,6 +513,11 @@ define([
             };
 
 
+            window.bubbleMessage = function(msgId, msgContent) {
+                if (msgId == "Activated")
+                    window.bringToTop();
+            };
+
             /**
              * Registers a message listening callback handler that lives as long as the popup lives
              * @param msgId
@@ -594,7 +600,13 @@ define([
              * Brings the popup to the top of the z-order of elements
              */
             window.bringToTop = function() {
-                window._$ElContainer.css('z-index',AXMUtils.getNextZIndex());
+                var isOnTop = true;
+                $.each(Module._activeWindows, function(idx, win) {
+                    if ( (window._id != win._id) && (window.zIndex <= win.zIndex) )
+                        isOnTop = false;
+                });
+                window.zIndex = AXMUtils.getNextZIndex();
+                window._$ElContainer.css('z-index',window.zIndex);
             };
 
 
@@ -751,6 +763,21 @@ define([
 
             return window;
         };
+
+        $(document).bind("mousedown.popups", function(ev) {
+            if (ev.target) {
+                var clicked$El = $(ev.target);
+                if (clicked$El.length < 1)
+                    return;
+                $.each(Module._activeWindows, function(idx, window) {
+                    if ((window._$ElContainer[0]==clicked$El[0]) || ($.contains(window._$ElContainer[0], clicked$El[0]))) {
+                        window.bringToTop();
+                    }
+                });
+
+            }
+
+        });
 
         return Module;
     });

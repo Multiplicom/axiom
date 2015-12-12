@@ -69,6 +69,10 @@ define([
                 return panel._typeId;
             };
 
+            panel.bubbleMessage = function(msgId, msgContent) {
+                if (panel._frame)
+                    panel._frame.bubbleMessage(msgId, msgContent);
+            };
 
             /**
              * Adds a new function that will be called when the frame is about to be removed
