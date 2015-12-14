@@ -263,6 +263,12 @@ define([
                 track.cnvs.render();
             };
 
+            track.renderLayer = function(layerId) {
+                track._maxOffsetY = track.getYRange()-track.cnvs.getHeight();
+                track._offsetY = Math.max(Math.min(track._offsetY, track._maxOffsetY), 0);
+                track.cnvs.renderLayer(layerId);
+            };
+
             track.DrawTicks = function(drawInfo) {
                 var viewerPanel = track.getViewerPanel();
                 var zoomFactor = viewerPanel.getZoomFactor();
@@ -316,6 +322,28 @@ define([
                 drawInfo.ctx.stroke();
             };
 
+            /**
+             * Draws the selection the track
+             * @param drawInfo
+             */
+            track.drawSelection = function(drawInfo) {
+                var viewerPanel = track.getViewerPanel();
+                var zoomFactor = viewerPanel.getZoomFactor();
+                var XPosLogic2Display = viewerPanel.XPosLogic2Display;
+                var ctx = drawInfo.ctx;
+                var sizeX = drawInfo.sizeX;
+                var sizeY = drawInfo.sizeY;
+                ctx.clearRect(0, 0, drawInfo.sizeX, drawInfo.sizeY);
+
+                if (viewerPanel._selEnd >= viewerPanel._selStart) {
+                    var x1 = XPosLogic2Display(viewerPanel._selStart);
+                    var x2 = XPosLogic2Display(viewerPanel._selEnd+1);
+                    ctx.fillStyle="rgba(0,128,255,0.75)";
+                    ctx.fillRect(x1, 0, 1, sizeY);
+                    ctx.fillRect(x2, 0, 1, sizeY);
+                }
+            };
+
 
             track.drawYScrollArrows = function(drawInfo) {
                 var ctx = drawInfo.ctx;
@@ -354,10 +382,13 @@ define([
 
 
             track.cnvs.draw = function(drawInfo) {
+                track._drawSizeY = drawInfo.sizeY;
                 if (drawInfo.layerId == "main") {
-                    track._drawSizeY = drawInfo.sizeY;
                     track.drawMain(drawInfo);
                     track.drawYScrollArrows(drawInfo);
+                }
+                if (drawInfo.layerId == "selection") {
+                    track.drawSelection(drawInfo);
                 }
             };
 
@@ -604,6 +635,8 @@ define([
 
 
             panel._offset = 0;
+            panel._selStart = -1;
+            panel._selEnd = -2;
             panel._zoomfactor = 1.0;
             panel._rangeMin = 0.0;
             panel._rangeMax = 1.0;
@@ -629,6 +662,11 @@ define([
                 panel.render();
             };
 
+            panel.setSelection = function(posStart, posEnd) {
+                panel._selStart = posStart;
+                panel._selEnd = posEnd;
+                panel.renderLayer('selection');
+            };
 
             /**
              * Sets the minimum size of a single scale unit, in logical coordinates
@@ -800,6 +838,14 @@ define([
                     return;
                 $.each(panel._tracks, function (idx, track) {
                     track.render();
+                });
+            };
+
+            panel.renderLayer = function(layerId) {
+                if (!panel._isrunning)
+                    return;
+                $.each(panel._tracks, function (idx, track) {
+                    track.renderLayer(layerId);
                 });
             };
 

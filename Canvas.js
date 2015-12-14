@@ -160,12 +160,19 @@ define([
 
 
             /**
-             * Renders the drawing in the canvas element for a specific layer
+             * Renders the drawing in the canvas element for all layers
              */
             cnvs.render = function () {
                 $.each(cnvs._canvasLayerIds, function(idx, layerId) {
                     cnvs.render_exec(layerId);
                 });
+            };
+
+            /**
+             * Renders the drawing in the canvas element for a specific layer
+             */
+            cnvs.renderLayer = function (layerId) {
+                cnvs.render_exec(layerId);
             };
 
 
