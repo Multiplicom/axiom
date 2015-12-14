@@ -338,7 +338,7 @@ define([
                 if (viewerPanel._selEnd >= viewerPanel._selStart) {
                     var x1 = XPosLogic2Display(viewerPanel._selStart);
                     var x2 = XPosLogic2Display(viewerPanel._selEnd+1);
-                    ctx.fillStyle="rgba(0,128,255,0.75)";
+                    ctx.fillStyle="rgba(0,128,255,0.3)";
                     ctx.fillRect(x1, 0, 1, sizeY);
                     ctx.fillRect(x2, 0, 1, sizeY);
                 }
