@@ -32,7 +32,7 @@ define([
         Module._trackOffsetLeft = 20;
         Module._trackOffsetRight = 0;
         Module._leftRightOffsetMarginH = 1;
-        Module._trackMarginV = 3;
+        Module._trackMarginV = 2;
         Module._scrollYArrowSize = 20;
 
         Module.Track = function () {
@@ -143,7 +143,7 @@ define([
                 var rootDiv = DOM.Div({id: 'track_' + track.getId()});
                 //rootDiv.addStyle('width', '100%');
                 rootDiv.addStyle('height', track._fixedHeight + "px");
-                rootDiv.addStyle('border-bottom', "3px solid rgb(220,220,220)");
+                rootDiv.addStyle('border-bottom', "{w}px solid rgb(220,220,220)".AXMInterpolate({w: Module._trackMarginV}));
                 //rootDiv.addStyle('background-color', "rgb(240,240,240)");
                 rootDiv.addStyle('white-space', "nowrap");
                 rootDiv.addStyle('vertical-align', "top");
