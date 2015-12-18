@@ -187,3 +187,12 @@
 .SWXTransientCloseBox:hover {
     opacity: 1.0;
 }
+
+
+.ToolBoxContainer {
+    visibility: hidden;
+    position: absolute;
+    background-color: white;
+    border:1px solid rgb(179, 179, 179);
+    box-shadow: 2px 2px 20px 4px rgba(0, 0, 0, 0.25);
+}

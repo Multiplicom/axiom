@@ -16,10 +16,11 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Controls/Controls", "AXM/Controls/Compound", "AXM/DOM", "AXM/Msg"],
+        "AXM/AXMUtils", "AXM/Controls/Controls", "AXM/Controls/Compound", "AXM/DOM", "AXM/Msg", "AXM/Panels/Sub/FrameToolBox"],
     function (
         require, $, _,
-        AXMUtils, Controls, ControlsCompound, DOM, Msg) {
+        AXMUtils, Controls, ControlsCompound, DOM, Msg, FrameToolBox) {
+
 
         /**
          * Module implementing frame classes, used to organise web application client area in smaller components
@@ -27,6 +28,7 @@ define([
          */
         var Module = {};
 
+        Module.ToolBox = FrameToolBox;
 
         /**
          * The height of a frame title bar
@@ -139,6 +141,7 @@ define([
         };
 
 
+
         /**
          * Base class implementing a frame
          * @returns {Object} - frame instance
@@ -155,6 +158,7 @@ define([
             frame.splitterColor = "rgb(230,230,230)";
             frame._tearDownHanders = [];//List of functions that will be called when the frame isa about to be removed
             frame._listeners = [];
+            frame._toolBox = null;
 
             /**
              * Returns the unique identifier of the frame
@@ -227,6 +231,13 @@ define([
                 return frame._title;
             };
 
+
+            frame.setToolBox = function(toolBox) {
+                if (frame._toolBox)
+                    AXMUtils.reportBug("Frame already has a toolbox");
+                frame._toolBox = toolBox;
+                frame._toolBox._frame= frame;
+            };
 
             /**
              * Adds a new function that will be called when the frame is about to be removed
@@ -365,6 +376,8 @@ define([
                 var frameClient = DOM.Div({parent:frameDiv}).addCssClass('AXMFrameClient');
                 if (frame.createHtmlClient)
                     frameClient.addElem(frame.createHtmlClient());
+
+
                 return frameDiv.toString();
             };
 
@@ -381,6 +394,9 @@ define([
              */
             frame.attachEventHandlers = function(params) {
                 frame.$ElContainer = $('#' + frame._id);
+                if (frame._toolBox) {
+                    frame._toolBox.start();
+                }
             };
 
             /**
@@ -596,6 +612,8 @@ define([
 
             frame.informWillClose = function(msg) {
                 frame._executeTearDownHandlers();
+                if (frame._toolBox)
+                    frame._toolBox.close();
                 frame.willClose();
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     memberFrame.informWillClose(msg);

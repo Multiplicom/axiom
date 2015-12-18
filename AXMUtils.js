@@ -333,6 +333,9 @@ define([
             return Module._zindex;
         };
 
+        Module.getCurrentZIndex = function () {
+            return Module._zindex;
+        };
 
         /**
          * Reports a bug
