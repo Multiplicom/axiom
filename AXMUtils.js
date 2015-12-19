@@ -16,11 +16,11 @@
 
 define([
         "require", "jquery", "_", "jquery_cookie", "blob", "filesaver",
-        "AXM/Test",
+        "AXM/Test", "AXM/Msg"
     ],
     function (
         require, $, _, dummy_jquery_cookie, Blob, FileSaver,
-        Test
+        Test, Msg
     ) {
 
         /**
@@ -374,8 +374,7 @@ define([
             var positStartY = null;
 
             var handleMouseDown = function (ev) {
-                if (_AXM_CloseTransientPopups)
-                    _AXM_CloseTransientPopups();
+                Module.closeTransientPopups();
                 positStartX = ev.pageX;
                 positStartY = ev.pageY;
                 $(document).bind("mouseup."+handlerId, handleMouseUp);
@@ -453,8 +452,7 @@ define([
             };
 
             $El.bind('DOMMouseScroll mousewheel', function(ev) {
-                if (_AXM_CloseTransientPopups)
-                    _AXM_CloseTransientPopups();
+                Module.closeTransientPopups();
                 handler({
                     deltaY: getMouseWheelDeltaY(ev),
                     deltaX: getMouseWheelDeltaX(ev),
@@ -781,6 +779,14 @@ define([
                     onCompleted();
             });
 
+        };
+
+
+        /**
+         * Call this function to close all temporary popups
+         */
+        Module.closeTransientPopups = function() {
+            Msg.broadcast("CloseTransientPopups");
         };
 
         /**

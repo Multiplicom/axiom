@@ -15,9 +15,9 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-    "AXM/AXMUtils", "AXM/Test"
+    "AXM/Test"
 ],
-    function (AXMUtils, Test) {
+    function (Test) {
 
         /**
          * Module encapsulating functionality to send and receive messages

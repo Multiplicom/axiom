@@ -37,7 +37,7 @@ define([
          * @returns {{}} - popup window instance
          */
         Module.create = function(settings) {
-            _AXM_CloseTransientPopups();
+            AXMUtils.closeTransientPopups();
             var window = {_id: AXMUtils.getUniqueID()};
             window.zIndex = AXMUtils.getNextZIndex();
             window._tearDownHanders = [];//List of functions that will be called when the window is about to be removed
@@ -171,10 +171,11 @@ define([
         };
 
 
-        _AXM_CloseTransientPopups = function() {
+        Msg.listen(null, "CloseTransientPopups", function() {
             if (Module._current)
                 Module._current.close();
-        };
+        });
+
 
         _AXM_HasTransientPopups = function() {
             return Module._current;

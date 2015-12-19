@@ -16,9 +16,9 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Msg"],
     function (require, $, _,
-              AXMUtils, DOM) {
+              AXMUtils, DOM, Msg) {
 
 
         /**
@@ -26,6 +26,13 @@ define([
          * @type {{}}
          */
         var Module = {};
+
+        /**
+         * List of all toolboxes that are currently present (hidden or visible)
+         * @type {Array}
+         * @private
+         */
+        Module._list = [];
 
 
         Module.create = function (icon, rootControl) {
@@ -64,13 +71,20 @@ define([
                 toolBox._getStart$El().click(toolBox.onClickStart);
                 toolBox._rootControl.attachEventHandlers();
 
-
+                Module._list.push(toolBox);
             };
 
             toolBox.close = function () {
                 toolBox._getStart$El().unbind('click');
                 toolBox._rootControl.detachEventHandlers();
                 toolBox._$ElContainer.remove();
+                var idx = -1;
+                $.each(Module._list, function(i, item) {
+                    if (item === toolBox)
+                        idx = i;
+                });
+                if (idx>=0)
+                    Module._list.splice(idx, 1);
             };
 
             toolBox.onClickStart = function () {
@@ -102,17 +116,23 @@ define([
                 }, 100);
             };
 
+            toolBox.hide = function() {
+                if (toolBox._isActive) {
+                    toolBox._$ElContainer.css("visibility", "hidden");
+                    setTimeout(function() {
+                        toolBox._isActive = false;
+                    }, 50); // introducing a delay to make sure that clicking the toolbox start element does not immediately reactives it
+                    $(document).unbind("mouseup.toolbox");
+                }
+            };
+
             toolBox._onDocClicked = function(ev) {
                 if (ev.target) {
                     var clicked$El = $(ev.target);
                     if (clicked$El.length < 1)
                         return;
                     if ((toolBox._$ElContainer[0]!=clicked$El[0]) && (!$.contains(toolBox._$ElContainer[0], clicked$El[0]))) {
-                        toolBox._$ElContainer.css("visibility", "hidden");
-                        setTimeout(function() {
-                            toolBox._isActive = false;
-                        }, 250); // introducing a delay to make sure that clicking the toolbox start element does not immediately reactives it
-                        $(document).unbind("mouseup.toolbox");
+                        toolBox.hide();
                     }
 
                 }
@@ -120,6 +140,14 @@ define([
 
             return toolBox;
         };
+
+
+        Msg.listen(null, "CloseTransientPopups", function() {
+            $.each(Module._list, function(idx, box) {
+                box.hide();
+            });
+        });
+
 
         return Module;
     });
