@@ -72,6 +72,8 @@ define([
         Msg.listen = function (eventid, msgId, callbackFunction) {
             if ((typeof (eventid) !== 'string') && (eventid!==null))
                 Test.reportBug('Listener event id not provided');
+            if (!msgId)
+                Test.reportBug("No event ID provided");
             if (!callbackFunction)
                 Test.reportBug('No callback function provided for event listener');
             if ((eventid != '') && (eventid in Msg._listeneridmap)) {

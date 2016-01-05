@@ -74,8 +74,10 @@ define([
                 var textDiv = DOM.Div({parent:tabContent});
                 textDiv.addCssClass('AXMFlexTabText');
                 var textLine1Div = DOM.Div({parent: textDiv});
+                textLine1Div.addCssClass("TabTitle1");
                 textLine1Div.addElem(tabInfo.headerInfo.title1);
                 var textLine2Div = DOM.Div({parent: textDiv});
+                textLine2Div.addCssClass("TabTitle2");
                 textLine2Div.addStyle("max-width", (Module.leftPartSize-40)+"px");
                 textLine2Div.addStyle("overflow", "hidden");
                 textLine2Div.addStyle("text-overflow", "ellipsis");
@@ -213,6 +215,33 @@ define([
                 if (settings.autoActivate!==false)
                     frame.activateTab_byID(tabInfo.tabId);
                 return tabInfo.tabId;
+            };
+
+
+            /**
+             * Modifies the title of a tab frame
+             * @param tabId {string} id of the tab
+             * @param newTitle1 {string} - title line 1
+             * @param newTitle2 {string} - title line 2
+             */
+            frame.changeTabFrameTitle = function(tabId, newTitle1, newTitle2) {
+                var tabNr = frame._tabId2Nr_noFail(tabId)
+
+                if (tabNr >= 0) {
+                    var tabInfo = frame._myTabs[tabNr];
+                    tabInfo.headerInfo.title1 = newTitle1;
+                    tabInfo.headerInfo.title2 = newTitle2;
+                    frame._updateTabStates();
+                    tabInfo.get$El().find('.TabTitle1').html(newTitle1);
+                    tabInfo.get$El().find('.TabTitle2').html(newTitle2);
+                }
+
+                $.each(PopupWindow.getActiveWindowList(), function(idx, popupWindow) {
+                    if (tabId == popupWindow.__originalFlexTabberId) {
+                        popupWindow.modifyTitle(newTitle1 + " " + newTitle2);
+                    }
+                });
+
             };
 
 

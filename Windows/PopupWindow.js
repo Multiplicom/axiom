@@ -150,6 +150,16 @@ define([
                 return window._title;
             };
 
+
+            /**
+             * Modifies the title of the popup (can be called when the popup is rendered)
+             * @param {string} newTitle
+             */
+            window.modifyTitle = function(newTitle) {
+                window._title = newTitle;
+                window._$ElContainer.find('.PopupHeaderTitleText').html(newTitle);
+            };
+
             /**
              * Defines the root frame to be displayed in the popup (popup will be window style, containing frames and will be resizeable)
              * @param {AXM.Frame} iFrame
@@ -249,7 +259,7 @@ define([
                             headerDiv.addElem(str);
                         }
                     }
-                    headerDiv.addElem('<span style="vertical-align: middle">' + window._title + '</span>');
+                    headerDiv.addElem('<span class="PopupHeaderTitleText" style="vertical-align: middle">' + window._title + '</span>');
                 }
 
                 var transfer$Elem = null;

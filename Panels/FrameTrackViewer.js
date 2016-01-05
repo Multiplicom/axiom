@@ -322,7 +322,7 @@ define([
                 drawInfo.ctx.stroke();
             };
 
-            /**
+            /**d
              * Draws the selection the track
              * @param drawInfo
              */
