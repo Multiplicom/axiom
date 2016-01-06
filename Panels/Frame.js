@@ -1170,6 +1170,7 @@ define([
                             if (newVisible) {
                                 newVisible.$ElContainer.css('opacity','0');
                                 newVisible.$ElContainer.css('display','');
+                                frame.repositionSubFrames();//done here because elements in an initially invisible tab may not be measured correctly for positioning
                                 newVisible.$ElContainer.fadeTo(200,1)
                             }
                         }
