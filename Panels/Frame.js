@@ -1094,6 +1094,14 @@ define([
 
 
             /**
+             * Repositions the member frames inside the client area of the frame
+             */
+            frame.repositionSubFrames = function() {
+                frame._setPositionSubframes({resizing: false});
+            };
+
+
+            /**
              * Dynamically adds a member frame when the stacker is live displayed
              * @param {{}} theFrame - new member frame to be added
              */
@@ -1153,6 +1161,7 @@ define([
                                 currentVisible.$ElContainer.css('display','none');
                                 if (newVisible) {
                                     newVisible.$ElContainer.css('display','');
+                                    frame.repositionSubFrames();//done here because elements in an initially invisible tab may not be measured correctly for positioning
                                     newVisible.$ElContainer.fadeTo(200,1)
                                 }
                             })
