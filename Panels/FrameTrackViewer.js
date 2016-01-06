@@ -225,6 +225,10 @@ define([
                 );
                 clickLayer$El.mousemove(track._onMouseMove);
                 clickLayer$El.click(track._onClick);
+
+                clickLayer$El.mouseleave(function() {
+                    track._hideToolTip();
+                });
             };
 
             /**
@@ -236,6 +240,7 @@ define([
                 AXMUtils.remove$ElDragHandler(clickLayer$El);
                 clickLayer$El.unbind('mousemove');
                 clickLayer$El.unbind('click');
+                clickLayer$El.unbind('mouseleave');
             };
 
 
