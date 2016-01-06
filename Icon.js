@@ -36,7 +36,9 @@ define([
             icon._sizeFactor = 1;
             icon._decorators = [];
 
-            icon.addDecorator = function(name, xPos, offsetX, yPos, offsetY, size) {
+            icon.addDecorator = function(name, xPos, offsetX, yPos, offsetY, size, opacity) {
+                if (opacity === undefined)
+                    opacity = 1;
                 if (['left', 'right'].indexOf(xPos)<0)
                     AXMUtils.Test.reportBug("Decorator x position should be 'left' or 'right'");
                 if (['top', 'bottom'].indexOf(yPos)<0)
@@ -47,7 +49,8 @@ define([
                     yPos: yPos,
                     offsetX: offsetX,
                     offsetY: offsetY,
-                    size: size
+                    size: size,
+                    opacity: opacity
                 });
                 return icon;
             };
@@ -78,13 +81,14 @@ define([
                 });
 
                 $.each(icon._decorators, function(idx, decor) {
-                    var substr =  '<div style="position:absolute;{xpos}:{left}px;{ypos}:{top}px"><i style="font-size:{size}px" class="fa {name}"/></div>'.AXMInterpolate({
+                    var substr =  '<div style="position:absolute;{xpos}:{left}px;{ypos}:{top}px;opacity:{opacity}"><i style="font-size:{size}px" class="fa {name}"/></div>'.AXMInterpolate({
                         name:decor.name,
                         xpos: decor.xPos,
                         ypos: decor.yPos,
                         left: Math.round(decor.offsetX*icon._sizeFactor),
                         top: Math.round(decor.offsetY*icon._sizeFactor),
-                        size:Math.round(icon._sizeFactor*icon._baseSize*decor.size)
+                        size:Math.round(icon._sizeFactor*icon._baseSize*decor.size),
+                        opacity: decor.opacity
                     });
                     str += substr;
                 });
