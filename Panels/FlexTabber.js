@@ -328,7 +328,7 @@ define([
                 var tabNr = frame._tabId2Nr(tabId);
                 var tabInfo = frame._myTabs[tabNr];
                 if (!tabInfo)
-                    return;
+                    return false;
                 frame._frameStacker.activateStackNr(tabInfo.stackNr);
                 frame._activeTab = tabNr;
                 frame._updateTabStates();
@@ -339,6 +339,7 @@ define([
                     }
                 }
                 frame._history_tabId.push(tabInfo.tabId);
+                return true;
             };
 
 
