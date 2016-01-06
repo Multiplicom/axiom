@@ -403,6 +403,9 @@ define([
                 var tabNr = frame._tabId2Nr(tabId);
                 var tabInfo = frame._myTabs[tabNr];
 
+                if (!tabInfo)
+                    return;
+
                 //remove tab from history
                 for (var idx=0; idx<frame._history_tabId.length;) {
                     if (frame._history_tabId[idx] == tabId)
@@ -546,6 +549,24 @@ define([
                 }
 
                 frame.viewTitle = viewTitle;
+            };
+
+
+            /**
+             * Closes a view (tab or undocked popup), provided a tab ID
+             * @param tabId
+             */
+            frame.closeView_byID = function(tabId) {
+                if (frame.hasTabId(tabId)) {
+                    frame.closeTab_byID(tabId);
+                }
+                else {
+                    $.each(PopupWindow.getActiveWindowList(), function(idx, popupWindow) {
+                        if (tabId == popupWindow.__originalFlexTabberId) {
+                            popupWindow.close();
+                        }
+                    });
+                }
             };
 
 
