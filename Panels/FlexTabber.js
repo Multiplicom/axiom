@@ -486,7 +486,8 @@ define([
                 popup.start();
                 tabInfo.tabFrame.getRoot$El().css('display', ''); // make sure the frame if visible, in case the tab was hidden
                 tabInfo.tabFrame.getRoot$El().css('opacity', 1); // make sure the frame if visible, in case the tab was hidden
-                tabInfo.tabFrame.repositionSubFrames();//done here because elements in an initially invisible tab may not be measured correctly for positioning
+                if (tabInfo.tabFrame.repositionSubFrames)
+                    tabInfo.tabFrame.repositionSubFrames();//done here because elements in an initially invisible tab may not be measured correctly for positioning
 
                 AXMUtils.animateBoxTransition(tabInfo.get$El(), popup.get$El(), {}, function() {
                     frame.closeTab_byID(tabId, true);
