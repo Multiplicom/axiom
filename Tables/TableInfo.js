@@ -33,6 +33,7 @@ define([
             coldef._dispSize = 140;
             coldef._onOpen = null;
             coldef._canSort = false;
+            coldef._isVisibleInTable = true;
 
             coldef.setName = function(iName) {
                 coldef._name = iName;
@@ -59,6 +60,10 @@ define([
                 return coldef;
             };
 
+            coldef.setIsVisibleInTable = function(visible) {
+                coldef._isVisibleInTable = visible;
+            };
+
             coldef.getId = function() {
                 return coldef._id;
             };
@@ -73,6 +78,10 @@ define([
 
             coldef.canSort = function() {
                 return coldef._canSort;
+            };
+
+            coldef.isVisibleInTable = function() {
+                return coldef._isVisibleInTable;
             };
 
             coldef.callOnOpen = function() {

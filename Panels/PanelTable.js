@@ -94,7 +94,8 @@ define([
                 }
 
                 $.each(tableInfo.getColumns(), function (idx, col) {
-                    panel._columns.push(col);
+                    if (col.isVisibleInTable())
+                        panel._columns.push(col);
                 });
             };
             panel.updateTableInfo();
