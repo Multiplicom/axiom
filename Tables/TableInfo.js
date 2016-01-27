@@ -34,6 +34,7 @@ define([
             coldef._onOpen = null;
             coldef._canSort = false;
             coldef._isVisibleInTable = true;
+            coldef._categories = null;
 
             coldef.setName = function(iName) {
                 coldef._name = iName;
@@ -107,8 +108,24 @@ define([
                 return null;
             };
 
+            coldef.setFieldCategories = function(catInfo) {
+                AXMUtils.Test.checkIsType(catInfo, '@FieldCategoryInfo');
+                coldef._categories = catInfo;
+            };
+
+            coldef.hasFieldCategories = function() {
+                return coldef._categories != null
+            };
+
+            coldef.getFieldCategories = function() {
+                if (!coldef._categories)
+                    AXMUtils.Test.reportBug("Field does not have categories: " + coldef._id);
+                return coldef._categories;
+            };
+
             return coldef;
         };
+
 
         Module.tableInfo = function(tableId) {
             var tabledef = AXMUtils.object('@TableInfo');
