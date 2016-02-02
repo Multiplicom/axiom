@@ -313,7 +313,8 @@ define([
          */
         Module.WrapperControlBase = function(ctrl) {
             var wrapper = AXMUtils.object('@Control');
-            AXMUtils.Test.checkIsType(ctrl, '@Control');
+            if (ctrl !==null)
+                AXMUtils.Test.checkIsType(ctrl, '@Control');
             wrapper._id = 'CT'+AXMUtils.getUniqueID();
             wrapper._member = ctrl;
 
@@ -322,14 +323,16 @@ define([
              * Attaches the wrapped control html event handlers after DOM insertion
              */
             wrapper.attachEventHandlers = function() {
-                wrapper._member.attachEventHandlers();
+                if (wrapper._member)
+                    wrapper._member.attachEventHandlers();
             };
 
             /**
              * Detaches the wrapped control html event handlers
              */
             wrapper.detachEventHandlers = function() {
-                wrapper._member.detachEventHandlers();
+                if (wrapper._member)
+                    wrapper._member.detachEventHandlers();
             };
 
             /**
@@ -340,16 +343,51 @@ define([
                 return $('#' + wrapper._id);
             };
 
+            wrapper.getMember = function() {
+                return wrapper._member;
+            };
+
             /**
              * Called by the framework when a control needs to be teared down.
              */
             wrapper.tearDown = function() {
-                wrapper._member.tearDown();
+                if (wrapper._member)
+                    wrapper._member.tearDown();
             };
 
             return wrapper;
         };
 
+        Module.Transferrer = function(ctrl) {
+            var wrapper = Module.WrapperControlBase(ctrl);
+            wrapper.extend('@ControlTransferrer');
+
+            wrapper.createHtml = function() {
+                var div = DOM.Div({id: wrapper._id});
+                if (wrapper._member) {
+                    wrapper._memDivId = AXMUtils.getUniqueID();
+                    var memdiv = DOM.Div({id: wrapper._memDivId, parent: div});
+                    memdiv.addElem(wrapper._member.createHtml());
+                }
+                return div.toString();
+            };
+
+            wrapper.transferFrom = function(src) {
+                AXMUtils.Test.checkIsType(src, '@ControlTransferrer');
+                if (wrapper._member)
+                    AXMUtils.reportBug("Non-empty dest transferrer");
+                var ctrl = src.getMember();
+                if (!src)
+                    AXMUtils.reportBug("Empty source transferrer");
+                wrapper._member = ctrl;
+                src._member = null;
+                $("#"+src._memDivId).detach().appendTo('#'+wrapper._id);
+                wrapper._memDivId = src._memDivId;
+                src._memDivId = null;
+            };
+
+            return wrapper;
+        };
 
         /**
          * Wraps a control in a styled DIV
