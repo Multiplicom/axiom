@@ -1,0 +1,165 @@
+//Copyright (c) 2015 Multiplicom NV
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+//and associated documentation files (the "Software"), to deal in the Software without restriction,
+//including without limitation the rights to use, copy, modify, merge, publish, distribute,
+//sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+//is furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+//INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+//PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+//DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+//ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+define([
+        "require", "jquery", "_", "blob", "filesaver",
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg",
+        "AXM/Windows/SimplePopups",
+        "AXM/Tables/TableInfo"
+    ],
+    function (
+        require, $, _, Blob, FileSaver,
+        AXMUtils, DOM, Controls, Frame, PanelBase, Msg,
+        SimplePopups,
+        TableInfo
+    ) {
+
+        /**
+         * Module encapsulating a panel that contains a paged table
+         * @type {{}}
+         */
+        var Module = {};
+
+        /**
+         * Implements a panel that contains a paged table
+         * @param {string} id - panel type id
+         * @param {AXM.Tables.TableData} tableData - object containing the data of the table (content of the cells)
+         * @param {AXM.Tables.TableInfo} tableInfo - object containing the definition of the table (column definitions)
+         * @returns {Object} - panel instance
+         * @constructor
+         */
+        Module.create = function(typeId) {
+            var panel = PanelBase.create(typeId);
+
+            panel._columns = [];
+            panel._rows = [];
+
+            panel.addColumn = function(colId, colName) {
+                panel._columns.push({
+                    colId: colId,
+                    colName: colName
+                });
+            };
+
+            panel.addRow = function(rowInfo) {
+                $.each(panel._columns, function(idx, column) {
+                    AXMUtils.Test.checkIsType(rowInfo[column.colId], '@Control');
+                });
+                panel._rows.push(rowInfo);
+            };
+
+                /**
+             * Returns the html implementing the panel
+             * @returns {string}
+             */
+            panel.createHtml = function() {
+
+                //panel._divid_leftHeadRow = panel._getSubId('leftheadrow');
+                //panel._divid_leftBody = panel._getSubId('leftbody');
+                //panel._divid_rightHeadRow = panel._getSubId('rightheadrow');
+                //panel._divid_rightBody = panel._getSubId('rightbody');
+                //
+                var divRoot = DOM.Div({id: 'rt' + panel._id})
+                    .addStyle('width', '100%')
+                    .addStyle('height', '100%')
+                    //.addStyle('overflow-x', 'scroll')
+                    .addStyle('position', 'relative')
+                    //.addStyle('background-color', 'yellow')
+
+                //divRoot.addElem(panel.createHtmlBody());
+
+                var divRoot = DOM.Div({id: 'tb' + panel._id, parent: divRoot})
+                    //.addStyle('width', '100%')
+                    .addStyle('height', 'calc(100% - 20px)')
+                    .addStyle('margin-top', '20px')
+                    .addStyle('overflow-x', 'scroll')
+                    .addStyle('overflow-y', 'scroll')
+                    .addStyle('white-space', 'nowrap')
+                //.addStyle('position', 'relative')
+                //.addStyle('background-color', 'yellow')
+
+                //divRoot.addElem(panel.createHtmlBody());
+
+                return divRoot.toString();
+            };
+
+
+
+            panel.render = function() {
+                var content ='<table style="padding-top:0px">';
+
+                content += '<tr style="">';
+                $.each(panel._columns, function(idx, column) {
+                    content += '<th><div style="height:20px;top:00px;position:absolute;background-color:red">';
+                    content += column.colName;
+                    content += "</div></th>";
+                });
+                content += '</tr>';
+
+                $.each(panel._rows, function(idx, row) {
+                    content += '<tr>';
+                    $.each(panel._columns, function(idx, column) {
+                        content += "<td>";
+                        content += row[column.colId].createHtml();
+                        content += "</td>";
+                    });
+                    content += '</tr>';
+                });
+
+                content += "</table>";
+
+                $('#tb'+panel._id).html(content);
+            };
+
+                /**
+             * Attached the html event handlers after DOM insertion
+             */
+            panel.attachEventHandlers = function() {
+            };
+
+
+            /**
+             * Detach the html event handlers
+             */
+            panel.detachEventHandlers = function() {
+            };
+
+
+
+
+            /**
+             * Resizes the panel
+             * @param {int} xl - new x size
+             * @param {int} yl - new y size
+             */
+            panel.resize = function(xl, yl) {
+                AXMUtils.Test.checkIsNumber(xl, yl);
+                panel._availableWidth = xl;
+            };
+
+
+
+            //Remove own object on closing
+            panel.addTearDownHandler(function() {
+                panel = null;
+            });
+
+            return panel;
+        } ;
+
+        return Module;
+    });
+
