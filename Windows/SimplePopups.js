@@ -323,6 +323,7 @@ define([
 
             var win = Popupwin.create({
                 title: title,
+                headerIcon: settings.headerIcon||null,
                 blocking:true,
                 autoCenter: true
             });
