@@ -63,6 +63,10 @@ define([
                 panel._rows.push(rowInfo);
             };
 
+            panel.resetColumns = function() {
+                panel._columns = [];
+            };
+
             panel.resetRows = function() {
                 panel._rows = [];
                 panel._clearActiveControls();
@@ -114,7 +118,7 @@ define([
 
                 content += '<tr style="">';
                 $.each(panel._columns, function(idx, column) {
-                    content += '<th><div style="">';
+                    content += '<th><div style="padding:6px">';
                     content += column.colName;
                     content += "</div></th>";
                 });
@@ -123,7 +127,7 @@ define([
                 $.each(panel._rows, function(idx, row) {
                     content += '<tr>';
                     $.each(panel._columns, function(idx, column) {
-                        content += "<td>";
+                        content += '<td style="padding:6px">';
                         if (row[column.colId]) {
                             content += row[column.colId].createHtml();
                             panel._activeControls.push(row[column.colId]);
