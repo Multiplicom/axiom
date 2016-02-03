@@ -46,6 +46,7 @@ define([
 
             panel._columns = [];
             panel._rows = [];
+            panel._activeControls = [];
 
             panel.addColumn = function(colId, colName) {
                 panel._columns.push({
@@ -56,22 +57,30 @@ define([
 
             panel.addRow = function(rowInfo) {
                 $.each(panel._columns, function(idx, column) {
-                    AXMUtils.Test.checkIsType(rowInfo[column.colId], '@Control');
+                    if (rowInfo[column.colId])
+                        AXMUtils.Test.checkIsType(rowInfo[column.colId], '@Control');
                 });
                 panel._rows.push(rowInfo);
             };
 
-                /**
+            panel.resetRows = function() {
+                panel._rows = [];
+                panel._clearActiveControls();
+            };
+
+            panel._clearActiveControls = function() {
+                $.each(panel._activeControls, function(idx, control) {
+                    control.tearDown();
+                });
+                panel._activeControls = [];
+            };
+
+            /**
              * Returns the html implementing the panel
              * @returns {string}
              */
             panel.createHtml = function() {
 
-                //panel._divid_leftHeadRow = panel._getSubId('leftheadrow');
-                //panel._divid_leftBody = panel._getSubId('leftbody');
-                //panel._divid_rightHeadRow = panel._getSubId('rightheadrow');
-                //panel._divid_rightBody = panel._getSubId('rightbody');
-                //
                 var divRoot = DOM.Div({id: 'rt' + panel._id})
                     .addStyle('width', '100%')
                     .addStyle('height', '100%')
@@ -87,7 +96,7 @@ define([
                     .addStyle('margin-top', '20px')
                     .addStyle('overflow-x', 'scroll')
                     .addStyle('overflow-y', 'scroll')
-                    .addStyle('white-space', 'nowrap')
+                    .addStyle('white-space', 'nowrap');
                 //.addStyle('position', 'relative')
                 //.addStyle('background-color', 'yellow')
 
@@ -99,11 +108,13 @@ define([
 
 
             panel.render = function() {
+                panel._clearActiveControls();
+
                 var content ='<table style="padding-top:0px">';
 
                 content += '<tr style="">';
                 $.each(panel._columns, function(idx, column) {
-                    content += '<th><div style="height:20px;top:00px;position:absolute;background-color:red">';
+                    content += '<th><div style="">';
                     content += column.colName;
                     content += "</div></th>";
                 });
@@ -113,7 +124,10 @@ define([
                     content += '<tr>';
                     $.each(panel._columns, function(idx, column) {
                         content += "<td>";
-                        content += row[column.colId].createHtml();
+                        if (row[column.colId]) {
+                            content += row[column.colId].createHtml();
+                            panel._activeControls.push(row[column.colId]);
+                        }
                         content += "</td>";
                     });
                     content += '</tr>';
@@ -154,6 +168,7 @@ define([
 
             //Remove own object on closing
             panel.addTearDownHandler(function() {
+                panel._clearActiveControls();
                 panel = null;
             });
 
