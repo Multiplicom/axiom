@@ -43,6 +43,7 @@ define([
             panel._scrollY = false;
             panel._scrollX = false;
             if (settings) {
+                panel._autoScrollX = settings.autoScrollX;
                 panel._autoScrollY = settings.autoScrollY;
                 panel._scrollY = settings.scrollY;
                 panel._scrollX = settings.scrollX;
@@ -69,6 +70,8 @@ define([
                 rootDiv.addStyle('height', '100%');
                 rootDiv.addStyle('overflow-y', (panel._scrollY)?'scroll':'hidden');
                 rootDiv.addStyle('overflow-x', (panel._scrollX)?'scroll':'hidden');
+                if (panel._autoScrollX)
+                    rootDiv.addStyle('overflow-x', 'auto');
                 if (panel._autoScrollY)
                     rootDiv.addStyle('overflow-y', 'auto');
                 if (panel._rootControl)

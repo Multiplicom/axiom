@@ -591,10 +591,16 @@ define([
         Module.Hider = function(ctrl, hidden) {
             var wrapper = Module.WrapperControlBase(ctrl);
             wrapper._show = !hidden;
+            wrapper._animation = true;
             wrapper._animateOpacity = false;
 
             wrapper.setAnimateOpacity = function() {
                 wrapper._animateOpacity = true;
+                return wrapper;
+            };
+
+            wrapper.setNoAnimation = function() {
+                wrapper._animation = false;
                 return wrapper;
             };
 
@@ -618,21 +624,29 @@ define([
             wrapper.show = function(status) {
                 if (wrapper._show != status) {
                     wrapper._show = status;
-                    if (!wrapper._animateOpacity) {
+                    if (!wrapper._animation) {
                         if (status)
-                            wrapper.get$El().show(400);
-                        else
-                            wrapper.get$El().hide(400);
-                    } else {
-                        if (status) {
-                            wrapper.get$El().css("opacity", 0);
                             wrapper.get$El().show();
-                            wrapper.get$El().fadeTo(400,1);
-                        }
-                        else {
-                            wrapper.get$El().fadeTo(400, 0, function() {
-                                wrapper.get$El().hide();
-                            });
+                        else
+                            wrapper.get$El().hide();
+                    }
+                    else {
+                        if (!wrapper._animateOpacity) {
+                            if (status)
+                                wrapper.get$El().show(400);
+                            else
+                                wrapper.get$El().hide(400);
+                        } else {
+                            if (status) {
+                                wrapper.get$El().css("opacity", 0);
+                                wrapper.get$El().show();
+                                wrapper.get$El().fadeTo(400, 1);
+                            }
+                            else {
+                                wrapper.get$El().fadeTo(400, 0, function () {
+                                    wrapper.get$El().hide();
+                                });
+                            }
                         }
                     }
                 }
