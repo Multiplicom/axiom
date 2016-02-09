@@ -140,6 +140,14 @@ define([
                 content += "</table>";
 
                 $('#tb'+panel._id).html(content);
+
+                $.each(panel._rows, function(idx, row) {
+                    $.each(panel._columns, function(idx, column) {
+                            if (row[column.colId])
+                                row[column.colId].attachEventHandlers();
+                    });
+                });
+
             };
 
                 /**
