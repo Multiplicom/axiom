@@ -16,13 +16,13 @@
 
 define([
         "require", "jquery", "_", "blob", "filesaver",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg",
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg", "AXM/Icon",
         "AXM/Windows/SimplePopups",
         "AXM/Tables/TableInfo"
     ],
     function (
         require, $, _, Blob, FileSaver,
-        AXMUtils, DOM, Controls, Frame, PanelBase, Msg,
+        AXMUtils, DOM, Controls, Frame, PanelBase, Msg, Icon,
         SimplePopups,
         TableInfo
     ) {
@@ -933,7 +933,7 @@ define([
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
             theFrame.addCommand({
-                icon: "fa-download",
+                icon: Icon.createFA("fa-download", 0.85).setOpacity(0.7),
                 hint: _TRL("Download table content to local machine")
             }, thePanel.saveLocal);
 
@@ -941,19 +941,19 @@ define([
             theFrame.addSeparator();
 
             theFrame.addCommand({
-                icon: "fa-flip-horizontal fa-fast-forward",
+                icon: Icon.createFA("fa-flip-horizontal fa-fast-forward", 0.85).setOpacity(0.7),
                 hint: _TRL("First page")
             }, thePanel.navigateFirstPage);
             theFrame.addCommand({
-                icon: "fa-flip-horizontal fa-play",
+                icon: Icon.createFA("fa-flip-horizontal fa-play", 0.85).setOpacity(0.7),
                 hint: _TRL("Previous page")
             }, thePanel.navigatePreviousPage);
             theFrame.addCommand({
-                icon: "fa-play",
+                icon: Icon.createFA("fa-play", 0.85).setOpacity(0.7),
                 hint: _TRL("Next page")
             }, thePanel.navigateNextPage);
             theFrame.addCommand({
-                icon: "fa-fast-forward",
+                icon: Icon.createFA("fa-fast-forward", 0.85).setOpacity(0.7),
                 hint: _TRL("Last page")
             }, thePanel.navigateLastPage);
 

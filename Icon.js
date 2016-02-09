@@ -31,6 +31,7 @@ define([
             var icon = AXMUtils.object('icon');
             icon._name = name;
             icon._baseSize = 20;
+            icon._opacity = 1;
             if (baseSizeFactor)
                 icon._baseSize *= baseSizeFactor;
             icon._sizeFactor = 1;
@@ -55,8 +56,14 @@ define([
                 return icon;
             };
 
+            icon.setOpacity = function(opac) {
+                icon._opacity = opac;
+                return icon;
+            }
+
             icon.clone = function() {
                 var dupl = Module.createFA(icon._name);
+                dupl._opacity = icon._opacity;
                 dupl._baseSize = icon._baseSize;
                 dupl._sizeFactor =icon._sizeFactor;
                 dupl._decorators = JSON.parse(JSON.stringify(icon._decorators));
@@ -75,8 +82,9 @@ define([
 
             icon.renderHtml = function() {
                 var str = '<div style="position:relative">';
-                str +=  '<i style="font-size:{size}px" class="fa {name}"/>'.AXMInterpolate({
+                str +=  '<i style="font-size:{size}px;opacity:{opac}" class="fa {name}"/>'.AXMInterpolate({
                     name:icon._name,
+                    opac:icon._opacity,
                     size:Math.round(icon._sizeFactor*icon._baseSize)
                 });
 
