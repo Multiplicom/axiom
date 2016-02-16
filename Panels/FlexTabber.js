@@ -423,6 +423,7 @@ define([
                     tabInfo.tabFrame.informWillClose();
                 }
                 tabInfo.get$El().slideUp(200, function() {
+                    var tabNr = frame._tabId2Nr(tabId);// need to re-quiry: might be changed after delay
                     frame._myTabs[tabNr].detachEventHandlers();
                     tabInfo.get$El().remove();
                     frame._frameStacker.dynDelMember(tabInfo.stackNr);
