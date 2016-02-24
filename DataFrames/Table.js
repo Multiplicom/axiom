@@ -108,7 +108,8 @@ define([
                 autoCenter: true,
                 resizable: true,
                 sizeX: 700,
-                sizeY: 500
+                sizeY: 500,
+                canDock:true
             });
 
             win.dataFrame = dataFrame;
