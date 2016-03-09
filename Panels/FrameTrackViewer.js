@@ -871,7 +871,6 @@ define([
             };
 
             panel._handleZoom = function(scaleFactor, centralPx) {
-                console.log(scaleFactor);
                 var z1 = panel._zoomfactor;
                 var z2 = panel._zoomfactor * scaleFactor;
                 z2 = Math.min(z2,panel._maxZoomFactor);
