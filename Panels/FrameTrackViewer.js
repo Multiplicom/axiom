@@ -871,7 +871,7 @@ define([
             };
 
             panel._handleZoom = function(scaleFactor, centralPx) {
-
+                console.log(scaleFactor);
                 var z1 = panel._zoomfactor;
                 var z2 = panel._zoomfactor * scaleFactor;
                 z2 = Math.min(z2,panel._maxZoomFactor);
@@ -985,14 +985,18 @@ define([
 
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
-                hint: _TRL("Zoom out")
+                hint: _TRL("Zoom in")
             }, function () {
+                var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
+                thePanel._handleZoom(1.2, displayWidth/2);
             });
 
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-minus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
-                hint: _TRL("Zoom in")
+                hint: _TRL("Zoom out")
             }, function () {
+                var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
+                thePanel._handleZoom(0.8, displayWidth/2);
             });
 
             return theFrame;
