@@ -281,8 +281,21 @@ define([
             dataFrame._mapProperties = {};
             dataFrame._name = name;
 
+            dataFrame._rowOpenHandlers = [];
+
             dataFrame.getObjectType = function() {
                 return dataFrame.objectType;
+            };
+
+            dataFrame.getRowOpenHandlerList = function() {
+                return dataFrame._rowOpenHandlers;
+            };
+
+            dataFrame.addRowOpenHandler = function(name, handler) {
+                dataFrame._rowOpenHandlers.push({
+                    name: name,
+                    handler: handler
+                });
             };
 
             dataFrame.addProperty = function(propId, propDispName, propType, settings) {
