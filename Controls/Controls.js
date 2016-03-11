@@ -676,6 +676,7 @@ define([
          * @param {int} settings.width - width of the box
          * @param {int} settings.height - height of the box
          * @param {int} settings.value - initial state id
+         * @param {boolean} settings.disabled - if true, the control is disabled
          * @returns {Object} - control instance
          * @constructor
          */
@@ -685,6 +686,7 @@ define([
             control._height = settings.height || 45;
             control._states = [];
             control._value = settings.value || '';
+            control._disabled = settings.disabled || false;
 
 
             /**
@@ -731,6 +733,8 @@ define([
                 var cmb = DOM.Create('select', { id: control._getSubId(''), parent: wrapper });
                 if (control._width)
                     cmb.addStyle('width',control._width+'px');
+                if (control._disabled)
+                    cmb.addAttribute('disabled', "disabled");
                 cmb.addElem(control._buildSelectContent());
                 return wrapper.toString();
             };
