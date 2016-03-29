@@ -114,6 +114,13 @@ define([
             //    //}
             //});
 
+            //$().load(function() {
+            //    console.log("test1");
+            //    console.log("datepicker id="+datepickerid);
+
+                //console.log("test2");
+            //
+            //});
         };
 
         /**
