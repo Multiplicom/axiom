@@ -77,6 +77,17 @@ define([
                 rootGrp.add(btOpen);
             }
 
+            $.each(dataFrame.getRowOpenHandlerList(), function(idx, handlerInfo) {
+                var btOpen = Controls.Button({
+                    text: _TRL(handlerInfo.name),
+                    icon: 'fa-arrow-right'
+                }).addNotificationHandler(function() {
+                    handlerInfo.handler(primKey);
+                    win.close();
+                });
+                rootGrp.add(btOpen);
+            });
+
             win.filter = function(property) {
                 var value = property.data[rowNr];
                 if (property.getDataType().isString())
@@ -90,7 +101,7 @@ define([
 
             win.setRootControl(Controls.Compound.StandardMargin(rootGrp));
             win.start();
-        }
+        };
 
         return Module;
     });
