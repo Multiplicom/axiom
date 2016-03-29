@@ -16,10 +16,10 @@
 
 
 define([
-        "require", "jquery", "_",
+        "require", "jquery","jquery_ui","_",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Controls/Compound"],
     function (
-        require, $, _,
+        require, $,jqui, _,
         AXMUtils, DOM, Icon, Compound) {
 
 
@@ -763,7 +763,7 @@ define([
                         selected: (state.id == control._value) ? 'selected="selected"' : ''
                     });
                 });
-               if (lastGroupName)
+                if (lastGroupName)
                     st += '</optgroup>';
                 return st;
             };
@@ -1327,6 +1327,87 @@ define([
                     control._value = parseFloat(control._getSub$El('slider').val());
                 return control._value;
             };
+
+            return control;
+        };
+
+        Module.DatePicker=function(settings){
+            var control = Module.SingleControlBase(settings);
+            control._width = settings.width || 160;
+            control._value = settings.value || '';
+            control._text = settings.text || '';
+            control._disabled = settings.disabled || '';
+
+            control._IsInitDone=false;
+
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
+            control.createHtml = function() {
+                control._datepickerid=control._getSubId('datepicker')
+                var rootEl = DOM.Create("input", {id: control._datepickerid});
+                rootEl.addCssClass('AXMEdit');
+                rootEl.addCssClass('AXMDatepicker');
+
+
+                if (control._disabled)
+                    rootEl.addAttribute('disabled', "disabled");
+
+                if (control._width)
+                    rootEl.addStyle('width',control._width+'px');
+                if (control._height)
+                    rootEl.addStyle('height',control._height+'px');
+                if (control._value)
+                    rootEl.setValue(control._value);
+
+                //$(window).load(function() {
+                //    console.log("test1");
+                //    console.log("datepicker id="+datepickerid);
+                //    $("#"+datepickerid).datepicker();
+                //    console.log("test2");
+
+                //});
+
+                //$("#"+control._datepickerid).onfocus=function(){
+                //    if(!control._IsInitDone){
+                //        $("#"+control._datepickerid).datepicker();
+                //        control._IsInitDone=true;
+                //    }
+                //};
+
+                return rootEl.toString();
+            };
+
+
+            control.attachEventHandlers = function() {
+                $("#"+control._datepickerid).datepicker();
+            };
+
+
+            /**
+             * Handles the html on change event
+             * @private
+             */
+            control._onChange = function() {
+                control._value = (control._getSub$El('datepicker').val());
+                control._setNewValue();
+                control.performNotify();
+            };
+
+
+
+            /**
+             * Returns the current value of the slider
+             * @returns {float}
+             */
+            control.getValue = function () {
+                if (control._getSub$El('datepicker').length>0)
+                    control._value = (control._getSub$El('datepicker').val());
+                return control._value;
+            };
+
 
             return control;
         };
