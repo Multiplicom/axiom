@@ -1364,7 +1364,7 @@ define([
 
                 //$(window).load(function() {
                 //    console.log("test1");
-                //    console.log("datepicker id="+datepickerid);
+                //    console.log(
                 //    $("#"+datepickerid).datepicker();
                 //    console.log("test2");
 
@@ -1395,8 +1395,6 @@ define([
                 control._setNewValue();
                 control.performNotify();
             };
-
-
 
             /**
              * Returns the current value of the slider
