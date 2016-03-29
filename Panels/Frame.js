@@ -1236,6 +1236,19 @@ define([
                 return 'frametab_'+frame._id+'_'+tabNr;
             };
 
+            frame._getTabsHtml = function() {
+                var st = '';
+                $.each(frame._memberFrames, function(idx, memberFrame) {
+                    var tablElDiv = DOM.Div({id:frame._getTabId(idx)})
+                        .addCssClass('AXMFrameTabElement');
+                    if (memberFrame.__stacker_disabled)
+                        tablElDiv.addCssClass('AXMFrameTabDisabled');
+                    tablElDiv.addElem(memberFrame.getTitle());
+                    st += tablElDiv.toString();
+                });
+                return st;
+            };
+
             var _super_createHtmlClient = frame.createHtmlClient;
             /**
              * Returns the html implementing the client area
@@ -1246,16 +1259,19 @@ define([
 
                 var tabDiv = DOM.Div({}).addCssClass('AXMFrameTabContainer');
                 var tabDivInner = DOM.Div({parent:tabDiv}).addCssClass('AXMFrameTabContainerInner');
-                $.each(frame._memberFrames, function(idx, memberFrame) {
-                    var tablElDiv = DOM.Div({parent: tabDivInner, id:frame._getTabId(idx)})
-                        .addCssClass('AXMFrameTabElement');
-                    if (memberFrame.__stacker_disabled)
-                        tablElDiv.addCssClass('AXMFrameTabDisabled');
-                    tablElDiv.addElem(memberFrame.getTitle());
-                });
+                tabDivInner.addElem(frame._getTabsHtml());
                 html += tabDiv.toString();
                 html += _super_createHtmlClient();
                 return html;
+            };
+
+            frame._attachTabClickHandlers = function() {
+                $.each(frame._memberFrames, function(fnr, memberFrame) {
+                    $('#'+frame._getTabId(fnr)).click(function() {
+                        if ((fnr != frame._activeMemberNr) && (!memberFrame.__stacker_disabled))
+                            frame.activateStackNr(fnr);
+                    });
+                });
             };
 
             var _super_attachEventHandlers = frame.attachEventHandlers;
@@ -1265,12 +1281,7 @@ define([
              */
             frame.attachEventHandlers = function(params) {
                 _super_attachEventHandlers(params);
-                $.each(frame._memberFrames, function(fnr, memberFrame) {
-                    $('#'+frame._getTabId(fnr)).click(function() {
-                        if ((fnr != frame._activeMemberNr) && (!memberFrame.__stacker_disabled))
-                            frame.activateStackNr(fnr);
-                    });
-                });
+                frame._attachTabClickHandlers();
                 frame.activateStackNr(0);
             };
 
@@ -1369,6 +1380,19 @@ define([
                 } while ((consumedWidth > availableWidth) && (maxTitleLength>1))
 
                 _super_setPositionClient(xl, yl, params);
+            };
+
+            var _super_dynAddMember = frame.dynAddMember;
+            /**
+             * Dynamically adds a member frame when the stacker is live displayed
+             * @param {{}} theFrame - new member frame to be added
+             */
+            frame.dynAddMember = function(theFrame) {
+                _super_dynAddMember(theFrame);
+                var tabsHtml = frame._getTabsHtml();
+                frame._getTabContainer().children('.AXMFrameTabContainerInner').html(tabsHtml);
+                frame._attachTabClickHandlers();
+                frame.activateStackNr(frame._activeMemberNr);
             };
 
             return frame;
