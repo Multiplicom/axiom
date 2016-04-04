@@ -443,6 +443,31 @@ define([
 
 
         /**
+         * Wraps a fixed width box around a control
+         * @param {Object} ctrl - control to be wrapped
+         * @param {int} width - width
+         * @returns {Object} - control instance
+         * @constructor
+         */
+        Module.FixedWidth = function(ctrl, width) {
+            var wrapper = Module.WrapperControlBase(ctrl);
+
+            /**
+             * Returns the html implementing the wrapped control
+             * @returns {string}
+             */
+            wrapper.createHtml = function() {
+                var div = DOM.Div({id: wrapper._id});
+                div.addStyle('width', width+'px');
+                div.addElem(wrapper._member.createHtml());
+                return div.toString();
+            };
+
+            return wrapper;
+        };
+
+
+        /**
          * Wraps a standard sized margin around a control
          * @param {Object} ctrl - control to be wrapped
          * @returns {Object} - control instance

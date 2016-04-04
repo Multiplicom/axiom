@@ -29,6 +29,9 @@ define([
 
         Module.leftPartSize = 160;
 
+        Module.setLeftPartSize = function(size) {
+            Module.leftPartSize = size;
+        };
 
         /**
          * Creates a new TabInfo object
