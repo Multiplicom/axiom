@@ -414,7 +414,7 @@ define([
         Module.OpenButton = function() {
             var control = Module.Button({
                 icon:'fa-external-link-square',
-                buttonClass: 'AXMButtonCommandBar',
+                buttonClass: 'AXMButtonInline',
                 width:25,
                 height:20,
                 iconSizeFraction: 0.75
@@ -431,7 +431,7 @@ define([
         Module.EditTextItemButton = function() {
             var control = Module.Button({
                 icon:'fa-pencil',
-                buttonClass: 'AXMButtonCommandBar',
+                buttonClass: 'AXMButtonInline',
                 width:25,
                 height:20,
                 iconSizeFraction: 0.85
