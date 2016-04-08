@@ -16,10 +16,10 @@
 
 
 define([
-        "require", "jquery","jquery_ui","_",
+        "require", "jquery","datetimepicker","_",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Controls/Compound"],
     function (
-        require, $,jqui, _,
+        require, $,datetimepicker, _,
         AXMUtils, DOM, Icon, Compound) {
 
 
@@ -1331,26 +1331,36 @@ define([
             return control;
         };
 
-        Module.DatePicker=function(settings){
+
+        Module.DateTimePicker=function(settings){
             var control = Module.SingleControlBase(settings);
+            control._height = settings.height || 20;
             control._width = settings.width || 160;
             control._value = settings.value || '';
             control._text = settings.text || '';
             control._disabled = settings.disabled || '';
 
             control._IsInitDone=false;
+            control._timepicker=settings.timepicker;
+            control._inline=settings.inline ;
 
+            //control._mask=settings.mask || '9999-19-39 29:59';
+            control._format=settings.format || 'Y-m-d H:i';
+            control._formatDate=settings.formatDate || 'Y-m-d';
+            control._formatTime=settings.formatTime || 'H:i';
 
+            control._defaultTime=settings.defaultTime;
+            control._defaultDate=settings.defaultDate;
+            //control._minDate:settings.minDate:'+1970/01/02';//disable dates in the future
             /**
              * Returns the html implementing the control
              * @returns {string}
              */
             control.createHtml = function() {
-                control._datepickerid=control._getSubId('datepicker')
-                var rootEl = DOM.Create("input", {id: control._datepickerid});
+                control._datetimepickerid=control._getSubId('datetimepicker');
+                var rootEl = DOM.Create("input", {id: control._datetimepickerid});
                 rootEl.addCssClass('AXMEdit');
-                rootEl.addCssClass('AXMDatepicker');
-
+                rootEl.addCssClass('AXMdatetimepicker');
 
                 if (control._disabled)
                     rootEl.addAttribute('disabled', "disabled");
@@ -1362,27 +1372,23 @@ define([
                 if (control._value)
                     rootEl.setValue(control._value);
 
-                //$(window).load(function() {
-                //    console.log("test1");
-                //    console.log(
-                //    $("#"+datepickerid).datepicker();
-                //    console.log("test2");
-
-                //});
-
-                //$("#"+control._datepickerid).onfocus=function(){
-                //    if(!control._IsInitDone){
-                //        $("#"+control._datepickerid).datepicker();
-                //        control._IsInitDone=true;
-                //    }
-                //};
-
                 return rootEl.toString();
             };
 
 
             control.attachEventHandlers = function() {
-                $("#"+control._datepickerid).datepicker();
+                $.datetimepicker.setLocale('en');
+                $("#"+control._datetimepickerid).datetimepicker({
+                    value:control._value,
+                    defaultTime:control._defaultTime,
+                    defaultDate:control._defaultDate,
+                    timepicker:control._timepicker,
+                    inline:control._inline,
+                    //mask:control._mask
+                    format:control._format,
+                    formatDate:control._formatDate,
+                    formatTime:control._formatTime
+                });
             };
 
 
@@ -1391,7 +1397,7 @@ define([
              * @private
              */
             control._onChange = function() {
-                control._value = (control._getSub$El('datepicker').val());
+                control._value = (control._getSub$El('datetimepicker').val());
                 control._setNewValue();
                 control.performNotify();
             };
@@ -1401,8 +1407,8 @@ define([
              * @returns {float}
              */
             control.getValue = function () {
-                if (control._getSub$El('datepicker').length>0)
-                    control._value = (control._getSub$El('datepicker').val());
+                if (control._getSub$El('datetimepicker').length>0)
+                    control._value = (control._getSub$El('datetimepicker').val());
                 return control._value;
             };
 
