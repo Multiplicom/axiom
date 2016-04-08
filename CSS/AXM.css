@@ -209,13 +209,32 @@ body {
 
 
 
-.AXMButtonCommandBar {
+.AXMButtonCommandBar, .AXMButtonInline {
     display: inline-block;
     background-color: transparent;
     color: rgb(137, 137, 137);
     border: none;
     cursor: pointer
 }
+
+.AXMButtonInline .AXMButtonIcon {
+    opacity: 0.5;
+}
+
+.AXMButtonCommandBar:hover, .AXMButtonInline:hover {
+    background-color: rgba(255,192,0,0.35);
+    color: rgb(50,50,50);
+}
+
+/*.AXMButtonInline:hover {*/
+    /*background-color: transparent;*/
+/*}*/
+
+.AXMButtonInline:hover .AXMButtonIcon {
+    opacity: 1;
+    background-color: transparent;
+}
+
 
 .AXMButtonChecked {
     background-color: rgba(100, 150, 255, 0.16);
@@ -230,10 +249,6 @@ body {
 
 
 
-.AXMButtonCommandBar:hover {
-    background-color: rgba(255,192,0,0.35);
-    color: rgb(50,50,50);
-}
 
 .AXMButtonHelp .AXMButtonIcon {
     display: inline-block;

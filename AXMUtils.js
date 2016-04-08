@@ -111,6 +111,15 @@ define([
         };
 
         /**
+         * Determines if an object has a property with given name
+         * @param {{}} obj - object
+         * @param {string} property - property name
+         */
+        Module.objectHasProperty = function(obj, property){
+            return typeof obj[property] != 'undefined';
+        };
+
+        /**
          * Determines if a string contains ASCII text only
          * @param v
          * @returns {boolean}
