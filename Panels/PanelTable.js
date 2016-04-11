@@ -377,7 +377,7 @@ define([
                 if (rowNr < 0)
                     AXMUtils.Test.reportBug('Negative row number');
                 if (rowNr >= panel._tableData.getRowCount())
-                    AXMUtils.Test.reportBug('Row number {nr} outside count {cnt}'.AXMInterpolate({nr: rowNr, count: panel._tableData.getRowCount()}));
+                    AXMUtils.Test.reportBug('Row number {nr} outside count {count}'.AXMInterpolate({nr: rowNr, count: panel._tableData.getRowCount()}));
                 var rowLeftHtml = '<tr id="' + panel._getRowLeftId(rowNr) + '">';
                 var rowRightHtml = '<tr id="' + panel._getRowRightId(rowNr) + '">';
                 var rowData = panel._tableData.getRow(rowNr);
