@@ -1370,7 +1370,7 @@ define([
                 if (control._height)
                     rootEl.addStyle('height',control._height+'px');
                 if (control._value)
-                    rootEl.setValue(control._value);
+                    rootEl.value=(control._value);
 
                 return rootEl.toString();
             };
