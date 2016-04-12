@@ -1019,6 +1019,8 @@ define([
                 AXMUtils.Test.checkIsNumber(xl, yl);
                 frame._adjustFrameSizeFractions(yl);
                 frame.calcSplitterPositions(yl);
+                if (!frame.splitterPositions)
+                    AXMUtils.Test.reportBug("Splitter does not seem to have more than one element");
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     var memberTop = frame.splitterPositions[idx];
                     var memberBottom = frame.splitterPositions[idx+1];
