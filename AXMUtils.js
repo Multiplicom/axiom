@@ -241,7 +241,8 @@ define([
         String.prototype.AXMInterpolate = function (args) {
             var newStr = this;
             for (var key in args) {
-                newStr = newStr.replace('{' + key + '}', args[key]);
+                var regex = new RegExp('{' + key + '}', 'g');
+                 newStr = newStr.replace(regex, args[key]);//keep replacing until all instances of the keys are replaced
             }
             return newStr;
         };
