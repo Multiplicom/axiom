@@ -130,6 +130,18 @@ define([
         Module.Static = function(settings) {
             var control = Module.SingleControlBase(settings);
             control._text = settings.text || '';
+            control._cssClass = settings.cssClass || '';
+            control._reactOnClick = settings.reactOnClick || false;
+
+            control.setCssClass = function(cssClass) {
+                control._cssClass = cssClass;
+                return control;
+            };
+
+            control.setReactOnClick = function() {
+                control._reactOnClick = true;
+                return control;
+            };
 
             /**
              * Creates the html of the control
@@ -140,8 +152,8 @@ define([
                     .addStyle('display', 'inline-block').addStyle('vertical-align','middle');
                 if (settings.maxWidth)
                     div.addStyle('max-width', settings.maxWidth+'px').addStyle('overflow-x', 'hidden').addStyle('text-overflow', 'ellipsis');
-                if (settings.cssClass)
-                    div.addCssClass(settings.cssClass);
+                if (control._cssClass)
+                    div.addCssClass(control._cssClass);
                 div.addElem(control._text);
                 return div.toString();
             };
@@ -163,6 +175,35 @@ define([
                 control._text = newText;
                 $('#'+control._id).html(newText);
             };
+
+            /**
+             * Attaches html event handlers after DOM insertion
+             */
+            control.attachEventHandlers = function() {
+                if (control._reactOnClick)
+                    control._getSub$El('').click(control._onClicked);
+            };
+
+            /**
+             * Detaches html event handlers
+             */
+            control.detachEventHandlers = function() {
+                if (control._reactOnClick)
+                    control._getSub$El('').unbind('click');
+            };
+
+            /**
+             * Handles the on click event
+             * @param ev
+             * @returns {boolean}
+             * @private
+             */
+            control._onClicked = function(ev) {
+                control.performNotify();
+                ev.stopPropagation();
+                return false;
+            };
+
 
             return control;
         };
@@ -417,7 +458,7 @@ define([
                 icon:'fa-external-link-square',
                 buttonClass: 'AXMButtonCommandBar',
                 width:25,
-                height:20,
+                height:16,
                 iconSizeFraction: 0.75
             });
             return control;
@@ -434,8 +475,8 @@ define([
                 icon:'fa-pencil',
                 buttonClass: 'AXMButtonCommandBar',
                 width:25,
-                height:20,
-                iconSizeFraction: 0.85
+                height:16,
+                iconSizeFraction: 0.75
             });
             return control;
         };
