@@ -907,8 +907,8 @@ define([
                         selected: (state.id == control._value) ? 'selected="selected"' : ''
                     });
                 });
-                if (lastGroupName)
-                    st += '</radiogroup>';
+                //if (lastGroupName)
+                //    st += '</radiogroup>';
                 return st;
             };
 
