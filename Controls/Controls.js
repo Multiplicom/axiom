@@ -815,6 +815,150 @@ define([
 
             return control;
         };
+        /**
+         * Implements a radiobutton group control. changing the selected radiobutton invokes a notification
+         * @param {{}} settings - control settings
+         * @param {int} settings.width - width of the group
+         * @param {int} settings.height - height of the group
+         * @param {int} settings.value - initial state id
+         * @param {boolean} settings.disabled - if true, the control is disabled
+         * @returns {Object} - control instance
+         * @constructor
+         */
+        Module.RadioGroup = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control._width = settings.width || 120;
+            control._height = settings.height || 45;
+            control._states = [];
+            control._value = settings.value || '';
+            control._disabled = settings.disabled || false;
+
+
+            /**
+             * Removes all the states from the list
+             */
+            control.clearStates = function() {
+                control._states = [];
+                control._getSub$El('').html(control._buildButtonContent());
+            };
+
+
+            /**
+             * Add a new state to the list
+             * @param {string} id - state id
+             * @param {string} name - state display name
+             * @param {string} group - (optional) group name the state should belong to
+             */
+            control.addState = function(id, name, group) {
+                if (!group) group = '';
+                control._states.push({id:id, name:name, group:group});
+                control._getSub$El('').html(control._buildButtonContent());
+            };
+
+
+            /**
+             * Returns the current active state
+             * @returns {boolean}
+             */
+            control.getValue = function () {
+                var item = control._getSub$El('').find(":selected");
+                if (item.length>0)
+                    control._value = item.attr('value');
+                return control._value;
+            };
+
+
+            /**
+             * Returns the html implementing this control
+             * @returns {string}
+             */
+            control.createHtml = function() {
+                var wrapper = DOM.Div();
+                wrapper.addStyle('display', 'inline-block');
+                var div = DOM.Create('div', { id: control._getSubId(''), parent: wrapper });
+                if (control._width)
+                    div.addStyle('width',control._width+'px');
+
+                div.addElem(control._buildButtonContent());
+                return wrapper.toString();
+            };
+
+
+            /**
+             * Helper function building the content of the radiogroup control
+             * @returns {string}
+             * @private
+             */
+            control._buildButtonContent = function() {
+                var st = '';
+                var lastGroupName = '';
+                $.each(control._states, function(idx, state) {
+                    //var groupName = state.group || ''; //todo: what whith groups?
+                    //if (groupName != lastGroupName) {
+                    //    if (lastGroupName)
+                    //        st += '</radiogroup>';
+                    //    lastGroupName = groupName;
+                    //    if (groupName)
+                    //        st += '<radiogroup = label="{name}">'.AXMInterpolate({name: groupName});
+                    //}
+
+                    st += '<input type="radio" id="{name}_{id}" name="{name}" value="{id}" {selected}></input><label for="{name}_{id}">{id}</label>'.AXMInterpolate({
+                        id: state.id,
+                        name: state.name,
+                        selected: (state.id == control._value) ? 'selected="selected"' : ''
+                    });
+                });
+                //if (lastGroupName)
+                //    st += '</radiogroup>';
+                return st;
+            };
+
+
+            /**
+             * Attached the html event handlers after DOM insertion
+             */
+            control.attachEventHandlers = function() {
+                var target = 'change.controlevent';
+                control._getSub$El('').unbind(target).bind(target, control._onChange);
+                //control._getSub$El('').click(control._onClicked);
+            };
+
+            /**
+             * Detach the html event handlers
+             */
+            control.detachEventHandlers = function() {
+                var target = 'change.controlevent';
+                control._getSub$El('').unbind(target);
+            };
+
+            /**
+             * Html handler implementing the state change event
+             * @private
+             */
+            control._onChange = function(ev) {
+                var oldVal = control._value;
+                var newVal = control.getValue();
+                if (newVal != oldVal)
+                    control.performNotify();
+            };
+
+
+            /**
+             * Sets a new active state
+             * @param {string} newVal - new state id
+             * @param {boolean} preventNotify - if true, no notification is issued about the state change
+             */
+            control.setValue = function(newVal, preventNotify) {
+                if (newVal == control.getValue()) return false;
+                control._value = newVal;
+                control._getSub$El('').html(control._buildButtonContent());
+                if (!preventNotify)
+                    control.performNotify();
+                return true;
+            };
+
+            return control;
+        };
 
 
         /**
