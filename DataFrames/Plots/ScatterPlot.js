@@ -157,7 +157,7 @@ define([
 
                 var content = null;
                 if (propTooltip)
-                    content: propTooltip.content2DisplayString(propTooltip.data[bestRowNr]);
+                    content = propTooltip.content2DisplayString(propTooltip.data[bestRowNr]);
 
 
                 return {
