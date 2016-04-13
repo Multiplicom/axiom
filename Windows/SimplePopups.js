@@ -328,7 +328,7 @@ define([
                 autoCenter: true
             });
 
-            var grp = Controls.Compound.GroupVert({separator:12});
+            var grp = Controls.Compound.GroupVert({separator:5});
 
             if (settings.helpId)
                 grp.add(Controls.Compound.GroupHor({verticalAlignCenter: true}, [
@@ -356,7 +356,7 @@ define([
                         onCancel();
                 });
 
-            win.ctrlChoices = Controls.DropList({width:230, value: value});
+            win.ctrlChoices = Controls.RadioGroup({value: value});
             $.each(choices, function(idx, choice) {
                 win.ctrlChoices.addState(choice.id, choice.name);
             });

@@ -877,7 +877,7 @@ define([
          */
         Module.RadioGroup = function(settings) {
             var control = Module.SingleControlBase(settings);
-            control._width = settings.width || 120;
+            control._width = settings.width || null;
             control._height = settings.height || 45;
             control._states = [];
             control._value = settings.value || '';
@@ -911,7 +911,7 @@ define([
              * @returns {boolean}
              */
             control.getValue = function () {
-                var item = control._getSub$El('').find(":selected");
+                var item = control._getSub$El('').find(":checked");
                 if (item.length>0)
                     control._value = item.attr('value');
                 return control._value;
@@ -952,10 +952,13 @@ define([
                     //        st += '<radiogroup = label="{name}">'.AXMInterpolate({name: groupName});
                     //}
 
-                    st += '<input type="radio" id="{name}_{id}" name="{name}" value="{id}" {selected}></input><label for="{name}_{id}">{id}</label>'.AXMInterpolate({
+                    var item_id = control._getSubId('_id_' + state.id);
+                    st += '<div class="RadioButtonItem"><input type="radio" id="{item_id}" name="{control_id}" value="{id}" {selected}></input><label for="{item_id}">{name}</label></div>'.AXMInterpolate({
+                        control_id: control._getSubId(''),
                         id: state.id,
+                        item_id: item_id,
                         name: state.name,
-                        selected: (state.id == control._value) ? 'selected="selected"' : ''
+                        selected: (state.id == control._value) ? 'checked="checked"' : ''
                     });
                 });
                 //if (lastGroupName)
