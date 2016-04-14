@@ -15,9 +15,9 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_", "AXM/Test"],
+        "require", "jquery", "_", "AXM/Test", "AXM/AXMUtils"],
     function (
-        require, $, _, Test) {
+        require, $, _, Test, AXMUtils) {
 
 
         /**
@@ -38,7 +38,7 @@ define([
          * @constructor
          */
         Module.Color = function (r, g, b, a) {
-            var that = {};
+            var that = AXMUtils.object("@Color");
             that.r = (typeof r == 'undefined') ? 0 : r;
             that.g = (typeof g == 'undefined') ? 0 : g;
             that.b = (typeof b == 'undefined') ? 0 : b;
