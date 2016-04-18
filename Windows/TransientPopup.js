@@ -34,6 +34,7 @@ define([
          * @param {{}} settings
          * @param {{}} settings.event - (optional) mouse click event that created this popup
          * @param {{}} settings.point - (optional) {x, y} pointer position of the transient popup
+         * @param {{}} settings.DOM$Elem - (optional) jQuery DOM element where the popup should appear on
          * @returns {{}} - popup window instance
          */
         Module.create = function(settings) {
@@ -44,14 +45,27 @@ define([
 
             window.offsetX = 30;
             window.offsetY = 30;
+            var processed = false;
             if (settings.event) {
+                processed = true;
                 window.offsetX = settings.event.pageX;
                 window.offsetY = settings.event.pageY;
             }
             if (settings.point) {
+                processed = true;
                 window.offsetX = settings.point.x;
                 window.offsetY = settings.point.y;
             }
+            if (settings.DOM$Elem) {
+                processed = true;
+                var elemW = settings.DOM$Elem.width();
+                var elemH = settings.DOM$Elem.height();
+                window.offsetX = settings.DOM$Elem.offset().left+elemW/2;
+                window.offsetY = settings.DOM$Elem.offset().top+elemH-5;
+            }
+
+            if (!processed)
+                AXMUtils.Test.reportBug("No anchor data provided for transient popup");
 
 
             /**
