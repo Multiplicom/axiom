@@ -244,8 +244,8 @@ define([
          */
         Module.Button = function(settings) {
             var control = Module.SingleControlBase(settings);
-            control._width = settings.width || 130;
-            control._height = settings.height || 55;
+            control._width = settings.width || 110;
+            control._height = settings.height || 50;
             control._buttonClass = settings.buttonClass || 'AXMButton';
             control._extraClasses = [];
             control._enabled = true;

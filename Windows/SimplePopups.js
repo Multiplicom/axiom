@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Controls/Controls"],
+        "AXM/AXMUtils", "AXM/Windows/PopupWindow", "AXM/Windows/TransientPopup", "AXM/Controls/Controls"],
     function (
         require, $, _,
-        Utils, Popupwin, Controls) {
+        Utils, Popupwin, TransientPopup, Controls) {
 
 
         /**
@@ -321,14 +321,24 @@ define([
          */
         Module.MultipleChoiceBox = function(value, choices, header, title, settings, onOK, onCancel) {
 
-            var win = Popupwin.create({
-                title: title,
-                headerIcon: settings.headerIcon||null,
-                blocking:true,
-                autoCenter: true
-            });
+            if (!settings.useTransientPopup) {
+                var win = Popupwin.create({
+                    title: title,
+                    headerIcon: settings.headerIcon||null,
+                    blocking:true,
+                    autoCenter: true
+                });
+            }
+            else {
+                var win = TransientPopup.create({
+                    DOM$Elem: settings.DOM$Elem
+                });
+            }
 
             var grp = Controls.Compound.GroupVert({separator:12});
+
+            if (settings.useTransientPopup && (!header) && title)
+                grp.add(title);
 
             if (settings.helpId)
                 grp.add(Controls.Compound.GroupHor({verticalAlignCenter: true}, [
@@ -362,6 +372,8 @@ define([
             });
             grp.add(win.ctrlChoices);
 
+            grp.add(Controls.Compound.SeparatorV(10));
+
             grp.add(Controls.Compound.GroupHor({}, [btOK, btCancel]) );
 
             win.onOK = function() {
@@ -371,7 +383,8 @@ define([
                     onOK(newValue);
             };
 
-            win.setHandler_OnPressedEnter(win.onOK);
+            if (win.setHandler_OnPressedEnter)
+                win.setHandler_OnPressedEnter(win.onOK);
             win.setRootControl(Controls.Compound.StandardMargin(grp));
             win.start();
         };
