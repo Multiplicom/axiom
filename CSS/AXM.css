@@ -444,6 +444,7 @@ body {
     background-color: rgb(230,230,230);
     /*border-right: 1px solid rgb(160,160,160);*/
     /*box-sizing: border-box;*/
+    /*box-shadow: inset 0px 0px 15px rgba(0, 0, 0, 0.32);*/
 }
 
 .flexTabWrapper {

@@ -122,8 +122,10 @@ define([
             window._opaqueBlocking = settings.blockingOpaque||false;
             window._autoCenter = settings.autoCenter||false;
             window._autoCenterTop = settings.autoCenterTop||false;
+            window._autoCenterBottom = settings.autoCenterBottom||false;
             window._canClose = !(settings.preventClose);
             window._canDock = settings.canDock||false;
+            window._fadeTime = 250;
 
             window._listeners = [];
 
@@ -309,12 +311,16 @@ define([
                     window._$ElContainer.children('.AXMPopupWindowClient').append(transfer$Elem.detach());
                 }
 
-                if (window._autoCenter || window._autoCenterTop) {
+                if (window._autoCenter || window._autoCenterTop || window._autoCenterbottom) {
                     var windowSizeX = window._$ElContainer.width();
                     window._$ElContainer
                         .css('top', 4)
                         .css('left', Math.max(0, (browserSize.sizeX-windowSizeX)/2))
                 }
+
+                if (window._autoCenterbottom)
+                    window._$ElContainer
+                        .css('bottom', 4);
 
                 if (window._autoCenter) {
                     var windowSizeY = window._$ElContainer.height();
@@ -349,10 +355,10 @@ define([
                 window._installResizeHandlers();
                 Module._activeWindows.push(window);
 
-                window._$ElContainer.fadeTo(250,1);
+                window._$ElContainer.fadeTo(window._fadeTime,1);
 
                 if (window._blocking && !window._transpBlocking && !window._opaqueBlocking)
-                    $('#blocker_'+window._id).fadeTo(250,0.5);
+                    $('#blocker_'+window._id).fadeTo(window._fadeTime,0.5);
 
 
 
@@ -580,7 +586,7 @@ define([
 
                 if (window._blocking) {
                     if (!window._transpBlocking && !window._opaqueBlocking)
-                        $('#blocker_' + window._id).fadeTo(250, 0.0, function () {
+                        $('#blocker_' + window._id).fadeTo(window._fadeTime, 0.0, function () {
                             $('#blocker_' + window._id).remove();
                         });
                     else
@@ -591,7 +597,7 @@ define([
 
 
 
-                window._$ElContainer.fadeTo(250,0, function() {
+                window._$ElContainer.fadeTo(window._fadeTime,0, function() {
                     window._$ElContainer.remove();
                     var winNr=-1;
                     $.each(Module._activeWindows, function(idx, win) {

@@ -37,6 +37,7 @@ define([
         Module.create = function(id) {
             var panel = PanelBase.create(id);
             panel._content = '';
+            panel._scrollEventHandler = null;
 
 
             /**
@@ -66,6 +67,10 @@ define([
                 return panel;
             };
 
+            panel.setScrollEventHandler = function(handler) {
+                panel._scrollEventHandler = handler;
+            };
+
             /**
              * Sets the html content of the panel
              * @param {string} content - html content
@@ -73,6 +78,15 @@ define([
             panel.setContent = function(content) {
                 panel._content = content;
                 panel.get$El().html(content);
+            };
+
+            /**
+             * Appends html content to the panel
+             * @param {string} content - html content
+             */
+            panel.appendContent = function(content) {
+                panel._content = content;
+                panel.get$El().append(content);
             };
 
 
@@ -136,6 +150,12 @@ define([
                         panel.get$El().scrollTop(panel.get$El().scrollTop()+data.deltaY*16);
                     });
                 }
+
+                if (panel._scrollEventHandler)
+                    panel.get$El().scroll(function(ev) {
+                        var data = {};
+                        panel._scrollEventHandler(data);
+                    });
 
             };
 

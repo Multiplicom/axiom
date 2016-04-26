@@ -516,6 +516,7 @@ define([
             grp.add(Controls.Static({text: txt}));
 
             win.setRootControl(Controls.Compound.StandardMargin(grp));
+            win._fadeTime = 50;
             win.start();
         };
 
