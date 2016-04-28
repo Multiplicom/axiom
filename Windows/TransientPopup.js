@@ -151,7 +151,9 @@ define([
                 });
 
 
-                $(document).bind("mouseup.transientpopup", window._onDocClicked);
+                setTimeout(function() {
+                    $(document).bind("mouseup.transientpopup", window._onDocClicked);
+                }, 50);
 
             };
 

@@ -175,8 +175,8 @@
 
 .SWXTransientCloseBox {
     position:absolute;
-    right:4px;
-    top:4px;
+    right:2px;
+    top:2px;
     cursor:pointer;
     font-size: 18px;
     color: rgb(128,128,128);
