@@ -174,6 +174,7 @@ define([
         Module._Element.prototype.CreateInnerHtml = function () {
             var rs = '';
             for (var compnr = 0; compnr < this.myComponents.length; compnr++) {
+                if (this.myComponents[compnr])
                 rs += this.myComponents[compnr].toString();
             }
             return rs;
