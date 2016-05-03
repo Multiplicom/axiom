@@ -800,6 +800,13 @@ define([
         };
 
         /**
+         * Call this function to close all temporary popups that are not toolboxes
+         */
+        Module.closeRegularTransientPopups = function() {
+            Msg.broadcast("CloseRegularTransientPopups");
+        };
+
+        /**
          * Requires an object to be present, and returns it
          * @param obj
          * @returns {*}

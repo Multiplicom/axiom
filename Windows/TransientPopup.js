@@ -192,6 +192,11 @@ define([
                 Module._current.close();
         });
 
+        Msg.listen(null, "CloseRegularTransientPopups", function() {
+            if (Module._current)
+                Module._current.close();
+        });
+
 
         _AXM_HasTransientPopups = function() {
             return Module._current;
