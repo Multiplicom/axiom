@@ -52,6 +52,9 @@ define([
                 panel._frame = iFrame;
             };
 
+            panel.setTypeId = function(id) {
+                return panel._typeId = id;
+            };
 
             /**
              * Returns the unique identifier of this panel
