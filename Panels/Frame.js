@@ -155,7 +155,7 @@ define([
             frame._hasTitle = false;
             frame._title = '';
             frame._sizeInfos = [Module.dimSizeInfo(), Module.dimSizeInfo()]; //allowed frame size range in X and Y dimension
-            frame.splitterColor = "rgb(230,230,230)";
+            frame.splitterColor = null;
             frame._tearDownHanders = [];//List of functions that will be called when the frame isa about to be removed
             frame._listeners = [];
             frame._toolBox = null;
@@ -758,7 +758,8 @@ define([
                         if (frame.isVertSplitter())
                             splitdiv.addCssClass('AXMSplitterV');
                     }
-                    splitdiv.addStyle('background-color', frame.splitterColor);
+                    if (frame.splitterColor)
+                        splitdiv.addStyle('background-color', frame.splitterColor);
                     html += splitdiv.toString();
                 }
                 $.each(frame._memberFrames, function(idx, memberFrame) {

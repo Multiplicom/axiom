@@ -370,7 +370,8 @@ define([
                             newTitle = frame.getCurrentTabInfo().headerInfo.getSingleTitle();
                     }
                     frame.viewTitle.get$El().fadeTo(200,0, function() {
-                        frame.viewTitle.modifyText(newTitle);
+                        var newTitleHtml = '<div class="ViewTitleDecorator">' + newTitle + '</div>';
+                        frame.viewTitle.modifyText(newTitleHtml);
                         if (newTitle)
                             frame.viewTitle.get$El().fadeTo(200,1);
                     });
