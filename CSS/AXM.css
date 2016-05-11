@@ -485,8 +485,6 @@ body {
 .AXMFlexTabText {
     display:inline-block;
     vertical-align: top;
-    color: black;
-    opacity: 0.45;
 }
 
 .AXMFlexTabActive {

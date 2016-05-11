@@ -57,6 +57,7 @@ define([
 
                 var toolBoxStart = DOM.Div({});
                 toolBoxStart.addCssClass("ToolBoxStart");
+                //toolBoxStart.addStyle("top", "4px");
                 toolBoxStart.addElem(toolBox.getIcon().renderHtml());
                 toolBox._frame.getRoot$El().append(toolBoxStart.toString());
 
