@@ -17,10 +17,10 @@
 
 define([
         "require", "jquery","datetimepicker","_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Controls/Compound"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound"],
     function (
         require, $,datetimepicker, _,
-        AXMUtils, DOM, Icon, Compound) {
+        AXMUtils, DOM, Icon, Color, Compound) {
 
 
         /**
@@ -1613,6 +1613,100 @@ define([
 
             return control;
         };
+
+
+
+        /**
+         * Implements a color picker control
+         * @param {{}} settings - control settings
+         * @param {AXM.Color} settings.value - initial color value
+         * @returns {Object} - control instance
+         * @constructor
+         */
+        Module.ColorPickerPredefined = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control._value = settings.value || Color.Color(0.5,0.5,0.5);
+
+            control._baseColors = [
+                Color.Color(0.9, 0.2, 0.2),
+                Color.Color(0.9, 0.5, 0.0),
+                Color.Color(0.8, 0.6, 0.0),
+                Color.Color(0.4, 0.6, 0.0),
+                Color.Color(0.0, 0.7, 0.0),
+                Color.Color(0.2, 0.6, 0.6),
+
+
+                Color.Color(0.3, 0.3, 1.0),
+                Color.Color(0.7, 0.2, 0.7),
+                Color.Color(0.4, 0.4, 0.4),
+            ];
+
+            control._colors = [];
+            $.each(control._baseColors, function(idx, baseColor) {
+                control._colors.push(baseColor.darken(0.3));
+            });
+            $.each(control._baseColors, function(idx, baseColor) {
+                control._colors.push(baseColor.lighten(0.1).deSaturate(0.15));
+            });
+            $.each(control._baseColors, function(idx, baseColor) {
+                control._colors.push(baseColor.lighten(0.5));
+            });
+
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
+            control.createHtml = function() {
+
+                var div = DOM.Div({ id:control._getSubId('') });
+                var divCurrent = DOM.Div({ parent: div, id:control._getSubId('current') });
+                divCurrent.addStyle("width", "30px").addStyle("height", "49px").addStyle("display", "inline-block").addStyle("margin-right","7px").addStyle("margin-bottom","2px");
+                divCurrent.addStyle("background-color", control._value.toString());
+
+                var divColors = DOM.Div({ parent: div });
+                divColors.addStyle("display", "inline-block");
+                $.each(control._colors,function(idx, color) {
+                    var divColor = DOM.Div({ parent: divColors, id:control._getSubId('color_'+idx) });
+                    divColor.addStyle("width", "15px").addStyle("height", "15px").addStyle("display", "inline-block").addStyle("margin-right","2px").addStyle("margin-bottom","2px").addStyle("cursor", "pointer");
+                    divColor.addStyle("background-color", color.toString());
+                    if ((idx+1)%control._baseColors.length==0)
+                        divColors.addElem('<br>');
+                });
+
+                return div.toString();
+            };
+
+
+            /**
+             * Attached the html events after DOM creation
+             */
+            control.attachEventHandlers = function() {
+                $.each(control._colors,function(idx, color) {
+                    $('#' + control._getSubId('color_'+idx)).click(function() {
+                        control._value = color;
+                        $('#' + control._getSubId('current')).css("background-color", color.toString());
+                        control.performNotify();
+                    })
+                });
+            };
+
+
+
+
+            /**
+             * Returns the current value of the slider
+             * @returns {AXM.Color}
+             */
+            control.getValue = function () {
+                //if (control._getSub$El('slider').length>0)
+                //    control._value = parseFloat(control._getSub$El('slider').val());
+                return control._value;
+            };
+
+            return control;
+        };
+
 
 
         return Module;

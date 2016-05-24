@@ -126,6 +126,12 @@ define([
                 return Module.Color((1 - fc) * this.r + fc, (1 - fc) * this.g + fc, (1 - fc) * this.b + fc, this.a);
             };
 
+            that.deSaturate = function(amount) {
+                var av = (this.r+this.g+this.b)/3.0;
+                var fc = amount;
+                return Module.Color((1 - fc) * this.r + fc*av, (1 - fc) * this.g + fc*av, (1 - fc) * this.b + fc*av, this.a);
+            };
+
             /**
              * Returns a version of the color with a new opacity
              * @param {float} opacity

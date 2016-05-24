@@ -206,6 +206,7 @@ define([
                 $.each(compound._members, function(idx, member) {
                     var elemDiv = DOM.Div({parent:div});
                     elemDiv.addStyle('display', 'inline-block');
+//                    elemDiv.addStyle('position', 'relative');
                     elemDiv.addStyle('vertical-align', (settings.verticalAlignCenter)?'center':'top');
                     elemDiv.addStyle('white-space', 'normal');
                     elemDiv.addStyle('margin-right', compound._separator+'px');
@@ -260,6 +261,10 @@ define([
                 return ctrl;
             };
 
+            grid.clearData = function() {
+                grid._rows = [];
+            };
+
 
             /**
              * Returns the number of rows
@@ -275,7 +280,7 @@ define([
              * @returns {String|string|*}
              */
             grid.createHtml = function() {
-                var div = DOM.Div();
+                var div = DOM.Div({id: grid._id+'_wrapper'});
                 div.addStyle('display','inline-block');
 
                 var st = '<table style="">';
@@ -293,6 +298,12 @@ define([
                 div.addElem(st);
 
                 return div.toString();
+            };
+
+            grid.liveUpdate = function() {
+                var $El = $('#' + grid._id+'_wrapper');
+                $El.html(grid.createHtml());
+                grid.attachEventHandlers();
             };
 
 
@@ -449,7 +460,7 @@ define([
          * @returns {Object} - control instance
          * @constructor
          */
-        Module.FixedWidth = function(ctrl, width) {
+        Module.FixedWidth = function(ctrl, width, isMinimum) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
             /**
@@ -458,7 +469,10 @@ define([
              */
             wrapper.createHtml = function() {
                 var div = DOM.Div({id: wrapper._id});
-                div.addStyle('width', width+'px');
+                if (isMinimum)
+                    div.addStyle('min-width', width+'px');
+                else
+                    div.addStyle('width', width+'px');
                 div.addElem(wrapper._member.createHtml());
                 return div.toString();
             };
