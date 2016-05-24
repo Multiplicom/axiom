@@ -315,6 +315,7 @@ define([
          * @param {string} header - text above the drop down
          * @param {string} title - popup title
          * @param {{}} settings
+         * @param {boolean} settings.canBeEmpty - allow to select nothing
          * @param {function} onOK - called when the user clicks OK (active choice id provided as an argument)
          * @param {function} onCancel - called when the user clicks Cancel
          * @constructor
@@ -378,9 +379,14 @@ define([
 
             win.onOK = function() {
                 var newValue = win.ctrlChoices.getValue();
-                win.close();
-                if (onOK)
-                    onOK(newValue);
+                if(!newValue && !settings.canBeEmpty){
+                    Module.ErrorBox(_TRL("Please select an option from the list."));
+                }
+                else{
+                    win.close();
+                    if (onOK)
+                        onOK(newValue);
+                }
             };
 
             if (win.setHandler_OnPressedEnter)
