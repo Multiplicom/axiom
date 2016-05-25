@@ -94,7 +94,12 @@ define([
              * @returns {string}
              */
             that.toStringHEX = function () {
-                return (Math.round(this.getR() * 255)).toString(16) + (Math.round(this.getG() * 255)).toString(16) + (Math.round(this.getB() * 255)).toString(16);
+
+                function componentToHex(c) {
+                    var hex = c.toString(16);
+                    return hex.length == 1 ? "0" + hex : hex;
+                }
+                return "#" + componentToHex(this.getR()) + componentToHex(this.getG()) + componentToHex(this.getB());
             };
 
 
@@ -196,6 +201,22 @@ define([
             }
         };
 
+        /**
+         * Returns an rgb color class
+         * @param {string} hex - color in hexadecimal notation
+         * @param {float} opacity - opacity value (range: 0-1)
+         */
+        Module.parseHexString = function(hex, opacity) {
+            var h = hex.replace('#', '');
+            opacity = typeof opacity !== 'undefined' ? opacity : 1;
+            h =  h.match(new RegExp('(.{'+h.length/3+'})', 'g'));
+
+            for(var i=0; i<h.length; i++)
+                h[i] = parseInt(h[i].length==1? h[i]+h[i]:h[i], 16);
+            h.push(opacity);
+
+            return Module.Color(h[0], h[1], h[2], h[3]);
+        };
 
         /**
          * A list of commonly used standard colors
@@ -231,9 +252,8 @@ define([
             Module.Color(0.5,0.6,0.5),
             Module.Color(0.6,0.6,0.6)
         ];
-        
+
 
 
         return Module;
     });
-
