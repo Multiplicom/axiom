@@ -99,7 +99,7 @@ define([
                     var hex = c.toString(16);
                     return hex.length == 1 ? "0" + hex : hex;
                 }
-                return "#" + componentToHex(this.getR()) + componentToHex(this.getG()) + componentToHex(this.getB());
+                return "#" + componentToHex(Math.round(this.getR() * 255)) + componentToHex(Math.round(this.getG() * 255)) + componentToHex(Math.round(this.getB() * 255));
             };
 
 
@@ -215,7 +215,7 @@ define([
                 h[i] = parseInt(h[i].length==1? h[i]+h[i]:h[i], 16);
             h.push(opacity);
 
-            return Module.Color(h[0], h[1], h[2], h[3]);
+            return Module.Color(h[0]/255, h[1]/255, h[2]/255.0, h[3]);
         };
 
         /**
