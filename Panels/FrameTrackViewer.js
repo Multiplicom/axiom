@@ -651,6 +651,8 @@ define([
             panel._isrunning = false;
             panel._canScrollY = false;
 
+            panel._notificationHandlersPositionChanged = [];
+
 
             panel.getCenterPosition = function() {
                 var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
@@ -665,6 +667,14 @@ define([
                 panel._offset = -position+displayWidth/2/panel._zoomfactor;
                 panel._restrictViewToRange();
                 panel.render();
+                panel._notifyPosChanged();
+            };
+
+            panel.setOffsetAndZoom = function(offset, zoomFactor) {
+                panel._offset = offset;
+                panel._zoomfactor = zoomFactor;
+                panel.render();
+
             };
 
             panel.setSelection = function(posStart, posEnd) {
@@ -688,6 +698,10 @@ define([
              */
             panel.setMaxZoomFactor = function(fact) {
                 panel._maxZoomFactor = fact;
+            };
+
+            panel.addNotificationHandlersPositionChanged = function(handler) {
+                panel._notificationHandlersPositionChanged.push(handler);
             };
 
             /**
@@ -878,13 +892,16 @@ define([
                 panel._offset = panel._offset + (1.0/z2-1.0/z1)*centralPx;
                 panel._restrictViewToRange();
                 panel.render();
+                panel._notifyPosChanged();
             };
 
             panel._handleMoveX = function(offsetDiff, donotUpdate) {
                 panel._offset += offsetDiff;
                 panel._restrictViewToRange();
-                if (!donotUpdate)
+                if (!donotUpdate) {
                     panel.render();
+                    panel._notifyPosChanged();
+                }
             };
 
             /**
@@ -967,6 +984,13 @@ define([
             panel.hasDragged = function() {
                 return !!panel._hasDragged;
             };
+
+            panel._notifyPosChanged = function() {
+                $.each(panel._notificationHandlersPositionChanged, function(idx, handler) {
+                    handler();
+                });
+            };
+
 
 
 
