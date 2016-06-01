@@ -652,6 +652,7 @@ define([
             panel._canScrollY = false;
 
             panel._notificationHandlersPositionChanged = [];
+            panel._notificationHandlersSelectionChanged = [];
 
 
             panel.getCenterPosition = function() {
@@ -678,9 +679,12 @@ define([
             };
 
             panel.setSelection = function(posStart, posEnd) {
-                panel._selStart = posStart;
-                panel._selEnd = posEnd;
-                panel.renderLayer('selection');
+                if ((panel._selStart!=posStart) || (panel._selEnd!=posEnd)) {
+                    panel._selStart = posStart;
+                    panel._selEnd = posEnd;
+                    panel.renderLayer('selection');
+                    panel._notifySelectionChanged();
+                }
             };
 
             /**
@@ -702,6 +706,10 @@ define([
 
             panel.addNotificationHandlersPositionChanged = function(handler) {
                 panel._notificationHandlersPositionChanged.push(handler);
+            };
+
+            panel.addNotificationHandlersSelectionChanged = function(handler) {
+                panel._notificationHandlersSelectionChanged.push(handler);
             };
 
             /**
@@ -987,6 +995,12 @@ define([
 
             panel._notifyPosChanged = function() {
                 $.each(panel._notificationHandlersPositionChanged, function(idx, handler) {
+                    handler();
+                });
+            };
+
+            panel._notifySelectionChanged = function() {
+                $.each(panel._notificationHandlersSelectionChanged, function(idx, handler) {
                     handler();
                 });
             };
