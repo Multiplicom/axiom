@@ -400,10 +400,11 @@ define([
             /**
              * Closes a tab, provided an ID
              * @param {string} tabId - id of the tab to be removed
+             * @param {boolean} doNotAnimate - if true, there will be no animation for closing the frame
              * @param {boolean} doNotRemoveFrame - if true, the frame contained in the tab is not removed (used in the case the frame is transferred to a popup window)
              * @param {function} onCompleted - executed when the animation of the removal is completed
              */
-            frame.closeTab_byID = function(tabId, doNotRemoveFrame, onCompleted) {
+            frame.closeTab_byID = function(tabId, doNotAnimate, doNotRemoveFrame, onCompleted) {
                 var tabNr = frame._tabId2Nr(tabId);
                 var tabInfo = frame._myTabs[tabNr];
 
@@ -426,7 +427,7 @@ define([
                     }
                     tabInfo.tabFrame.informWillClose();
                 }
-                tabInfo.get$El().slideUp(200, function() {
+                var removeFrame = function(){
                     var tabNr = frame._tabId2Nr(tabId);// need to re-quiry: might be changed after delay
                     frame._myTabs[tabNr].detachEventHandlers();
                     tabInfo.get$El().remove();
@@ -461,7 +462,14 @@ define([
                     }
                     if (onCompleted)
                         onCompleted();
-                });
+                };
+                if(doNotAnimate){
+                    removeFrame();
+                }
+                else{
+                    tabInfo.get$El().slideUp(200, removeFrame);
+                }
+
             };
 
 
@@ -563,10 +571,11 @@ define([
             /**
              * Closes a view (tab or undocked popup), provided a tab ID
              * @param tabId
+             * @param {boolean} doNotAnimate - if true, there will be no animation for closing the frame
              */
-            frame.closeView_byID = function(tabId) {
+            frame.closeView_byID = function(tabId, doNotAnimate) {
                 if (frame.hasTabId(tabId)) {
-                    frame.closeTab_byID(tabId);
+                    frame.closeTab_byID(tabId, doNotAnimate);
                 }
                 else {
                     $.each(PopupWindow.getActiveWindowList(), function(idx, popupWindow) {
