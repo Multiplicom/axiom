@@ -503,7 +503,7 @@ define([
                     tabInfo.tabFrame.repositionSubFrames();//done here because elements in an initially invisible tab may not be measured correctly for positioning
 
                 AXMUtils.animateBoxTransition(tabInfo.get$El(), popup.get$El(), {}, function() {
-                    frame.closeTab_byID(tabId, true);
+                    frame.closeTab_byID(tabId, false, true);
                 });
             };
 
