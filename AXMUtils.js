@@ -743,6 +743,32 @@ define([
         };
 
 
+        Module.loadLocalFile = function(onProceed) {
+
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.style.display = 'none';
+            input.onchange = function(e) {
+                if (input.files.length>0) {
+                    var file = input.files[0];
+
+                    var reader = new FileReader();
+
+                    reader.onload = function(event) {
+                        var textFile = event.target;
+                        var txt = textFile.result;
+                        onProceed(file.name, txt);
+                        //Module.loadFromText(file.name, txt, true);
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.focus();
+            input.click();
+        };
+
+
+
         Module.animateBoxTransition = function(elementFrom, elementTo, settings, onStarted, onCompleted) {
             var transId = '_transientAnim_' + Module.getUniqueID();
             var px0 = elementFrom.offset().left;

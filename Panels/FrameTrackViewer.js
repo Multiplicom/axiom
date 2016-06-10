@@ -1055,10 +1055,11 @@ define([
 
             theFrame.trackControlsGroup = Controls.Compound.GroupVert({separator: 3});
 
-
             var toolBox = Frame.ToolBox.create(
                 Icon.createFA('fa-bars'),
-                Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(theFrame.trackControlsGroup), appData.leftPanelWidth));
+                Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({separator: 6}, [
+                    theFrame.trackControlsGroup
+                ]) ), appData.leftPanelWidth));
 
             theFrame.setToolBox(toolBox);
 
