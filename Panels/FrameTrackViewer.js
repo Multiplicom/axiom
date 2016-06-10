@@ -1087,7 +1087,15 @@ define([
 
 
             theFrame.addTrack = function(track) {
+                var $El = $('#' + thePanel.getId() + '_content');
+                var isLive = thePanel._isrunning;
                 thePanel.addTrack(track);
+
+                if (isLive) {
+                    $El.append(track.createHtml());
+                    track.attachEventHandlers();
+                }
+
                 if (track.canHide()) {
                     track.__ctrl_visible = Controls.Check({text: track.getName(), checked: track.isVisible()});
                     theFrame.trackControlsGroup.add(track.__ctrl_visible);
@@ -1096,6 +1104,9 @@ define([
                         track.setVisible(track.__ctrl_visible.getValue());
                         thePanel.rescale({resizing: false});
                     });
+                }
+                if (isLive) {
+                    thePanel.rescale({resizing: false});
                 }
             };
 
