@@ -1550,6 +1550,11 @@ define([
             frame._commandButtonsList = [];
 
 
+            frame.addCommandSpacer = function(space) {
+                frame._controlGroup.add(ControlsCompound.SeparatorH(space));
+            };
+
+
             /**
              * Adds a command to the command bar
              * @param {{}} settings - same settings as for a AXM.Controls.Button

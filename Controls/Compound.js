@@ -150,7 +150,7 @@ define([
              * @returns {string}
              */
             compound.createHtml = function() {
-                var div = DOM.Div();
+                var div = DOM.Div({id: compound._id+'_wrapper'});
                 $.each(compound._members, function(idx, member) {
                     var elemDiv = DOM.Div({parent:div});
                     if (idx>0) {
@@ -161,6 +161,13 @@ define([
                 });
                 return div.toString();
             };
+
+            compound.liveUpdate = function() {
+                var $El = $('#' + compound._id+'_wrapper');
+                $El.html(compound.createHtml());
+                compound.attachEventHandlers();
+            };
+
 
             return compound;
         };

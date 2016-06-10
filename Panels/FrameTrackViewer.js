@@ -16,10 +16,12 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Panels/PanelBase", "AXM/Panels/Frame", "AXM/Canvas", "AXM/DrawUtils", "AXM/Color", "AXM/Icon"
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Panels/PanelBase", "AXM/Panels/Frame",
+        "AXM/Canvas", "AXM/DrawUtils", "AXM/Color", "AXM/Icon", "AXM/Controls/Controls"
     ],
     function (require, $, _,
-              AXMUtils, DOM, PanelBase, Frame, Canvas, DrawUtils, Color, Icon
+              AXMUtils, DOM, PanelBase, Frame,
+              Canvas, DrawUtils, Color, Icon, Controls
     ) {
 
 
@@ -35,9 +37,12 @@ define([
         Module._trackMarginV = 2;
         Module._scrollYArrowSize = 20;
 
-        Module.Track = function () {
+        Module.Track = function (settings) {
             var track = AXMUtils.object('@TrackViewTrack');
             track._id = AXMUtils.getUniqueID();
+            track._visible = settings.defaultVisible || false;
+            track._canHide = settings.canHide || false;
+            track._name = settings.name || "Track";
             track._width = 1;
             track._fixedHeight = -1;
             track.cnvs = Canvas.create(track._id, ['main', 'selection']);
@@ -47,6 +52,22 @@ define([
 
             track.getOffsetY = function() {
                 return track._offsetY;
+            };
+
+            track.setName = function(name) {
+                track._name = name;
+            };
+
+            track.getName = function() {
+                return track._name;
+            };
+
+            track.canHide = function() {
+                return track._canHide;
+            };
+
+            track.isVisible = function() {
+                return track._visible;
             };
 
 
@@ -141,6 +162,8 @@ define([
 
             track.createHtml = function () {
                 var rootDiv = DOM.Div({id: 'track_' + track.getId()});
+                if (!track.isVisible())
+                    rootDiv.addStyle("display", "none");
                 //rootDiv.addStyle('width', '100%');
                 rootDiv.addStyle('height', track._fixedHeight + "px");
                 rootDiv.addStyle('border-bottom', "{w}px solid rgb(220,220,220)".AXMInterpolate({w: Module._trackMarginV}));
@@ -171,6 +194,15 @@ define([
                 rightDiv.addStyle("height", "100%");
 
                 return rootDiv.toString();
+            };
+
+            track.setVisible = function(status) {
+                track._visible = status;
+                var $El = $('#track_' + track.getId());
+                if (!status)
+                    $El.hide();
+                else
+                    $El.show();
             };
 
 
@@ -556,7 +588,7 @@ define([
 
 
         Module.Track_Position = function () {
-            var track = Module.Track();
+            var track = Module.Track({canHide: true, defaultVisible: true, name: "Position"});
             track.setFixedHeight(20);
             track._customLabelConvertor = null;
 
@@ -835,17 +867,22 @@ define([
                 panel._width = xl;
                 panel._height = yl;
                 panel._restrictViewToRange();
+                panel.rescale(params);
+            };
 
+            panel.rescale = function (params) {
                 var fixedPortionH = 0;
                 var variablePortionBudget = 0;
                 var hasVariableHeightTracks = false;
                 $.each(panel._tracks, function (idx, track) {
-                    fixedPortionH += Module._trackMarginV;
-                    if (track.hasFixedHeight())
-                        fixedPortionH += track.getFixedHeight();
-                    else {
-                        hasVariableHeightTracks = true;
-                        variablePortionBudget += 1;
+                    if (track.isVisible()) {
+                        fixedPortionH += Module._trackMarginV;
+                        if (track.hasFixedHeight())
+                            fixedPortionH += track.getFixedHeight();
+                        else {
+                            hasVariableHeightTracks = true;
+                            variablePortionBudget += 1;
+                        }
                     }
                 });
                 if (panel._canScrollY && hasVariableHeightTracks)
@@ -854,8 +891,8 @@ define([
                 $.each(panel._tracks, function (idx, track) {
                     var tyl = null;
                     if (!track.hasFixedHeight())
-                        tyl = (yl - fixedPortionH)*1.0/variablePortionBudget;
-                    track.resize(xl, tyl, params);
+                        tyl = (panel._height - fixedPortionH)*1.0/variablePortionBudget;
+                    track.resize(panel._width, tyl, params);
                 });
                 panel.render();
             };
@@ -1016,9 +1053,20 @@ define([
             var thePanel = Module.PanelTrackViewer();
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
+            theFrame.trackControlsGroup = Controls.Compound.GroupVert({separator: 3});
+
+
+            var toolBox = Frame.ToolBox.create(
+                Icon.createFA('fa-bars'),
+                Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(theFrame.trackControlsGroup), appData.leftPanelWidth));
+
+            theFrame.setToolBox(toolBox);
+
             theFrame.getPanel = function () {
                 return thePanel;
             };
+
+            theFrame.addCommandSpacer(40);
 
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
@@ -1035,6 +1083,20 @@ define([
                 var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 thePanel._handleZoom(0.8, displayWidth/2);
             });
+
+
+            theFrame.addTrack = function(track) {
+                thePanel.addTrack(track);
+                if (track.canHide()) {
+                    track.__ctrl_visible = Controls.Check({text: track.getName(), checked: track.isVisible()});
+                    theFrame.trackControlsGroup.add(track.__ctrl_visible);
+                    theFrame.trackControlsGroup.liveUpdate();
+                    track.__ctrl_visible.addNotificationHandler(function() {
+                        track.setVisible(track.__ctrl_visible.getValue());
+                        thePanel.rescale({resizing: false});
+                    });
+                }
+            };
 
             return theFrame;
         };
