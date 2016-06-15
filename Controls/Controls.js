@@ -1615,6 +1615,59 @@ define([
         };
 
 
+        Module.DateRange = function(settings) {
+
+            var pad = function(num, size) {
+                var s = num+"";
+                while (s.length < size) s = "0" + s;
+                return s;
+            };
+
+            var control = Module.DropList(settings);
+            control.addState('', _TRL("-- All dates --"));
+            var monthNames = [_TRL('January'), _TRL('February'), _TRL('March'), _TRL('April'), _TRL('May'), _TRL('June'), _TRL('July'), _TRL('August'), _TRL('September'), _TRL('October'), _TRL('November'), _TRL('December')];
+            var currentDate = new Date();
+            var currentMonth = currentDate.getMonth();
+            var currentYear = currentDate.getYear()+1900;
+            for (var i=0; i<18; i++) {
+                control.addState(currentYear+'-'+(currentMonth+1), monthNames[currentMonth] +  ' ' + currentYear, ' ' + currentYear);
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+            }
+
+            control.isSet = function() {
+                var value = control.getValue();
+                return !!value;
+            };
+
+            control.getDateRangeStart = function() {
+                if (!control.isSet())
+                    return "1900-01-01";
+                var year = control.getValue().split('-')[0];
+                var month = control.getValue().split('-')[1];
+                return year + '-' + pad(month,2) + "-01";
+            };
+
+            control.getDateRangeEnd = function() {
+                if (!control.isSet())
+                    return "2100-01-01";
+                var year = control.getValue().split('-')[0];
+                var month = control.getValue().split('-')[1];
+                var date = new Date(year, month-1, 1, 0,0, 0);
+                date.setMonth(date.getMonth() + 1);
+                date.setDate(date.getDate() - 1);
+                var year = date.getYear() + 1900;
+                var month = date.getMonth() + 1;
+                var day = date.getDate();
+                return year + '-' + pad(month,2) + '-' + pad(day,2);
+            };
+
+
+            return control;
+        };
 
         /**
          * Implements a color picker control
