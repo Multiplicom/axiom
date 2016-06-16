@@ -33,7 +33,7 @@ define([
 
         Module._objectTypes = {};
 
-
+        Module.extraTokenDelimiter = '==';
 
 
 
@@ -277,6 +277,7 @@ define([
                 dataFrame.objectType = Module.createObjectType(objectTypeId, 'id');
             }
             dataFrame._rowCount = 0;
+            dataFrame._extraTokens = {};
             dataFrame._properties = [];
             dataFrame._mapProperties = {};
             dataFrame._name = name;
@@ -289,6 +290,10 @@ define([
 
             dataFrame.getRowOpenHandlerList = function() {
                 return dataFrame._rowOpenHandlers;
+            };
+
+            dataFrame.addExtraToken = function(key, value) {
+                dataFrame._extraTokens[key] = value;
             };
 
             dataFrame.addRowOpenHandler = function(name, handler) {
@@ -366,6 +371,9 @@ define([
                 $.each(dataFrame.getProperties(), function(idx, propInfo) {
                     subFrame.addProperty(propInfo.getId());
                 });
+                $.each(dataFrame._extraTokens, function(key, value) {
+                    subFrame.addExtraToken(key, value);
+                });
                 var rowSelGet = dataFrame.objectType.rowSelGet;
                 var dataPrimKey = dataFrame.getPrimKeyProperty().data;
                 for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
@@ -400,6 +408,9 @@ define([
                 str += '#RD_TEXT\n';
                 str += '# datatype: {tpe}\n'.AXMInterpolate({tpe: dataFrame.getObjectType().getTypeId()});
                 str += '# key: {colid}\n'.AXMInterpolate({colid: dataFrame.getObjectType().getPrimKey()});
+                $.each(dataFrame._extraTokens, function(key, value) {
+                    str += '# extratoken: ' + key + Module.extraTokenDelimiter + value + '\n';
+                });
                 $.each(dataFrame.getProperties(), function(idx, propInfo) {
                     str += '# column: ' + propInfo.getId() + '\t' + propInfo.getDispName() + '\t' + propInfo.getDataType().getId() + '\n';
                 });
@@ -520,6 +531,12 @@ define([
                         if(!DataTypes[columnProperties[2]])
                             AXMUtils.reportBug(_TRL('RD file column header type is not supported'));
                         dataFrame.addProperty(columnProperties[0], columnProperties[1], DataTypes[columnProperties[2]]);
+                    }
+                    var extraTokenString = "# extratoken: ";
+                    if(line.indexOf(extraTokenString) == 0) {
+                        var extraToken = line.substr(extraTokenString.length);
+                        var keyValue = extraToken.split(Module.extraTokenDelimiter);
+                        dataFrame.addExtraToken(keyValue[0], keyValue[1]);
                     }
                 }
                 else{
