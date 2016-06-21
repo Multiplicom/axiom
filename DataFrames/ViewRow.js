@@ -49,9 +49,11 @@ define([
             var grp = Controls.Compound.Grid({});
             rootGrp.add(Controls.Compound.VScroller(grp, 400));
 
+            var rowData = {}
             $.each(dataFrame.getProperties(), function(idx, property) {
                 grp.setItem(idx, 0, property.getDispName());
                 grp.setItem(idx, 1, property.content2DisplayString(property.data[rowNr]));
+                rowData[property.getId()] = property.data[rowNr];
                 if (parentWin.performRowSelected) {
                     var filterButton = Controls.Button({
                         icon: 'fa-filter',
@@ -72,17 +74,18 @@ define([
                     text: _TRL('Open'),
                     icon: 'fa-arrow-right'
                 }).addNotificationHandler(function() {
-                    openHandler(primKey);
+                    openHandler(primKey, rowData);
                 });
                 rootGrp.add(btOpen);
             }
+
 
             $.each(dataFrame.getRowOpenHandlerList(), function(idx, handlerInfo) {
                 var btOpen = Controls.Button({
                     text: _TRL(handlerInfo.name),
                     icon: 'fa-arrow-right'
                 }).addNotificationHandler(function() {
-                    handlerInfo.handler(primKey);
+                    handlerInfo.handler(primKey, rowData);
                     win.close();
                 });
                 rootGrp.add(btOpen);
