@@ -92,7 +92,7 @@ define([
                     var propInfo = sourceDataFrame.getProperty(propId);
                     var newProp = dataFrame.addProperty(
                         AXMUtils.getUniqueID(),
-                        sourceDataFrame.getName() + ' - ' + propInfo.getDispName(),
+                        sourceDataFrame.getName() + ': ' + propInfo.getDispName(),
                         propInfo.getDataType(),
                         {});
                     var primKey = dataFrame.getPrimKeyProperty();
