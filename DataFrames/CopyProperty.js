@@ -90,7 +90,7 @@ define([
                     var sourceDataFrame = compatibleDataFrames[dataFrameId];
                     var propId = win.ctrlProperty.getValue();
                     var propInfo = sourceDataFrame.getProperty(propId);
-                    newProp = dataFrame.addProperty(
+                    var newProp = dataFrame.addProperty(
                         AXMUtils.getUniqueID(),
                         sourceDataFrame.getName() + ' - ' + propInfo.getDispName(),
                         propInfo.getDataType(),
