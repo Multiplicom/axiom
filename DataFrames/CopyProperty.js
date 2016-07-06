@@ -56,7 +56,7 @@ define([
                 win.ctrlDataFrame.addState(idx+1, frame.getName());
             });
             grp.add(Controls.Compound.GroupHor({}, ['Dataframe: ', win.ctrlDataFrame]));
-            win.ctrlDataFrame.addNotificationHandler(function() {win.update;});
+            win.ctrlDataFrame.addNotificationHandler(function() {win.update()});
 
             win.ctrlProperty = Controls.DropList({width:300});
             grp.add(Controls.Compound.GroupHor({}, ['Property: ', win.ctrlProperty]));
@@ -97,7 +97,7 @@ define([
                         {});
                     var primKey = dataFrame.getPrimKeyProperty();
                     var sourcePrimKey = sourceDataFrame.getPrimKeyProperty();
-                    var sourceMap = {}
+                    var sourceMap = {};
                     for (var rowNr = 0; rowNr < sourceDataFrame.getRowCount(); rowNr++)
                         sourceMap[sourcePrimKey.data[rowNr]] = rowNr;
                     for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
