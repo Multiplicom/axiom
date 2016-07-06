@@ -1054,11 +1054,13 @@ define([
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
             theFrame.trackControlsGroup = Controls.Compound.GroupVert({separator: 3});
+            theFrame._popupMenuExtraControlsGroup = Controls.Compound.GroupVert({separator: 3});
 
             var toolBox = Frame.ToolBox.create(
                 Icon.createFA('fa-bars'),
-                Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({separator: 6}, [
-                    theFrame.trackControlsGroup
+                Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({separator: 10}, [
+                    theFrame.trackControlsGroup,
+                    theFrame._popupMenuExtraControlsGroup
                 ]) ), appData.leftPanelWidth));
 
             theFrame.setToolBox(toolBox);
@@ -1084,6 +1086,12 @@ define([
                 var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 thePanel._handleZoom(0.8, displayWidth/2);
             });
+
+
+            theFrame.addExtraPopupMenuControl = function(ctrl) {
+                theFrame._popupMenuExtraControlsGroup.add(ctrl);
+            };
+
 
 
             theFrame.addTrack = function(track) {
