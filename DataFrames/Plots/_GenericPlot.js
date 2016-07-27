@@ -79,7 +79,6 @@ define([
                     title: _TRL('{name} ({plotname})').AXMInterpolate({name: dataFrame.getName(), plotname: plotType.getPlotTypeName()}),
                     blocking:false,
                     autoCenter: true,
-                    resizable: true,
                     sizeX: 800,
                     sizeY: 500,
                     canDock:true

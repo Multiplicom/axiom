@@ -106,7 +106,6 @@ define([
             var win = Popupwin.create({
                 title: title,
                 autoCenter: true,
-                resizable: true,
                 sizeX: 700,
                 sizeY: 500
             });

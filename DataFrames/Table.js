@@ -106,7 +106,6 @@ define([
                 title: '{name} (Table)'.AXMInterpolate({name: dataFrame.getName()}),
                 blocking:false,
                 autoCenter: true,
-                resizable: true,
                 sizeX: 700,
                 sizeY: 500,
                 canDock:true
