@@ -272,6 +272,7 @@ define([
         // Create a new data frame
         Module.createDataFrame = function(objectTypeId, name) {
             var dataFrame = {};
+            dataFrame.id = AXMUtils.getUniqueID();
             dataFrame.objectType = Module._objectTypes[objectTypeId];
             if (!dataFrame.objectType) {
                 dataFrame.objectType = Module.createObjectType(objectTypeId, 'id');

@@ -33,10 +33,10 @@ define([
         Module.create = function(dataFrame, onCompleted) {
 
             var compatibleDataFrames = [];
-            $.each(require('AXM/DataFrames/Table')._activeWindows, function(idx, tableWin) {
-                if ((dataFrame.getObjectType().getTypeId() == tableWin.dataFrame.getObjectType().getTypeId()) &&
-                    (dataFrame != tableWin.dataFrame))
-                    compatibleDataFrames.push(tableWin.dataFrame);
+            $.each(require('AXM/DataFrames/Table')._activeDataFrames, function(idx, activeDataFrame) {
+                if ((dataFrame.getObjectType().getTypeId() == activeDataFrame.getObjectType().getTypeId()) &&
+                    (dataFrame != activeDataFrame))
+                    compatibleDataFrames.push(activeDataFrame);
             });
             if (compatibleDataFrames.length == 0) {
                 SimplePopups.ErrorBox('There are currently no compatible dataframe tables open.');

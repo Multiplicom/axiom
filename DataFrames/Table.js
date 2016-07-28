@@ -28,17 +28,20 @@ define([
         var Module = {
         };
 
-        Module._activeWindows = [];
+        Module._activeDataFrames = [];
 
-        Msg.listen('', 'CloseWindow', function(win) {
-            for (var i=0; i<Module._activeWindows.length; i++) {
-                if (Module._activeWindows[i] == win) {
-                    Module._activeWindows.splice(i,1);
-                    return;
-                }
+        /**
+         * remove view from the list of active views
+         * @param {string} dataframeId - unique dataframe id to be removed
+         */
+        Module.removeActiveDataFrame = function(dataframeId){
+            for (var i = 0; i < Module._activeDataFrames.length;){
+                if (Module._activeDataFrames[i].id == dataframeId)
+                    Module._activeDataFrames.splice(i, 1);
+                else
+                    i++;
             }
-        });
-
+        };
 
         Module.create = function(dataFrame) {
 
@@ -111,9 +114,6 @@ define([
                 canDock:true
             });
 
-            win.dataFrame = dataFrame;
-            Module._activeWindows.push(win);
-
             win.init = function() {
                 var rootFrame = Frame.FrameSplitterHor();
                 //rootFrame.setHalfSplitterSize(0);
@@ -142,6 +142,9 @@ define([
 
                 rootFrame.addMember(win.tableFrame);
 
+                // register dataframe
+                Module._activeDataFrames.push(dataFrame);
+                rootFrame.addTearDownHandler(function(){Module.removeActiveDataFrame(dataFrame.id)});
 
                 win.setRootFrame(rootFrame);
                 win.start();
