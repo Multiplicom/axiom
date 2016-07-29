@@ -28,16 +28,45 @@ define([
         var Module = {};
 
         /**
-         * Creates a popup window that is displaying a structured log file
-         * @param {string} title - popup title
-         * @param {string} logContent - structured log content
-         * @constructor
+         * Creates a list of log lines for a dictionary without timestamps
+         * @param {object} metaDict - target dict
          */
-        Module.create = function(title, logContent) {
+        Module.dictToLogText = function(metaDict){
+            var logContent = '';
 
+            $.each(metaDict, function(key, value){
+                    if(Utils.isString(value)){
+                        var valueContent = value;
+                        while (valueContent.indexOf('$|$') >= 0)
+                            valueContent = valueContent.replace('$|$', '<br>');
+                        logContent += '<div class="AXMLogLine"><b>' + key + ': </b>'  + valueContent + '</div>';
+                    }
+                }
+            );
+
+            return logContent
+        };
+
+        /**
+         * Creates a list of log lines without timestamps or other layout
+         * @param {object} logLines - target lines
+         */
+        Module.baseLogText = function(logLines){
+            var logContent = '';
+
+            $.each(logLines, function(idx, logLine) {
+                logContent += '<div class="AXMLogLine">' + logLine + '</div>';
+            });
+
+            return logContent
+        };
+
+        /**
+         * Parse the log lines
+         * @param {array} logLines - array of log lines
+         */
+        Module.parseLogLines = function(logLines){
             var fmtLogContent = '';
-            var logLines = logContent.split('\n');
-
             var sectionStack = [];
 
             $.each(logLines, function(idx, logLine) {
@@ -102,6 +131,54 @@ define([
                 fmtLogContent += '</div></div>';
 
             }
+
+            return fmtLogContent
+        };
+
+        /**
+         * Creates a popup window that is displaying a structured log file
+         * @param {string} title - popup title
+         * @param {string} logContent - structured log content
+         * @param {object} settings - meta information about the log containing additional settings
+         * @constructor
+         */
+        Module.create = function(title, logContent, settings) {
+
+            var fmtLogContent = '';
+            var logLines = logContent.split('\n');
+
+            if(settings.meta){
+                fmtLogContent += '<div class="reportunit">';
+                fmtLogContent += '<div class="reportheader"><h1>Information</h1></div>';
+                fmtLogContent += '<div class="reportbody">';
+                fmtLogContent += Module.dictToLogText(settings.meta);
+                fmtLogContent += '</div></div>';
+            }
+
+
+            if(settings.warning)
+                fmtLogContent += '<div class="AXMLogWarning">';
+            if(settings.error)
+                fmtLogContent += '<div class="AXMLogError">';
+
+            fmtLogContent += '<div class="reportunit">';
+            fmtLogContent += '<div class="reportheader"><h1>Content</h1></div>';
+            fmtLogContent += '<div class="reportbody">';
+            fmtLogContent += Module.parseLogLines(logLines);
+            fmtLogContent += '</div></div>';
+
+            if(settings.stackTrace){
+                fmtLogContent += '<div class="reportunit">';
+                fmtLogContent += '<div class="reportheader"><h1>Stack trace</h1></div>';
+                fmtLogContent += '<div class="reportbody">';
+                fmtLogContent += Module.baseLogText(settings.stackTrace.split('\n'));
+                fmtLogContent += '</div></div>';
+            }
+
+            if(settings.warning)
+                fmtLogContent += '</div>';
+            if(settings.error)
+                fmtLogContent += '</div>';
 
             var win = Popupwin.create({
                 title: title,
