@@ -573,7 +573,7 @@ define([
                 ctx.font = "18px Arial";
                 ctx.fillStyle = "rgba(0,0,0,0.5)";
                 ctx.textAlign = 'center';
-                ctx.fillText(content, drawInfo.sizeX/2, 50);
+                ctx.fillText(content, drawInfo.sizeX/2, drawInfo.sizeY/2);
 
                 ctx.restore();
 
