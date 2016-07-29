@@ -183,6 +183,7 @@ define([
             var win = Popupwin.create({
                 title: title,
                 autoCenter: true,
+                closeOnEscape: true,
                 sizeX: 700,
                 sizeY: 500
             });
