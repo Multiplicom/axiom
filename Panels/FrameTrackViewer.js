@@ -905,7 +905,9 @@ define([
                 if (!panel._isrunning)
                     return;
                 $.each(panel._tracks, function (idx, track) {
-                    track.render();
+                    if(track.isVisible()){
+                        track.render();
+                    }
                 });
             };
 
@@ -913,7 +915,9 @@ define([
                 if (!panel._isrunning)
                     return;
                 $.each(panel._tracks, function (idx, track) {
-                    track.renderLayer(layerId);
+                    if(track.isVisible()){
+                        track.renderLayer(layerId);
+                    }
                 });
             };
 
