@@ -203,6 +203,9 @@ define([
                     $El.hide();
                 else
                     $El.show();
+                if(track.__ctrl_visible){
+                    track.__ctrl_visible.setValue(status, true);
+                }
             };
 
 
