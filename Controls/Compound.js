@@ -214,7 +214,10 @@ define([
                     var elemDiv = DOM.Div({parent:div});
                     elemDiv.addStyle('display', 'inline-block');
 //                    elemDiv.addStyle('position', 'relative');
-                    elemDiv.addStyle('vertical-align', (settings.verticalAlignCenter)?'center':'top');
+                    var alignStr = (settings.verticalAlignCenter)?'center':'top';
+                    if (settings.verticalAlignBaseline)
+                        alignStr = 'baseline';
+                    elemDiv.addStyle('vertical-align', alignStr);
                     elemDiv.addStyle('white-space', 'normal');
                     elemDiv.addStyle('margin-right', compound._separator+'px');
                     elemDiv.addElem(member.createHtml());
@@ -243,6 +246,7 @@ define([
             grid._rows = [];
             grid.sepH = settings.sepH || 12;
             grid.sepV = settings.sepV || 7;
+            grid.alternatingLines = settings.alternatingLines;
 
 
             grid.set = null; //not applicable here
@@ -290,7 +294,10 @@ define([
                 var div = DOM.Div({id: grid._id+'_wrapper'});
                 div.addStyle('display','inline-block');
 
-                var st = '<table style="">';
+                var className = "";
+                if (grid.alternatingLines)
+                    className = "AlternatingLineGrid";
+                var st = '<table class="{clss}">'.AXMInterpolate({clss: className});
                 $.each(grid._rows, function(rowNr, row) {
                     st += '<tr>';
                     $.each(row, function(colNr, item) {
@@ -681,17 +688,17 @@ define([
                     else {
                         if (!wrapper._animateOpacity) {
                             if (status)
-                                wrapper.get$El().show(400);
+                                wrapper.get$El().show(200);
                             else
-                                wrapper.get$El().hide(400);
+                                wrapper.get$El().hide(200);
                         } else {
                             if (status) {
                                 wrapper.get$El().css("opacity", 0);
                                 wrapper.get$El().show();
-                                wrapper.get$El().fadeTo(400, 1);
+                                wrapper.get$El().fadeTo(200, 1);
                             }
                             else {
-                                wrapper.get$El().fadeTo(400, 0, function () {
+                                wrapper.get$El().fadeTo(200, 0, function () {
                                     wrapper.get$El().hide();
                                 });
                             }
