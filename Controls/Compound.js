@@ -467,7 +467,7 @@ define([
          * @returns {Object} - control instance
          * @constructor
          */
-        Module.FixedWidth = function(ctrl, width, isMinimum) {
+        Module.FixedWidth = function(ctrl, width, isMinimum, isMaximum) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
             /**
@@ -478,6 +478,8 @@ define([
                 var div = DOM.Div({id: wrapper._id});
                 if (isMinimum)
                     div.addStyle('min-width', width+'px');
+                else if (isMaximum)
+                    div.addStyle('max-width', width+'px');
                 else
                     div.addStyle('width', width+'px');
                 div.addElem(wrapper._member.createHtml());
