@@ -28,16 +28,14 @@ define([
     ) {
 
         /**
-         * Module encapsulating a panel that contains a paged table
+         * Module encapsulating a panel that contains a  table
          * @type {{}}
          */
         var Module = {};
 
         /**
-         * Implements a panel that contains a paged table
+         * Implements a panel that contains a table
          * @param {string} id - panel type id
-         * @param {AXM.Tables.TableData} tableData - object containing the data of the table (content of the cells)
-         * @param {AXM.Tables.TableInfo} tableInfo - object containing the definition of the table (column definitions)
          * @returns {Object} - panel instance
          * @constructor
          */
@@ -114,7 +112,7 @@ define([
             panel.render = function() {
                 panel._clearActiveControls();
 
-                var content ='<table style="padding-top:0px">';
+                var content ='<table style="padding-top:0px" class="FHTable">';
 
                 content += '<tr style="">';
                 $.each(panel._columns, function(idx, column) {
