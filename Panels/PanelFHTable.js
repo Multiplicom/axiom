@@ -46,10 +46,11 @@ define([
             panel._rows = [];
             panel._activeControls = [];
 
-            panel.addColumn = function(colId, colName) {
+            panel.addColumn = function(colId, colName, colControl) {
                 panel._columns.push({
                     colId: colId,
-                    colName: colName
+                    colName: colName,
+                    colControl: colControl
                 });
             };
 
@@ -116,8 +117,13 @@ define([
 
                 content += '<tr style="">';
                 $.each(panel._columns, function(idx, column) {
-                    content += '<th><div style="padding:6px">';
-                    content += column.colName;
+                    content += '<th><div style="padding:6px;padding-top:10px;padding-bottom:10px">';
+                    if (column.colControl) {
+                        content += column.colControl.createHtml();
+                        panel._activeControls.push(column.colControl);
+                    }
+                    else
+                        content += column.colName;
                     content += "</div></th>";
                 });
                 content += '</tr>';
@@ -125,7 +131,7 @@ define([
                 $.each(panel._rows, function(idx, row) {
                     content += '<tr>';
                     $.each(panel._columns, function(idx, column) {
-                        content += '<td style="padding:6px">';
+                        content += '<td style="padding:6px;padding-top:10px;padding-bottom:10px">';
                         if (row[column.colId]) {
                             content += row[column.colId].createHtml();
                             panel._activeControls.push(row[column.colId]);
@@ -138,6 +144,11 @@ define([
                 content += "</table>";
 
                 $('#tb'+panel._id).html(content);
+
+                $.each(panel._columns, function(idx, column) {
+                    if (column.colControl)
+                        content += column.colControl.attachEventHandlers();
+                });
 
                 $.each(panel._rows, function(idx, row) {
                     $.each(panel._columns, function(idx, column) {
