@@ -1601,13 +1601,17 @@ define([
             };
 
             /**
-             * Returns the current value of the slider
+             * Returns the current value of the control
              * @returns {float}
              */
             control.getValue = function () {
                 if (control._getSub$El('datetimepicker').length>0)
                     control._value = (control._getSub$El('datetimepicker').val());
                 return control._value;
+            };
+
+            control.setValue = function(newVal) {
+                control._getSub$El('datetimepicker').val(newVal);
             };
 
 

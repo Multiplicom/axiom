@@ -98,6 +98,13 @@ define([
                 return String(content);
             };
 
+            //overridable:
+            coldef.content2TextString = function(content) {
+                if ((content===null) || (content===undefined))
+                    return '';
+                return String(content);
+            };
+
             //overridable (should return an AXM.Color object):
             coldef.content2BackgroundColor = function(content) {
                 return null;
