@@ -37,7 +37,7 @@ define([
             icon._sizeFactor = 1;
             icon._decorators = [];
 
-            icon.addDecorator = function(name, xPos, offsetX, yPos, offsetY, size, opacity) {
+            icon.addDecorator = function(name, xPos, offsetX, yPos, offsetY, size, opacity, color) {
                 if (opacity === undefined)
                     opacity = 1;
                 if (['left', 'right'].indexOf(xPos)<0)
@@ -51,7 +51,8 @@ define([
                     offsetX: offsetX,
                     offsetY: offsetY,
                     size: size,
-                    opacity: opacity
+                    opacity: opacity,
+                    color: color
                 });
                 return icon;
             };
@@ -59,7 +60,7 @@ define([
             icon.setOpacity = function(opac) {
                 icon._opacity = opac;
                 return icon;
-            }
+            };
 
             icon.clone = function() {
                 var dupl = Module.createFA(icon._name);
@@ -89,14 +90,15 @@ define([
                 });
 
                 $.each(icon._decorators, function(idx, decor) {
-                    var substr =  '<div style="position:absolute;{xpos}:{left}px;{ypos}:{top}px;opacity:{opacity}"><i style="font-size:{size}px" class="fa {name}"/></div>'.AXMInterpolate({
+                    var substr =  '<div style="position:absolute;{xpos}:{left}px;{ypos}:{top}px;opacity:{opacity};color:{color}"><i style="font-size:{size}px" class="fa {name}"/></div>'.AXMInterpolate({
                         name:decor.name,
                         xpos: decor.xPos,
                         ypos: decor.yPos,
                         left: Math.round(decor.offsetX*icon._sizeFactor),
                         top: Math.round(decor.offsetY*icon._sizeFactor),
                         size:Math.round(icon._sizeFactor*icon._baseSize*decor.size),
-                        opacity: decor.opacity
+                        opacity: decor.opacity,
+                        color: decor.color
                     });
                     str += substr;
                 });
