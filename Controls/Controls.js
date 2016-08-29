@@ -1549,6 +1549,10 @@ define([
 
             control._defaultTime=settings.defaultTime;
             control._defaultDate=settings.defaultDate;
+
+            control._scrollMonth= settings._scrollMonth||false;
+            control._scrollTime= settings._scrollTime||false;
+            control._scrollInput= settings._scrollInput||false;
             //control._minDate:settings.minDate:'+1970/01/02';//disable dates in the future
             /**
              * Returns the html implementing the control
@@ -1585,7 +1589,10 @@ define([
                     //mask:control._mask
                     format:control._format,
                     formatDate:control._formatDate,
-                    formatTime:control._formatTime
+                    formatTime:control._formatTime,
+                    scrollMonth: control._scrollMonth,
+                    scrollTime: control._scrollTime,
+                    scrollInput: control._scrollInput
                 });
             };
 
