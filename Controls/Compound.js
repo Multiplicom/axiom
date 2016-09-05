@@ -73,6 +73,13 @@ define([
 
 
             /**
+             * Removes all controls from the list of member controls
+             */
+            compound.clear = function() {
+                compound._members = [];
+            };
+
+            /**
              * Adds a control to the list of member controls
              * @param {{}} ctrl - controll to add
              * @returns {Object} - added control
