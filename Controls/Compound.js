@@ -475,8 +475,8 @@ define([
                 var div = DOM.Div({id: wrapper._id});
                 if (marginRight == undefined) {
                     marginRight = marginLeft;
-                    marginTop = marginTop;
-                    marginBottom = marginBottom;
+                    marginTop = marginLeft;
+                    marginBottom = marginLeft;
                 }
                 div.addStyle('margin-left', marginLeft+'px');
                 div.addStyle('margin-right', marginRight+'px');
