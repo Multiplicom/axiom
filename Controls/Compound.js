@@ -254,6 +254,7 @@ define([
             grid.sepH = settings.sepH || 12;
             grid.sepV = settings.sepV || 7;
             grid.alternatingLines = settings.alternatingLines;
+            grid.className = settings.className;
 
 
             grid.set = null; //not applicable here
@@ -304,14 +305,22 @@ define([
                 var className = "";
                 if (grid.alternatingLines)
                     className = "AlternatingLineGrid";
+                if (grid.className)
+                    className = grid.className;
                 var st = '<table class="{clss}">'.AXMInterpolate({clss: className});
                 $.each(grid._rows, function(rowNr, row) {
                     st += '<tr>';
                     $.each(row, function(colNr, item) {
-                        st += '<td style="padding-right:{sepH}px;padding-bottom:{sepV}px;">'.AXMInterpolate({ sepH: grid.sepH, sepV: grid.sepV });
+                        var token = 'td';
+                        if (settings.hasHeader && (rowNr==0))
+                        token = 'th';
+                        st += '<{token} style="padding-right:{sepH}px;padding-bottom:{sepV}px;">'.AXMInterpolate({
+                            token: token,
+                            sepH: grid.sepH, sepV: grid.sepV
+                        });
                         if (item != null)
                             st += item.createHtml();
-                        st += '</td>';
+                        st += '</{token}>'.AXMInterpolate({token: token});
                     });
                     st += '</tr>';
                 });
@@ -455,7 +464,7 @@ define([
          * @returns {Object} - control instance
          * @constructor
          */
-        Module.Margin = function(ctrl, marginLeft) {
+        Module.Margin = function(ctrl, marginLeft, marginRight, marginTop, marginBottom) {
             var wrapper = Module.WrapperControlBase(ctrl);
 
             /**
@@ -464,7 +473,15 @@ define([
              */
             wrapper.createHtml = function() {
                 var div = DOM.Div({id: wrapper._id});
-                div.addStyle('margin', marginLeft+'px');
+                if (marginRight == undefined) {
+                    marginRight = marginLeft;
+                    marginTop = marginTop;
+                    marginBottom = marginBottom;
+                }
+                div.addStyle('margin-left', marginLeft+'px');
+                div.addStyle('margin-right', marginRight+'px');
+                div.addStyle('margin-top', marginTop+'px');
+                div.addStyle('margin-bottom', marginBottom+'px');
                 //div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
                 return div.toString();
