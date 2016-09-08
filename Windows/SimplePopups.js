@@ -367,7 +367,13 @@ define([
                         onCancel();
                 });
 
-            win.ctrlChoices = Controls.RadioGroup({value: value});
+            if (settings.controlType == 'dropdown') {
+                win.ctrlChoices = Controls.DropList({value: value});
+            }
+            else {
+                win.ctrlChoices = Controls.RadioGroup({value: value});
+            }
+
             $.each(choices, function(idx, choice) {
                 win.ctrlChoices.addState(choice.id, choice.name);
             });
@@ -530,4 +536,3 @@ define([
 
         return Module;
     });
-
