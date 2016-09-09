@@ -82,7 +82,7 @@ define([
             };
 
             icon.renderHtml = function() {
-                var str = '<div style="position:relative;display:inline-block">';
+                var str = '<div style="position:relative;display:inline-block;overflow:visible">';
                 str +=  '<i style="font-size:{size}px;opacity:{opac}" class="fa {name}"/>'.AXMInterpolate({
                     name:icon._name,
                     opac:icon._opacity,
@@ -90,7 +90,7 @@ define([
                 });
 
                 $.each(icon._decorators, function(idx, decor) {
-                    var substr =  '<div style="position:absolute;{xpos}:{left}px;{ypos}:{top}px;opacity:{opacity};color:{color}"><i style="font-size:{size}px" class="fa {name}"/></div>'.AXMInterpolate({
+                    var substr =  '<div style="position:absolute;{xpos}:{left}px;{ypos}:{top}px;opacity:{opacity};color:{color};overflow:visible"><i style="font-size:{size}px" class="fa {name}"/></div>'.AXMInterpolate({
                         name:decor.name,
                         xpos: decor.xPos,
                         ypos: decor.yPos,
