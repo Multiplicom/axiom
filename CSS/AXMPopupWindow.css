@@ -30,6 +30,8 @@
     border-style:solid;
     border-color:rgb(110,110,110);
     box-shadow: 2px 2px 20px 4px rgba(0,0,0,0.75);
+    border-radius:5px;
+    overflow: hidden;
 }
 
 .AXMPopupWindowHeader {
@@ -39,6 +41,8 @@
     padding-left:8px;
     padding-right:8px;
     box-sizing: border-box;
+    /*border-top-left-radius:5px;*/
+    /*border-top-right-radius:5px;*/
 
     /*background: rgb(49,165,191); /!* Old browsers *!/*/
     /*background: -moz-linear-gradient(top, rgba(49,165,191,1) 0%, rgba(0,135,165,1) 100%); /!* FF3.6+ *!/*/

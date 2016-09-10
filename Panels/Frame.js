@@ -636,7 +636,7 @@ define([
             var frame = Module.FrameCompound();
             Module.checkValidDim(dim);
             frame._dim = dim;
-            frame._hSplitterSize = 3;
+            frame._hSplitterSize = 2;
 
 
             /**
@@ -1538,7 +1538,7 @@ define([
         Module.FrameFinalCommands = function(iPanel) {
             var controlsH = 40;
             var frame = Module.FrameSplitterVert();
-            frame.setHalfSplitterSize(2);
+            frame.setHalfSplitterSize(1);
             frame._panelControls = require('AXM/Panels/PanelForm').create(iPanel.getId()+'_commands');
             frame._frameCommands = frame.addMember(Module.FrameFinal(frame._panelControls))
                 .setFixedDimSize(Module.dimY, controlsH);
