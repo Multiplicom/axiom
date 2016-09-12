@@ -16,10 +16,10 @@
 
 
 define([
-        "require", "jquery","datetimepicker","_",
+        "require", "jquery", "datetimepicker", "AXM/Externals/awesomplete/awesomplete", "_",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound"],
     function (
-        require, $,datetimepicker, _,
+        require, $, datetimepicker, awesomplete, _,
         AXMUtils, DOM, Icon, Color, Compound) {
 
 
@@ -1020,6 +1020,7 @@ define([
          * @param {int} settings.width - width of the edit box
          * @param {int} settings.height - height of the edit box
          * @param {string} settings.value - initial content of the edit box
+         * @param {object} settings.choices - autocomplete choices (optional, keys: label, value)
          * @param {boolean} settings.passWord - if true, a password control is created
          * @param {boolean} settings.disabled - if true, the edit control is disabled
          * @param {boolean} settings.bold - if true, text in the control appears in bold
@@ -1058,7 +1059,8 @@ define([
              */
             control.createHtml = function() {
 
-                var rootEl = DOM.Create("input", {id: control._getSubId('')});
+                var elementId = control._getSubId('');
+                var rootEl = DOM.Create("input", {id: elementId});
                 rootEl.addCssClass('AXMEdit');
 
                 if (settings.bold)
@@ -1098,6 +1100,12 @@ define([
                     control._getSub$El('').select();
                 if (control._clearButton)
                     control._clearButton.attachEventHandlers();
+                if (settings.choices){
+                    var input = document.getElementById(control._id);
+                    new Awesomplete(input, {
+	                      list: settings.choices
+                    });
+                }
             };
 
             /**
@@ -1775,4 +1783,3 @@ define([
 
         return Module;
     });
-
