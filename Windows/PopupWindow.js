@@ -126,6 +126,7 @@ define([
             window._canClose = !(settings.preventClose);
             window._canDock = settings.canDock||false;
             window._fadeTime = 250;
+            window.overflowAllowed = settings.overflowAllowed || false;
 
             window._listeners = [];
 
@@ -243,6 +244,9 @@ define([
                 rootDiv.addStyle('z-index', window.zIndex);
                 rootDiv.addCssClass('AXMPopupWindowContainer');
                 rootDiv.addStyle('opacity', 0);
+                if (window.overflowAllowed){
+                    rootDiv.addStyle('overflow', 'visible')
+                }
 
                 var browserSize = AXMUtils.getBrowserSize();
 

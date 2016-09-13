@@ -1096,8 +1096,6 @@ define([
                 control._getSub$El('').bind("propertychange input paste", control._onModified);
                 control._getSub$El('').bind("keyup", control._onModified);
                 control._checkNonEmptyClass();
-                if (control._hasDefaultFocus)
-                    control._getSub$El('').select();
                 if (control._clearButton)
                     control._clearButton.attachEventHandlers();
                 if (settings.choices){
@@ -1106,6 +1104,8 @@ define([
 	                      list: settings.choices
                     });
                 }
+                if (control._hasDefaultFocus)
+                    control._getSub$El('').select();
             };
 
             /**
