@@ -397,7 +397,9 @@ define([
 
             if (win.setHandler_OnPressedEnter)
                 win.setHandler_OnPressedEnter(win.onOK);
-            win.setRootControl(Controls.Compound.StandardMargin(grp));
+            if (!settings.useTransientPopup)
+                grp = Controls.Compound.StandardMargin(grp);
+            win.setRootControl(grp);
             win.start();
         };
 
