@@ -1539,6 +1539,7 @@ define([
             var controlsH = 40;
             var frame = Module.FrameSplitterVert();
             frame.setHalfSplitterSize(1);
+            frame.splitterColor = "rgb(220,220,220)";
             frame._panelControls = require('AXM/Panels/PanelForm').create(iPanel.getId()+'_commands');
             frame._frameCommands = frame.addMember(Module.FrameFinal(frame._panelControls))
                 .setFixedDimSize(Module.dimY, controlsH);
