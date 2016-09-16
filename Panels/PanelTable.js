@@ -394,6 +394,8 @@ define([
                     var titleText = '';
                     if ((!colInfo.isOpener) && (!colInfo.isSelector) )
                         titleText = colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
+                    if (titleText.indexOf('<') >= 0)
+                        titleText = ""; // ugly hack because we don't want html content to be used in the tooltip
                     var cell = '<td style="{styles}" id="tbcell_{id}" title="{titletext}">'.AXMInterpolate({
                             styles: styles,
                             id: panel.getId()+'_'+rowNr+'_'+colNr,
