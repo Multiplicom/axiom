@@ -133,6 +133,7 @@ define([
             control._cssClass = settings.cssClass || '';
             control._reactOnClick = settings.reactOnClick || false;
             control._inLine = true;
+            control._title = settings.title || '';
             if (settings.fullWidth)
                 control._inLine = false;
 
@@ -152,6 +153,8 @@ define([
              */
             control.createHtml = function() {
                 var div = DOM.Div({ id:control._getSubId('') });
+                if (control._title)
+                    div.addAttribute('title', control._title);
                 if (control._inLine)
                     div.addStyle('display', 'inline-block').addStyle('vertical-align','middle');
                 if (settings.maxWidth)
