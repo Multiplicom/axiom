@@ -77,31 +77,23 @@ define([
              * @private
              */
             var _init = function() {
-                var rootFrame = Frame.FrameSplitterVert();
-
                 var form1 = PanelForm.create('controls');
-
-                win.bt_previous = Controls.Button({
-                    icon:'fa-arrow-left',
-                    width:40,
-                    height:40,
-//                enabled: false
-                }).addNotificationHandler(win.onPrevious);
-                win.bt_next = Controls.Button({
-                    icon:'fa-arrow-right',
-                    width:40,
-                    height:40,
-//                enabled: false
-                }).addNotificationHandler(win.onNext);
-                form1.setRootControl(Controls.Compound.GroupHor({}, [win.bt_previous, win.bt_next]));
-
-                rootFrame.addMember(Frame.FrameFinal(form1)).setFixedDimSize(Frame.dimY,42);
 
                 win.panelContent = PanelHtml.create();
                 win.panelContent.enableVScrollBar();
-                rootFrame.addMember(Frame.FrameFinal(win.panelContent));
+                var theFrame = Frame.FrameFinalCommands(win.panelContent);
+                //rootFrame.addMember(theFrame);
 
-                win.setRootFrame(rootFrame);
+                win.bt_previous = theFrame.addCommand({
+                    icon: 'fa-arrow-left'
+                }, win.onPrevious);
+
+                win.bt_next = theFrame.addCommand({
+                    icon: 'fa-arrow-right'
+                }, win.onNext);
+
+
+                win.setRootFrame(theFrame);
                 win.start();
                 win._updateButtons();
             };

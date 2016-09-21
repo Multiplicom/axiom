@@ -504,7 +504,7 @@ define([
                 buttonClass: 'AXMButtonHelp',
                 width:26,
                 height:20,
-                iconSizeFraction: 1.1
+                iconSizeFraction: 1.05
 
             });
             control.addNotificationHandler(function() {
