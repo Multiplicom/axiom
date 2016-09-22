@@ -198,6 +198,15 @@ define([
 
 
             /**
+             * Returns the help documentation id associated with this frame (null if none). To be overridden
+             * @returns {string}
+             */
+            frame.getHelpId = function() {
+                return null;
+            };
+
+
+            /**
              * Sets the title of the frame
              * @param {string} iTitle
              * @returns {Object} - self
@@ -1179,6 +1188,10 @@ define([
                         }
                     }
                 }
+            };
+
+            frame.getActiveMemberFrame = function() {
+                return frame._memberFrames[frame._activeMemberNr];
             };
 
             /**

@@ -289,7 +289,7 @@ body {
 }
 
 .AXMFormVScroller {
-    border: 2px solid rgb(220,220,220);
+    border: 2px solid rgb(240, 240, 240);
     overflow-y: scroll;
 }
 
