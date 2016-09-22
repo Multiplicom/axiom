@@ -1503,7 +1503,7 @@ define([
              */
             control.attachEventHandlers = function() {
                 control._getSub$El('slider').change(control._onChange);
-                control._setNewValue();
+                setTimeout(function() {control._setNewValue();}, 700);
             };
 
 
