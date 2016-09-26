@@ -184,6 +184,15 @@ define([
             };
 
             /**
+             * Modifies the tooltip of the control
+             * @param {string} newText - new tooltip content
+             */
+            control.modifyTooltip = function(newText) {
+                control._title = newText;
+                control.get$El().prop('title', newText);
+            };
+
+            /**
              * Attaches html event handlers after DOM insertion
              */
             control.attachEventHandlers = function() {
