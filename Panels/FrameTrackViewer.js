@@ -375,6 +375,14 @@ define([
                 var sizeY = drawInfo.sizeY;
                 ctx.clearRect(0, 0, drawInfo.sizeX, drawInfo.sizeY);
 
+                ctx.font = "11px Arial";
+                ctx.fillStyle="rgba(255,255,255,0.5)";
+                ctx.fillRect(0, 0, ctx.measureText(track._name).width+10,  15);
+                ctx.fillStyle = "rgba(0,0,0,0.7)";
+                ctx.textAlign = 'left';
+                ctx.fillText(track._name, 5, 10);
+
+
                 if (viewerPanel._selEnd >= viewerPanel._selStart) {
                     var x1 = XPosLogic2Display(viewerPanel._selStart);
                     var x2 = XPosLogic2Display(viewerPanel._selEnd+1);
