@@ -95,6 +95,7 @@ define([
          * @param {string} settings.headerIcon - icon name displayed in the header
          * @param {int} settings.sizeX - default X size of the popup
          * @param {int} settings.sizeY - default Y size of the popup
+         * @param {string} settings.helpID - doc id of the help text
          * @param {boolean} settings.closeOnEscape - if true, pressing the escape button closes the popup
          * @param {boolean} settings.blocking - if true, the popup blocks the content behind (= becomes inaccessible to the user, default using a semi-transparent overlay as visual hint)
          * @param {boolean} settings.blockingTransparent - if true, the blocking does not result in any visual indication
@@ -124,6 +125,7 @@ define([
             window._autoCenterTop = settings.autoCenterTop||false;
             window._autoCenterBottom = settings.autoCenterBottom||false;
             window._canClose = !(settings.preventClose);
+            window._helpID = settings.helpID;
             window._canDock = settings.canDock||false;
             window._fadeTime = 250;
             window.overflowAllowed = settings.overflowAllowed || false;
@@ -301,6 +303,9 @@ define([
                     DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowGripSW GripSW2');
                 }
 
+                if (window._helpID)
+                    rootDiv.addElem('<div class="SWXPopupWindowHelpBox"><i class="fa fa-question"></i></div>');
+
                 if (window._canClose)
                     rootDiv.addElem('<span class="SWXPopupWindowCloseBox"><i class="fa fa-times-circle"></i></span>');
 
@@ -345,6 +350,11 @@ define([
                     });
                     window.autoCorrectAfterSize();
                 }
+
+                if (window._helpID)
+                    window._$ElContainer.find('.SWXPopupWindowHelpBox').click(function() {
+                        require('AXM/Windows/DocViewer').create(window._helpID);
+                    });
 
                 if (window._canClose)
                     window._$ElContainer.find('.SWXPopupWindowCloseBox').click(function() {
