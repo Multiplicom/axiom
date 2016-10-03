@@ -436,8 +436,6 @@ define([
         Module.create$ElScrollHandler = function($El, handler, preventDefault) {
 
             var getMouseWheelDeltaY = function (ev) {
-                if (ev.deltaY)
-                    return ev.deltaY;
                 var delta = 0;
                 var ev1 = ev;
                 if (ev.originalEvent)
@@ -449,12 +447,15 @@ define([
                 if (ev1.wheelDelta) { delta = ev1.wheelDelta / 120; }
                 else
                 if (ev1.detail) { delta = -ev1.detail / 3; }
+                else if (ev.deltaY) {
+                    delta = ev.deltaY;
+                    if (ev.deltaFactor)
+                        delta = delta *ev.deltaFactor/16;
+                }
                 return delta;
             };
 
             var getMouseWheelDeltaX = function (ev) {
-                if (ev.deltaX)
-                    return ev.deltaX;
                 var ev1 = ev;
                 if (ev.originalEvent)
                     ev1 = ev.originalEvent;
