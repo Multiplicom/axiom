@@ -68,7 +68,8 @@ define([
                 sizeX: 700,
                 sizeY: 600,
                 autoCenter: true,
-                closeOnEscape:true
+                closeOnEscape:true,
+                canDock:true
             });
 
 
