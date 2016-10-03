@@ -267,7 +267,7 @@ define([
                             headerDiv.addElem(str);
                         }
                     }
-                    headerDiv.addElem('<span class="PopupHeaderTitleText" style="vertical-align: middle">' + window._title + '</span>');
+                    headerDiv.addElem('<div style="display: inline-block;margin-right:70px;overflow-x: hidden;text-overflow: ellipsis; vertical-align: middle" class="PopupHeaderTitleText">' + window._title + '</div>');
                 }
 
                 var transfer$Elem = null;
