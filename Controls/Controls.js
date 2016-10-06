@@ -651,7 +651,7 @@ define([
              * @private
              */
             control._onClicked = function(ev) {
-                control.isChecked = control._getSub$El('').is(':checked');
+                control._value = control._getSub$El('').is(':checked');
                 control._checkCheckedClass();
                 control.performNotify();
             };
@@ -689,8 +689,8 @@ define([
              */
             control.getValue = function () {
                 if (control._getSub$El('').length>0)
-                    control.isChecked = control._getSub$El('').is(':checked');
-                return control.isChecked;
+                    control._value = control._getSub$El('').is(':checked');
+                return control._value;
             };
 
 
