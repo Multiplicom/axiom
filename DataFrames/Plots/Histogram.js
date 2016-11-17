@@ -245,6 +245,7 @@ define([
 
 
             win.init();
+            return win;
         };
 
         return PlotType;
