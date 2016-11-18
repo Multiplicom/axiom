@@ -243,6 +243,19 @@ define([
 
             };
 
+            win.modifySetting = function(settingKey, settingValue) {
+                if (settingKey == "Resolution") {
+                    win.ctrl_Resolution.setValue(settingValue);
+                    return;
+                }
+                throw "Invalid plot setting: " + settingKey;
+            };
+
+            win.setXRange = function(mn, mx) {
+                win.plot.setXRange(mn, mx);
+                win.render();
+            };
+
 
             win.init();
             return win;

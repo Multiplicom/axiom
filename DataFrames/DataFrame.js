@@ -367,6 +367,52 @@ define([
                 }
             };
 
+            dataFrame.copyProperty = function(sourceDataFrame, srcPropId, destPropId) {
+                if (!destPropId)
+                    destPropId = AXMUtils.getUniqueID();
+                var propInfo = sourceDataFrame.getProperty(srcPropId);
+                var newProp = dataFrame.addProperty(
+                    destPropId,
+                    sourceDataFrame.getName() + ': ' + propInfo.getDispName(),
+                    propInfo.getDataType(),
+                    {});
+                var primKey = dataFrame.getPrimKeyProperty();
+                var sourcePrimKey = sourceDataFrame.getPrimKeyProperty();
+                var sourceMap = {};
+                for (var rowNr = 0; rowNr < sourceDataFrame.getRowCount(); rowNr++)
+                    sourceMap[sourcePrimKey.data[rowNr]] = rowNr;
+                for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
+                    var newVal = null;
+                    var ID = primKey.data[rowNr];
+                    if (ID in sourceMap)
+                        newVal = propInfo.data[sourceMap[ID]];
+                    newProp.data[rowNr] = newVal;
+                }
+            };
+
+            dataFrame.calculateProperty = function(destPropId, dataType, expression) {
+                if (!destPropId)
+                    destPropId = AXMUtils.getUniqueID();
+                var newProp = dataFrame.addProperty(
+                    destPropId,
+                    destPropId,
+                    DataTypes.typesMap[dataType],
+                    {});
+                for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
+                    var newVal = null;
+                    try {
+                        var pt = {};
+                        $.each(dataFrame.getProperties(), function(idx, property) {
+                            pt[property.getId()] = property.data[rowNr];
+                        });
+                        newVal = eval(expression);
+                    }
+                    catch(err) {
+                    }
+                    newProp.data[rowNr] = newVal;
+                }
+            };
+
             dataFrame.createSelectedRowsDataFrame = function() {
                 var subFrame = Module.createDataFrame(dataFrame.objectType.typeId);
                 $.each(dataFrame.getProperties(), function(idx, propInfo) {

@@ -1546,7 +1546,13 @@ define([
                 return control._value;
             };
 
-            return control;
+            control.setValue = function(newVal, preventNotify) {
+                control._getSub$El('slider').val(newVal);
+                if (!preventNotify)
+                    control.performNotify();
+            };
+
+        return control;
         };
 
 
