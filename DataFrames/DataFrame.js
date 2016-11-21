@@ -323,11 +323,19 @@ define([
                 return dataFrame._name;
             };
 
+            dataFrame.setName = function(name) {
+                return dataFrame._name = name;
+            };
+
             dataFrame.getProperties = function() {
                 return dataFrame._properties;
             };
 
-            dataFrame.getProperty = function(propId) {
+            dataFrame.hasProperty = function(propId) {
+                return !!dataFrame._mapProperties[propId];
+            };
+
+                dataFrame.getProperty = function(propId) {
                 var prop = dataFrame._mapProperties[propId];
                 if (!prop)
                     AXMUtils.Test.reportBug(_TRL('Dataframe does not have property ') + propId);
@@ -367,7 +375,7 @@ define([
                 }
             };
 
-            dataFrame.copyProperty = function(sourceDataFrame, srcPropId, destPropId) {
+            dataFrame.copyProperty = function(sourceDataFrame, srcPropId, destPropId, mergePropId, srcMergePropId) {
                 if (!destPropId)
                     destPropId = AXMUtils.getUniqueID();
                 var propInfo = sourceDataFrame.getProperty(srcPropId);
@@ -376,14 +384,14 @@ define([
                     sourceDataFrame.getName() + ': ' + propInfo.getDispName(),
                     propInfo.getDataType(),
                     {});
-                var primKey = dataFrame.getPrimKeyProperty();
-                var sourcePrimKey = sourceDataFrame.getPrimKeyProperty();
+                var mergeProperty = dataFrame.getProperty(mergePropId);
+                var sourceMergeProperty = sourceDataFrame.getProperty(srcMergePropId);
                 var sourceMap = {};
                 for (var rowNr = 0; rowNr < sourceDataFrame.getRowCount(); rowNr++)
-                    sourceMap[sourcePrimKey.data[rowNr]] = rowNr;
+                    sourceMap[sourceMergeProperty.data[rowNr]] = rowNr;
                 for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
                     var newVal = null;
-                    var ID = primKey.data[rowNr];
+                    var ID = mergeProperty.data[rowNr];
                     if (ID in sourceMap)
                         newVal = propInfo.data[sourceMap[ID]];
                     newProp.data[rowNr] = newVal;
@@ -429,9 +437,200 @@ define([
                         subFrame.addRow(rowInfo);
                     }
                 }
-
                 return subFrame;
             };
+
+
+            dataFrame.groupBy = function(objectTypeID, groupByProperties, outputProperties) {
+
+                var getAggregator_Any = function() {
+                    var aggr = {
+                        value: null,
+                    };
+                    aggr.add = function(value) {
+                        aggr.value = value;
+                    };
+                    aggr.finish = function() {
+                        return aggr.value;
+                    };
+                    return aggr;
+                };
+
+                var getAggregator_Average = function() {
+                    var aggr = {
+                        count: 0,
+                        sum: 0
+                    };
+                    aggr.add = function(value) {
+                        aggr.count += 1;
+                        aggr.sum += value;
+                    };
+                    aggr.finish = function() {
+                        if (aggr.count > 0)
+                            return aggr.sum*1.0/aggr.count;
+                        else
+                            return null;
+                    };
+                    return aggr;
+                };
+
+                var getAggregator_StandardDeviation = function() {
+                    var aggr = {
+                        n: 0.0,
+                        mean: 0.0,
+                        M2: 0.0
+                    };
+                    aggr.add = function(x) {
+                        aggr.n += 1.0;
+                        var delta = x - aggr.mean;
+                        aggr.mean += delta/aggr.n;
+                        aggr.M2 += delta*(x - aggr.mean);
+                    };
+                    aggr.finish = function() {
+                        if (aggr.n > 1)
+                            return Math.sqrt(aggr.M2/aggr.n);
+                        else
+                            return null;
+                    };
+                    return aggr;
+                };
+
+                var getAggregator_Count = function() {
+                    var aggr = {
+                        count: 0
+                    };
+                    aggr.add = function(value) {
+                        aggr.count += 1;
+                    };
+                    aggr.finish = function() {
+                        return aggr.count;
+                    };
+                    return aggr;
+                };
+
+                var getAggregator_Enumerate = function() {
+                    var aggr = {
+                        lst: {}
+                    };
+                    aggr.add = function(value) {
+                        aggr.lst[value] = true;
+                    };
+                    aggr.finish = function() {
+                        var lst = [];
+                        $.each(aggr.lst, function(key, val) {
+                            lst.push(key);
+                        });
+                        return lst.join(';');
+                    };
+                    return aggr;
+                };
+
+
+                var aggregatorGenerators = {
+                    Any: getAggregator_Any,
+                    Average: getAggregator_Average,
+                    StandardDeviation: getAggregator_StandardDeviation,
+                    Count: getAggregator_Count,
+                    Enumerate: getAggregator_Enumerate
+                };
+
+                var outputFrame = Module.createDataFrame(objectTypeID);
+                var newProperties = [];
+                var dataFrameGroupByProperties = [];
+
+                var propPrimKey = outputFrame.addProperty(
+                    'id',
+                    'ID',
+                    DataTypes.typeString,
+                    {});
+                propPrimKey.__sourceID = null;
+                propPrimKey.__aggregator = null;
+
+                $.each(groupByProperties, function(idx, propID) {
+                    if (!dataFrame.hasProperty(propID))
+                        throw ("Invalid Source Property: " + propID);
+                    if (outputFrame.hasProperty(propID))
+                        throw ("Duplicate property: " + propID);
+                    var newProp = outputFrame.addProperty(
+                        propID,
+                        dataFrame.getProperty(propID).getDispName(),
+                        dataFrame.getProperty(propID).getDataType(),
+                        {});
+                    newProp.__sourceID = propID;
+                    newProp.__aggregator = aggregatorGenerators['Any'];
+                    newProperties.push(newProp);
+                    dataFrameGroupByProperties.push(dataFrame.getProperty(propID));
+                });
+                $.each(outputProperties, function(idx, outputInfo) {
+                    try {
+                        if (!outputInfo.DestID)
+                            throw ("Missing DestID");
+                        if (!outputInfo.DestName)
+                            throw ("Missing SourceName");
+                        if (!outputInfo.SourceID)
+                            throw ("Missing SourceID");
+                        if (!dataFrame.hasProperty(outputInfo.SourceID))
+                            throw ("Invalid Source Property: " + outputInfo.SourceID);
+                        if (!(aggregatorGenerators[outputInfo.Aggregator]))
+                            throw ("Invalid Aggregator: " + outputInfo.Aggregator);
+                        if (outputFrame.hasProperty(outputInfo.DestID))
+                            throw ("Duplicate property: " + outputInfo.DestID);
+                        var newProp = outputFrame.addProperty(
+                            outputInfo.DestID,
+                            outputInfo.DestName,
+                            dataFrame.getProperty(outputInfo.SourceID).getDataType(),
+                            {});
+                        newProp.__sourceID = outputInfo.SourceID;
+                        newProp.__aggregator = aggregatorGenerators[outputInfo.Aggregator];
+                        newProperties.push(newProp);
+                    }
+                    catch(err) {
+                        throw "Error in Group By output property:\n" + err;
+                    }
+                });
+                var propCount = outputFrame.addProperty(
+                    '__count__',
+                    'Count',
+                    DataTypes.typeFloat,
+                    {});
+                propCount.__sourceID = groupByProperties[0];//any will do...
+                propCount.__aggregator = aggregatorGenerators['Count'];
+                newProperties.push(propCount);
+
+                var newRows = [];
+                var newRowsMap = {};
+                for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
+                    var signature = "";
+                    $.each(dataFrameGroupByProperties, function(idx, property) {
+                        signature += '__' + property.data[rowNr];
+                    });
+                    if (!newRowsMap[signature]) {
+                        var newRow = {};
+                        newRow.__signature = signature;
+                        $.each(newProperties, function(idx, newProperty) {
+                            newRow[newProperty.getId()] = newProperty.__aggregator();
+                        });
+                        newRows.push(newRow);
+                        newRowsMap[signature] = newRow;
+                    }
+                    else
+                        var newRow = newRowsMap[signature];
+                    $.each(newProperties, function(idx, newProperty) {
+                        newRow[newProperty.getId()].add(dataFrame.getProperty(newProperty.__sourceID).data[rowNr]);
+                    });
+                }
+                $.each(newRows, function(idx, newRow) {
+                    var rowInfo = {};
+                    $.each(newProperties, function(idx, newProperty) {
+                        rowInfo[propPrimKey.getId()] = newRow.__signature;
+                        rowInfo[newProperty.getId()] = newRow[newProperty.getId()].finish();
+                    });
+                    outputFrame.addRow(rowInfo);
+                });
+
+                return outputFrame;
+            };
+
 
             dataFrame.filterRows = function(filterFunction) {
                 var filteredIndexes = [];
