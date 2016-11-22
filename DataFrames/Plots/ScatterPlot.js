@@ -63,7 +63,7 @@ define([
 
             win._createDisplayControls = function(dispGroup) {
 
-                var opacityCheck = Controls.Slider({
+                win.ctrl_Opacity = Controls.Slider({
                     width:160,
                     minValue: 0.1,
                     maxValue: 1,
@@ -72,10 +72,10 @@ define([
                     text: _TRL('Opacity')
                 })
                     .addNotificationHandler(function() {
-                        win._opacity = Math.pow(opacityCheck.getValue(),1.5);
+                        win._opacity = Math.pow(win.ctrl_Opacity.getValue(),1.5);
                         win.render();
                     });
-                dispGroup.add(opacityCheck);
+                dispGroup.add(win.ctrl_Opacity);
 
                 win.ctrl_PointSize = Controls.Slider({
                     width:160,
@@ -420,9 +420,13 @@ define([
 
             win.addCurve = function() {
                 SimplePopups.TextEditBox('', _TRL('Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")'), _TRL('Add curve'), {}, function(expr) {
-                    win._curves.push(expr);
-                    win.render();
+                    win.addCurveStr(expr);
                 });
+            };
+
+            win.addCurveStr = function(expr) {
+                win._curves.push(expr);
+                win.render();
             };
 
             win.setRange = function() {
@@ -485,6 +489,31 @@ define([
                 //    win._curves.push(expr);
                 //    win.render();
                 //});
+            };
+
+            win.modifySetting = function(settingKey, settingValue) {
+                if (settingKey == "PointSize") {
+                    win.ctrl_PointSize.setValue(settingValue);
+                    return;
+                }
+                if (settingKey == "PointOpacity") {
+                    win.ctrl_Opacity.setValue(settingValue);
+                    return;
+                }
+                if (settingKey == "PointOutline") {
+                    win.ctrl_showOutline.setValue(settingValue);
+                    return;
+                }
+                throw "Invalid plot setting: " + settingKey;
+            };
+
+            win.setXRange = function(mn, mx) {
+                win.plot.setXRange(mn, mx);
+                win.render();
+            };
+            win.setYRange = function(mn, mx) {
+                win.plot.setYRange(mn, mx);
+                win.render();
             };
 
 
@@ -593,6 +622,7 @@ define([
             });
 
             win.init();
+            return win;
         };
 
 

@@ -46,6 +46,9 @@ define([
                 _aspectsMap: {}
             };
 
+            plotType.getPlotTypeId = function() {
+                return plotType._plotTypeId
+            };
 
             plotType.getPlotTypeName = function() {
                 return plotType._plotTypeName

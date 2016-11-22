@@ -346,6 +346,7 @@ define([
             win.plot.render = win.render;
             win.init();
             win.render();
+            return win;
         };
 
 

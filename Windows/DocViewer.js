@@ -65,8 +65,8 @@ define([
 
             var win = Popupwin.create({
                 title: 'Documentation',
-                sizeX: 700,
-                sizeY: 600,
+                sizeX: 750,
+                sizeY: 650,
                 autoCenter: true,
                 closeOnEscape:true,
                 canDock:true

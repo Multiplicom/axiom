@@ -66,6 +66,7 @@ define([
                     });
                     grp.setItem(idx, 2, filterButton);
                 }
+                grp.setItem(idx, 3, '<span style="color:rgb(192,192,192);font-size:80%">' + property.getId() + '</span>');
             });
 
             var openHandler = dataFrame.getObjectType().getOpenHandler();

@@ -342,6 +342,7 @@ define([
 
 
             win.init();
+            return win;
         };
 
 
