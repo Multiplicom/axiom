@@ -17,10 +17,14 @@
 
 define([
         "require", "jquery", "datetimepicker", "AXM/Externals/awesomplete/awesomplete", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound",
+        "AXM/Externals/CodeMirror/lib/codemirror", "AXM/Externals/CodeMirror/modes/yaml/yaml"
+    ],
     function (
         require, $, datetimepicker, awesomplete, _,
-        AXMUtils, DOM, Icon, Color, Compound) {
+        AXMUtils, DOM, Icon, Color, Compound,
+        CodeMirror
+    ) {
 
 
         /**
@@ -1207,7 +1211,7 @@ define([
          * @param {{}} settings - control settings
          * @param {int} settings.width - width of the edit box
          * @param {int} settings.lineCount - number of lines of the text box
-         * @param {boolean} settings.fixedFont - if true, a fixed space font is used
+         * @param {boolean} settings.fixedfont - if true, a fixed space font is used
          * @param {boolean} settings.noWrap - if true, text is not automatically wrapped over multiple lines
          * @param {boolean} settings.noResize - if true, text box cannot be resized
          * @param {string} settings.value - initial content of the control
@@ -1357,6 +1361,69 @@ define([
 
             return control;
         };
+
+
+
+
+        /**
+         * Implements a multi-line code edit box control
+         * @param {{}} settings - control settings
+         * @param {int} settings.width - width of the edit box
+         * @param {int} settings.height - height text box
+         * @param {int} settings.type - code type. Currently only yaml is supported, but easily extensible
+         * @param {string} settings.value - initial content of the control
+         * @returns {Object} - control instance
+         * @constructor
+         */
+        Module.CodeEditor = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control._width = settings.width || 120;
+            control._height = settings.height || 100;
+            control._value = settings.value || '';
+            if (settings.type != "yaml")
+                throw Exception("Invalid code type");
+
+
+            /**
+             * Returns the html implementing the control
+             * @returns {string}
+             */
+            control.createHtml = function() {
+                var rootEl = DOM.Div({id: control._getSubId('')});
+                rootEl.addCssClass("CodeEditor");
+                rootEl.addStyle("min-width", (control._width+5)+"px");
+                rootEl.addStyle("min-height", (control._height+5)+"px");
+                var str = rootEl.toString();
+                return str;
+            };
+
+
+            /**
+             * Attaches the html event handlers after DOM insertion
+             */
+            control.attachEventHandlers = function() {
+                control.cm = CodeMirror(control._getSub$El('')[0], {
+                    value: control._value,
+                    mode:  "yaml"
+                });
+                control.cm.setSize(control._width, control._height);
+            };
+
+            /**
+             * Returns the current content of the edit box
+             * @returns {string}
+             */
+            control.getValue = function () {
+                if (control.cm)
+                    control._value = control.cm.getValue();
+                return control._value;
+            };
+
+
+
+            return control;
+        };
+
 
 
         /**

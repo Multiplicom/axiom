@@ -632,6 +632,30 @@ define([
             };
 
 
+            dataFrame.sortByProperty = function(sortPropID, sortInv) {
+                var sortIdx = [];
+                for (var i=0; i<dataFrame.getRowCount(); i++)
+                    sortIdx.push(i);
+                var sortVals = [];
+                for (var i=0; i<dataFrame.getRowCount(); i++)
+                    sortVals.push(dataFrame.getRowInfo(i)[sortPropID]);
+                sortIdx.sort(function(idx1, idx2) {
+                    var val1 = sortVals[idx1];
+                    var val2 = sortVals[idx2];
+                    var discr = ((val1 < val2) ? -1 : ((val1 > val2) ? 1 : 0));
+                    if (sortInv)
+                        discr = -discr;
+                    return discr;
+                });
+                $.each(dataFrame.getProperties(), function(idx, propInfo) {
+                    var sortedData = [];
+                    for (var i=0; i<dataFrame.getRowCount(); i++)
+                        sortedData.push(propInfo.data[sortIdx[i]]);
+                    propInfo.data = sortedData;
+                });
+
+            };
+
             dataFrame.filterRows = function(filterFunction) {
                 var filteredIndexes = [];
                 for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
