@@ -22,8 +22,9 @@ define([
         var Module = {};
 
         Module.reportBug = function(error) {
-            alert(error);
-            debugger;
+            throw(msg);
+            //alert(error);
+            //debugger;
         };
 
         Module.checkDefined = function(obj, error) {

@@ -352,6 +352,7 @@ define([
          * @param msg
          */
         Module.reportBug = function(msg) {
+            throw(msg);
             //alert(msg);
             //debugger;
         };
