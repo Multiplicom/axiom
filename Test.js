@@ -22,7 +22,7 @@ define([
         var Module = {};
 
         Module.reportBug = function(error) {
-            throw(msg);
+            //throw(msg);
             //alert(error);
             //debugger;
         };
