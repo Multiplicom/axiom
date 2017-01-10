@@ -56,7 +56,9 @@ define([
                 dispGroup.add(win.ctrl_Resolution);
 
                 win.infoCtrl = Controls.Static({});
+                win.infoSelectionCtrl = Controls.Static({});
                 dispGroup.add(win.infoCtrl);
+                dispGroup.add(win.infoSelectionCtrl);
             };
 
             win.render = function() {
@@ -137,6 +139,54 @@ define([
                 win.render();
             };
 
+            /**
+             * Create text for display in info section of the plot
+             * @param {[]} values: list of data values
+             * @returns {String}: info text to display
+             * @private
+             */
+            win._infoText = function(values) {
+
+                var minVal = +1.0e99;
+                var maxVal = -1.0e99;
+                var sum = 0;
+                var count = values.length;
+
+                for (var rowNr = 0; rowNr < count; rowNr++) {
+                    var val = values[rowNr];
+                    if (val<minVal) minVal = val;
+                    if (val>maxVal) maxVal = val;
+                    sum += val;
+                }
+
+                var str = '';
+                str += 'Min: ' + minVal + '<br>';
+                str += 'Max: ' + maxVal + '<br>';
+                str += 'Count: ' + count + '<br>';
+                str += 'Sum: ' + sum + '<br>';
+                var average = sum/count;
+                str += 'Average: ' + average + '<br>';
+
+                var stdev = 0;
+                for (var i=0; i<values.length; i+= 1)
+                    stdev += Math.pow(values[i]-average, 2.0);
+                stdev = Math.sqrt(stdev/values.length);
+                str += 'Stdev: ' + stdev + '<br>';
+
+                function median(values) {
+                    values.sort( function(a,b) {return a - b;} );
+                    var half = Math.floor(values.length/2);
+                    if(values.length % 2)
+                        return values[half];
+                    else
+                        return (values[half-1] + values[half]) / 2.0;
+                }
+
+                str += 'Median: ' + median(values) + '<br>';
+
+                return str
+            };
+
             win.parseData = function() {
                 var propVal = win.getAspectProperty('value');
                 var dataVal = propVal.data;
@@ -210,37 +260,33 @@ define([
                 win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
                 win.plot.setXLabel(propVal.getDispName());
 
-                var str = '';
-                str += 'Min: ' + minVal + '<br>';
-                str += 'Max: ' + maxVal + '<br>';
+                win.infoCtrl.modifyText(win._infoText(values));
+                win.parseSelectedData();
 
-                var sum = 0;
-                for (var i=0; i<values.length; i+= 1)
-                    sum += values[i];
-                str += 'Count: ' + values.length + '<br>';
-                str += 'Sum: ' + sum + '<br>';
-                var average = sum/values.length;
-                str += 'Average: ' + average + '<br>';
+            };
 
-                var stdev = 0;
-                for (var i=0; i<values.length; i+= 1)
-                    stdev += Math.pow(values[i]-average, 2.0);
-                stdev = Math.sqrt(stdev/values.length);
-                str += 'Stdev: ' + stdev + '<br>';
+            /**
+             * Parse selected data, calculate properties and display them in the Display section of the plot.
+             */
+            win.parseSelectedData = function() {
+                var propVal = win.getAspectProperty('value');
+                var dataVal = propVal.data;
 
-                function median(values) {
-                    values.sort( function(a,b) {return a - b;} );
-                    var half = Math.floor(values.length/2);
-                    if(values.length % 2)
-                        return values[half];
-                    else
-                        return (values[half-1] + values[half]) / 2.0;
+                var dataPrimKey = win.getPrimKeyProperty().data;
+                var rowSelGet = win.dataFrame.objectType.rowSelGet;
+
+                var values = [];
+                for (var rowNr = 0; rowNr < dataVal.length; rowNr++){
+                    if (rowSelGet(dataPrimKey[rowNr])){
+                        var val = dataVal[rowNr];
+                        if (val !== null && !(isNaN(val))) {
+                            values.push(val);
+                        }
+                    }
                 }
-
-                str += 'Median: ' + median(values) + '<br>';
-
-                win.infoCtrl.modifyText(str);
-
+                var str = 'Selection: '.bold() + '<br>';
+                str += win._infoText(values);
+                win.infoSelectionCtrl.modifyText(str);
             };
 
             win.modifySetting = function(settingKey, settingValue) {
@@ -255,6 +301,11 @@ define([
                 win.plot.setXRange(mn, mx);
                 win.render();
             };
+
+            win.listen('DataFrameRowSelChanged', function(objectTypeId) {
+                if (objectTypeId == win.dataFrame.objectType.typeId)
+                    win.parseSelectedData();
+            });
 
 
             win.init();
