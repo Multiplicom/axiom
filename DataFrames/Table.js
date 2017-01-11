@@ -48,22 +48,30 @@ define([
 
             var tableData = TableData.create(typeId, primKey);
 
+            // Init sorting
+            tableData.sortIdx = [];
+            for (var i=0; i<dataFrame.getRowCount(); i++)
+                tableData.sortIdx.push(i);
+
             var tableInfo = TableInfo.tableInfo(typeId);
 
             tableData.resetBuffer = function() {
-                tableData.sortIdx = [];
-                for (var i=0; i<dataFrame.getRowCount(); i++)
-                    tableData.sortIdx.push(i);
                 var sortColId = tableData.getSortColumn();
                 var sortInv = tableData.getSortInverse();
                 if (sortColId) {
                     var sortVals = [];
-                    for (var i=0; i<dataFrame.getRowCount(); i++)
+                    // previous Indexes used for stable sorting
+                    var previousIndexes = [];
+                    for (var i=0; i<dataFrame.getRowCount(); i++) {
                         sortVals.push(dataFrame.getRowInfo(i)[sortColId]);
+                        previousIndexes[tableData.sortIdx[i]] = i;
+                    }
                     tableData.sortIdx.sort(function(idx1, idx2) {
                         var val1 = sortVals[idx1];
                         var val2 = sortVals[idx2];
                         var discr = ((val1 < val2) ? -1 : ((val1 > val2) ? 1 : 0));
+                        if (discr === 0)
+                            discr = previousIndexes[idx1] - previousIndexes[idx2];
                         if (sortInv)
                             discr = -discr;
                         return discr;
