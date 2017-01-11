@@ -643,6 +643,8 @@ define([
                     var val1 = sortVals[idx1];
                     var val2 = sortVals[idx2];
                     var discr = ((val1 < val2) ? -1 : ((val1 > val2) ? 1 : 0));
+                    if (discr === 0)
+                        discr = idx1 - idx2;
                     if (sortInv)
                         discr = -discr;
                     return discr;
