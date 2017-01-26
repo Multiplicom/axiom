@@ -114,7 +114,7 @@ define([
             };
 
             /**
-             * Returns distribution minimum
+             * Returns distribution maximum
              * @returns {float}
              */
             that.getMaximum = function() {
