@@ -22,7 +22,8 @@ define([
         "AXM/Controls/Controls", "AXM/Controls/Compound",
         "AXM/Panels/Frame", "AXM/Panels/FlexTabber", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Panels/PanelFHTable", "AXM/Panels/PanelList", "AXM/Panels/PanelCanvas", "AXM/Panels/PanelCanvasZoomPan", "AXM/Panels/PanelCanvasXYPlot", "AXM/Panels/PanelHtml", "AXM/Panels/FrameTrackViewer",
         "AXM/Windows/RootWindow", "AXM/Windows/PopupWindow", "AXM/Windows/SimplePopups", "AXM/Windows/LogViewer", "AXM/Windows/DocViewer", "AXM/Windows/TransientPopup",
-        "AXM/DataFrames/DataFrame"
+        "AXM/DataFrames/DataFrame",
+        "AXM/Stats"
     ],
     function (
         require, $, _,
@@ -32,7 +33,8 @@ define([
         Controls, Compound,
         Frame, FlexTabber, PanelForm, PanelTable, PanelFHTable, PanelList, PanelCanvas, PanelCanvasZoomPan, PanelCanvasXYPlot, PanelHtml, FrameTrackViewer,
         RootWindow, PopupWindow, SimplePopups, LogViewer, DocViewer, TransientPopup,
-        DataFrame
+        DataFrame,
+        Stats
     ) {
 
         /**
@@ -47,6 +49,7 @@ define([
             DrawUtils: DrawUtils,
             Test: Utils.Test,
             Icon: Icon,
+            Stats: Stats,
             Application: Application,
             Tables: {
                 TableData:TableData,

@@ -36,6 +36,18 @@ define([
              */
             var that = {};
             that.values = values;
+            that.sortedValues = null;
+
+            /**
+             * Returns values sorted
+             */
+            that.getSortedValues = function(){
+                if(!that.sortedValues){
+                    that.sortedValues = that.values.slice();
+                    that.sortedValues = that.sortedValues.sort(function(a, b){return a - b;});
+                }
+                return that.sortedValues;
+            };
 
             /**
              * Parametric estimation of average and standard deviation
@@ -78,6 +90,35 @@ define([
              */
             that.getStdev = function() {
                 return that.stdev;
+            };
+
+            /**
+             * Returns distribution median
+             * @returns {float}
+             */
+            that.getMedian = function() {
+                var sortedValues = that.getSortedValues();
+                var half = Math.floor(sortedValues.length/2);
+                if(sortedValues.length % 2)
+                    return sortedValues[half];
+                else
+                    return (sortedValues[half-1] + sortedValues[half]) / 2.0;
+            };
+
+            /**
+             * Returns distribution minimum
+             * @returns {float}
+             */
+            that.getMinimum = function() {
+                return that.getSortedValues()[0];
+            };
+
+            /**
+             * Returns distribution minimum
+             * @returns {float}
+             */
+            that.getMaximum = function() {
+                return that.getSortedValues()[that.getCount() - 1];
             };
 
             return that;
