@@ -841,6 +841,8 @@ define([
                 var target = 'change.controlevent';
                 control._getSub$El('').unbind(target).bind(target, control._onChange);
                 //control._getSub$El('').click(control._onClicked);
+                if (control._hasDefaultFocus)
+                    control._getSub$El('').focus();
             };
 
             /**
