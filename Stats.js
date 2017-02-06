@@ -15,9 +15,11 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_"],
+        "require", "jquery", "_",
+        "AXM/AXMUtils"],
     function (
-        require, $, _) {
+        require, $, _,
+        AXMUtils) {
 
         var Module = {};
 
@@ -119,6 +121,18 @@ define([
              */
             that.getMaximum = function() {
                 return that.getSortedValues()[that.getCount() - 1];
+            };
+
+            /**
+             * Get the percentile value for a given percentile in the sorted list
+             * @param p - percentile
+             * @returns {float}
+             */
+            that.getPercentile = function(p) {
+                if(p < 0 || p > 1.0){
+                    AXMUtils.Test.reportBug("p is not a percentile: " + p);
+                }
+                return that.getSortedValues()[Math.round(that.getCount() * p)];
             };
 
             return that;
