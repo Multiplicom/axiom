@@ -752,6 +752,7 @@ define([
             control._states = [];
             control._value = settings.value || '';
             control._disabled = settings.disabled || false;
+            control._title = settings.title || '';
 
 
             /**
@@ -795,6 +796,8 @@ define([
             control.createHtml = function() {
                 var wrapper = DOM.Div();
                 wrapper.addStyle('display', 'inline-block');
+                if(control._title)
+                    wrapper.addAttribute('title', control._title);
                 var cmb = DOM.Create('select', { id: control._getSubId(''), parent: wrapper });
                 if (control._width)
                     cmb.addStyle('width',control._width+'px');
