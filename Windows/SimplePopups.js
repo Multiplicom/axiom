@@ -202,7 +202,7 @@ define([
          * Creates a popup presenting a number of choices as buttons
          * @param {string} title
          * @param {string} intro - intro text above the acion buttons
-         * @param {[{name, icon, action}]} actions - list of actions (action = handler function)
+         * @param {[{name, icon, action}]} actions - list of actions (action = handler function). Optional buttonClass key
          * @param {{}} settings
          * @constructor
          * @returns {{}} - the popup window instance
@@ -237,6 +237,9 @@ define([
                         win.close();
                         action.action();
                     });
+                if(action.buttonClass){
+                    bt.addClass(action.buttonClass);
+                }
                 buttons.push(bt);
             });
 
