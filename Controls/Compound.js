@@ -217,6 +217,7 @@ define([
                 var div = DOM.Div();
                 if (compound._noWrap)
                     div.addStyle('white-space', 'nowrap');
+                var maxElem = compound._members.length - 1;
                 $.each(compound._members, function(idx, member) {
                     var elemDiv = DOM.Div({parent:div});
                     elemDiv.addStyle('display', 'inline-block');
@@ -226,7 +227,8 @@ define([
                         alignStr = 'baseline';
                     elemDiv.addStyle('vertical-align', alignStr);
                     elemDiv.addStyle('white-space', 'normal');
-                    elemDiv.addStyle('margin-right', compound._separator+'px');
+                    if(idx < maxElem)
+                        elemDiv.addStyle('margin-right', compound._separator+'px');
                     elemDiv.addElem(member.createHtml());
                 });
                 return div.toString();
