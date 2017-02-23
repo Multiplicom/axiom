@@ -38,7 +38,9 @@ define([
          * @returns {{}} - popup window instance
          */
         Module.create = function(settings) {
-            AXMUtils.closeTransientPopups();
+            if(!settings.doNotCloseOthers){
+                AXMUtils.closeTransientPopups();
+            }
             var window = {_id: AXMUtils.getUniqueID()};
             window.zIndex = AXMUtils.getNextZIndex();
             window._tearDownHanders = [];//List of functions that will be called when the window is about to be removed
