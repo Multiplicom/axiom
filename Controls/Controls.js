@@ -188,6 +188,16 @@ define([
             };
 
             /**
+             * Modifies the css Class of the control
+             * @param {string} newClass - new css class
+             */
+            control.modifyCssClass = function(newClass) {
+                control._getSub$El('').removeClass(control._cssClass);
+                control.setCssClass(newClass);
+                control._getSub$El('').addClass(newClass);
+            };
+
+            /**
              * Modifies the tooltip of the control
              * @param {string} newText - new tooltip content
              */
