@@ -226,14 +226,20 @@ define([
              * @param tabId {string} id of the tab
              * @param newTitle1 {string} - title line 1
              * @param newTitle2 {string} - title line 2
+             * @param settings {{}} - label settings
              */
-            frame.changeTabFrameTitle = function(tabId, newTitle1, newTitle2) {
-                var tabNr = frame._tabId2Nr_noFail(tabId)
+            frame.changeTabFrameTitle = function(tabId, newTitle1, newTitle2, settings) {
+                var tabNr = frame._tabId2Nr_noFail(tabId);
+                if(!settings)
+                    settings = {};
 
                 if (tabNr >= 0) {
                     var tabInfo = frame._myTabs[tabNr];
                     tabInfo.headerInfo.title1 = newTitle1;
                     tabInfo.headerInfo.title2 = newTitle2;
+                    tabInfo.headerInfo.label = settings.label || '';
+                    tabInfo.headerInfo.labelClass = settings.labelClass || '';
+                    tabInfo.headerInfo.labelDoc = settings.labelDoc || '';
                     frame._updateTabStates();
                     tabInfo.get$El().find('.TabTitle1').html(newTitle1);
                     tabInfo.get$El().find('.TabTitle2').html(newTitle2);
@@ -374,6 +380,24 @@ define([
                         frame.viewTitle.modifyText(newTitleHtml);
                         if (newTitle)
                             frame.viewTitle.get$El().fadeTo(200,1);
+                    });
+                }
+
+                if (frame.viewLabel) {
+                    var newLabel = "";
+                    if (frame.getCurrentTabInfo()) {
+                        var currentTabInfo = frame.getCurrentTabInfo();
+                        if (currentTabInfo.headerInfo.showTitle)
+                            newLabel = frame.getCurrentTabInfo().headerInfo.label;
+                    }
+                    frame.viewLabel.get$El().fadeTo(200,0, function() {
+                        var labelClass = frame.getCurrentTabInfo().headerInfo.labelClass;
+                        if(!labelClass)
+                            labelClass = "ViewTitleDecorator";
+                        var newLabelHtml = '<div class="{cl}">'.AXMInterpolate({cl: labelClass}) + newLabel + '</div>';
+                        frame.viewLabel.modifyText(newLabelHtml);
+                        if (newLabel)
+                            frame.viewLabel.get$El().fadeTo(200,1);
                     });
                 }
 
@@ -536,7 +560,7 @@ define([
             /**
              * Defines this flex tabber as the one and only tabber that can be used to dock popup windows
              */
-            frame.setAsPopupDocker = function(buttonCloseView, hiderCloseView, viewTitle) {
+            frame.setAsPopupDocker = function(buttonCloseView, hiderCloseView, viewTitle, viewLabel) {
                 PopupWindow.docker = function (popup) {
                     var tabId = frame.addTabFrame(popup.__originalFlexTabberId, popup.getHeaderInfo(), popup.getRootFrame(), {
                         autoActivate: false
@@ -565,6 +589,8 @@ define([
                 }
 
                 frame.viewTitle = viewTitle;
+                if(viewLabel)
+                    frame.viewLabel = viewLabel;
             };
 
 
