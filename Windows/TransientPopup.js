@@ -135,17 +135,49 @@ define([
                         .css('left', leftX);
                     window._$ElContainer.find(".AXMTransientContainerArrow").css("left", window.offsetX-leftX-10);
                 }
-
-
-                if (window.offsetY + windowSizeY < browserSize.sizeY-10) {
-                    window._$ElContainer
-                        .css('top', window.offsetY + 14);
+                if(window._$ElContainer.outerWidth() + Math.max(window._$ElContainer.position().left, 0) >= browserSize.sizeX){
+                    var leftX = 0;
+                    window._$ElContainer.css('left', leftX);
+                    window._$ElContainer.css('width',  browserSize.sizeX);
+                    // take into account 2*15 px padding
+                    window._$ElContainer.find(".AXMTransientClient").css('width', browserSize.sizeX - 30);
+                    window._$ElContainer.find(".AXMTransientClient").css('overflow-x', "scroll");
+                    window._$ElContainer.find(".AXMTransientContainerArrow").css("left", window.offsetX-leftX-10);
                 }
-                else {
-                    window._$ElContainer
-                        .css('top', window.offsetY - windowSizeY-14);
-                    window._$ElContainer.find(".AXMTransientContainerArrow").removeClass("AXMTransientContainerArrowTop").addClass("AXMTransientContainerArrowBottom");
 
+                var bottomSpace = browserSize.sizeY - 14 - window.offsetY - windowSizeY;
+                var topSpace = window.offsetY - windowSizeY-14;
+                if(bottomSpace >= 0 || topSpace >= 0){
+                    if (window.offsetY + windowSizeY < browserSize.sizeY-10) {
+                        window._$ElContainer
+                            .css('top', window.offsetY + 14);
+                    }
+                    else {
+                        window._$ElContainer
+                            .css('top', window.offsetY - windowSizeY-14);
+                        window._$ElContainer.find(".AXMTransientContainerArrow").removeClass("AXMTransientContainerArrowTop").addClass("AXMTransientContainerArrowBottom");
+
+                    }
+                }
+                else{
+                    // Transient popup does not fit in current browser window
+
+                    if(bottomSpace >= topSpace){
+                        window._$ElContainer.css('top', window.offsetY + 14);
+                        window._$ElContainer.css('height',  browserSize.sizeY - 14 - window.offsetY);
+                        // take into account 2*15 px padding
+                        window._$ElContainer.find(".AXMTransientClient").css('height',  browserSize.sizeY - 14 - window.offsetY - 30);
+                    }
+                    else{
+                        window._$ElContainer.css('top', 0);
+                        window._$ElContainer.css('height',  window.offsetY - 14);
+                        // take into account 2*15 px padding
+                        window._$ElContainer.find(".AXMTransientClient").css('height',  window.offsetY - 14 - 30);
+                        window._$ElContainer.find(".AXMTransientContainerArrow").removeClass("AXMTransientContainerArrowTop").addClass("AXMTransientContainerArrowBottom");
+                    }
+                    // Add space for scroll bar
+                    window._$ElContainer.find('.SWXTransientCloseBox').css('right', 12);
+                    window._$ElContainer.find(".AXMTransientClient").css('overflow-y', "scroll");
                 }
 
                 window._$ElContainer.find('.SWXTransientCloseBox').click(function() {
