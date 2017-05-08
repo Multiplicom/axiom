@@ -65,7 +65,7 @@ define([
          * @returns {Array}
          */
         Module.getActiveWindowList = function() {
-            return Module._activeWindows
+            return Module._activeWindows;
         };
 
         Msg.listen('', 'MsgBrowserResized', function(ev) {
@@ -247,7 +247,7 @@ define([
                 rootDiv.addCssClass('AXMPopupWindowContainer');
                 rootDiv.addStyle('opacity', 0);
                 if (window.overflowAllowed){
-                    rootDiv.addStyle('overflow', 'visible')
+                    rootDiv.addStyle('overflow', 'visible');
                 }
 
                 var browserSize = AXMUtils.getBrowserSize();
@@ -324,7 +324,7 @@ define([
                     var windowSizeX = window._$ElContainer.width();
                     window._$ElContainer
                         .css('top', 4)
-                        .css('left', Math.max(0, (browserSize.sizeX-windowSizeX)/2))
+                        .css('left', Math.max(0, (browserSize.sizeX-windowSizeX)/2));
                 }
 
                 if (window._autoCenterbottom)
@@ -332,9 +332,12 @@ define([
                         .css('bottom', 4);
 
                 if (window._autoCenter) {
-                    var windowSizeY = window._$ElContainer.height();
+                    // var windowSizeY = window._$ElContainer.height();
                     window._$ElContainer
-                        .css('top', Math.max(0, (browserSize.sizeY-windowSizeY)/2));
+                        .css('top', 50 + '%')
+                        .css('left', 50 + '%')
+                        .css('margin-right', -50 + '%')
+                        .css('transform', 'translate(-50%, -50%)');
                 }
 
                 if (window._rootFrame) {
@@ -373,10 +376,6 @@ define([
 
                 if (window._blocking && !window._transpBlocking && !window._opaqueBlocking)
                     $('#blocker_'+window._id).fadeTo(window._fadeTime,0.5);
-
-
-
-
             };
 
 
@@ -413,13 +412,13 @@ define([
                         window._tmpWindowSize = {
                             sizeX: window._$ElContainer.width(),
                             sizeY: window._$ElContainer.height()
-                        }
+                        };
                     },
                     function(data) {        // move
                         var newPosX = window._moveX0 + data.diffTotalX;
                         var newPosY = window._moveY0 + data.diffTotalY;
-                        newPosX = Math.min(newPosX, window._tmpBrowserSize.sizeX-window._tmpWindowSize.sizeX-3)
-                        newPosY = Math.min(newPosY, window._tmpBrowserSize.sizeY-40/*window._tmpWindowSize.sizeY-3*/)
+                        newPosX = Math.min(newPosX, window._tmpBrowserSize.sizeX-window._tmpWindowSize.sizeX-3);
+                        newPosY = Math.min(newPosY, window._tmpBrowserSize.sizeY-40/*window._tmpWindowSize.sizeY-3*/);
                         newPosX = Math.max(0,newPosX);
                         newPosY = Math.max(0,newPosY);
                         window._$ElContainer
@@ -810,4 +809,3 @@ define([
 
         return Module;
     });
-
