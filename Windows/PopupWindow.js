@@ -128,10 +128,9 @@ define([
             window._helpID = settings.helpID;
             window._canDock = settings.canDock||false;
             window._fadeTime = 250;
+            window._isLogin = settings.isLogin||false;
             window.overflowAllowed = settings.overflowAllowed || false;
-
             window._listeners = [];
-
 
             window.setHeaderInfo = function(headerInfo) {
                 window._headerInfo = headerInfo;
@@ -332,7 +331,12 @@ define([
                         .css('bottom', 4);
 
                 if (window._autoCenter) {
-                    // var windowSizeY = window._$ElContainer.height();
+                    var windowSizeY = window._$ElContainer.height();
+                    window._$ElContainer
+                        .css('top', Math.max(0, (browserSize.sizeY-windowSizeY)/2));
+                }
+
+                if (window._isLogin) {
                     window._$ElContainer
                         .css('top', 50 + '%')
                         .css('left', 50 + '%')
