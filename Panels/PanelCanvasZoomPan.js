@@ -760,6 +760,7 @@ define([
                 AXMUtils.create$ElDragHandler(clickLayer$El, panel._panningStart, panel._panningDo, panel._panningStop);
                 clickLayer$El.mousemove(panel._onMouseMove);
                 clickLayer$El.click(panel._onClick);
+                clickLayer$El.mouseleave(panel._hideToolTip);
             };
 
             var _super_detachEventHandlers = panel.detachEventHandlers;
@@ -773,6 +774,7 @@ define([
                 AXMUtils.remove$ElDragHandler(clickLayer$El);
                 clickLayer$El.unbind('mousemove');
                 clickLayer$El.unbind('click');
+                clickLayer$El.unbind('mouseleave');
             };
 
 
