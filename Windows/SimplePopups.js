@@ -371,14 +371,14 @@ define([
                 });
 
             if (settings.controlType == 'dropdown') {
-                win.ctrlChoices = Controls.DropList({value: value});
+                win.ctrlChoices = Controls.DropList({value: value, width: settings.controlWidth});
             }
             else {
                 win.ctrlChoices = Controls.RadioGroup({value: value});
             }
 
             $.each(choices, function(idx, choice) {
-                win.ctrlChoices.addState(choice.id, choice.name);
+                win.ctrlChoices.addState(choice.id, choice.name, choice.group);
             });
             grp.add(win.ctrlChoices);
 
