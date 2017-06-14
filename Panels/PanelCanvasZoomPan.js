@@ -188,6 +188,8 @@ define([
             panel._dragActionPan = true;
             panel._canZoomX = true;
             panel._canZoomY = true;
+            panel._minRangeX = 1e-9;  // to counter floating precision errors
+            panel._minRangeY = 1e-9;
             panel._toolTipInfo = { ID: null };
             panel._selectionMode = false;
             panel.handleRectSelection = null;
@@ -253,6 +255,29 @@ define([
                 panel._canZoomY = canZoomY;
             };
 
+            /**
+             * Specify min range on both axes
+             * @param {boolean} minRangeX
+             * @param {boolean} minRangeY
+             */
+            panel.setMinRanges = function(minRangeX, minRangeY) {
+                panel._minRangeX = minRangeX;
+                panel._minRangeY = minRangeY;
+            };
+
+            /**
+             * Specifies in what direction the canvas can zoom
+             */
+            panel.canZoomX = function(scaleFactor) {
+                return panel._canZoomX && (scaleFactor <= 1.0 || panel.xScaler.getRange() > panel._minRangeX)
+            };
+
+            /**
+             * Specifies in what direction the canvas can zoom
+             */
+            panel.canZoomY = function(scaleFactor) {
+                return panel._canZoomY && (scaleFactor <= 1.0 || panel.yScaler.getRange() > panel._minRangeY)
+            };
 
             /**
              * Enables or disables the selection modus. When enables, mouse dragging sets the selection rather than panning
@@ -501,12 +526,12 @@ define([
                 var centerFracX = (px-panel.scaleMarginX)*1.0/(panel.drawSizeX-panel.scaleMarginX);
                 var centerFracY = (panel.drawSizeY-panel.scaleMarginY-py)/(panel.drawSizeY-panel.scaleMarginY);
                 var newXScaler = panel.xScaler;
-                if (panel._canZoomX) {
+                if (panel.canZoomX(scaleFactor)) {
                     newXScaler = Scaler(panel.xScaler);
                     newXScaler.zoom(scaleFactor, centerFracX);
                 }
                 var newYScaler = panel.yScaler;
-                if (panel._canZoomY) {
+                if (panel.canZoomY(scaleFactor)) {
                     newYScaler = Scaler(panel.yScaler);
                     newYScaler.zoom(scaleFactor, centerFracY);
                 }
