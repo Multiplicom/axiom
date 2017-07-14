@@ -168,9 +168,7 @@ define([
             if (!settings)
                 settings = {};
             headerInfo.showTitle = settings.showTitle!==false;
-            headerInfo.label = settings.label || '';
-            headerInfo.labelClass = settings.labelClass || '';
-            headerInfo.labelDoc = settings.labelDoc || '';
+            headerInfo.labels = settings.labels || {};
 
             headerInfo.getSingleTitle = function() {
                 return headerInfo.title1+' '+headerInfo.title2;
