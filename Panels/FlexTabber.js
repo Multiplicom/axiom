@@ -394,14 +394,17 @@ define([
                         }
                     }
                     viewLabelCtrl.get$El().fadeTo(200,0, function() {
+                        viewLabelCtrl.get$El().hide();
                         var labelClass = "ViewTitleDecorator";
                         if(frame.getCurrentTabInfo() && frame.getCurrentTabInfo().headerInfo.labels[key]){
                             labelClass = frame.getCurrentTabInfo().headerInfo.labels[key].cssClass || "ViewTitleDecorator";
                         }
                         var newLabelHtml = '<div class="{cl}">'.AXMInterpolate({cl: labelClass}) + newLabel + '</div>';
                         viewLabelCtrl.modifyText(newLabelHtml);
-                        if (newLabel)
+                        if (newLabel){
+                            viewLabelCtrl.get$El().show();
                             viewLabelCtrl.get$El().fadeTo(200,1);
+                        }
                     });
                 });
             };
