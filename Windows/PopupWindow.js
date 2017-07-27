@@ -102,7 +102,9 @@ define([
          * @param {boolean} settings.blockingOpaque - if true, the blocking renders the background completely invisible
          * @param {boolean} settings.autoCenter - if true, popup is automatically centered on the browser client area
          * @param {boolean} settings.autoCenterTop - if true, the popup is automatically horizontally centered on the browser client area, and appears on the top edge
-         * @param {boolean} settings.preventClose - if true, the uer cannot close the popup
+         * @param {boolean} settings.preventClose - if true, the user cannot close the popup
+         * @param {boolean} settings.minSizeX - minimum X popup size
+         * @param {boolean} settings.minSizeY - minimum Y popup size
          * @returns {PopupWindow} - popup window class instance
          */
         Module.create = function(settings) {
@@ -110,8 +112,8 @@ define([
             window.zIndex = AXMUtils.getNextZIndex();
             window._title = settings.title||'';
             window._headerIcon = settings.headerIcon||null;
-            window._minSizeX = 150;
-            window._minSizeY = 100;
+            window._minSizeX = settings.minSizeX||150;
+            window._minSizeY = settings.minSizeY||100;
             window._defaultSizeX = settings.sizeX||500;
             window._defaultSizeY = settings.sizeY||300;
             window._rootFrame = null; // by default, does not have a frame
