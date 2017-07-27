@@ -34,6 +34,7 @@ define([
          * @param {boolean} settings.scrollX - form has a horizontal scroll bar
          * @param {boolean} settings.scrollY - form has a vertical scroll bar
          * @param {boolean} settings.autoScrollY - form has an automatic vertical scroll bar
+         * @param {boolean} settings.alignVerticalCenter - form components are vertically aligned
          * @returns {Object} - panel instance
          * @constructor
          */
@@ -42,11 +43,13 @@ define([
             panel._rootControl = null;
             panel._scrollY = false;
             panel._scrollX = false;
+            panel._alignVerticalCenter = false;
             if (settings) {
                 panel._autoScrollX = settings.autoScrollX;
                 panel._autoScrollY = settings.autoScrollY;
                 panel._scrollY = settings.scrollY;
                 panel._scrollX = settings.scrollX;
+                panel._alignVerticalCenter = settings.alignVerticalCenter;
             }
 
 
@@ -76,6 +79,10 @@ define([
                     rootDiv.addStyle('overflow-y', 'auto');
                 if (panel._rootControl)
                     rootDiv.addElem(panel._rootControl.createHtml());
+                if(panel._alignVerticalCenter){
+                    rootDiv.addStyle('display', 'flex');
+                    rootDiv.addStyle('align-items', 'center');
+                }
                 return rootDiv.toString();
             };
 
