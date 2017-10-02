@@ -839,8 +839,10 @@ define([
                 control._getSub$El('').bind("propertychange input paste", control._onModified);
                 control._getSub$El('').bind("keyup", control._onModified);
                 control._checkNonEmptyClass();
-                if (control._hasDefaultFocus)
+                if (control._hasDefaultFocus) {
+                    control._getSub$El('').focus();
                     control._getSub$El('').select();
+                }
                 if (control._clearButton)
                     control._clearButton.attachEventHandlers();
             };
