@@ -1135,8 +1135,11 @@ define([
 	                      list: settings.choices
                     });
                 }
-                if (control._hasDefaultFocus)
+                if (control._hasDefaultFocus){
+                    control._getSub$El('').focus();
                     control._getSub$El('').select();
+                }
+
             };
 
             /**
