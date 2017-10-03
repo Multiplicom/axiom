@@ -467,7 +467,6 @@ define([
                             tmp1tabInfo.stackNr--;
                     });
                     if (!doNotRemoveFrame) {
-                        tabInfo.tabFrame.detachEventHandlers();
                         tabInfo.tabFrame.getRoot$El().remove();
                     }
                     frame._myTabs.splice(tabNr, 1);
