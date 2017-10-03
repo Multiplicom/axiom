@@ -455,6 +455,7 @@ define([
                         alert('Cannot close: '+closePreventReason);
                         return;
                     }
+                    tabInfo.tabFrame.detachEventHandlers();
                     tabInfo.tabFrame.informWillClose();
                 }
                 var removeFrame = function(){
