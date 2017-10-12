@@ -1705,7 +1705,7 @@ define([
                     scrollTime: control._scrollTime,
                     scrollInput: control._scrollInput
                 });
-                $("#"+control._datetimepickerid).draggable();
+                //$("#"+control._datetimepickerid).draggable();
             };
 
 
