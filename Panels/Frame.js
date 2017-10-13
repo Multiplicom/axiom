@@ -448,7 +448,7 @@ define([
                 frame.$ElContainer.css('height', yl + 'px');
                 frame._clientVOffset = 0;
                 if (frame.hasTitleBar()) {
-                    $('#' + frame.getTitleDivId()).outerWidth(xl).outerHeight(Module.titleBarH)
+                    $('#' + frame.getTitleDivId()).outerWidth(xl).outerHeight(Module.titleBarH);
                     frame._clientVOffset += Module.titleBarH;
                 }
                 frame.$ElContainer.children('.AXMFrameClient').css({
@@ -1393,7 +1393,7 @@ define([
                     });
                     var consumedWidth = frame._getTabContainer().children('.AXMFrameTabContainerInner').width();
                     maxTitleLength--;
-                } while ((consumedWidth > availableWidth) && (maxTitleLength>1))
+                } while ((consumedWidth > availableWidth) && (maxTitleLength>1));
 
                 _super_setPositionClient(xl, yl, params);
             };

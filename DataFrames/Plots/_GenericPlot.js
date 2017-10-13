@@ -70,7 +70,7 @@ define([
 
             plotType.hasAspect = function(aspectId) {
                 return !!plotType._aspectsMap[aspectId];
-            }
+            };
 
 
 
@@ -381,7 +381,7 @@ define([
 
 
             return plotType;
-        }
+        };
 
 
         return Module;

@@ -504,7 +504,7 @@ define([
             });
             if (fndIdx !== null)
                 _keyDownHandlerStack.splice(fndIdx, 1);
-        }
+        };
 
 
 
@@ -536,7 +536,7 @@ define([
             var sched = {};
 
             sched.scheduledFunctions = [];
-            sched.completedTokens = {}
+            sched.completedTokens = {};
 
             /**
              * Add a scheduled function. The execution will only start if all required tokens are marked as completed

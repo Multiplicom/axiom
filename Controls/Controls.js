@@ -119,7 +119,7 @@ define([
             /**
              * Called by the framework when a control needs to be teared down. To be implemented in derived classes
              */
-            control.tearDown = function() {}
+            control.tearDown = function() {};
 
             return control;
         };

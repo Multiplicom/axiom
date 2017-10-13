@@ -347,7 +347,7 @@ define([
                         ctx.stroke();
                     }
                 });
-            }
+            };
 
             /**
              * Draws the main view of the track - to be overridden
@@ -589,7 +589,7 @@ define([
 
                 ctx.restore();
 
-            }
+            };
 
 
             return track;

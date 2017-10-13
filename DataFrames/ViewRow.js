@@ -49,7 +49,7 @@ define([
             var grp = Controls.Compound.Grid({});
             rootGrp.add(Controls.Compound.VScroller(grp, 400));
 
-            var rowData = {}
+            var rowData = {};
             $.each(dataFrame.getProperties(), function(idx, property) {
                 grp.setItem(idx, 0, property.getDispName());
                 grp.setItem(idx, 1, property.content2DisplayString(property.data[rowNr]));
