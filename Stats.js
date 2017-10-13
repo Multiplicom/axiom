@@ -26,15 +26,28 @@ define([
 
         /**
          * Estimates the parameters of a normal distribution from a set of observations
-         * @param [float] values - list of observations
-         * @returns {{}} - Normal df class instance
+         * @param {number[]} values - list of observations
+         * @returns {Object} - Normal df class instance
          * @constructor
          */
         Module.NormDfEstimator = function(values) {
 
             /**
              * Object instance
-             * @type {{}}
+             * @type {{
+             *      values: number[],
+             *      average: number,
+             *      stdev: number,
+             *      getSortedValues: function,
+             *      calcParametric: function,
+             *      getCount: function,
+             *      getMean: function,
+             *      getStdev: function,
+             *      getMedian: function,
+             *      getMinimum: function,
+             *      getMaximum: function,
+             *      getPercentile: function
+             * }}
              */
             var that = {};
             that.values = values;
@@ -55,16 +68,17 @@ define([
              * Parametric estimation of average and standard deviation
              */
             that.calcParametric = function() {
-                if (values.length == 0)
+                if (values.length === 0)
                     return;
                 var sum = 0;
-                for (var i=0; i<values.length; i+= 1)
+                var i;
+                for (i = 0; i<values.length; i+= 1)
                     sum += values[i];
                 var average = sum/values.length;
                 that.average = average;
 
                 var stdev = 0;
-                for (var i=0; i<values.length; i+= 1)
+                for (i = 0; i<values.length; i+= 1)
                     stdev += Math.pow(values[i]-average, 2.0);
                 stdev = Math.sqrt(stdev/values.length);
                 that.stdev = stdev;
@@ -72,7 +86,7 @@ define([
 
             /**
              * Returns number of values
-             * @returns {int}
+             * @returns {number}
              */
             that.getCount = function() {
                 return values.length;
@@ -80,7 +94,7 @@ define([
 
             /**
              * Returns distribution average
-             * @returns {float}
+             * @returns {number}
              */
             that.getMean = function() {
                 return that.average;
@@ -88,7 +102,7 @@ define([
 
             /**
              * Returns distribution standard deviation
-             * @returns {float}
+             * @returns {number}
              */
             that.getStdev = function() {
                 return that.stdev;
@@ -96,7 +110,7 @@ define([
 
             /**
              * Returns distribution median
-             * @returns {float}
+             * @returns {number}
              */
             that.getMedian = function() {
                 var sortedValues = that.getSortedValues();
@@ -109,7 +123,7 @@ define([
 
             /**
              * Returns distribution minimum
-             * @returns {float}
+             * @returns {number}
              */
             that.getMinimum = function() {
                 return that.getSortedValues()[0];
@@ -117,7 +131,7 @@ define([
 
             /**
              * Returns distribution maximum
-             * @returns {float}
+             * @returns {number}
              */
             that.getMaximum = function() {
                 return that.getSortedValues()[that.getCount() - 1];
@@ -125,8 +139,8 @@ define([
 
             /**
              * Get the percentile value for a given percentile in the sorted list
-             * @param p - percentile
-             * @returns {float}
+             * @param {number} p - percentile
+             * @returns {number}
              */
             that.getPercentile = function(p) {
                 if(p < 0 || p > 1.0){
@@ -141,8 +155,8 @@ define([
         /**
          * Selects rows from the passed lists that contain valid floating point values and omits
          * null or NaN values. Does not test for strings.
-         * @param {[]} dataX: list of floats
-         * @param {[]} dataY: list of floats
+         * @param {number[]} dataX: list of floats
+         * @param {number[]} dataY: list of floats
          * @returns {*[]}: array of 2 elements: sublist of dataX, sublist of dataY.
          */
         Module._selectValidValues = function(dataX, dataY){
@@ -161,9 +175,9 @@ define([
 
         /**
          * Calculates the pearson correlation coefficient for a set of data points.
-         * @param {[]} dataX - list of floats
-         * @param {[]} dataY - list of floats
-         * @returns {float} - correlation coefficient or NaN if unable to calculate
+         * @param {number[]} dataX - list of floats
+         * @param {number[]} dataY - list of floats
+         * @returns {number} - correlation coefficient or NaN if unable to calculate
          */
         Module.correlationCoefficient = function(dataX, dataY) {
             var correlation = Number.NaN;
@@ -190,8 +204,8 @@ define([
 
         /**
          * Calculates slope and intercept of linear fit through a set of data points.
-         * @param {[]} dataX - list of floats
-         * @param {[]} dataY - list of floats
+         * @param {number[]} dataX - list of floats
+         * @param {number[]} dataY - list of floats
          * @returns {[]} - [slope, intercept] or [NaN, NaN] if not able to calculate
          */
         Module.slopeIntercept = function(dataX, dataY) {

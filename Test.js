@@ -34,14 +34,14 @@ define([
 
         Module.checkIsString = function() {
             $.each(arguments, function(idx, obj) {
-                if(!(typeof obj == 'string'))
+                if(!(typeof obj === 'string'))
                     Module.reportBug('Variable is not a string');
             });
         };
 
         Module.checkIsNumber = function() {
             $.each(arguments, function(idx, obj) {
-                if(!(typeof obj == 'number'))
+                if(!(typeof obj === 'number'))
                     Module.reportBug('Variable is not a number');
             });
         };
