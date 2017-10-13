@@ -447,7 +447,7 @@ define([
                     ev1 = ev.originalEvent;
                 return {
                     x: ev1.pageX - track.cnvs.getCanvas$El('main').offset().left,
-                    y: ev1.pageY - track.cnvs.getCanvas$El('main').offset().top,
+                    y: ev1.pageY - track.cnvs.getCanvas$El('main').offset().top
                 };
             };
 
@@ -1065,7 +1065,7 @@ define([
         };
 
 
-        Module.FrameTrackViewer = function () {
+        Module.FrameTrackViewer = function (toolBoxWidth) {
             var thePanel = Module.PanelTrackViewer();
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
@@ -1077,7 +1077,7 @@ define([
                 Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({separator: 10}, [
                     theFrame.trackControlsGroup,
                     theFrame._popupMenuExtraControlsGroup
-                ]) ), appData.leftPanelWidth));
+                ]) ), toolBoxWidth));
 
             theFrame.setToolBox(toolBox);
 

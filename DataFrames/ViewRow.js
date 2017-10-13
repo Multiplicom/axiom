@@ -60,7 +60,7 @@ define([
                         width : 25,
                         height: 19,
                         buttonClass : 'AXMButtonCommandBar',
-                        iconSizeFraction: 0.9,
+                        iconSizeFraction: 0.9
                     }).addNotificationHandler(function() {
                         win.filter(property);
                     });

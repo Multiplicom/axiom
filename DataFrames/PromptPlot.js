@@ -33,7 +33,7 @@ define([
             var win = PopupWindow.create({
                 title: _TRL('Create a view'),
                 blocking:true,
-                autoCenter: true,
+                autoCenter: true
             });
 
             var grp = Controls.Compound.GroupVert({});

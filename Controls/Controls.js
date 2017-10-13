@@ -834,7 +834,7 @@ define([
                             st += '</optgroup>';
                         lastGroupName = groupName;
                         if (groupName)
-                            st += '<optgroup = label="{name}">'.AXMInterpolate({name: groupName});
+                            st += '<optgroup label="{name}">'.AXMInterpolate({name: groupName});
                     }
                     st += '<option value="{id}" {selected}>{name}</option>'.AXMInterpolate({
                         id: state.id,
@@ -1704,7 +1704,7 @@ define([
                     formatTime:control._formatTime,
                     scrollMonth: control._scrollMonth,
                     scrollTime: control._scrollTime,
-                    scrollInput: control._scrollInput,
+                    scrollInput: control._scrollInput
 
                 });
                 $(".xdsoft_datetimepicker").draggable();
@@ -1816,7 +1816,7 @@ define([
 
                 Color.Color(0.3, 0.3, 1.0),
                 Color.Color(0.7, 0.2, 0.7),
-                Color.Color(0.4, 0.4, 0.4),
+                Color.Color(0.4, 0.4, 0.4)
             ];
 
             control._colors = [];

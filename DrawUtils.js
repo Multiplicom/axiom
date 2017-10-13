@@ -16,7 +16,7 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/Test",
+        "AXM/Test"
     ],
     function (
         require, $, _,

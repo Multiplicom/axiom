@@ -743,7 +743,7 @@ define([
                 var $ElRightBody = $('#'+panel._divid_rightBody);
                 var $ElLeftBody = $('#'+panel._divid_leftBody);
 
-                tableOffsetPrev = panel._tableOffset;
+                var tableOffsetPrev = panel._tableOffset;
                 var rowLastPrev = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
 
                 panel._tableOffset += diff;

@@ -126,7 +126,7 @@ define([
                 var catSelMap = {};
                 var rowSelGet = win.dataFrame.objectType.rowSelGet;
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
-                    var cat = dataCat[rowNr];;
+                    var cat = dataCat[rowNr];
                     if (!catSelMap[cat])
                         catSelMap[cat] = { count: 0};
                     if (rowSelGet(dataPrimKey[rowNr])) {

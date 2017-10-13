@@ -147,7 +147,7 @@ define([
                     if (!catMap[val]) {
                         catMap[val] = {
                             catVal: val,
-                            dispName: propCat.content2DisplayString(val),
+                            dispName: propCat.content2DisplayString(val)
                         }
                     }
                 }
