@@ -18,8 +18,7 @@
 define([
         "require", "jquery", "datetimepicker", "AXM/Externals/awesomplete/awesomplete", "_",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound",
-        "AXM/Externals/CodeMirror/lib/codemirror", "AXM/Externals/CodeMirror/modes/yaml/yaml",
-        "jquery_ui"
+        "AXM/Externals/CodeMirror/lib/codemirror", "AXM/Externals/CodeMirror/modes/yaml/yaml"
     ],
     function (
         require, $, datetimepicker, awesomplete, _,
@@ -1707,7 +1706,7 @@ define([
                     scrollInput: control._scrollInput
 
                 });
-                $(".xdsoft_datetimepicker").draggable();
+
             };
 
 
