@@ -1069,6 +1069,7 @@ define([
             control._isPassWord = settings.passWord || false;
             control._disabled = settings.disabled || false;
             control._nonEmptyClass = settings.nonEmptyClass || null;
+            control._choices = null;
 
             if (settings.hasClearButton)
                 control._clearButton = Module.Button({
@@ -1131,7 +1132,7 @@ define([
                     control._clearButton.attachEventHandlers();
                 if (settings.choices){
                     var input = document.getElementById(control._id);
-                    new Awesomplete(input, {
+                    control._choices = new Awesomplete(input, {
 	                      list: settings.choices
                     });
                 }
@@ -1140,6 +1141,13 @@ define([
                     control._getSub$El('').select();
                 }
 
+            };
+
+            control.modifyChoices = function (choicesList) {
+                if(!control._choices)
+                    AXMUtils.reportBug('Do not call if there are no options');
+                control._choices.list = choicesList;
+                control._choices.evaluate();
             };
 
             /**
