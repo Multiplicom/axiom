@@ -1147,7 +1147,7 @@ define([
                 if(!control._choices)
                     AXMUtils.reportBug('Do not call if there are no options');
                 control._choices.list = choicesList;
-                control._choices.evaluate();
+                // control._choices.evaluate();
             };
 
             /**
