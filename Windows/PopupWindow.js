@@ -281,10 +281,10 @@ define([
                         .addElem(window._title)
 
                     // Add labels to popup header as "badges"
-                    Object.keys(window._labels)
-                        .map(k => window._labels[k])
-                        .map(label => DOM.Create("span").addCssClass(label.cssClass).addCssClass("AXMBadge").addElem(label.text))
-                        .forEach(badge => titleText.addElem(badge));
+                    Object.keys(window._labels).forEach(function (k) {
+                        let label = window._labels[k];
+                        DOM.Create("span", {parent: titleText}).addCssClass(label.cssClass).addCssClass("AXMBadge").addElem(label.text);
+                    });
                 }
 
                 var transfer$Elem = null;
