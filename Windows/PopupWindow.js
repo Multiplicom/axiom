@@ -168,6 +168,10 @@ define([
                 window._$ElContainer.find('.PopupHeaderTitleText').html(newTitle);
             };
 
+            window.modifyLabels = function (labels) {
+                window._labels = labels;
+            };
+
             /**
              * Defines the root frame to be displayed in the popup (popup will be window style, containing frames and will be resizeable)
              * @param {AXM.Frame} iFrame
@@ -283,7 +287,7 @@ define([
                     // Add labels to popup header as "badges"
                     Object.keys(window._labels).forEach(function (k) {
                         let label = window._labels[k];
-                        DOM.Create("span", {parent: titleText}).addCssClass(label.cssClass).addCssClass("AXMBadge").addElem(label.text);
+                        DOM.Create("span", {parent: headerDiv}).addCssClass(label.cssClass).addCssClass("AXMBadge").addElem(label.text);
                     });
                 }
 
