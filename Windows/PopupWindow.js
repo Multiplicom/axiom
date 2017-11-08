@@ -170,6 +170,8 @@ define([
 
             window.modifyLabels = function (labels) {
                 window._labels = labels;
+                window._$ElContainer.find('.AXMPopupLabelsPlaceholder').html(
+                    window.labels.join(""))
             };
 
             /**
@@ -278,17 +280,19 @@ define([
                     let titleText = DOM.Div({parent: headerDiv});
                     titleText.addCssClass("PopupHeaderTitleText")
                         .addStyle("display", "inline-block")
-                        .addStyle("margin-right", "70px")
+                        .addStyle("margin-right", "20px")
                         .addStyle("overflow-x", "hidden")
                         .addStyle("text-overflow", "ellipsis") 
                         .addStyle("vertical-align", "middle")
                         .addElem(window._title)
 
+                    let labelsContainer = DOM.Create("span");
+                    labelsContainer.addCssClass("AXMPopupLabelsPlaceholder");
                     // Add labels to popup header as "badges"
-                    Object.keys(window._labels).forEach(function (k) {
-                        let label = window._labels[k];
-                        DOM.Create("span", {parent: headerDiv}).addCssClass(label.cssClass).addCssClass("AXMBadge").addElem(label.text);
+                    window.labels.forEach(function addBadge (badge) {
+                        labelsContainer.addElem(badge);
                     });
+                    headerDiv.addElem(labelsContainer);
                 }
 
                 var transfer$Elem = null;
@@ -410,6 +414,18 @@ define([
                     AXMUtils.reportBug("Popup is not yet started");
                 return window._$ElContainer;
             };
+
+            Object.defineProperty(window, 'labels', {
+                get: function getLabels () {
+                    return Object.keys(window._labels).map(function (k) {
+                        let label = window._labels[k];
+                        return DOM.Create("span")
+                            .addCssClass(label.cssClass)
+                            .addCssClass("AXMBadge")
+                            .addElem(label.text);
+                    });
+                }
+            });
 
             /**
              * Handles the html on key down event
