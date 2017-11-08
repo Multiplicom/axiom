@@ -105,6 +105,7 @@ define([
          * @param {boolean} settings.preventClose - if true, the user cannot close the popup
          * @param {boolean} settings.minSizeX - minimum X popup size
          * @param {boolean} settings.minSizeY - minimum Y popup size
+         * @param {Object} settings.labels - map with labels to be displayed
          * @returns {PopupWindow} - popup window class instance
          */
         Module.create = function(settings) {
@@ -133,6 +134,7 @@ define([
             window._isLogin = settings.isLogin||false;
             window.overflowAllowed = settings.overflowAllowed || false;
             window._listeners = [];
+            window._labels = settings.labels || {};
 
             window.setHeaderInfo = function(headerInfo) {
                 window._headerInfo = headerInfo;
@@ -268,7 +270,21 @@ define([
                             headerDiv.addElem(str);
                         }
                     }
-                    headerDiv.addElem('<div style="display: inline-block;margin-right:70px;overflow-x: hidden;text-overflow: ellipsis; vertical-align: middle" class="PopupHeaderTitleText">' + window._title + '</div>');
+
+                    let titleText = DOM.Div({parent: headerDiv});
+                    titleText.addCssClass("PopupHeaderTitleText")
+                        .addStyle("display", "inline-block")
+                        .addStyle("margin-right", "70px")
+                        .addStyle("overflow-x", "hidden")
+                        .addStyle("text-overflow", "ellipsis") 
+                        .addStyle("vertical-align", "middle")
+                        .addElem(window._title)
+
+                    // Add labels to popup header as "badges"
+                    Object.keys(window._labels)
+                        .map(k => window._labels[k])
+                        .map(label => DOM.Create("span").addCssClass(label.cssClass).addCssClass("AXMBadge").addElem(label.text))
+                        .forEach(badge => titleText.addElem(badge));
                 }
 
                 var transfer$Elem = null;
