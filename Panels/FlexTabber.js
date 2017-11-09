@@ -244,11 +244,11 @@ define([
                 }
 
                 $.each(PopupWindow.getActiveWindowList(), function(idx, popupWindow) {
-                    if (tabId == popupWindow.__originalFlexTabberId) {
+                    if (tabId === popupWindow.__originalFlexTabberId) {
+                        popupWindow.modifyLabels(settings.labels || {});
                         popupWindow.modifyTitle(newTitle1 + " " + newTitle2);
                     }
                 });
-
             };
 
 
