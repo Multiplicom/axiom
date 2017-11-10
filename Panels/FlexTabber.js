@@ -244,11 +244,11 @@ define([
                 }
 
                 $.each(PopupWindow.getActiveWindowList(), function(idx, popupWindow) {
-                    if (tabId == popupWindow.__originalFlexTabberId) {
+                    if (tabId === popupWindow.__originalFlexTabberId) {
+                        popupWindow.modifyLabels(settings.labels || {});
                         popupWindow.modifyTitle(newTitle1 + " " + newTitle2);
                     }
                 });
-
             };
 
 
@@ -518,8 +518,10 @@ define([
                     autoCenter: true,
                     canDock: true,
                     sizeX: 750,
-                    sizeY:570
+                    sizeY:570,
+                    labels: tabInfo.headerInfo.labels
                 });
+
                 popup.__originalFlexTabberId = tabId;
 
                 popup.setHeaderInfo(tabInfo.headerInfo);

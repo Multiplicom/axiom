@@ -7,6 +7,9 @@
 *.synctex.gz(busy)
 *.toc
 
+# VS Code
+.vscode
+
 # JetBrains IDE files
 .idea
 

@@ -105,6 +105,7 @@ define([
          * @param {boolean} settings.preventClose - if true, the user cannot close the popup
          * @param {boolean} settings.minSizeX - minimum X popup size
          * @param {boolean} settings.minSizeY - minimum Y popup size
+         * @param {Object} settings.labels - map with labels to be displayed
          * @returns {PopupWindow} - popup window class instance
          */
         Module.create = function(settings) {
@@ -133,6 +134,7 @@ define([
             window._isLogin = settings.isLogin||false;
             window.overflowAllowed = settings.overflowAllowed || false;
             window._listeners = [];
+            window._labels = settings.labels || {};
 
             window.setHeaderInfo = function(headerInfo) {
                 window._headerInfo = headerInfo;
@@ -164,6 +166,12 @@ define([
             window.modifyTitle = function(newTitle) {
                 window._title = newTitle;
                 window._$ElContainer.find('.PopupHeaderTitleText').html(newTitle);
+            };
+
+            window.modifyLabels = function (labels) {
+                window._labels = labels;
+                window._$ElContainer.find('.AXMPopupLabelsPlaceholder').html(
+                    window.labels.join(""))
             };
 
             /**
@@ -268,7 +276,23 @@ define([
                             headerDiv.addElem(str);
                         }
                     }
-                    headerDiv.addElem('<div style="display: inline-block;margin-right:70px;overflow-x: hidden;text-overflow: ellipsis; vertical-align: middle" class="PopupHeaderTitleText">' + window._title + '</div>');
+
+                    let titleText = DOM.Div({parent: headerDiv});
+                    titleText.addCssClass("PopupHeaderTitleText")
+                        .addStyle("display", "inline-block")
+                        .addStyle("margin-right", "20px")
+                        .addStyle("overflow-x", "hidden")
+                        .addStyle("text-overflow", "ellipsis") 
+                        .addStyle("vertical-align", "middle")
+                        .addElem(window._title)
+
+                    let labelsContainer = DOM.Create("span");
+                    labelsContainer.addCssClass("AXMPopupLabelsPlaceholder");
+                    // Add labels to popup header as "badges"
+                    window.labels.forEach(function addBadge (badge) {
+                        labelsContainer.addElem(badge);
+                    });
+                    headerDiv.addElem(labelsContainer);
                 }
 
                 var transfer$Elem = null;
@@ -390,6 +414,18 @@ define([
                     AXMUtils.reportBug("Popup is not yet started");
                 return window._$ElContainer;
             };
+
+            Object.defineProperty(window, 'labels', {
+                get: function getLabels () {
+                    return Object.keys(window._labels).map(function (k) {
+                        let label = window._labels[k];
+                        return DOM.Create("span")
+                            .addCssClass(label.cssClass)
+                            .addCssClass("AXMBadge")
+                            .addElem(label.text);
+                    });
+                }
+            });
 
             /**
              * Handles the html on key down event

@@ -205,8 +205,6 @@ define([
             return that;
         };
 
-
-
         /**
          * Returns a label element
          * @param {{}} args - see Module._Element
