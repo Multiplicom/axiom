@@ -204,4 +204,7 @@
     background-color: white;
     border:1px solid rgb(179, 179, 179);
     box-shadow: 2px 2px 20px 4px rgba(0, 0, 0, 0.25);
+    /* vertical scroll if max-height exceeds 80% viewport height */
+    max-height: 80vh ;
+    overflow-y: scroll;
 }
