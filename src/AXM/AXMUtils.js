@@ -271,18 +271,6 @@ define([
             //console.log(line);
         };
 
-
-        /**
-         * Returns the url of an Axiom predefined bitmap
-         * @param {string} bmpId - bitmap id
-         * @returns {string} - url
-         * @constructor
-         */
-        Module.BmpFile = function(bmpId) {
-            return require.toUrl('AXM/Bitmaps/'+bmpId+'.png');
-        };
-
-
         /**
          * Returns a throttled function that wraps around the argument function, making sure it is called not more often than delay specifies
          * @param {function} fn - argument function to be throttled

@@ -1,9 +1,12 @@
 const path = require("path");
+const webpack = require("webpack");
+
 module.exports = {
   entry: path.join(__dirname, "src", "AXM"),
   output: {
     filename: "axiom.js",
-    library: "axiom",
+    library: "AXM",
+    libraryTarget: "amd",
     path: path.resolve(__dirname, "dist")
   },
   module: {
@@ -11,10 +14,7 @@ module.exports = {
       {
         test: /.js?$/,
         include: [path.resolve(__dirname, "src")],
-        exclude: [
-          path.resolve(__dirname, "node_modules"),
-          path.resolve(__dirname, "bower_components")
-        ],
+        exclude: [],
         loader: "babel-loader",
         query: {
           presets: ["env"]
@@ -26,15 +26,16 @@ module.exports = {
     extensions: [".json", ".js", ".css"],
     modules: ["src"],
     alias: {
-      "jquery": "lib/jquery",
-      "jquery_cookie": "lib/jquery_cookie",
-      "_": "lib/lodash",
-      "blob": "lib/Blob",
-      "filesaver": "lib/FileSaver",
-      "resumable": "externals/resumable",
-      "datetimepicker": "lib/datetimepicker/datetimepicker",
-      "codemirror": "lib/CodeMirror/lib/codemirror",
-      "codemirror_yaml": "lib/CodeMirror/modes/yaml/yaml"
+      _: path.resolve(__dirname, "lib/lodash"),
+      blob: path.resolve(__dirname, "lib/Blob"),
+      jquery: path.resolve(__dirname, "lib/jquery"),
+      filesaver: path.resolve(__dirname, "lib/FileSaver"),
+      codemirror: path.resolve(__dirname, "lib/CodeMirror/lib/codemirror"),
+      awesomeplete: path.resolve(__dirname, "lib/awesomplete/awesomplete.js"),
+      jquery_cookie: path.resolve(__dirname, "lib/jquery_cookie"),
+      jquery_mousewheel: path.resolve(__dirname, "lib/jquery_mousewheel"),
+      datetimepicker: path.resolve(__dirname, "lib/datetimepicker/datetimepicker"),
+      codemirror_yaml: path.resolve(__dirname, "lib/CodeMirror/modes/yaml/yaml")
     }
   },
   devtool: "source-map"
