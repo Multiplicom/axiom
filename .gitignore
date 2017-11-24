@@ -59,3 +59,7 @@ _region_.tex
 
 # master_data archive folders
 .archive
+
+# Webpack and npm
+dist
+node_modules
