@@ -12,12 +12,25 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.css$/,
+        loader: "style-loader!css-loader"
+      },
+      {
         test: /.js?$/,
         include: [path.resolve(__dirname, "src")],
         exclude: [],
         loader: "babel-loader",
         query: {
-          presets: ["env"]
+          presets: [
+            [
+              "env",
+              {
+                targets: {
+                  browsers: ["last 2 versions", "ie >= 11"]
+                }
+              }
+            ]
+          ]
         }
       }
     ]
@@ -33,9 +46,15 @@ module.exports = {
       codemirror: path.resolve(__dirname, "lib/CodeMirror/lib/codemirror"),
       awesomeplete: path.resolve(__dirname, "lib/awesomplete/awesomplete.js"),
       jquery_cookie: path.resolve(__dirname, "lib/jquery_cookie"),
-      jquery_mousewheel: path.resolve(__dirname, "lib/jquery_mousewheel"),
-      datetimepicker: path.resolve(__dirname, "lib/datetimepicker/datetimepicker"),
-      codemirror_yaml: path.resolve(__dirname, "lib/CodeMirror/modes/yaml/yaml")
+      datetimepicker: path.resolve(
+        __dirname,
+        "lib/datetimepicker/datetimepicker"
+      ),
+      codemirror_yaml: path.resolve(
+        __dirname,
+        "lib/CodeMirror/modes/yaml/yaml"
+      ),
+      jquery_mousewheel: path.resolve(__dirname, "lib/jquery_mousewheel")
     }
   },
   devtool: "source-map"
