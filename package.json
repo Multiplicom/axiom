@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack -d --display-modules"
+    "build": "rm -r dist && webpack --display-modules --bail"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,11 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.21.0",
-    "babel-loader": "^6.2.10",
+    "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
-    "webpack": "^2.2.1"
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.8.1"
   }
 }

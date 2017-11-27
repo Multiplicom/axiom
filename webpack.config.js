@@ -1,10 +1,13 @@
 const path = require("path");
 const webpack = require("webpack");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  entry: path.join(__dirname, "src", "AXM"),
+  entry: {
+    axiom: "./src/AXM.js"
+  },
   output: {
-    filename: "axiom.js",
+    filename: "[name].js",
     library: "AXM",
     libraryTarget: "amd",
     path: path.resolve(__dirname, "dist")
@@ -12,31 +15,24 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        loader: "style-loader!css-loader"
+        test: /\.css?$/,
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: "css-loader"
+        })
       },
       {
         test: /.js?$/,
-        include: [path.resolve(__dirname, "src")],
-        exclude: [],
         loader: "babel-loader",
         query: {
-          presets: [
-            [
-              "env",
-              {
-                targets: {
-                  browsers: ["last 2 versions", "ie >= 11"]
-                }
-              }
-            ]
-          ]
+          presets: ["env"]
         }
       }
     ]
   },
+  plugins: [new ExtractTextPlugin("[name].css")],
   resolve: {
-    extensions: [".json", ".js", ".css"],
+    extensions: [".js", ".css"],
     modules: ["src"],
     alias: {
       _: path.resolve(__dirname, "lib/lodash"),
