@@ -32,7 +32,7 @@ define([
         Module.create = function(dataFrame, startExpr, onCompleted) {
 
             var win = PopupWindow.create({
-                title: _TRL('Execute script for each row'),
+                title: _TRL._TRL('Execute script for each row'),
                 blocking:true,
                 autoCenter: true
             });
@@ -40,7 +40,7 @@ define([
             if (startExpr)
                 Module.lastExpr = startExpr;
             var grp = Controls.Compound.GroupVert({separator: 15});
-            grp.add(_TRL('<i>Use the following tokens in the script:</i>'));
+            grp.add(_TRL._TRL('<i>Use the following tokens in the script:</i>'));
             var grd = Controls.Compound.Grid({sepH:4, sepV: 2});
             $.each(dataFrame.getProperties(), function(idx, property) {
                 var filterButton = Controls.Button({
@@ -70,7 +70,7 @@ define([
 
 
             var btOK = Controls.Button({
-                text: _TRL('Execute'),
+                text: _TRL._TRL('Execute'),
                 icon: 'fa-check'
             }).addNotificationHandler(function() {
                 win.execute();

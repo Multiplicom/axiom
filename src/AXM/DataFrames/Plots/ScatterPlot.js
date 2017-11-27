@@ -28,13 +28,13 @@ define([
         DataTypes, ViewRow, Stats
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('scatterplot', _TRL('Scatter plot'), 'fa-line-chart');
-        PlotType.addPlotAspect('xvalue', _TRL('X Value'), DataTypes.typeFloat, true);
-        PlotType.addPlotAspect('yvalue', _TRL('Y Value'), DataTypes.typeFloat, true);
-        PlotType.addPlotAspect('color', _TRL('Color'), DataTypes.typeAny, false);
-        PlotType.addPlotAspect('size', _TRL('Size'), DataTypes.typeFloat, false);
-        PlotType.addPlotAspect('label', _TRL('Label'), DataTypes.typeAny, false);
-        PlotType.addPlotAspect('tooltip', _TRL('Hover text'), DataTypes.typeAny, false);
+        var PlotType = _GenericPlot.createPlotType('scatterplot', _TRL._TRL('Scatter plot'), 'fa-line-chart');
+        PlotType.addPlotAspect('xvalue', _TRL._TRL('X Value'), DataTypes.typeFloat, true);
+        PlotType.addPlotAspect('yvalue', _TRL._TRL('Y Value'), DataTypes.typeFloat, true);
+        PlotType.addPlotAspect('color', _TRL._TRL('Color'), DataTypes.typeAny, false);
+        PlotType.addPlotAspect('size', _TRL._TRL('Size'), DataTypes.typeFloat, false);
+        PlotType.addPlotAspect('label', _TRL._TRL('Label'), DataTypes.typeAny, false);
+        PlotType.addPlotAspect('tooltip', _TRL._TRL('Hover text'), DataTypes.typeAny, false);
 
 
         PlotType.create = function(dataFrame, aspectMap) {
@@ -50,11 +50,11 @@ define([
             win.setPlotCommands = function() {
                 win.button_lassoSelection = win.addPlotCommand(
                     'fa-crosshairs',
-                    _TRL('Lasso selection'),
+                    _TRL._TRL('Lasso selection'),
                     function() {
                         win.plot.doLassoSelection(win._hasLassoSelected);
                         win.button_lassoSelection.setChecked(true);
-                        var infoTxt = _TRL("Double click to complete the lasso selection");
+                        var infoTxt = _TRL._TRL("Double click to complete the lasso selection");
                         win.setInfoText('<div style="width:100%;padding:2px;background-color: yellow;font-weight: bold">' + infoTxt + '</div>');
                     }
                 );
@@ -69,7 +69,7 @@ define([
                     maxValue: 1,
                     step: 0.01,
                     value: Math.pow(win._opacity, 1/1.5),
-                    text: _TRL('Opacity')
+                    text: _TRL._TRL('Opacity')
                 })
                     .addNotificationHandler(function() {
                         win._opacity = Math.pow(win.ctrl_Opacity.getValue(),1.5);
@@ -83,14 +83,14 @@ define([
                     maxValue: 5,
                     step: 0.2,
                     value: 2,
-                    text: _TRL('Point size')
+                    text: _TRL._TRL('Point size')
                 })
                     .addNotificationHandler(function() {
                         win.render();
                     });
                 dispGroup.add(win.ctrl_PointSize);
 
-                win.ctrl_showOutline = Controls.Check({text: _TRL('Point outline'), checked: false})
+                win.ctrl_showOutline = Controls.Check({text: _TRL._TRL('Point outline'), checked: false})
                     .addNotificationHandler(function() {
                         win.render();
                     });
@@ -107,13 +107,13 @@ define([
                 dispGroup.add(win.corrSelectCtrl);
 
                 var btLine = Controls.Button({
-                    text: _TRL('Add curve'),
+                    text: _TRL._TRL('Add curve'),
                     icon: 'fa-line-chart'
                 }).addNotificationHandler(win.addCurve);
                 dispGroup.add(btLine);
 
                 var btSetRange = Controls.Button({
-                    text: _TRL('Set range')
+                    text: _TRL._TRL('Set range')
                     //icon: 'fa-line-chart'
                 }).addNotificationHandler(win.setRange);
                 dispGroup.add(btSetRange);
@@ -121,7 +121,7 @@ define([
 
             win._appendSelectionControls = function(selGroup) {
                 var btLinearFit = Controls.Button({
-                    text: _TRL('Draw linear fit')
+                    text: _TRL._TRL('Draw linear fit')
                 }).addNotificationHandler(win.drawLinearFit);
                 selGroup.add(btLinearFit);
             };
@@ -419,7 +419,7 @@ define([
 
 
             win.addCurve = function() {
-                SimplePopups.TextEditBox('', _TRL('Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")'), _TRL('Add curve'), {}, function(expr) {
+                SimplePopups.TextEditBox('', _TRL._TRL('Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")'), _TRL._TRL('Add curve'), {}, function(expr) {
                     win.addCurveStr(expr);
                 });
             };
@@ -439,7 +439,7 @@ define([
                 var grp = Controls.Compound.GroupVert({separator:12});
 
                 var btOK = Controls.Button({
-                    text: _TRL('OK'),
+                    text: _TRL._TRL('OK'),
                     icon: 'fa-check'
                 })
                     .addNotificationHandler(function() {
@@ -447,7 +447,7 @@ define([
                     });
 
                 var btCancel = Controls.Button({
-                    text: _TRL('Cancel'),
+                    text: _TRL._TRL('Cancel'),
                     icon: 'fa-times'
                 })
                     .addNotificationHandler(function() {
@@ -485,7 +485,7 @@ define([
 
                 pwin.setRootControl(Controls.Compound.StandardMargin(grp));
                 pwin.start();
-                //SimplePopups.TextEditBox('', _TRL('Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")'), _TRL('Add curve'), {}, function(expr) {
+                //SimplePopups.TextEditBox('', _TRL._TRL('Enter the curve expression<br>(may be "y=f(x)" or "x=f(y)")'), _TRL._TRL('Add curve'), {}, function(expr) {
                 //    win._curves.push(expr);
                 //    win.render();
                 //});
@@ -600,10 +600,10 @@ define([
                         win.render();
                     }
                     else
-                        SimplePopups.ErrorBox(_TRL('Fit could not be calculated for current selection.'));
+                        SimplePopups.ErrorBox(_TRL._TRL('Fit could not be calculated for current selection.'));
                 }
                 else
-                    SimplePopups.ErrorBox(_TRL('No points are selected.'));
+                    SimplePopups.ErrorBox(_TRL._TRL('No points are selected.'));
             };
 
             var propX = win.getAspectProperty('xvalue');

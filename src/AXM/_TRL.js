@@ -30,6 +30,6 @@ export function _TRL(txt) {
     //    replacement = '|' + replacement + '|';
     txt = txt.replace(token, replacement);
   });
-  if (Module._useTextDecoration()) txt = "‘" + txt + "’";
+  // if (Module._useTextDecoration()) txt = "‘" + txt + "’";
   return txt;
 };

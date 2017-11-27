@@ -84,7 +84,7 @@ define([
 
             property.getValueRange = function() {
                 if (!property.getDataType().includes(DataTypes.typeFloat))
-                    AXMUtils.Test.reportBug(_TRL('Property is not numerical'));
+                    AXMUtils.Test.reportBug(_TRL._TRL('Property is not numerical'));
                 var minValue = +1.0E99;
                 var maxValue = -1.0E99;
                 var data=property.data;
@@ -179,7 +179,7 @@ define([
 
         Module.createObjectType = function(typeId, primKey) {
             if (Module._objectTypes[typeId])
-                AXMUtils.Test.reportBug(_TRL('Dataframe object type already exists: ') + typeId);
+                AXMUtils.Test.reportBug(_TRL._TRL('Dataframe object type already exists: ') + typeId);
             var objectType = {
                 typeId: typeId,
                 primKey: primKey,
@@ -209,13 +209,13 @@ define([
             objectType.getProperty = function(propId) {
                 var prop = objectType._mapProperties[propId];
                 if (!prop)
-                    AXMUtils.Test.reportBug(_TRL('Invalid objectType property id: ') + propId);
+                    AXMUtils.Test.reportBug(_TRL._TRL('Invalid objectType property id: ') + propId);
                 return prop;
             };
 
             objectType.addProperty = function(property) {
                 if (objectType._mapProperties[property.getId()])
-                    AXMUtils.Test.reportBug(_TRL('Duplicate objectType property id: ') + property.getId());
+                    AXMUtils.Test.reportBug(_TRL._TRL('Duplicate objectType property id: ') + property.getId());
                 objectType._properties.push(property);
                 objectType._mapProperties[property.getId()] = property;
             };
@@ -306,7 +306,7 @@ define([
 
             dataFrame.addProperty = function(propId, propDispName, propType, settings) {
                 if (dataFrame._mapProperties[propId])
-                    AXMUtils.Test.reportBug(_TRL('Duplicate dataframe property id: ' + propId));
+                    AXMUtils.Test.reportBug(_TRL._TRL('Duplicate dataframe property id: ' + propId));
                 if (!dataFrame.objectType.hasProperty(propId)) {
                     var propInfo = Module.property(propId, propDispName, propType, settings);
                     dataFrame.objectType.addProperty(propInfo);
@@ -338,7 +338,7 @@ define([
                 dataFrame.getProperty = function(propId) {
                 var prop = dataFrame._mapProperties[propId];
                 if (!prop)
-                    AXMUtils.Test.reportBug(_TRL('Dataframe does not have property ') + propId);
+                    AXMUtils.Test.reportBug(_TRL._TRL('Dataframe does not have property ') + propId);
                 return prop;
             };
 
@@ -799,9 +799,9 @@ define([
                     if(line.indexOf(columnString) == 0){
                         var columnProperties = line.substr(columnString.length).split('\t');
                         if(columnProperties.length != 3)
-                            AXMUtils.reportBug(_TRL('RD file column header does not have exactly three properties: id, description, type'));
+                            AXMUtils.reportBug(_TRL._TRL('RD file column header does not have exactly three properties: id, description, type'));
                         if(!DataTypes[columnProperties[2]])
-                            AXMUtils.reportBug(_TRL('RD file column header type is not supported'));
+                            AXMUtils.reportBug(_TRL._TRL('RD file column header type is not supported'));
                         dataFrame.addProperty(columnProperties[0], columnProperties[1], DataTypes[columnProperties[2]]);
                     }
                     var extraTokenString = "# extratoken: ";
@@ -828,13 +828,13 @@ define([
                             dataFrame.addRow(rowData);
                         }
                         else if(line.length > 0 && fields.length != columnOrder.length)
-                            AXMUtils.reportBug(_TRL('RD text file row cells differs from number of columns'));
+                            AXMUtils.reportBug(_TRL._TRL('RD text file row cells differs from number of columns'));
                     }
                 }
             });
             var objectType = dataFrame.getObjectType();
             if (!objectType.hasProperty(objectType.getPrimKey())) {
-                AXMUtils.reportBug(_TRL('Dataframe should have column key column "{key}"'.AXMInterpolate({key: objectType.getPrimKey()})));
+                AXMUtils.reportBug(_TRL._TRL('Dataframe should have column key column "{key}"'.AXMInterpolate({key: objectType.getPrimKey()})));
                 return;
             }
             if (showAsTable)

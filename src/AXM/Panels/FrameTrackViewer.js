@@ -1089,7 +1089,7 @@ define([
 
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
-                hint: _TRL("Zoom in")
+                hint: _TRL._TRL("Zoom in")
             }, function () {
                 var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 thePanel._handleZoom(1.2, displayWidth/2);
@@ -1097,7 +1097,7 @@ define([
 
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-minus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
-                hint: _TRL("Zoom out")
+                hint: _TRL._TRL("Zoom out")
             }, function () {
                 var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 thePanel._handleZoom(0.8, displayWidth/2);

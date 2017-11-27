@@ -27,9 +27,9 @@ define([
         DataTypes
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('histogram', _TRL('Histogram'), 'fa-area-chart');
+        var PlotType = _GenericPlot.createPlotType('histogram', _TRL._TRL('Histogram'), 'fa-area-chart');
 
-        PlotType.addPlotAspect('value', _TRL('Value'), DataTypes.typeFloat, true);
+        PlotType.addPlotAspect('value', _TRL._TRL('Value'), DataTypes.typeFloat, true);
 
         PlotType.create = function(dataFrame, aspectMap) {
             var win = PlotType.createGeneric(dataFrame, aspectMap);
@@ -47,7 +47,7 @@ define([
                     maxValue: +1,
                     step: 0.01,
                     value: 0,
-                    text: _TRL('Resolution')
+                    text: _TRL._TRL('Resolution')
                 })
                     .addNotificationHandler(function() {
                         win.parseData();
@@ -241,7 +241,7 @@ define([
                 $.each(values, function(idx, val) {
                     var binNr = Math.floor((val-win._binOffset)/binSize);
                     if ((binNr<0)  || (binNr>=win._binCount))
-                        AXMUtils.reportBug(_TRL('Invalid bin'));
+                        AXMUtils.reportBug(_TRL._TRL('Invalid bin'));
                     win._binValues[binNr] += 1;
                 });
 

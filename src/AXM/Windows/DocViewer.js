@@ -40,7 +40,7 @@ define([
                     if (busyid)
                         SimplePopups.stopBlockingBusy(busyid);
                     var content = $('<div/>').append(data).find('.AXMDocContent').html();
-                    content = _TRL(content);
+                    content = _TRL._TRL(content);
                     onCompleted(content);
                 })
                 .fail(function () {
@@ -168,7 +168,7 @@ define([
                     .done(function (data) {
                         SimplePopups.stopBlockingBusy(busyid);
                         var content = $('<div/>').append(data).find('.AXMDocContent').html();
-                        content = _TRL(content);
+                        content = _TRL._TRL(content);
                         win._loadContent('<div class="AXMDocContent">' + content + '</div>', scrollPos);
                     })
                     .fail(function () {

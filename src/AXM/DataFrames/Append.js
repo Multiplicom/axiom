@@ -42,7 +42,7 @@ define([
             }
 
             var win = PopupWindow.create({
-                title: _TRL('Append dataframe'),
+                title: _TRL._TRL('Append dataframe'),
                 blocking:true,
                 autoCenter: true
             });
@@ -56,7 +56,7 @@ define([
             grp.add(Controls.Compound.GroupHor({}, ['Dataframe: ', win.ctrlDataFrame]));
 
             var btOK = Controls.Button({
-                text: _TRL('Execute'),
+                text: _TRL._TRL('Execute'),
                 icon: 'fa-check'
             }).addNotificationHandler(function() {
                 win.execute();

@@ -164,7 +164,7 @@ define([
                 var btViewPlot = Controls.Button({
                     width: 160,
                     height: 60,
-                    text: _TRL('Create view'),
+                    text: _TRL._TRL('Create view'),
                     icon: 'fa-eye'
                 })
                     .addNotificationHandler(function() {
@@ -174,7 +174,7 @@ define([
                 var btCalcCol = Controls.Button({
                     width: 160,
                     height: 60,
-                    text: _TRL('Calculate new property'),
+                    text: _TRL._TRL('Calculate new property'),
                     icon: 'fa-calculator'
                 })
                     .addNotificationHandler(function() {
@@ -187,7 +187,7 @@ define([
                 var btExec = Controls.Button({
                     width: 160,
                     height: 60,
-                    text: _TRL('Execute script for each row'),
+                    text: _TRL._TRL('Execute script for each row'),
                     icon: 'fa-terminal'
                 })
                     .addNotificationHandler(function() {
@@ -200,7 +200,7 @@ define([
                 var btCopyCol = Controls.Button({
                     width: 160,
                     height: 60,
-                    text: _TRL('Import property from other dataframe'),
+                    text: _TRL._TRL('Import property from other dataframe'),
                     icon: 'fa-copy'
                 })
                     .addNotificationHandler(function() {
@@ -213,7 +213,7 @@ define([
                 var btAppend = Controls.Button({
                     width: 160,
                     height: 60,
-                    text: _TRL('Append other dataframe'),
+                    text: _TRL._TRL('Append other dataframe'),
                     icon: 'fa-plus-square'
                 })
                     .addNotificationHandler(function() {
@@ -226,7 +226,7 @@ define([
                 var btSaveLocal = Controls.Button({
                     width: 160,
                     height: 60,
-                    text: _TRL('Save to local computer'),
+                    text: _TRL._TRL('Save to local computer'),
                     icon: 'fa-cloud-download'
                 })
                     .addNotificationHandler(function() {

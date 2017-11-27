@@ -336,7 +336,7 @@ define([
              */
             panel.renderCell = function(rowNr, colNr, rowData, colInfo) {
                 if (colInfo.isOpener) {
-                    var cell = '<div class="AXMPgTableLinkCell" title="{txt}">'.AXMInterpolate({txt:_TRL('Open this item')});
+                    var cell = '<div class="AXMPgTableLinkCell" title="{txt}">'.AXMInterpolate({txt:_TRL._TRL('Open this item')});
                     cell += '<div class="AXMPgTableLinkIcon"><i class="fa fa-external-link-square"></i></div>';
                     cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"/>';
                     cell += '</div>';
@@ -344,7 +344,7 @@ define([
                 }
                 if (colInfo.isSelector) {
                     var rowId = rowData[panel._tableData.getPrimKey()];
-                    var cell = '<div class="AXMPgTableSelectorCell" title="{txt}">'.AXMInterpolate({txt:_TRL('Select this item')});
+                    var cell = '<div class="AXMPgTableSelectorCell" title="{txt}">'.AXMInterpolate({txt:_TRL._TRL('Select this item')});
                     if (!panel._tableData.isItemSelected(rowId))
                         cell += '<div class="AXMPgTableSelectorIcon"><i class="fa fa-circle-thin"></i></div>';
                     else
@@ -938,7 +938,7 @@ define([
 
             theFrame.addCommand({
                 icon: Icon.createFA("fa-download", 0.85).setOpacity(0.7),
-                hint: _TRL("Download table content to local machine")
+                hint: _TRL._TRL("Download table content to local machine")
             }, thePanel.saveLocal);
 
 
@@ -946,19 +946,19 @@ define([
 
             theFrame.addCommand({
                 icon: Icon.createFA("fa-flip-horizontal fa-fast-forward", 0.85).setOpacity(0.7),
-                hint: _TRL("First page")
+                hint: _TRL._TRL("First page")
             }, thePanel.navigateFirstPage);
             theFrame.addCommand({
                 icon: Icon.createFA("fa-flip-horizontal fa-play", 0.85).setOpacity(0.7),
-                hint: _TRL("Previous page")
+                hint: _TRL._TRL("Previous page")
             }, thePanel.navigatePreviousPage);
             theFrame.addCommand({
                 icon: Icon.createFA("fa-play", 0.85).setOpacity(0.7),
-                hint: _TRL("Next page")
+                hint: _TRL._TRL("Next page")
             }, thePanel.navigateNextPage);
             theFrame.addCommand({
                 icon: Icon.createFA("fa-fast-forward", 0.85).setOpacity(0.7),
-                hint: _TRL("Last page")
+                hint: _TRL._TRL("Last page")
             }, thePanel.navigateLastPage);
 
             thePanel._pagerInfo = Controls.Static({

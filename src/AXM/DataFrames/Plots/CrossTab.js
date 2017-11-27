@@ -28,9 +28,9 @@ define([
         DataTypes
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('crosstab', _TRL('Crosstab'), 'fa-th-large');
-        PlotType.addPlotAspect('category1', _TRL('Rows category'), DataTypes.typeAnyCategorical, true);
-        PlotType.addPlotAspect('category2', _TRL('Columns category'), DataTypes.typeAnyCategorical, true);
+        var PlotType = _GenericPlot.createPlotType('crosstab', _TRL._TRL('Crosstab'), 'fa-th-large');
+        PlotType.addPlotAspect('category1', _TRL._TRL('Rows category'), DataTypes.typeAnyCategorical, true);
+        PlotType.addPlotAspect('category2', _TRL._TRL('Columns category'), DataTypes.typeAnyCategorical, true);
 
         PlotType.create = function(dataFrame, aspectMap) {
             var win = PlotType.createGeneric(dataFrame, aspectMap);
@@ -41,19 +41,19 @@ define([
 
             win._createDisplayControls = function(dispGroup) {
 
-                win.ctrl_showEnhInfo = Controls.Check({text: _TRL('Show enhancement'), checked: false})
+                win.ctrl_showEnhInfo = Controls.Check({text: _TRL._TRL('Show enhancement'), checked: false})
                     .addNotificationHandler(function() {
                         win.render();
                     });
                 dispGroup.add(win.ctrl_showEnhInfo);
 
-                win.ctrl_showFracInfo = Controls.Check({text: _TRL('Show fraction info'), checked: true})
+                win.ctrl_showFracInfo = Controls.Check({text: _TRL._TRL('Show fraction info'), checked: true})
                     .addNotificationHandler(function() {
                         win.render();
                     });
                 dispGroup.add(win.ctrl_showFracInfo);
 
-                win.ctrl_showSelInfo = Controls.Check({text: _TRL('Show selection info'), checked: true})
+                win.ctrl_showSelInfo = Controls.Check({text: _TRL._TRL('Show selection info'), checked: true})
                     .addNotificationHandler(function() {
                         win.render();
                     });
@@ -64,10 +64,10 @@ define([
                 //    win.parseData();
                 //    win.plot.render();
                 //});
-                //win.ctrlSortType.addState('val', _TRL("Alphabetical"));
-                //win.ctrlSortType.addState('count', _TRL("Count"));
+                //win.ctrlSortType.addState('val', _TRL._TRL("Alphabetical"));
+                //win.ctrlSortType.addState('count', _TRL._TRL("Count"));
                 //dispGroup.add(Controls.Compound.GroupVert({}, [
-                //    _TRL('Sort by:'),
+                //    _TRL._TRL('Sort by:'),
                 //    win.ctrlSortType
                 //]));
                 //win.colorLegendCtrl = Controls.Static({});
@@ -320,11 +320,11 @@ define([
                                     selList.push(dataPrimKey[rowNr]);
                             }
                             var dispText = '';
-                            dispText += _TRL('{propname}= {value}').AXMInterpolate({
+                            dispText += _TRL._TRL('{propname}= {value}').AXMInterpolate({
                                 propname: win.getAspectProperty('category1').getDispName(),
                                 value: cat1Info.dispName
                             });
-                            dispText += _TRL('{propname}= {value}').AXMInterpolate({
+                            dispText += _TRL._TRL('{propname}= {value}').AXMInterpolate({
                                 propname: win.getAspectProperty('category2').getDispName(),
                                 value: cat2Info.dispName
                             });
