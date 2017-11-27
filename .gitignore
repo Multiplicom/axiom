@@ -9,6 +9,7 @@
 
 # VS Code
 .vscode
+demo
 
 # JetBrains IDE files
 .idea
