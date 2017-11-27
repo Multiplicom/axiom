@@ -661,7 +661,7 @@ define([
                 var py = panel.getEventPosY(ev);
                 var newToolTipInfo = panel.getToolTipInfo(px, py);
                 var showPointer = false;
-                if (newToolTipInfo && (!_AXM_HasTransientPopups())) {
+                if (newToolTipInfo && (!AXM.Windows.TransientPopup._AXM_HasTransientPopups())) {
                     if (newToolTipInfo.showPointer)
                         showPointer = true;
                     if (panel._toolTipInfo.ID != newToolTipInfo.ID)

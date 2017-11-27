@@ -27,6 +27,10 @@ define([
          */
         var Module = {};
 
+        Module._AXM_HasTransientPopups = function() {
+            return Module._current;
+        };
+
         Module._current = null;
 
         /**
@@ -230,11 +234,6 @@ define([
             if (Module._current)
                 Module._current.close();
         });
-
-
-        _AXM_HasTransientPopups = function() {
-            return Module._current;
-        };
 
         return Module;
     });
