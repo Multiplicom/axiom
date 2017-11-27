@@ -401,7 +401,7 @@ define([
                 var sz = Module._scrollYArrowSize;
                 track._hasArrowScrollYDown = false;
                 track._hasArrowScrollYUp = false;
-                ctx.fillStyle=AXMBaseStyling.color1.changeOpacity(0.4).toStringCanvas();
+                ctx.fillStyle=Color.Color(0, 138/255.0, 150/255.0).changeOpacity(0.4).toStringCanvas();
                 ctx.strokeStyle = Color.Color(0,0,0).changeOpacity(0.1).toStringCanvas();
                 if (track._offsetY>0) {
                     track._hasArrowScrollYDown = true;

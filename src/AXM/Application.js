@@ -22,15 +22,6 @@ define([
         require, $, _,
         AXMUtils, Test, RootWindow, Msg, Color
     ) {
-
-
-        /**
-         * A global object containing some basic styling data such as colours
-         */
-        AXMBaseStyling = {
-            color1: Color.Color(0, 138/255.0, 150/255.0)
-        };
-
         /**
          * Module encapsulating the one and only global application object
          * @type {{}}

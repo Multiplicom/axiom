@@ -30,11 +30,24 @@ module.exports = {
       }
     ]
   },
-  plugins: [new ExtractTextPlugin("[name].css")],
+  plugins: [
+    new ExtractTextPlugin("[name].css"),
+    new webpack.ProvidePlugin({
+      _TRL: '_TRL'
+    })
+  ],
   resolve: {
     extensions: [".js", ".css"],
     modules: ["src"],
     alias: {
+      //
+      // Axiom Globals
+      //
+      _TRL: path.resolve(__dirname, 'src/AXM/_TRL'),
+      ARMReq: path.resolve(__dirname, 'src/AXM/AXMReq'),
+      //
+      // Externals
+      //
       _: path.resolve(__dirname, "lib/lodash"),
       blob: path.resolve(__dirname, "lib/Blob"),
       jquery: path.resolve(__dirname, "lib/jquery"),
