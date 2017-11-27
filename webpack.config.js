@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ProgressBar = require('progress-bar-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -31,9 +32,18 @@ module.exports = {
     ]
   },
   plugins: [
+    new ProgressBar(),
     new ExtractTextPlugin("[name].css"),
+    // 
+    // These are globals that are (implicitly) depended on 
+    // by Axiom and client apps written using it. They 
+    // are not injected using the module system, so Webpack
+    // has to be made aware of their existence, so they can
+    // be adequately injected.
+    //
     new webpack.ProvidePlugin({
-      _TRL: '_TRL'
+      _TRL: "_TRL",
+      $: "jquery"
     })
   ],
   resolve: {
