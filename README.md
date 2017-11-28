@@ -8,3 +8,7 @@ mimicking the GUI patterns of a traditional desktop application.
 Webpack & npm
 =============
 This branch attempts to bundle Axiom, producing artefacts that can be published as an npm package. This npm packaged library can than be used as a part of a "modern" Javascript development stack, using npm as a package manager and Webpack as a Client App bundler.
+
+1. `npm install`
+2. `npm run build`
+3. `npm publish` 

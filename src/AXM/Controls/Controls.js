@@ -18,7 +18,7 @@
 define([
         "require", "jquery", "datetimepicker", "awesomeplete", "_",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound",
-        "codemirror", "codemirror_yaml"
+        "codemirror"
     ],
     function (
         require, $, datetimepicker, awesomplete, _,
