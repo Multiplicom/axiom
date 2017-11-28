@@ -1,4 +1,5 @@
 # -*- mode: gitignore; -*-
+*.tgz
 
 #Ignore LaTeX intermediate files
 *.aux
