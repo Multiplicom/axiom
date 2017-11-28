@@ -1,8 +1,9 @@
 {
-  "name": "axiom",
-  "version": "1.1.0",
+  "name": "@multiplicom/axiom",
+  "version": "1.1.0-alpha.1",
   "description": "Axiom is an HTML5/JavaScript library for dynamic layouting and rendering of graphical elements on a web browser page, such as tables, plots and controls.",
-  "main": "index.js",
+  "main": "./dist/axiom.js",
+  "test": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "touch dist && rm -r dist && webpack --bail"
@@ -11,7 +12,16 @@
     "type": "git",
     "url": "git+https://github.com/Multiplicom/axiom.git"
   },
-  "author": "Paul Vauterin",
+  "files": [
+    "dist/**/*.*"
+  ],
+  "author": {
+    "name": "Paul Vauterin"
+  },
+  "maintainers": [
+    "Michael Vyverman",
+    "Michiel Vermeir"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Multiplicom/axiom/issues"
