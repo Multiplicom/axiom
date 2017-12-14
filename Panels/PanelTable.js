@@ -297,33 +297,35 @@ define([
              * Detach the html event handlers
              */
             panel.detachEventHandlers = function() {
-                var $ElLeftHeadRow = $('#'+panel._divid_leftHeadRow);
-                var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
-                var $ElRightBody = $('#'+panel._divid_rightBody);
-                var $ElLeftBody = $('#'+panel._divid_leftBody);
+                if(panel){
+                    var $ElLeftHeadRow = $('#'+panel._divid_leftHeadRow);
+                    var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
+                    var $ElRightBody = $('#'+panel._divid_rightBody);
+                    var $ElLeftBody = $('#'+panel._divid_leftBody);
 
 
-                $.each(panel._columns, function(colNr, colInfo) {
-                    var $ElColDrag = panel._getColSub$El('dragger', colNr);
-                    var $ElCol =panel._getColSub$El(colNr, '');
-                    var $ElColHeader =panel._getColSub$El('header', colNr);
-                    if (colInfo.canOpen())
-                        $ElColHeader.unbind('mousedown');
-                    $ElColHeader.find('.AXMPgTableColSortBox').unbind('mousedown');
-                    if (panel._colIsRightPart(colInfo)) {
-                        AXMUtils.remove$ElDragHandler($ElColDrag);
-                    }
-                });
-                $ElLeftBody.unbind('click');
-                $ElRightBody.unbind('click');
+                    $.each(panel._columns, function(colNr, colInfo) {
+                        var $ElColDrag = panel._getColSub$El('dragger', colNr);
+                        var $ElCol =panel._getColSub$El(colNr, '');
+                        var $ElColHeader =panel._getColSub$El('header', colNr);
+                        if (colInfo.canOpen())
+                            $ElColHeader.unbind('mousedown');
+                        $ElColHeader.find('.AXMPgTableColSortBox').unbind('mousedown');
+                        if (panel._colIsRightPart(colInfo)) {
+                            AXMUtils.remove$ElDragHandler($ElColDrag);
+                        }
+                    });
+                    $ElLeftBody.unbind('click');
+                    $ElRightBody.unbind('click');
 
-                AXMUtils.remove$ElScrollHandler(panel._getSub$El('leftTableScrollContainer'));
-                AXMUtils.remove$ElScrollHandler(panel._getSub$El('rightTableScrollContainer'));
+                    AXMUtils.remove$ElScrollHandler(panel._getSub$El('leftTableScrollContainer'));
+                    AXMUtils.remove$ElScrollHandler(panel._getSub$El('rightTableScrollContainer'));
 
-                $('#'+panel._divid_rightBody).unbind('contextmenu');
+                    $('#'+panel._divid_rightBody).unbind('contextmenu');
 
-                panel._updateSortStatus();
-                panel.renderTableContent();
+                    panel._updateSortStatus();
+                    panel.renderTableContent();
+                }
             };
 
 

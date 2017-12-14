@@ -164,7 +164,7 @@ define([
              * Detaches the html event handlers
              */
             panel.detachEventHandlers = function() {
-                if (panel._scrollVNoBar) {
+                if (panel && panel._scrollVNoBar) {
                     var el = panel.get$El();
                     AXMUtils.remove$ElScrollHandler(el);
                 }

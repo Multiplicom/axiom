@@ -230,8 +230,10 @@ define([
              * Detaches the html event handlers
              */
             panel.detachEventHandlers = function() {
-                panel._notificationHandlers = [];
-                panel.get$El().unbind('click');
+                if(panel){
+                    panel._notificationHandlers = [];
+                    panel.get$El().unbind('click');
+                }
             };
 
             panel._onClick = function(ev) {
