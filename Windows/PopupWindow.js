@@ -277,7 +277,7 @@ define([
                         }
                     }
 
-                    let titleText = DOM.Div({parent: headerDiv});
+                    var titleText = DOM.Div({parent: headerDiv});
                     titleText.addCssClass("PopupHeaderTitleText")
                         .addStyle("display", "inline-block")
                         .addStyle("margin-right", "20px")
@@ -286,7 +286,7 @@ define([
                         .addStyle("vertical-align", "middle")
                         .addElem(window._title)
 
-                    let labelsContainer = DOM.Create("span");
+                    var labelsContainer = DOM.Create("span");
                     labelsContainer.addCssClass("AXMPopupLabelsPlaceholder");
                     // Add labels to popup header as "badges"
                     window.labels.forEach(function addBadge (badge) {
@@ -418,7 +418,7 @@ define([
             Object.defineProperty(window, 'labels', {
                 get: function getLabels () {
                     return Object.keys(window._labels).map(function (k) {
-                        let label = window._labels[k];
+                        var label = window._labels[k];
                         return DOM.Create("span")
                             .addCssClass(label.cssClass)
                             .addCssClass("AXMBadge")
