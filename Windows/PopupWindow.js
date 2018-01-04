@@ -448,8 +448,10 @@ define([
               window._$ElContainer
                 .find(".AXMPopupWindowHeader")
                 .on("mousedown", function(e) {
-                  var $window = $(this)
-                    .parent()
+                  var $handle = $(this)
+                    .css("cursor", "move");
+                
+                var $window = $handle.parent()
                     .addClass("AXMDraggable");
 
                   var position = { x: $window.offset().left + $window.outerWidth() - e.pageX, y: $window.offset().top + $window.outerHeight() - e.pageY };
@@ -464,12 +466,14 @@ define([
                         })
                         .on("mouseup", function() {
                           $(this).removeClass("AXMDraggable");
+                          $handle.css("cursor", "");
                         });
                     });
                   e.preventDefault();
                 })
                 .on("mouseup", function() {
                   $(".AXMDraggable").removeClass("AXMDraggable");
+                  $handle.css("cursor", "");
                 });
             };
 
