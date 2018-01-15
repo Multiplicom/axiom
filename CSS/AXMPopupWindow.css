@@ -1,5 +1,9 @@
 /*************************** PopupWindow  **************************************************/
 
+.AXMDraggable {
+    opacity: 0.9 !important;
+}  
+
 .AXMBlockingBackGround {
     position: absolute;
     left: 0px;
