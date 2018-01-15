@@ -445,36 +445,35 @@ define([
              * @private
              */
             window._installMoveHandler = function() {
-              window._$ElContainer
-                .find(".AXMPopupWindowHeader")
-                .on("mousedown", function(e) {
-                  var $handle = $(this)
-                    .css("cursor", "move");
-                
-                var $window = $handle.parent()
-                    .addClass("AXMDraggable");
+                window._$ElContainer
+                    .find(".AXMPopupWindowHeader")
+                    .on("mousedown", function(e) {
+                        var $handle = $(this).css("cursor", "move");
+                        var $window = $handle.parent().addClass("AXMDraggable");
 
-                  var position = { x: $window.offset().left + $window.outerWidth() - e.pageX, y: $window.offset().top + $window.outerHeight() - e.pageY };
+                        var position = { 
+                            x: $window.offset().left + $window.outerWidth() - e.pageX,
+                            y: $window.offset().top + $window.outerHeight() - e.pageY 
+                        };
 
-                  $(this)
-                    .parents()
-                    .on("mousemove", function(e) {
-                      $(".AXMDraggable")
-                        .offset({
-                          top: Math.max(0, e.pageY + position.y - $window.outerHeight()),
-                          left: Math.max(0, e.pageX + position.x - $window.outerWidth())
-                        })
-                        .on("mouseup", function() {
-                          $(this).removeClass("AXMDraggable");
-                          $handle.css("cursor", "");
-                        });
+                        $(this)
+                            .parents()
+                            .on("mousemove", function(e) {
+                                $(".AXMDraggable")
+                                    .offset({
+                                        top: Math.max(0, e.pageY + position.y - $window.outerHeight()),
+                                        left: Math.max(0, e.pageX + position.x - $window.outerWidth())
+                                    })
+                                    .on("mouseup", function() {
+                                        $(this).removeClass("AXMDraggable");
+                                        $handle.css("cursor", "");
+                                    });
+                            });
+                        e.preventDefault();
+                    })
+                    .on("mouseup", function() {
+                        $(".AXMDraggable").removeClass("AXMDraggable");
                     });
-                  e.preventDefault();
-                })
-                .on("mouseup", function() {
-                  $(".AXMDraggable").removeClass("AXMDraggable");
-                  $handle.css("cursor", "");
-                });
             };
 
 
