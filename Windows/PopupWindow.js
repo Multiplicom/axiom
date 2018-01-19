@@ -266,7 +266,6 @@ define([
 
                 if (window._title) {
                     var headerDiv = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowHeader');
-                    headerDiv.addStyle("display", "inline-flex")
                     
                     if (window._headerIcon) {
                         headerDiv.addElem(window.icon);
