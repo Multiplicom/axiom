@@ -274,6 +274,7 @@ define([
                     
                     var titleText = DOM.Div({parent: headerDiv});
                     titleText.addCssClass("PopupHeaderTitleText")
+                        .addStyle("margin-right", "8px")
                         .addStyle("display", "inline-block")
                         .addStyle("overflow-x", "hidden")
                         .addStyle("text-overflow", "ellipsis") 
@@ -282,8 +283,7 @@ define([
 
                     if (window.labels.length > 0) {
                         var labelsContainer = DOM.Create("div");
-                        labelsContainer.addCssClass("AXMPopupLabelsPlaceholder")
-                            .addStyle("position", "relative");
+                        labelsContainer.addCssClass("AXMPopupLabelsPlaceholder");
 
                         // Add labels to popup header as "badges"
                         window.labels.forEach(function addBadge (badge) {
@@ -297,7 +297,6 @@ define([
                         // headerDiv.addElem('<div class="SWXPopupWindowHelpBox" style="position: relative;"><i class="fa fa-question"></i></div>');
                         var help = DOM.Create("div");
                         help.addCssClass("SWXPopupWindowHelpBox")
-                            .addStyle("position", "relative")
                             .addElem('<i class="fa fa-question"></i>');
 
                         headerDiv.addElem(help);
