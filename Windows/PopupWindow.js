@@ -274,7 +274,6 @@ define([
                     
                     var titleText = DOM.Div({parent: headerDiv});
                     titleText.addCssClass("PopupHeaderTitleText")
-                        .addStyle("position", "relative")
                         .addStyle("display", "inline-block")
                         .addStyle("overflow-x", "hidden")
                         .addStyle("text-overflow", "ellipsis") 
@@ -437,8 +436,7 @@ define([
                 icon: {
                     get: function getIcon() {
                         var iconContainer = DOM.Create("div");
-                        iconContainer.addCssClass("AXMPopupHeaderIcon")
-                            .addStyle("position", "relative");
+                        iconContainer.addCssClass("AXMPopupHeaderIcon");
                         
                         if (AXMUtils.isObjectType(window._headerIcon, 'icon')) {
                             iconContainer.addElem(window._headerIcon.renderHtml());
