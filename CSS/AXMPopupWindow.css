@@ -41,6 +41,7 @@
     padding-left:8px;
     padding-right:8px;
     box-sizing: border-box;
+    display: inline-flex;
     /*border-top-left-radius:5px;*/
     /*border-top-right-radius:5px;*/
 
@@ -60,7 +61,7 @@
     cursor:pointer;
 }
 
-.SWXPopupWindowCloseBox, .SWXPopupWindowHelpBox {
+.SWXPopupWindowCloseBox {
     position:absolute;
     right:8px;
     top:8px;
@@ -78,10 +79,14 @@
 }
 
 .SWXPopupWindowHelpBox {
-    right:35px;
-
+    font-size: 22px;
+    position: relative;
+    margin-left: auto;
 }
 
+.AXMBadge {
+    transform: translateY(50%);
+}
 
 .SWXPopupWindowCloseBox:hover, .SWXPopupWindowHelpBox:hover {
     opacity: 0.9;
