@@ -276,6 +276,7 @@ define([
                         .addStyle("margin-right", "8px")
                         .addStyle("display", "inline-block")
                         .addStyle("overflow-x", "hidden")
+                        .addStyle("overflow-y", "hidden")
                         .addStyle("text-overflow", "ellipsis") 
                         .addStyle("vertical-align", "middle")
                         .addElem(window._title)
@@ -292,14 +293,26 @@ define([
                         headerDiv.addElem(labelsContainer);
                     }
 
+                    var windowButtons = DOM.Create("div");
+                    windowButtons.addCssClass("SWXPopupWindowButtons");
+
                     if (window._helpID){
-                        // headerDiv.addElem('<div class="SWXPopupWindowHelpBox" style="position: relative;"><i class="fa fa-question"></i></div>');
                         var help = DOM.Create("div");
                         help.addCssClass("SWXPopupWindowHelpBox")
                             .addElem('<i class="fa fa-question"></i>');
 
-                        headerDiv.addElem(help);
+                        windowButtons.addElem(help);
                     }
+
+                    if (Module.docker && window._canDock) {
+                        windowButtons.addElem('<span class="SWXPopupWindowDockBox"><i class="fa fa-arrow-circle-left"></i></span>');
+                    }
+
+                    if (window._canClose) {
+                        windowButtons.addElem('<div class="SWXPopupWindowCloseBox"><i class="fa fa-times-circle"></i></div>');
+                    }
+
+                    headerDiv.addElem(windowButtons);
                 }
 
                 var transfer$Elem = null;
@@ -334,12 +347,6 @@ define([
                     DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowGripSW GripSW1');
                     DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowGripSW GripSW2');
                 }
-
-                if (window._canClose)
-                    rootDiv.addElem('<span class="SWXPopupWindowCloseBox"><i class="fa fa-times-circle"></i></span>');
-
-                if (Module.docker && window._canDock)
-                    rootDiv.addElem('<span class="SWXPopupWindowDockBox"><i class="fa fa-arrow-circle-left"></i></span>');
 
                 $('.AXMContainer').append(rootDiv.toString());
                 window._$ElContainer = $('#' + window._id);

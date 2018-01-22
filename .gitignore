@@ -8,8 +8,9 @@
 *.toc
 
 # Development
-/node_modules
-/dist
+node_modules/
+dist/
+demo/
 
 # VS Code
 .vscode
