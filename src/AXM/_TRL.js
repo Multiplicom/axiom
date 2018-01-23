@@ -7,7 +7,7 @@
  * @global
  */
 /*global _TRL*/
-export function _TRL(txt) {
+export default function _TRL(txt) {
   var reg = new RegExp(/{_.*?_}/g);
   var tokens = [];
   var match;
