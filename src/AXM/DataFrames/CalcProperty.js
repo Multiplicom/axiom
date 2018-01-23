@@ -33,7 +33,7 @@ define([
         Module.create = function(dataFrame, startExpr, onCompleted) {
 
             var win = PopupWindow.create({
-                title: _TRL._TRL('Calculate property'),
+                title: _TRL('Calculate property'),
                 blocking:true,
                 autoCenter: true
             });
@@ -41,7 +41,7 @@ define([
             if (startExpr)
                 Module.lastExpr = startExpr;
             var grp = Controls.Compound.GroupVert({separator: 15});
-            grp.add(_TRL._TRL('<i>Use the following tokens in the expression:</i>'));
+            grp.add(_TRL('<i>Use the following tokens in the expression:</i>'));
             var grd = Controls.Compound.Grid({sepH:4, sepV: 2});
             $.each(dataFrame.getProperties(), function(idx, property) {
                 var filterButton = Controls.Button({
@@ -73,10 +73,10 @@ define([
             win.ctrlName = Controls.Edit({width: 150, value: Module.lastName});
             grp.add(Controls.Compound.GroupHor({}, ['Property name:&nbsp;&nbsp;', win.ctrlName]));
 
-            //grp.add(_TRL._TRL('<i>NOTE: test equality with "==". Surround strings with single quotes.</i>'));
+            //grp.add(_TRL('<i>NOTE: test equality with "==". Surround strings with single quotes.</i>'));
 
             var btOK = Controls.Button({
-                text: _TRL._TRL('Execute'),
+                text: _TRL('Execute'),
                 icon: 'fa-check'
             }).addNotificationHandler(function() {
                 win.execute();

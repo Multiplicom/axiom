@@ -32,7 +32,7 @@ define([
         Module.create = function(dataFrame, startQuery, onCompleted) {
 
             var win = PopupWindow.create({
-                title: _TRL._TRL('Query'),
+                title: _TRL('Query'),
                 blocking:true,
                 autoCenter: true
             });
@@ -40,7 +40,7 @@ define([
             if (startQuery)
                 Module.lastExpr = startQuery;
             var grp = Controls.Compound.GroupVert({separator: 5});
-            grp.add(_TRL._TRL('<i>Use the following tokens in the expression:</i>'));
+            grp.add(_TRL('<i>Use the following tokens in the expression:</i>'));
             var grd = Controls.Compound.Grid({sepH:4, sepV: 2});
             $.each(dataFrame.getProperties(), function(idx, property) {
                 var filterButton = Controls.Button({
@@ -63,10 +63,10 @@ define([
             win.ctrlExpr = Controls.Edit({width: 500, value: Module.lastExpr}).setHasDefaultFocus();
             grp.add(win.ctrlExpr);
 
-            grp.add(_TRL._TRL('<i>NOTE: test equality with "==". Surround strings with single quotes.</i>'));
+            grp.add(_TRL('<i>NOTE: test equality with "==". Surround strings with single quotes.</i>'));
 
             var btOK = Controls.Button({
-                text: _TRL._TRL('Execute'),
+                text: _TRL('Execute'),
                 icon: 'fa-check'
             }).addNotificationHandler(function() {
                 win.execute();

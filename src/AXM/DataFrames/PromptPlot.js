@@ -31,7 +31,7 @@ define([
         Module.create = function(dataFrame) {
 
             var win = PopupWindow.create({
-                title: _TRL._TRL('Create a view'),
+                title: _TRL('Create a view'),
                 blocking:true,
                 autoCenter: true
             });
@@ -53,7 +53,7 @@ define([
             });
 
             var btPlot = Controls.Button({
-                text: _TRL._TRL('Table'),
+                text: _TRL('Table'),
                 icon: 'fa-table',
                 width: 250
             })
@@ -69,7 +69,7 @@ define([
 
         Module._createPlotPropertyPicker = function(plotType, dataFrame) {
             var win = PopupWindow.create({
-                title: _TRL._TRL('Create ') + plotType.getPlotTypeName(),
+                title: _TRL('Create ') + plotType.getPlotTypeName(),
                 blocking: true,
                 autoCenter: true
             });
@@ -95,7 +95,7 @@ define([
             });
 
             var btOK = Controls.Button({
-                text: _TRL._TRL('Create plot'),
+                text: _TRL('Create plot'),
                 icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
@@ -108,7 +108,7 @@ define([
                         aspectMap[aspect.getId()] = value;
                     });
                     if (missingList.length > 0) {
-                        var error = _TRL._TRL('Please provide data for the following plot aspects:<br><br><b>') + missingList.join('<br>') + '</b>';
+                        var error = _TRL('Please provide data for the following plot aspects:<br><br><b>') + missingList.join('<br>') + '</b>';
                         SimplePopups.ErrorBox(error);
                         return;
                     }

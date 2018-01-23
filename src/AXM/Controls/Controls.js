@@ -1756,8 +1756,8 @@ define([
             };
 
             var control = Module.DropList(settings);
-            control.addState('', _TRL._TRL("-- All dates --"));
-            var monthNames = [_TRL._TRL('January'), _TRL._TRL('February'), _TRL._TRL('March'), _TRL._TRL('April'), _TRL._TRL('May'), _TRL._TRL('June'), _TRL._TRL('July'), _TRL._TRL('August'), _TRL._TRL('September'), _TRL._TRL('October'), _TRL._TRL('November'), _TRL._TRL('December')];
+            control.addState('', _TRL("-- All dates --"));
+            var monthNames = [_TRL('January'), _TRL('February'), _TRL('March'), _TRL('April'), _TRL('May'), _TRL('June'), _TRL('July'), _TRL('August'), _TRL('September'), _TRL('October'), _TRL('November'), _TRL('December')];
             var currentDate = new Date();
             var currentMonth = currentDate.getMonth();
             var currentYear = currentDate.getYear()+1900;

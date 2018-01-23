@@ -79,7 +79,7 @@ define([
             //##############  Create in instance of a plot window ##########################
             plotType.createGeneric = function(dataFrame, aspectMap) {
                 var win = PopupWindow.create({
-                    title: _TRL._TRL('{name} ({plotname})').AXMInterpolate({name: dataFrame.getName(), plotname: plotType.getPlotTypeName()}),
+                    title: _TRL('{name} ({plotname})').AXMInterpolate({name: dataFrame.getName(), plotname: plotType.getPlotTypeName()}),
                     blocking:false,
                     autoCenter: true,
                     sizeX: 800,
@@ -93,14 +93,14 @@ define([
 
                 win.hasAspectProperty = function(aspectId) {
                     if (!plotType.hasAspect(aspectId))
-                        AXMUtils.Test.reportBug(_TRL._TRL('Invalid plot aspect: ')+ aspectId);
+                        AXMUtils.Test.reportBug(_TRL('Invalid plot aspect: ')+ aspectId);
                     var propId = win._aspectPropertyIdMap[aspectId];
                     return !!propId;
                 };
 
                 win.getAspectProperty = function(aspectId) {
                     if (!plotType.hasAspect(aspectId))
-                        AXMUtils.Test.reportBug(_TRL._TRL('Invalid plot aspect: ')+ aspectId);
+                        AXMUtils.Test.reportBug(_TRL('Invalid plot aspect: ')+ aspectId);
                     var propId = win._aspectPropertyIdMap[aspectId];
                     if (!propId)
                         return null;
@@ -125,7 +125,7 @@ define([
                         );
                         //var picker = Controls.DropList({width: 160});
                         //if (!aspect.getRequired())
-                        //    picker.addState('', _TRL._TRL("-- None --"));
+                        //    picker.addState('', _TRL("-- None --"));
                         //$.each(dataFrame.getProperties(), function(idx, prop) {
                         //    if (aspect.getDataType().includes(prop.getDataType()))
                         //        picker.addState(prop.getId(), prop.getDispName());
@@ -145,48 +145,48 @@ define([
                 };
 
                 win._createSelectionControls = function(grp) {
-                    win._ctrlSelectionCount = Controls.Static({text: _TRL._TRL('0 points selected')});
+                    win._ctrlSelectionCount = Controls.Static({text: _TRL('0 points selected')});
                     grp.add(win._ctrlSelectionCount);
 
                     var btSelectAll = Controls.Button({
-                        text: _TRL._TRL('Select all'),
+                        text: _TRL('Select all'),
                         icon: 'fa-square-o'
                     })
                         .addNotificationHandler(win.selectAll);
 
                     var btSelectNone = Controls.Button({
-                        text: _TRL._TRL('Select none'),
+                        text: _TRL('Select none'),
                         icon: 'fa-ban'
                     })
                         .addNotificationHandler(win.selectNone);
 
                     var btQuery = Controls.Button({
-                        text: _TRL._TRL('Query...'),
+                        text: _TRL('Query...'),
                         icon: 'fa-filter'
                     })
                         .addNotificationHandler(win.doQuery);
 
                     var btSelPlot = Controls.Button({
-                        text: _TRL._TRL('Create new view'),
+                        text: _TRL('Create new view'),
                         icon: 'fa-eye'
                     })
                         .addNotificationHandler(function() {
                             var subDataFrame = win.dataFrame.createSelectedRowsDataFrame();
                             if (subDataFrame.getRowCount() == 0) {
-                                SimplePopups.ErrorBox(_TRL._TRL('No points are selected'));
+                                SimplePopups.ErrorBox(_TRL('No points are selected'));
                                 return;
                             }
                             subDataFrame.promptPlot();
                         });
 
                     var btRestrict = Controls.Button({
-                        text: _TRL._TRL('Restrict current view'),
+                        text: _TRL('Restrict current view'),
                         icon: 'fa-sign-in'
                     })
                         .addNotificationHandler(function() {
                             var subDataFrame = win.dataFrame.createSelectedRowsDataFrame();
                             if (subDataFrame.getRowCount() == 0) {
-                                SimplePopups.ErrorBox(_TRL._TRL('No points are selected'));
+                                SimplePopups.ErrorBox(_TRL('No points are selected'));
                                 return;
                             }
                             win.dataFrame = subDataFrame;
@@ -203,7 +203,7 @@ define([
                     var objectType = win.dataFrame.objectType;
                     var actions = [
                         {
-                            name: _TRL._TRL('Add to selection'),
+                            name: _TRL('Add to selection'),
                             action: function() {
                                 $.each(selList, function(idx, rowId) {
                                     objectType.rowSelSet(rowId, true);
@@ -212,7 +212,7 @@ define([
                             }
                         },
                         {
-                            name: _TRL._TRL('Replace selection'),
+                            name: _TRL('Replace selection'),
                             action: function() {
                                 objectType.rowSelClear();
                                 $.each(selList, function(idx, rowId) {
@@ -222,7 +222,7 @@ define([
                             }
                         },
                         {
-                            name: _TRL._TRL('Restrict selection'),
+                            name: _TRL('Restrict selection'),
                             action: function() {
                                 var currentSelectedList = objectType.rowSelGetList();
                                 var currentSelectedMap = {};
@@ -238,7 +238,7 @@ define([
                             }
                         },
                         {
-                            name: _TRL._TRL('Exclude from selection'),
+                            name: _TRL('Exclude from selection'),
                             action: function() {
                                 $.each(selList, function(idx, rowId) {
                                     objectType.rowSelSet(rowId, false);
@@ -247,11 +247,11 @@ define([
                             }
                         }
                     ];
-                    var introText = _TRL._TRL('{disptext}<br><b>{count} points</b>').AXMInterpolate({
+                    var introText = _TRL('{disptext}<br><b>{count} points</b>').AXMInterpolate({
                         disptext: dispText || '',
                         count: selList.length
                     });
-                    SimplePopups.ActionChoiceBox(_TRL._TRL('Highlighted points'), introText, actions);
+                    SimplePopups.ActionChoiceBox(_TRL('Highlighted points'), introText, actions);
                 };
 
                 win.updateRowSelection = function() {
@@ -264,7 +264,7 @@ define([
                             selCount += 1;
                     }
 
-                    win._ctrlSelectionCount.modifyText(_TRL._TRL('{cnt} points selected').AXMInterpolate({cnt: selCount}));
+                    win._ctrlSelectionCount.modifyText(_TRL('{cnt} points selected').AXMInterpolate({cnt: selCount}));
                     win.plot.render();
                 };
 
@@ -325,17 +325,17 @@ define([
                     formHeader.setRootControl(headerGroup);
 
                     var aspectGroup = Controls.Compound.GroupVert({}).setSeparator(12);
-                    headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(aspectGroup), _TRL._TRL("Plot aspects")));
+                    headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(aspectGroup), _TRL("Plot aspects")));
                     win._createAspectControls(aspectGroup);
 
                     if (win._createDisplayControls) {
                         var dispGroup = Controls.Compound.GroupVert({}).setSeparator(12);
-                        headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(dispGroup), _TRL._TRL("Display")));
+                        headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(dispGroup), _TRL("Display")));
                         win._createDisplayControls(dispGroup);
                     }
 
                     var selGroup = Controls.Compound.GroupVert({}).setSeparator(12);
-                    headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(selGroup), _TRL._TRL("Selection")));
+                    headerGroup.add(Controls.Compound.Section(Controls.Compound.StandardMargin(selGroup), _TRL("Selection")));
                     win._createSelectionControls(selGroup);
                     if (win._appendSelectionControls) {
                         win._appendSelectionControls(selGroup);
@@ -354,7 +354,7 @@ define([
                     rightGroup.addMember(Frame.FrameFinal(win._formInfoText).setAutoSize(Frame.dimY));
 
                     if (win.plot)
-                        win.addPlotCommand('fa-external-link', _TRL._TRL('Open plot'), win.openImage);
+                        win.addPlotCommand('fa-external-link', _TRL('Open plot'), win.openImage);
 
                     if (win.setPlotCommands)
                         win.setPlotCommands();

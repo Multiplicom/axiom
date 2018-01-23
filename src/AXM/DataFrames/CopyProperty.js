@@ -44,7 +44,7 @@ define([
             }
 
             var win = PopupWindow.create({
-                title: _TRL._TRL('Import property'),
+                title: _TRL('Import property'),
                 blocking:true,
                 autoCenter: true
             });
@@ -66,14 +66,14 @@ define([
 
 
             var btOK = Controls.Button({
-                text: _TRL._TRL('Execute'),
+                text: _TRL('Execute'),
                 icon: 'fa-check'
             }).addNotificationHandler(function() {
                 win.execute();
             });
 
             var btAddAllProperties = Controls.Button({
-                text: _TRL._TRL('Import all properties'),
+                text: _TRL('Import all properties'),
                 icon: 'fa-arrows-v'
             }).addNotificationHandler(function() {
                 win.executeAll();

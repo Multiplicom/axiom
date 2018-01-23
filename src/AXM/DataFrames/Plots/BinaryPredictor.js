@@ -28,9 +28,9 @@ define([
         DataTypes
     ) {
 
-        var PlotType = _GenericPlot.createPlotType('binpredictor', _TRL._TRL('Binary predictor'), 'fa-arrows-h');
-        PlotType.addPlotAspect('binval', _TRL._TRL('Binary value'), DataTypes.typeBoolean, true);
-        PlotType.addPlotAspect('predictor', _TRL._TRL('Predictor'), DataTypes.typeFloat, true);
+        var PlotType = _GenericPlot.createPlotType('binpredictor', _TRL('Binary predictor'), 'fa-arrows-h');
+        PlotType.addPlotAspect('binval', _TRL('Binary value'), DataTypes.typeBoolean, true);
+        PlotType.addPlotAspect('predictor', _TRL('Predictor'), DataTypes.typeFloat, true);
 
         PlotType.create = function(dataFrame, aspectMap) {
             var win = PlotType.createGeneric(dataFrame, aspectMap);
@@ -58,19 +58,19 @@ define([
                 bt_Update.addNotificationHandler(win.render);
                 dispGroup.add(bt_Update);
 
-                //win.ctrl_showEnhInfo = Controls.Check({text: _TRL._TRL('Show enhancement'), checked: false})
+                //win.ctrl_showEnhInfo = Controls.Check({text: _TRL('Show enhancement'), checked: false})
                 //    .addNotificationHandler(function() {
                 //        win.render();
                 //    });
                 //dispGroup.add(win.ctrl_showEnhInfo);
                 //
-                //win.ctrl_showFracInfo = Controls.Check({text: _TRL._TRL('Show fraction info'), checked: true})
+                //win.ctrl_showFracInfo = Controls.Check({text: _TRL('Show fraction info'), checked: true})
                 //    .addNotificationHandler(function() {
                 //        win.render();
                 //    });
                 //dispGroup.add(win.ctrl_showFracInfo);
                 //
-                //win.ctrl_showSelInfo = Controls.Check({text: _TRL._TRL('Show selection info'), checked: true})
+                //win.ctrl_showSelInfo = Controls.Check({text: _TRL('Show selection info'), checked: true})
                 //    .addNotificationHandler(function() {
                 //        win.render();
                 //    });
@@ -81,10 +81,10 @@ define([
                 //    win.parseData();
                 //    win.plot.render();
                 //});
-                //win.ctrlSortType.addState('val', _TRL._TRL("Alphabetical"));
-                //win.ctrlSortType.addState('count', _TRL._TRL("Count"));
+                //win.ctrlSortType.addState('val', _TRL("Alphabetical"));
+                //win.ctrlSortType.addState('count', _TRL("Count"));
                 //dispGroup.add(Controls.Compound.GroupVert({}, [
-                //    _TRL._TRL('Sort by:'),
+                //    _TRL('Sort by:'),
                 //    win.ctrlSortType
                 //]));
                 //win.colorLegendCtrl = Controls.Static({});
