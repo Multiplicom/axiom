@@ -33,35 +33,37 @@ module.exports = {
         ]
     },
     plugins: [
-        // Progress bar when running Webpack.
         new ProgressBar(),
         // All stylesheets bundled in single css
         new ExtractTextPlugin("[name].css"),
-        // These are globals that are depended on implicitly
-        // by Axiom library code. Webpack has to be made aware
-        // of them.
+
+        /**
+         * These globals are implicitly depended on by the library. When webpack
+         * ecounters one of these symbols (keys) it implicitly imports the 
+         * modules (values) so they are available in scope. 
+         * 
+         * jQuery and lodash are node modules, but _TRL is a first-party global
+         * function that is expected to be globally available within the module
+         */
         new webpack.ProvidePlugin({
             $: "jquery",
             _: "lodash",
-            // 
-            // Whenever _TRL global is encountered it is replaced 
-            // by a function invocation _TRL. Default here means it
-            // is not a named export but the default exported function. 
-            //
-            _TRL: [path.resolve(__dirname, "src/AXM/_TRL.js"), "default"]
+            // Replace _TRL with the default exported function from _TRL.js 
+            _TRL: [path.resolve(__dirname, "src/AXM/_TRL.js"), "default"],
+            AXMReq: [path.resolve(__dirname, "src/AXM/AXMReq.js"), "default"],
         })
     ],
+    /**
+     * These dependencies are "externalized". They are explicit dependencies in 
+     * the library package.json. As a result, they are not bundled intot the library.
+     */
     externals: {
-        //
-        // These dependencies are "externalized". They are listed in the
-        // package.json and installed by the Client App. They are not
-        // bundled together with the library to reduce bundle size.
-        //
+
         _: "lodash",
         jquery: "jquery",
         blob: "blob.js",
         filesaver: "file-saver",
-        awesomeplete: "awesomplete", // (sic. -- there was a typo in the import)
+        awesomeplete: "awesomplete", // typo in an import somewhere
         awesomplete: "awesomplete",
         jquery_cookie: "jquery.cookie",
         jquery_mousewheel: "jquery-mousewheel",
@@ -71,13 +73,8 @@ module.exports = {
         extensions: [".js", ".css"],
         modules: [path.resolve("./src"), path.join(__dirname, "node_modules")],
         alias: {
-            // Axiom globals
-            ARMReq: path.resolve(__dirname, "src/AXM/AXMReq"),
-            //
-            // The only dependency of Axiom that isn't available as a Node
-            // module. It has to be distributed together with the library
-            // and has to be part of the bundle.
-            //
+            // The only dependency that isn't available as an npm package. It has to be 
+            // packaged into the bundle and distributed with the library
             datetimepicker: path.resolve(__dirname, "lib/datetimepicker/datetimepicker")
         }
     },

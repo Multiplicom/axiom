@@ -1,11 +1,12 @@
 {
   "name": "@multiplicom/axiom",
-  "version": "1.2.0-alpha.14",
+  "version": "1.2.0-alpha.17",
   "description": "Axiom is an HTML5/JavaScript library for dynamic layouting and rendering of graphical elements on a web browser page, such as tables, plots and controls.",
   "main": "./dist/axiom.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "touch dist && rm -r dist && webpack --bail",
+    "prepare": "npm run-script build",
     "publish": "npm publish"
   },
   "repository": {
