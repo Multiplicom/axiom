@@ -36,7 +36,6 @@ module.exports = {
         new ProgressBar(),
         // All stylesheets bundled in single css
         new ExtractTextPlugin("[name].css"),
-
         /**
          * These globals are implicitly depended on by the library. When webpack
          * ecounters one of these symbols (keys) it implicitly imports the 
@@ -49,8 +48,8 @@ module.exports = {
             $: "jquery",
             _: "lodash",
             // Replace _TRL with the default exported function from _TRL.js 
-            _TRL: [path.resolve(__dirname, "src/AXM/_TRL.js"), "default"],
-            AXMReq: [path.resolve(__dirname, "src/AXM/AXMReq.js"), "default"],
+            _TRL: [path.resolve(__dirname, "src/AXM/AXMUtils"), "_TRL"],
+            AXMReq: [path.resolve(__dirname, "src/AXM/AXMUtils"), "AXMReq"],
         })
     ],
     /**
@@ -58,7 +57,6 @@ module.exports = {
      * the library package.json. As a result, they are not bundled intot the library.
      */
     externals: {
-
         _: "lodash",
         jquery: "jquery",
         blob: "blob.js",
