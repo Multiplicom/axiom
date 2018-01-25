@@ -14,201 +14,212 @@
 //DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-define([
-        "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Color"
-    ],
-    function (
-        require, $, _,
-        AXMUtils, DOM, Color
-    ) {
+define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Color"], function(
+    require,
+    $,
+    _,
+    AXMUtils,
+    DOM,
+    Color
+) {
+    var Module = {};
 
-        var Module = {};
+    Module.colInfo = function(id) {
+        var coldef = AXMUtils.object("@ColInfo");
+        coldef._id = id;
+        coldef._name = id;
+        coldef._dispSize = 140;
+        coldef._onOpen = null;
+        coldef._canSort = false;
+        coldef._isVisibleInTable = true;
+        coldef._categories = null;
 
+        Object.defineProperties(coldef, {
+            className: {
+                value: null,
+                writable: true
+            },
+            asHTML: {
+                get: function getColumnHTML() {
+                    if (!coldef.className) {
+                        return coldef.getName();
+                    }
 
-        Module.colInfo = function(id) {
-            var coldef = AXMUtils.object('@ColInfo');
-            coldef._id = id;
-            coldef._name = id;
-            coldef._dispSize = 140;
-            coldef._onOpen = null;
-            coldef._canSort = false;
-            coldef._isVisibleInTable = true;
-            coldef._categories = null;
+                    return "<span class='{className}'>{name}</span>".AXMInterpolate({
+                        className: coldef.className,
+                        name: coldef.getName()
+                    });
+                }
+            }
+        });
 
-            coldef.setName = function(iName) {
-                coldef._name = iName;
-                return coldef;
-            };
-
-            coldef.setDispSize = function(dispSize) {
-                coldef._dispSize = dispSize;
-                return coldef;
-            };
-
-            coldef.setOnOpen = function(onOpen) {
-                coldef._onOpen = onOpen;
-                return coldef;
-            };
-
-            coldef.disableSort = function() {
-                coldef._canSort = false;
-                return coldef;
-            };
-
-            coldef.enableSort = function() {
-                coldef._canSort = true;
-                return coldef;
-            };
-
-            coldef.setIsVisibleInTable = function(visible) {
-                coldef._isVisibleInTable = visible;
-            };
-
-            coldef.getId = function() {
-                return coldef._id;
-            };
-
-            coldef.getName = function() {
-                return coldef._name;
-            };
-
-            coldef.canOpen = function() {
-                return !!coldef._onOpen;
-            };
-
-            coldef.canSort = function() {
-                return coldef._canSort;
-            };
-
-            coldef.isVisibleInTable = function() {
-                return coldef._isVisibleInTable;
-            };
-
-            coldef.callOnOpen = function() {
-                if (!coldef.canOpen())
-                    AXMUtils.reportBug('No column open handler');
-                coldef._onOpen();
-            };
-
-            //overridable:
-            coldef.content2DisplayString = function(content) {
-                if (content===null)
-                    return '';
-                return String(content);
-            };
-
-            //overridable:
-            coldef.content2TextString = function(content) {
-                if ((content===null) || (content===undefined))
-                    return '';
-                return String(content);
-            };
-
-            //overridable (should return an AXM.Color object):
-            coldef.content2BackgroundColor = function(content) {
-                return null;
-            };
-
-            //overridable (should return an AXM.Color object):
-            coldef.content2ForegroundColor = function(content) {
-                return null;
-            };
-
-            coldef.setFieldCategories = function(catInfo) {
-                AXMUtils.Test.checkIsType(catInfo, '@FieldCategoryInfo');
-                coldef._categories = catInfo;
-            };
-
-            coldef.hasFieldCategories = function() {
-                return coldef._categories != null
-            };
-
-            coldef.getFieldCategories = function() {
-                if (!coldef._categories)
-                    AXMUtils.Test.reportBug("Field does not have categories: " + coldef._id);
-                return coldef._categories;
-            };
-
+        coldef.setName = function(iName) {
+            coldef._name = iName;
             return coldef;
         };
 
-
-        Module.tableInfo = function(tableId) {
-            var tabledef = AXMUtils.object('@TableInfo');
-            tabledef.tableId = tableId;
-            tabledef._columns = [];
-            tabledef._map_columns = {};
-            tabledef._onOpenRow = null;
-            tabledef._canSelect = false;
-
-            tabledef.addColumn = function(colId) {
-                AXMUtils.Test.checkIsString(colId);
-                var colInfo = Module.colInfo(colId);
-                tabledef._columns.push(colInfo);
-                tabledef._map_columns[colId] = colInfo;
-                return colInfo;
-            };
-
-            tabledef.setOnOpenRow = function(handler) {
-                tabledef._onOpenRow = handler;
-            };
-
-            tabledef.makeCanSelect = function() {
-                tabledef._canSelect = true;
-            };
-
-            tabledef.getColumns = function() {
-                return tabledef._columns;
-            };
-
-            tabledef.delColumn = function(colId) {
-                delete tabledef._map_columns[colId];
-                var colIdx = -1;
-                $.each(tabledef._columns, function(idx, colInfo) {
-                    if (colInfo.getId() == colId)
-                        colIdx = idx;
-                });
-                if (colIdx >= 0)
-                    tabledef._columns.splice(colIdx, 1);
-            };
-
-            tabledef.hasColumn = function(colId) {
-                var colInfo = tabledef._map_columns[colId];
-                return !!colInfo;
-            };
-
-            tabledef.getColumn = function(colId) {
-                var colInfo = tabledef._map_columns[colId];
-                if (!colInfo)
-                    AXMUtils.Test.reportBug('Invalid column {colid} for table {tableid}'.AXMInterpolate({colid: colId, tableid: tabledef.tableId}));
-                return colInfo;
-            };
-
-            tabledef.getColumn_Optional = function(colId) {
-                var colInfo = tabledef._map_columns[colId];
-                return colInfo;
-            };
-
-            tabledef.canOpenRow = function() {
-                return !!tabledef._onOpenRow;
-            };
-
-            tabledef.canSelect = function() {
-                return tabledef._canSelect;
-            };
-
-            tabledef.callOnOpenRow = function(rowNr, settings, tableData) {
-                if (!tabledef.canOpenRow())
-                    AXMUtils.reportBug('No row open handler');
-                tabledef._onOpenRow(rowNr, settings, tableData);
-            };
-
-
-
-            return tabledef;
+        coldef.setDispSize = function(dispSize) {
+            coldef._dispSize = dispSize;
+            return coldef;
         };
 
-        return Module;
-    });
+        coldef.setOnOpen = function(onOpen) {
+            coldef._onOpen = onOpen;
+            return coldef;
+        };
 
+        coldef.disableSort = function() {
+            coldef._canSort = false;
+            return coldef;
+        };
+
+        coldef.enableSort = function() {
+            coldef._canSort = true;
+            return coldef;
+        };
+
+        coldef.setIsVisibleInTable = function(visible) {
+            coldef._isVisibleInTable = visible;
+        };
+
+        coldef.getId = function() {
+            return coldef._id;
+        };
+
+        coldef.getName = function() {
+            return coldef._name;
+        };
+
+        coldef.canOpen = function() {
+            return !!coldef._onOpen;
+        };
+
+        coldef.canSort = function() {
+            return coldef._canSort;
+        };
+
+        coldef.isVisibleInTable = function() {
+            return coldef._isVisibleInTable;
+        };
+
+        coldef.callOnOpen = function() {
+            if (!coldef.canOpen()) AXMUtils.reportBug("No column open handler");
+            coldef._onOpen();
+        };
+
+        //overridable:
+        coldef.content2DisplayString = function(content) {
+            if (content === null) return "";
+            return String(content);
+        };
+
+        //overridable:
+        coldef.content2TextString = function(content) {
+            if (content === null || content === undefined) return "";
+            return String(content);
+        };
+
+        //overridable (should return an AXM.Color object):
+        coldef.content2BackgroundColor = function(content) {
+            return null;
+        };
+
+        //overridable (should return an AXM.Color object):
+        coldef.content2ForegroundColor = function(content) {
+            return null;
+        };
+
+        coldef.setFieldCategories = function(catInfo) {
+            AXMUtils.Test.checkIsType(catInfo, "@FieldCategoryInfo");
+            coldef._categories = catInfo;
+        };
+
+        coldef.hasFieldCategories = function() {
+            return coldef._categories != null;
+        };
+
+        coldef.getFieldCategories = function() {
+            if (!coldef._categories) AXMUtils.Test.reportBug("Field does not have categories: " + coldef._id);
+            return coldef._categories;
+        };
+
+        return coldef;
+    };
+
+    Module.tableInfo = function(tableId) {
+        var tabledef = AXMUtils.object("@TableInfo");
+        tabledef.tableId = tableId;
+        tabledef._columns = [];
+        tabledef._map_columns = {};
+        tabledef._onOpenRow = null;
+        tabledef._canSelect = false;
+
+        tabledef.addColumn = function(colId) {
+            AXMUtils.Test.checkIsString(colId);
+            var colInfo = Module.colInfo(colId);
+            tabledef._columns.push(colInfo);
+            tabledef._map_columns[colId] = colInfo;
+            return colInfo;
+        };
+
+        tabledef.setOnOpenRow = function(handler) {
+            tabledef._onOpenRow = handler;
+        };
+
+        tabledef.makeCanSelect = function() {
+            tabledef._canSelect = true;
+        };
+
+        tabledef.getColumns = function() {
+            return tabledef._columns;
+        };
+
+        tabledef.delColumn = function(colId) {
+            delete tabledef._map_columns[colId];
+            var colIdx = -1;
+            $.each(tabledef._columns, function(idx, colInfo) {
+                if (colInfo.getId() == colId) colIdx = idx;
+            });
+            if (colIdx >= 0) tabledef._columns.splice(colIdx, 1);
+        };
+
+        tabledef.hasColumn = function(colId) {
+            var colInfo = tabledef._map_columns[colId];
+            return !!colInfo;
+        };
+
+        tabledef.getColumn = function(colId) {
+            var colInfo = tabledef._map_columns[colId];
+            if (!colInfo)
+                AXMUtils.Test.reportBug(
+                    "Invalid column {colid} for table {tableid}".AXMInterpolate({
+                        colid: colId,
+                        tableid: tabledef.tableId
+                    })
+                );
+            return colInfo;
+        };
+
+        tabledef.getColumn_Optional = function(colId) {
+            var colInfo = tabledef._map_columns[colId];
+            return colInfo;
+        };
+
+        tabledef.canOpenRow = function() {
+            return !!tabledef._onOpenRow;
+        };
+
+        tabledef.canSelect = function() {
+            return tabledef._canSelect;
+        };
+
+        tabledef.callOnOpenRow = function(rowNr, settings, tableData) {
+            if (!tabledef.canOpenRow()) AXMUtils.reportBug("No row open handler");
+            tabledef._onOpenRow(rowNr, settings, tableData);
+        };
+
+        return tabledef;
+    };
+
+    return Module;
+});
