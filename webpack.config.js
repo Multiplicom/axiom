@@ -11,6 +11,10 @@ module.exports = {
     output: {
         filename: "[name].js",
         library: "AXM",
+        libraryExport: [
+            "AXM",
+            "DOM"
+        ],
         libraryTarget: "amd",
         path: path.resolve(__dirname, "dist")
     },
