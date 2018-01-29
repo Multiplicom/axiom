@@ -821,7 +821,7 @@ define([
                         if (colInfo.getName().length>0) {
                             if (line.length>0)
                                 line += '\t';
-                            line += colInfo.content2TextString(rowData[colInfo.getId()], rowData);
+                            line += colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
                         }
                     });
                     data += line + '\n';
