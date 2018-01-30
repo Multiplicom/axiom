@@ -213,7 +213,7 @@ define([
                 $.each(panel._columns, function createHeader (colNr, colInfo) {
                     var cell = DOM.Create('th', {id:panel._getColSubId('header',colNr)});
                     cell.addElem(colInfo.getName());
-                    cell.addAttribute('title', colInfo.getName());
+                    cell.addAttribute("title", colInfo.getName({ styling: false }));
                     if (colInfo.canSort()) {
                         DOM.Div({parent: cell}).addCssClass('AXMPgTableColSortBox');
                     }
