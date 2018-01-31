@@ -27,7 +27,7 @@ define([
          */
         var Module = {};
 
-        Module._AXM_HasTransientPopups = function() {
+        global._AXM_HasTransientPopups = function() {
             return Module._current;
         };
 

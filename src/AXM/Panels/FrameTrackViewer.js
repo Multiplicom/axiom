@@ -530,7 +530,7 @@ define([
 
             track._onMouseMove = function(ev) {
                 var viewerPanel = track.getViewerPanel();
-                if (AXM.Windows.TransientPopup._AXM_HasTransientPopups && AXM.Windows.TransientPopup._AXM_HasTransientPopups()) {
+                if (_AXM_HasTransientPopups && _AXM_HasTransientPopups()) {
                     track._hideToolTip();
                     return;
                 }
