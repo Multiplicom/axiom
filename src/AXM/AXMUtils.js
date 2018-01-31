@@ -702,7 +702,7 @@ function (
      * @global
      */
     /*global _TRL*/
-    Module._TRL = function(txt) {
+    function _TRL(txt) {
         var reg = new RegExp(/{_.*?_}/g);
         var tokens = [];
         var match;
@@ -731,6 +731,8 @@ function (
         return txt;
     };
 
+    global._TRL = _TRL;
+    Module._TRL = _TRL;
 
     /**
      * Saves content to a local file on the client's computer

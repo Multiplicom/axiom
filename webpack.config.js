@@ -9,9 +9,11 @@ module.exports = {
     },
     target: "web",
     output: {
+        path: path.resolve(__dirname, "dist"),
         filename: "[name].js",
         library: "AXM",
-        path: path.resolve(__dirname, "dist")
+        libraryTarget: 'umd',
+        umdNamedDefine: true
     },
     module: {
         rules: [
@@ -47,7 +49,6 @@ module.exports = {
             $: "jquery",
             _: "lodash",
             // Replace _TRL with the default exported function from _TRL.js 
-            _TRL: [path.resolve(__dirname, "src/AXM/AXMUtils"), "_TRL"],
             AXMReq: [path.resolve(__dirname, "src/AXM/AXMUtils"), "AXMReq"],
         })
     ],
