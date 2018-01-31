@@ -11,11 +11,6 @@ module.exports = {
     output: {
         filename: "[name].js",
         library: "AXM",
-        libraryExport: [
-            "AXM",
-            "DOM"
-        ],
-        libraryTarget: "amd",
         path: path.resolve(__dirname, "dist")
     },
     module: {
@@ -56,25 +51,18 @@ module.exports = {
             AXMReq: [path.resolve(__dirname, "src/AXM/AXMUtils"), "AXMReq"],
         })
     ],
-    /**
-     * These dependencies are "externalized". They are explicit dependencies in 
-     * the library package.json. As a result, they are not bundled intot the library.
-     */
-    externals: {
-        _: "lodash",
-        jquery: "jquery",
-        blob: "blob.js",
-        filesaver: "file-saver",
-        awesomeplete: "awesomplete", // typo in an import somewhere
-        awesomplete: "awesomplete",
-        jquery_cookie: "jquery.cookie",
-        jquery_mousewheel: "jquery-mousewheel",
-        codemirror: "codemirror"
-    },
     resolve: {
         extensions: [".js", ".css"],
         modules: [path.resolve("./src"), path.join(__dirname, "node_modules")],
         alias: {
+            _: "lodash",
+            jquery_cookie: "jquery.cookie",
+            blob: "blob.js",
+            filesaver: "file-saver",
+            awesomeplete: "awesomplete", // typo in an import somewhere
+            awesomplete: "awesomplete",
+            jquery_mousewheel: "jquery-mousewheel",
+            codemirror: "codemirror",            
             // The only dependency that isn't available as an npm package. It has to be 
             // packaged into the bundle and distributed with the library
             datetimepicker: path.resolve(__dirname, "lib/datetimepicker/datetimepicker")
