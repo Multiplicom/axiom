@@ -741,7 +741,7 @@ function (
      */
     Module.saveTextFile = function(data, fileName) {
         var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
-        FileSaver(blob, fileName);
+        FileSaver.saveAs(blob, fileName);
     };
 
 

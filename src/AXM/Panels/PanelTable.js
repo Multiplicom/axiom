@@ -825,7 +825,7 @@ define([
                     data += line + '\n';
                 }
                 var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
-                FileSaver(blob, 'TableContent.txt');
+                FileSaver.saveAs(blob, 'TableContent.txt');
                 if (cnt < panel._tableData.getRowCount())
                     SimplePopups.ErrorBox('Download was restricted to the first {cnt} rows'.AXMInterpolate({cnt: cnt}));
             };

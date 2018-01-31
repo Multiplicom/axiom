@@ -761,7 +761,7 @@ define([
                     icon: "fa-external-link"
                 }, function() {
                     var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
-                    FileSaver(blob,  'data.txt');
+                    FileSaver.saveAs(blob,  'data.txt');
                 });
 
                 win.start();
@@ -771,7 +771,7 @@ define([
             dataFrame.saveLocalFile = function() {
                 var content = dataFrame.getContentString_Raw(true);
                 var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
-                FileSaver(blob, dataFrame.getName());
+                FileSaver.saveAs(blob, dataFrame.getName());
             };
 
 
