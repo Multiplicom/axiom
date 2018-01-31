@@ -15,11 +15,11 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-    "require", "jquery", "_", "jquery_cookie", "blob", "filesaver",
+    "require", "jquery", "_", "jquery_cookie", "filesaver",
     "AXM/Test", "AXM/Msg"
 ],
 function (
-    require, $, _, dummy_jquery_cookie, Blob, FileSaver,
+    require, $, _, dummy_jquery_cookie, FileSaver,
     Test, Msg
 ) {
 

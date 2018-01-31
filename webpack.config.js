@@ -38,7 +38,6 @@ module.exports = {
         _: "lodash",
         jquery: "jquery",
         jquery_cookie: "jquery.cookie",
-        blob: "blob.js",
         filesaver: "file-saver",
         awesomeplete: "awesomplete", // typo in an import somewhere
         awesomplete: "awesomplete",

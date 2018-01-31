@@ -15,13 +15,13 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_", "blob", "filesaver",
+        "require", "jquery", "_", "filesaver",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg",
         "AXM/Windows/SimplePopups",
         "AXM/Tables/TableInfo"
     ],
     function (
-        require, $, _, Blob, FileSaver,
+        require, $, _, FileSaver,
         AXMUtils, DOM, Controls, Frame, PanelBase, Msg,
         SimplePopups,
         TableInfo
