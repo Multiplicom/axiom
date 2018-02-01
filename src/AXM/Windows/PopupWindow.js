@@ -266,33 +266,53 @@ define([
 
                 if (window._title) {
                     var headerDiv = DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowHeader');
+                    
                     if (window._headerIcon) {
-                        if (AXMUtils.isObjectType(window._headerIcon, 'icon')) {
-                            var iconDiv = DOM.Div({parent:headerDiv});
-                            iconDiv.addCssClass("AXMPopupHeaderIcon");
-                            iconDiv.addElem(window._headerIcon.renderHtml());
-                        } else {
-                            var str = '<div style="display: inline-block; padding-top:4px;padding-right:16px;vertical-align: top"><i class="AXMPopupHeaderIcon fa {icon}" style=""></i></div>'.AXMInterpolate({icon:window._headerIcon});
-                            headerDiv.addElem(str);
-                        }
+                        headerDiv.addElem(window.icon);
                     }
-
-                    let titleText = DOM.Div({parent: headerDiv});
+                    
+                    var titleText = DOM.Div({parent: headerDiv});
                     titleText.addCssClass("PopupHeaderTitleText")
+                        .addStyle("margin-right", "8px")
                         .addStyle("display", "inline-block")
-                        .addStyle("margin-right", "20px")
                         .addStyle("overflow-x", "hidden")
+                        .addStyle("overflow-y", "hidden")
                         .addStyle("text-overflow", "ellipsis") 
                         .addStyle("vertical-align", "middle")
                         .addElem(window._title)
 
-                    let labelsContainer = DOM.Create("span");
-                    labelsContainer.addCssClass("AXMPopupLabelsPlaceholder");
-                    // Add labels to popup header as "badges"
-                    window.labels.forEach(function addBadge (badge) {
-                        labelsContainer.addElem(badge);
-                    });
-                    headerDiv.addElem(labelsContainer);
+                    if (window.labels.length > 0) {
+                        var labelsContainer = DOM.Create("div");
+                        labelsContainer.addCssClass("AXMPopupLabelsPlaceholder");
+
+                        // Add labels to popup header as "badges"
+                        window.labels.forEach(function addBadge (badge) {
+                            labelsContainer.addElem(badge);
+                        });
+                        
+                        headerDiv.addElem(labelsContainer);
+                    }
+
+                    var windowButtons = DOM.Create("div");
+                    windowButtons.addCssClass("SWXPopupWindowButtons");
+
+                    if (window._helpID){
+                        var help = DOM.Create("div");
+                        help.addCssClass("SWXPopupWindowHelpBox")
+                            .addElem('<i class="fa fa-question"></i>');
+
+                        windowButtons.addElem(help);
+                    }
+
+                    if (Module.docker && window._canDock) {
+                        windowButtons.addElem('<span class="SWXPopupWindowDockBox"><i class="fa fa-arrow-circle-left"></i></span>');
+                    }
+
+                    if (window._canClose) {
+                        windowButtons.addElem('<div class="SWXPopupWindowCloseBox"><i class="fa fa-times-circle"></i></div>');
+                    }
+
+                    headerDiv.addElem(windowButtons);
                 }
 
                 var transfer$Elem = null;
@@ -327,15 +347,6 @@ define([
                     DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowGripSW GripSW1');
                     DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowGripSW GripSW2');
                 }
-
-                if (window._helpID)
-                    rootDiv.addElem('<div class="SWXPopupWindowHelpBox"><i class="fa fa-question"></i></div>');
-
-                if (window._canClose)
-                    rootDiv.addElem('<span class="SWXPopupWindowCloseBox"><i class="fa fa-times-circle"></i></span>');
-
-                if (Module.docker && window._canDock)
-                    rootDiv.addElem('<span class="SWXPopupWindowDockBox"><i class="fa fa-arrow-circle-left"></i></span>');
 
                 $('.AXMContainer').append(rootDiv.toString());
                 window._$ElContainer = $('#' + window._id);
@@ -415,15 +426,32 @@ define([
                 return window._$ElContainer;
             };
 
-            Object.defineProperty(window, 'labels', {
-                get: function getLabels () {
-                    return Object.keys(window._labels).map(function (k) {
-                        let label = window._labels[k];
-                        return DOM.Create("span")
-                            .addCssClass(label.cssClass)
-                            .addCssClass("AXMBadge")
-                            .addElem(label.text);
-                    });
+            Object.defineProperties(window, {
+                labels: {
+                    get: function getLabels () {
+                        return Object.keys(window._labels).map(function (k) {
+                            var label = window._labels[k];
+                            return DOM.Create("span")
+                                .addCssClass(label.cssClass)
+                                .addCssClass("AXMBadge")
+                                .addElem(label.text);
+                        });
+                    }
+                },
+                icon: {
+                    get: function getIcon() {
+                        var iconContainer = DOM.Create("div");
+                        iconContainer.addCssClass("AXMPopupHeaderIcon");
+                        
+                        if (AXMUtils.isObjectType(window._headerIcon, 'icon')) {
+                            iconContainer.addElem(window._headerIcon.renderHtml());
+                        } else {
+                            var iconElement = '<i class="AXMPopupHeaderIcon fa {icon}" style=""></i>'.AXMInterpolate({icon:window._headerIcon})
+                            iconContainer.addElem(iconElement);
+                        }
+
+                        return iconContainer;
+                    }
                 }
             });
 
@@ -467,6 +495,7 @@ define([
                             .css('left', newPosX)
                             .css('top', newPosY);
                     },
+
                     function() {            // finalise
 
                     }

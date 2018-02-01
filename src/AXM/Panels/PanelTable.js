@@ -210,10 +210,10 @@ define([
 
                 var headerLeftHtml = '';
                 var headerRightHtml = '';
-                $.each(panel._columns, function(colNr, colInfo) {
+                $.each(panel._columns, function createHeader (colNr, colInfo) {
                     var cell = DOM.Create('th', {id:panel._getColSubId('header',colNr)});
                     cell.addElem(colInfo.getName());
-                    cell.addAttribute('title', colInfo.getName());
+                    cell.addAttribute("title", colInfo.getName({ styling: false }));
                     if (colInfo.canSort()) {
                         DOM.Div({parent: cell}).addCssClass('AXMPgTableColSortBox');
                     }
@@ -297,33 +297,35 @@ define([
              * Detach the html event handlers
              */
             panel.detachEventHandlers = function() {
-                var $ElLeftHeadRow = $('#'+panel._divid_leftHeadRow);
-                var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
-                var $ElRightBody = $('#'+panel._divid_rightBody);
-                var $ElLeftBody = $('#'+panel._divid_leftBody);
+                if(panel){
+                    var $ElLeftHeadRow = $('#'+panel._divid_leftHeadRow);
+                    var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
+                    var $ElRightBody = $('#'+panel._divid_rightBody);
+                    var $ElLeftBody = $('#'+panel._divid_leftBody);
 
 
-                $.each(panel._columns, function(colNr, colInfo) {
-                    var $ElColDrag = panel._getColSub$El('dragger', colNr);
-                    var $ElCol =panel._getColSub$El(colNr, '');
-                    var $ElColHeader =panel._getColSub$El('header', colNr);
-                    if (colInfo.canOpen())
-                        $ElColHeader.unbind('mousedown');
-                    $ElColHeader.find('.AXMPgTableColSortBox').unbind('mousedown');
-                    if (panel._colIsRightPart(colInfo)) {
-                        AXMUtils.remove$ElDragHandler($ElColDrag);
-                    }
-                });
-                $ElLeftBody.unbind('click');
-                $ElRightBody.unbind('click');
+                    $.each(panel._columns, function(colNr, colInfo) {
+                        var $ElColDrag = panel._getColSub$El('dragger', colNr);
+                        var $ElCol =panel._getColSub$El(colNr, '');
+                        var $ElColHeader =panel._getColSub$El('header', colNr);
+                        if (colInfo.canOpen())
+                            $ElColHeader.unbind('mousedown');
+                        $ElColHeader.find('.AXMPgTableColSortBox').unbind('mousedown');
+                        if (panel._colIsRightPart(colInfo)) {
+                            AXMUtils.remove$ElDragHandler($ElColDrag);
+                        }
+                    });
+                    $ElLeftBody.unbind('click');
+                    $ElRightBody.unbind('click');
 
-                AXMUtils.remove$ElScrollHandler(panel._getSub$El('leftTableScrollContainer'));
-                AXMUtils.remove$ElScrollHandler(panel._getSub$El('rightTableScrollContainer'));
+                    AXMUtils.remove$ElScrollHandler(panel._getSub$El('leftTableScrollContainer'));
+                    AXMUtils.remove$ElScrollHandler(panel._getSub$El('rightTableScrollContainer'));
 
-                $('#'+panel._divid_rightBody).unbind('contextmenu');
+                    $('#'+panel._divid_rightBody).unbind('contextmenu');
 
-                panel._updateSortStatus();
-                panel.renderTableContent();
+                    panel._updateSortStatus();
+                    panel.renderTableContent();
+                }
             };
 
 
@@ -804,18 +806,19 @@ define([
                 var cnt = Math.min(panel._maxDownloadRowCount, panel._tableData.getRowCount());
                 var data = '';
                 var line  = '';
-                $.each(panel._columns, function (colNr, colInfo) {
+                $.each(panel._columns, function addHeaders (colNr, colInfo) {
                     if (colInfo.getName().length>0) {
                         if (line.length>0)
                             line += '\t';
-                        line += colInfo.getName();
+                        // Get column name without styling (if any)
+                        line += colInfo.getName({ styling: false });
                     }
                 });
                 data += line + '\n';
                 for (var rowNr = 0; rowNr < cnt ; rowNr ++) {
                     var rowData = panel._tableData.getRow(rowNr);
                     var line  = '';
-                    $.each(panel._columns, function (colNr, colInfo) {
+                    $.each(panel._columns, function addRows (colNr, colInfo) {
                         if (colInfo.getName().length>0) {
                             if (line.length>0)
                                 line += '\t';

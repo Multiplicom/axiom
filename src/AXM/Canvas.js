@@ -146,16 +146,18 @@ define([
              * Renders the drawing in the canvas element
              */
             cnvs.render_exec = function (layerid) {
-                var ctx = cnvs.getRenderContext(layerid);
-                //ctx.fillStyle="#FFFFFF";
-                //ctx.fillRect(0, 0, cnvs._cnvWidth,cnvs._cnvHeight);
-                var drawInfo = {
-                    ctx: ctx,
-                    sizeX: cnvs._cnvWidth,
-                    sizeY: cnvs._cnvHeight,
-                    layerId: layerid
-                };
-                cnvs.draw(drawInfo);
+                if(cnvs.getCanvas$El(layerid).length){  // Check if the element still exists
+                    var ctx = cnvs.getRenderContext(layerid);
+                    //ctx.fillStyle="#FFFFFF";
+                    //ctx.fillRect(0, 0, cnvs._cnvWidth,cnvs._cnvHeight);
+                    var drawInfo = {
+                        ctx: ctx,
+                        sizeX: cnvs._cnvWidth,
+                        sizeY: cnvs._cnvHeight,
+                        layerId: layerid
+                    };
+                    cnvs.draw(drawInfo);
+                }
             };
 
 

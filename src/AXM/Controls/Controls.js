@@ -218,7 +218,7 @@ define([
              * Detaches html event handlers
              */
             control.detachEventHandlers = function() {
-                if (control._reactOnClick)
+                if (control && control._reactOnClick)
                     control._getSub$El('').unbind('click');
             };
 
@@ -446,8 +446,10 @@ define([
              * Detaches html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
-                control._getSub$El('').find('.AXMButtonHelp').unbind('click');
+                if(control){
+                    control._getSub$El('').unbind('click');
+                    control._getSub$El('').find('.AXMButtonHelp').unbind('click');
+                }
             };
 
             /**
@@ -590,7 +592,9 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
+                if(control){
+                    control._getSub$El('').unbind('click');
+                }
             };
 
             /**
@@ -656,7 +660,9 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
+                if(control){
+                    control._getSub$El('').unbind('click');
+                }
             };
 
             /**
@@ -862,8 +868,10 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                var target = 'change.controlevent';
-                control._getSub$El('').unbind(target);
+                if(control){
+                    var target = 'change.controlevent';
+                    control._getSub$El('').unbind(target);
+                }
             };
 
             /**
@@ -1011,8 +1019,10 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                var target = 'change.controlevent';
-                control._getSub$El('').unbind(target);
+                if(control){
+                    var target = 'change.controlevent';
+                    control._getSub$El('').unbind(target);
+                }
             };
 
             /**
@@ -1154,11 +1164,13 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
-                control._getSub$El('').unbind("propertychange input paste");
-                control._getSub$El('').unbind("keyup");
-                if (control._clearButton)
-                    control._clearButton.detachEventHandlers();
+                if(control){
+                    control._getSub$El('').unbind('click');
+                    control._getSub$El('').unbind("propertychange input paste");
+                    control._getSub$El('').unbind("keyup");
+                    if (control._clearButton)
+                        control._clearButton.detachEventHandlers();
+                }
             };
 
             /**
@@ -1317,11 +1329,13 @@ define([
              * Detaches the html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
-                control._getSub$El('').unbind("propertychange input paste");
-                control._getSub$El('').unbind("keyup");
-                if (control._clearButton)
-                    control._clearButton.detachEventHandlers();
+                if(control){
+                    control._getSub$El('').unbind('click');
+                    control._getSub$El('').unbind("propertychange input paste");
+                    control._getSub$El('').unbind("keyup");
+                    if (control._clearButton)
+                        control._clearButton.detachEventHandlers();
+                }
             };
 
 
@@ -1527,10 +1541,12 @@ define([
              * Detaches the html events
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('')
-                    .off("dragover")
-                    .off("dragleave")
-                    .off("drop");
+                if(control){
+                    control._getSub$El('')
+                        .off("dragover")
+                        .off("dragleave")
+                        .off("drop");
+                }
             };
 
             /**

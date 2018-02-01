@@ -794,12 +794,14 @@ define([
              */
             panel.detachEventHandlers = function() {
                 _super_detachEventHandlers();
-                var clickLayer$El = panel.getCanvas$El('selection');
-                AXMUtils.remove$ElScrollHandler(clickLayer$El);
-                AXMUtils.remove$ElDragHandler(clickLayer$El);
-                clickLayer$El.unbind('mousemove');
-                clickLayer$El.unbind('click');
-                clickLayer$El.unbind('mouseleave');
+                if(panel){
+                    var clickLayer$El = panel.getCanvas$El('selection');
+                    AXMUtils.remove$ElScrollHandler(clickLayer$El);
+                    AXMUtils.remove$ElDragHandler(clickLayer$El);
+                    clickLayer$El.unbind('mousemove');
+                    clickLayer$El.unbind('click');
+                    clickLayer$El.unbind('mouseleave');
+                }
             };
 
 

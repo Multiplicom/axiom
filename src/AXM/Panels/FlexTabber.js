@@ -134,10 +134,12 @@ define([
              * Detach the required event handlers to the tab header
              */
             tabInfo.detachEventHandlers = function() {
-                var el = tabInfo.get$El();
-                el.unbind('click');
-                el.find('.AXMFlexTabCloser').unbind('click');
-                el.find('.AXMFlexTabToPopup').unbind('click');
+                if(tabInfo){
+                    var el = tabInfo.get$El();
+                    el.unbind('click');
+                    el.find('.AXMFlexTabCloser').unbind('click');
+                    el.find('.AXMFlexTabToPopup').unbind('click');
+                }
             };
 
             return tabInfo;
