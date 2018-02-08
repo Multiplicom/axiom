@@ -42,7 +42,8 @@ module.exports = {
         awesomeplete: "awesomplete", // typo in an import somewhere
         awesomplete: "awesomplete",
         jquery_mousewheel: "jquery-mousewheel",
-        codemirror: "codemirror"
+        codemirror: "codemirror",
+        react: "react"
     },
     resolve: {
         extensions: [".js", ".css"],
