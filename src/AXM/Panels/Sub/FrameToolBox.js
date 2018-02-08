@@ -113,7 +113,7 @@ define([
                 toolBox._isActive = true;
 
                 setTimeout(function() {
-                    $(document).bind("mouseup.toolbox", toolBox._onDocClicked);
+                    document.addEventListener("click", toolBox._onDocClicked);
                 }, 100);
             };
 
@@ -123,11 +123,11 @@ define([
                     setTimeout(function() {
                         toolBox._isActive = false;
                     }, 50); // introducing a delay to make sure that clicking the toolbox start element does not immediately reactives it
-                    $(document).unbind("mouseup.toolbox");
+                    document.removeEventListener("click", toolBox._onDocClicked);
                 }
             };
 
-            toolBox._onDocClicked = function(ev) {
+            toolBox._onDocClicked = ev => {
                 if (ev.target) {
                     var clicked$El = $(ev.target);
                     if (clicked$El.length < 1)
