@@ -454,6 +454,13 @@ define([
 
         Module.busyWin = null;
 
+        Object.defineProperties(Module, {
+            currentlyBlocking: {
+                get: function() {
+                    return Module.busyWin !== null || Module.blockingBusy_list.length > 0;
+                }
+            }
+        });
 
         /**
          * Displays a busy message that blocks the entire app UI
