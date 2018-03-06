@@ -48,7 +48,7 @@ define([
                     width : 25,
                     height: 19,
                     buttonClass : 'AXMButtonCommandBar',
-                    iconSizeFraction: 0.9,
+                    iconSizeFraction: 0.9
                 }).addNotificationHandler(function() {
                     var str = win.ctrlExpr.getValue()+'pt.'+property.getId();
                     win.ctrlExpr.setValue(str);

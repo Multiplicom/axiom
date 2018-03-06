@@ -7,6 +7,14 @@
 *.synctex.gz(busy)
 *.toc
 
+# Development
+node_modules/
+dist/
+demo/
+
+# VS Code
+.vscode
+
 # JetBrains IDE files
 .idea
 

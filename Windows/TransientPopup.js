@@ -122,7 +122,7 @@ define([
 
 
                 var windowSizeX = window._$ElContainer.width();
-                var windowSizeY = window._$ElContainer.height();
+                var windowSizeY = settings.maxHeight ? Math.max(window._$ElContainer.height(), settings.maxHeight) : window._$ElContainer.height();
 
                 if (window.offsetX + windowSizeX < browserSize.sizeX) {
                     window._$ElContainer

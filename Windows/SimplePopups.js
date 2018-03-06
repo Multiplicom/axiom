@@ -182,7 +182,7 @@ define([
                 });
 
             var btCancel = Controls.Button({
-                text: _TRL('Cancel'),
+                text: _TRL('Cancel')
             })
                 .addNotificationHandler(function() {
                     win.close();
@@ -427,14 +427,14 @@ define([
             });
 
             var grp1 = Controls.Compound.GroupHor({}).setSeparator(20);
-            grp1.add(Controls.Static({text: '<div style="font-size: 44px;padding:15px;display: inline-block;color:rgb(200,0,0)"><i class="fa fa-exclamation-triangle"></i></div'}));
+            grp1.add(Controls.Static({text: '<div style="font-size: 44px;padding:15px;display: inline-block;color:rgb(200,0,0)"><i class="fa fa-exclamation-triangle"></i></div>'}));
 
             var grp2 = Controls.Compound.GroupVert({});
             grp1.add(grp2);
             grp2.add(Controls.Static({text: content+'<p/>'}));
 
             var btOK = Controls.Button({
-                text: _TRL('Close'),
+                text: _TRL('Close')
 //                icon: 'fa-check'
             })
                 .addNotificationHandler(function() {
@@ -454,6 +454,13 @@ define([
 
         Module.busyWin = null;
 
+        Object.defineProperties(Module, {
+            currentlyBlocking: {
+                get: function() {
+                    return Module.busyWin !== null || Module.blockingBusy_list.length > 0;
+                }
+            }
+        });
 
         /**
          * Displays a busy message that blocks the entire app UI

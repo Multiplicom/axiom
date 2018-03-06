@@ -118,7 +118,7 @@ define([
             /**
              * Called by the framework when a control needs to be teared down. To be implemented in derived classes
              */
-            control.tearDown = function() {}
+            control.tearDown = function() {};
 
             return control;
         };
@@ -218,7 +218,7 @@ define([
              * Detaches html event handlers
              */
             control.detachEventHandlers = function() {
-                if (control._reactOnClick)
+                if (control && control._reactOnClick)
                     control._getSub$El('').unbind('click');
             };
 
@@ -446,8 +446,10 @@ define([
              * Detaches html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
-                control._getSub$El('').find('.AXMButtonHelp').unbind('click');
+                if(control){
+                    control._getSub$El('').unbind('click');
+                    control._getSub$El('').find('.AXMButtonHelp').unbind('click');
+                }
             };
 
             /**
@@ -590,7 +592,9 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
+                if(control){
+                    control._getSub$El('').unbind('click');
+                }
             };
 
             /**
@@ -656,7 +660,9 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
+                if(control){
+                    control._getSub$El('').unbind('click');
+                }
             };
 
             /**
@@ -833,7 +839,7 @@ define([
                             st += '</optgroup>';
                         lastGroupName = groupName;
                         if (groupName)
-                            st += '<optgroup = label="{name}">'.AXMInterpolate({name: groupName});
+                            st += '<optgroup label="{name}">'.AXMInterpolate({name: groupName});
                     }
                     st += '<option value="{id}" {selected}>{name}</option>'.AXMInterpolate({
                         id: state.id,
@@ -862,8 +868,10 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                var target = 'change.controlevent';
-                control._getSub$El('').unbind(target);
+                if(control){
+                    var target = 'change.controlevent';
+                    control._getSub$El('').unbind(target);
+                }
             };
 
             /**
@@ -1011,8 +1019,10 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                var target = 'change.controlevent';
-                control._getSub$El('').unbind(target);
+                if(control){
+                    var target = 'change.controlevent';
+                    control._getSub$El('').unbind(target);
+                }
             };
 
             /**
@@ -1069,6 +1079,7 @@ define([
             control._isPassWord = settings.passWord || false;
             control._disabled = settings.disabled || false;
             control._nonEmptyClass = settings.nonEmptyClass || null;
+            control._choices = null;
 
             if (settings.hasClearButton)
                 control._clearButton = Module.Button({
@@ -1131,23 +1142,35 @@ define([
                     control._clearButton.attachEventHandlers();
                 if (settings.choices){
                     var input = document.getElementById(control._id);
-                    new Awesomplete(input, {
+                    control._choices = new Awesomplete(input, {
 	                      list: settings.choices
                     });
                 }
-                if (control._hasDefaultFocus)
+                if (control._hasDefaultFocus){
+                    control._getSub$El('').focus();
                     control._getSub$El('').select();
+                }
+
+            };
+
+            control.modifyChoices = function (choicesList) {
+                if(!control._choices)
+                    AXMUtils.reportBug('Do not call if there are no options');
+                control._choices.list = choicesList;
+                // control._choices.evaluate();
             };
 
             /**
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
-                control._getSub$El('').unbind("propertychange input paste");
-                control._getSub$El('').unbind("keyup");
-                if (control._clearButton)
-                    control._clearButton.detachEventHandlers();
+                if(control){
+                    control._getSub$El('').unbind('click');
+                    control._getSub$El('').unbind("propertychange input paste");
+                    control._getSub$El('').unbind("keyup");
+                    if (control._clearButton)
+                        control._clearButton.detachEventHandlers();
+                }
             };
 
             /**
@@ -1306,11 +1329,13 @@ define([
              * Detaches the html event handlers
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('').unbind('click');
-                control._getSub$El('').unbind("propertychange input paste");
-                control._getSub$El('').unbind("keyup");
-                if (control._clearButton)
-                    control._clearButton.detachEventHandlers();
+                if(control){
+                    control._getSub$El('').unbind('click');
+                    control._getSub$El('').unbind("propertychange input paste");
+                    control._getSub$El('').unbind("keyup");
+                    if (control._clearButton)
+                        control._clearButton.detachEventHandlers();
+                }
             };
 
 
@@ -1516,10 +1541,12 @@ define([
              * Detaches the html events
              */
             control.detachEventHandlers = function() {
-                control._getSub$El('')
-                    .off("dragover")
-                    .off("dragleave")
-                    .off("drop");
+                if(control){
+                    control._getSub$El('')
+                        .off("dragover")
+                        .off("dragleave")
+                        .off("drop");
+                }
             };
 
             /**
@@ -1701,7 +1728,9 @@ define([
                     scrollMonth: control._scrollMonth,
                     scrollTime: control._scrollTime,
                     scrollInput: control._scrollInput
+
                 });
+
             };
 
 
@@ -1810,7 +1839,7 @@ define([
 
                 Color.Color(0.3, 0.3, 1.0),
                 Color.Color(0.7, 0.2, 0.7),
-                Color.Color(0.4, 0.4, 0.4),
+                Color.Color(0.4, 0.4, 0.4)
             ];
 
             control._colors = [];

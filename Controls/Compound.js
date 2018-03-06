@@ -105,9 +105,11 @@ define([
              * Detaches member controls html event handlers
              */
             compound.detachEventHandlers = function() {
-                $.each(compound._members, function(idx, member) {
-                    member.detachEventHandlers();
-                });
+                if(compound && compound._members){
+                    $.each(compound._members, function(idx, member) {
+                        member.detachEventHandlers();
+                    });
+                }
             };
 
             /**
@@ -374,7 +376,7 @@ define([
              * Detaches the wrapped control html event handlers
              */
             wrapper.detachEventHandlers = function() {
-                if (wrapper._member)
+                if (wrapper && wrapper._member)
                     wrapper._member.detachEventHandlers();
             };
 
@@ -538,7 +540,7 @@ define([
              */
             wrapper.createHtml = function() {
                 var div = DOM.Div({id: wrapper._id});
-                div.addCssClass('AXMFormStandardMargin')
+                div.addCssClass('AXMFormStandardMargin');
                 //div.addStyle('margin-left', marginLeft+'px');
                 //div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
@@ -814,7 +816,7 @@ define([
                 var div = DOM.Div()
                     .addStyle('display','inline-block')
                     .addStyle('width',w + 'px')
-                    .addStyle('height','1px')
+                    .addStyle('height','1px');
                 return div.toString();
             };
             return wrapper;

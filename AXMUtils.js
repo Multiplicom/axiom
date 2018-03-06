@@ -504,7 +504,7 @@ define([
             });
             if (fndIdx !== null)
                 _keyDownHandlerStack.splice(fndIdx, 1);
-        }
+        };
 
 
 
@@ -536,7 +536,7 @@ define([
             var sched = {};
 
             sched.scheduledFunctions = [];
-            sched.completedTokens = {}
+            sched.completedTokens = {};
 
             /**
              * Add a scheduled function. The execution will only start if all required tokens are marked as completed
@@ -606,7 +606,8 @@ define([
 
             assoc.map = function(idlist) {
                 var freeItemMap = {};
-                for (var i=0; i<assoc.itemCount; i++) freeItemMap[i]=1;
+                var i;
+                for (i = 0; i<assoc.itemCount; i++) freeItemMap[i]=1;
                 $.each(idlist, function(idx, id) {
                     if (idx<assoc.itemCount) {
                         if (id in assoc.associations)
@@ -614,10 +615,10 @@ define([
                     }
                 });
                 var freeItems=[];
-                for (var i=0; i<assoc.itemCount; i++) {
-                    if (freeItemMap[i]==1)
+                for (i = 0; i<assoc.itemCount; i++) {
+                    if (freeItemMap[i] == 1)
                         freeItems.push(i);
-                };
+                }
                 var freenr = 0;
 
                 var usedItemMap = {};
@@ -698,7 +699,9 @@ define([
          * @param {string} txt - Text to be translated and interpolated
          * @returns {string} - Result text
          * @private
+         * @global
          */
+        /*global _TRL*/
         _TRL = function(txt) {
             var reg = new RegExp(/{_.*?_}/g);
             var tokens = [];

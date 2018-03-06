@@ -36,6 +36,13 @@ define([
             coldef._isVisibleInTable = true;
             coldef._categories = null;
 
+            Object.defineProperties(coldef, {
+                className: {
+                    value: null,
+                    writable: true
+                }
+            });
+
             coldef.setName = function(iName) {
                 coldef._name = iName;
                 return coldef;
@@ -69,9 +76,19 @@ define([
                 return coldef._id;
             };
 
-            coldef.getName = function() {
+            coldef.getName = function formatHeader(opts) {
+                // default values for options (optional)
+                var opts = opts || ({ styling: true });
+
+                if (opts.styling && coldef.className) {
+                    return "<span class='{className}'>{name}</span>".AXMInterpolate({
+                        className: coldef.className,
+                        name: coldef._name
+                    });
+                }
+
                 return coldef._name;
-            };
+            }
 
             coldef.canOpen = function() {
                 return !!coldef._onOpen;

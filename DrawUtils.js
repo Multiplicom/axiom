@@ -16,7 +16,7 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/Test",
+        "AXM/Test"
     ],
     function (
         require, $, _,
@@ -43,7 +43,7 @@ define([
             var mindist = 1.0e99;
             var bestjump;
             for (var JumpPrototypeNr in JumpPrototypes) {
-                q = Math.floor(Math.log(DesiredJump1 / JumpPrototypes[JumpPrototypeNr].Jump1) / Math.log(10));
+                var q = Math.floor(Math.log(DesiredJump1 / JumpPrototypes[JumpPrototypeNr].Jump1) / Math.log(10));
                 var TryJump1A = Math.pow(10, q) * JumpPrototypes[JumpPrototypeNr].Jump1;
                 var TryJump1B = Math.pow(10, q + 1) * JumpPrototypes[JumpPrototypeNr].Jump1;
                 if (Math.abs(TryJump1A - DesiredJump1) < mindist) {

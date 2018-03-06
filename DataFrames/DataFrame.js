@@ -207,7 +207,7 @@ define([
             };
 
             objectType.getProperty = function(propId) {
-                prop = objectType._mapProperties[propId];
+                var prop = objectType._mapProperties[propId];
                 if (!prop)
                     AXMUtils.Test.reportBug(_TRL('Invalid objectType property id: ') + propId);
                 return prop;
@@ -445,7 +445,7 @@ define([
 
                 var getAggregator_Any = function() {
                     var aggr = {
-                        value: null,
+                        value: null
                     };
                     aggr.add = function(value) {
                         aggr.value = value;

@@ -88,7 +88,7 @@ define([
                     .addStyle('width', '100%')
                     .addStyle('height', '100%')
                     //.addStyle('overflow-x', 'scroll')
-                    .addStyle('position', 'relative')
+                    .addStyle('position', 'relative');
                     //.addStyle('background-color', 'yellow')
 
                 //divRoot.addElem(panel.createHtmlBody());

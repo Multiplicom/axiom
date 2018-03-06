@@ -88,7 +88,7 @@ define([
             typeFloat: Module.typeFloat,
             typeString: Module.typeString,
             typeBoolean: Module.typeBoolean
-        }
+        };
 
 
         return Module;

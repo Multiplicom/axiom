@@ -425,7 +425,7 @@ body {
     font-size: 44px;
     display: inline-block;
     padding-top:4px;
-    padding-right:16px;
+    padding-right:8px;
     vertical-align: top;
 }
 
@@ -539,4 +539,14 @@ body {
     opacity:0.25;
 }
 
-
+span.AXMBadge {
+    display: inline-block;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 10rem;
+    font-size: 75%;
+    padding: 5px 10px;
+    margin: 0px 5px;
+  }

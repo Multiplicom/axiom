@@ -142,7 +142,7 @@ define([
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
                     var val1 = dataCat1[rowNr];
                     var val2 = dataCat2[rowNr];
-                    var cellInfo = win.cellData[cat1Map[val1]][cat2Map[val2]]
+                    var cellInfo = win.cellData[cat1Map[val1]][cat2Map[val2]];
                     cellInfo.count++;
                     if (rowSelGet(dataPrimKey[rowNr]))
                         cellInfo.selCount++;

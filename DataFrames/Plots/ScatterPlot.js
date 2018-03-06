@@ -113,7 +113,7 @@ define([
                 dispGroup.add(btLine);
 
                 var btSetRange = Controls.Button({
-                    text: _TRL('Set range'),
+                    text: _TRL('Set range')
                     //icon: 'fa-line-chart'
                 }).addNotificationHandler(win.setRange);
                 dispGroup.add(btSetRange);

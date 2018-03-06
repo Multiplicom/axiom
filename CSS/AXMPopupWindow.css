@@ -41,6 +41,7 @@
     padding-left:8px;
     padding-right:8px;
     box-sizing: border-box;
+    display: inline-flex;
     /*border-top-left-radius:5px;*/
     /*border-top-right-radius:5px;*/
 
@@ -60,10 +61,16 @@
     cursor:pointer;
 }
 
-.SWXPopupWindowCloseBox, .SWXPopupWindowHelpBox {
-    position:absolute;
-    right:8px;
-    top:8px;
+.SWXPopupWindowButtons {
+    display: inline-flex;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.SWXPopupWindowCloseBox {
+    position: relative;
+    top: 8px;
+    padding-left: 4px;    
     cursor:pointer;
     font-size: 22px;
     color: white;
@@ -78,10 +85,13 @@
 }
 
 .SWXPopupWindowHelpBox {
-    right:35px;
-
+    font-size: 22px;
+    position: relative;
 }
 
+.AXMBadge {
+    transform: translateY(50%);
+}
 
 .SWXPopupWindowCloseBox:hover, .SWXPopupWindowHelpBox:hover {
     opacity: 0.9;
@@ -93,9 +103,9 @@
 }
 
 .SWXPopupWindowDockBox {
-    position:absolute;
-    right:32px;
-    top:8px;
+    position: relative;
+    top: 8px;
+    padding-left: 4px;
     cursor:pointer;
     font-size: 22px;
     color: white;
@@ -204,4 +214,7 @@
     background-color: white;
     border:1px solid rgb(179, 179, 179);
     box-shadow: 2px 2px 20px 4px rgba(0, 0, 0, 0.25);
+    /* vertical scroll if max-height exceeds 80% viewport height */
+    max-height: 80vh ;
+    overflow-y: scroll;
 }

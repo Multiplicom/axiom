@@ -99,7 +99,7 @@ define([
              * Detaches the html event handlers
              */
             panel.detachEventHandlers = function() {
-                if (panel._rootControl)
+                if (panel && panel._rootControl)
                     return panel._rootControl.detachEventHandlers();
             };
 

@@ -16,9 +16,9 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Msg"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Msg", "AXM/Windows/SimplePopups"],
     function (require, $, _,
-              AXMUtils, DOM, Msg) {
+              AXMUtils, DOM, Msg, Popup) {
 
 
         /**
@@ -128,6 +128,15 @@ define([
             };
 
             toolBox._onDocClicked = function(ev) {
+                // If a blocking popup is currently active a click event
+                // will originate from the transparant overlay. A user click 
+                // on the overlay will wrongly close the toolbox because
+                // it is not part of the same DOM subtree and thus "outside" 
+                // of the toolbox.
+                if (Popup.currentlyBlocking) {
+                    return;
+                }
+
                 if (ev.target) {
                     var clicked$El = $(ev.target);
                     if (clicked$El.length < 1)

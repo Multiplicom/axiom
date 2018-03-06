@@ -448,7 +448,7 @@ define([
                 frame.$ElContainer.css('height', yl + 'px');
                 frame._clientVOffset = 0;
                 if (frame.hasTitleBar()) {
-                    $('#' + frame.getTitleDivId()).outerWidth(xl).outerHeight(Module.titleBarH)
+                    $('#' + frame.getTitleDivId()).outerWidth(xl).outerHeight(Module.titleBarH);
                     frame._clientVOffset += Module.titleBarH;
                 }
                 frame.$ElContainer.children('.AXMFrameClient').css({
@@ -587,9 +587,11 @@ define([
              */
             frame.detachEventHandlers = function() {
                 _super_detachEventHandlers(); // calls the implementation of the parent class
-                $.each(frame._memberFrames, function(idx, memberFrame) {
-                    memberFrame.detachEventHandlers();
-                });
+                if(frame){
+                    $.each(frame._memberFrames, function(idx, memberFrame) {
+                        memberFrame.detachEventHandlers();
+                    });
+                }
             };
 
 
@@ -829,7 +831,9 @@ define([
              */
             frame.detachEventHandlers = function() {
                 _super_detachEventHandlers();
-                frame._detachEventHandlers_Splitters()
+                if(frame){
+                    frame._detachEventHandlers_Splitters()
+                }
             };
 
             /**
@@ -1307,9 +1311,11 @@ define([
              */
             frame.detachEventHandlers = function() {
                 _super_detachEventHandlers();
-                $.each(frame._memberFrames, function(fnr, memberFrame) {
-                    $('#'+frame._getTabId(fnr)).unbind('click');
-                });
+                if(frame){
+                    $.each(frame._memberFrames, function(fnr, memberFrame) {
+                        $('#'+frame._getTabId(fnr)).unbind('click');
+                    });
+                }
             };
 
             frame._getTabContainer = function() {
@@ -1393,7 +1399,7 @@ define([
                     });
                     var consumedWidth = frame._getTabContainer().children('.AXMFrameTabContainerInner').width();
                     maxTitleLength--;
-                } while ((consumedWidth > availableWidth) && (maxTitleLength>1))
+                } while ((consumedWidth > availableWidth) && (maxTitleLength>1));
 
                 _super_setPositionClient(xl, yl, params);
             };
@@ -1487,7 +1493,9 @@ define([
              */
             frame.detachEventHandlers = function() {
                 _super_detachEventHandlers();
-                frame._panel.detachEventHandlers();
+                if(frame && frame._panel){
+                    frame._panel.detachEventHandlers();
+                }
             };
 
             /**

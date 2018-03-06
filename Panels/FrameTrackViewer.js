@@ -270,12 +270,16 @@ define([
              * Detach the html event handlers
              */
             track.detachEventHandlers = function() {
-                var clickLayer$El = track.cnvs.getCanvas$El('selection');
-                AXMUtils.remove$ElScrollHandler(clickLayer$El);
-                AXMUtils.remove$ElDragHandler(clickLayer$El);
-                clickLayer$El.unbind('mousemove');
-                clickLayer$El.unbind('click');
-                clickLayer$El.unbind('mouseleave');
+                if(track && track.cnvs){
+                    var clickLayer$El = track.cnvs.getCanvas$El('selection');
+                    if(clickLayer$El){
+                        AXMUtils.remove$ElScrollHandler(clickLayer$El);
+                        AXMUtils.remove$ElDragHandler(clickLayer$El);
+                        clickLayer$El.unbind('mousemove');
+                        clickLayer$El.unbind('click');
+                        clickLayer$El.unbind('mouseleave');
+                    }
+                }
             };
 
 
@@ -347,7 +351,7 @@ define([
                         ctx.stroke();
                     }
                 });
-            }
+            };
 
             /**
              * Draws the main view of the track - to be overridden
@@ -447,7 +451,7 @@ define([
                     ev1 = ev.originalEvent;
                 return {
                     x: ev1.pageX - track.cnvs.getCanvas$El('main').offset().left,
-                    y: ev1.pageY - track.cnvs.getCanvas$El('main').offset().top,
+                    y: ev1.pageY - track.cnvs.getCanvas$El('main').offset().top
                 };
             };
 
@@ -589,7 +593,7 @@ define([
 
                 ctx.restore();
 
-            }
+            };
 
 
             return track;
@@ -864,9 +868,11 @@ define([
              * Detach html event handlers
              */
             panel.detachEventHandlers = function () {
-                $.each(panel._tracks, function (idx, track) {
-                    track.detachEventHandlers();
-                });
+                if(panel){
+                    $.each(panel._tracks, function (idx, track) {
+                        track.detachEventHandlers();
+                    });
+                }
             };
 
             /**
@@ -1065,7 +1071,7 @@ define([
         };
 
 
-        Module.FrameTrackViewer = function () {
+        Module.FrameTrackViewer = function (toolBoxWidth) {
             var thePanel = Module.PanelTrackViewer();
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
@@ -1077,7 +1083,7 @@ define([
                 Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({separator: 10}, [
                     theFrame.trackControlsGroup,
                     theFrame._popupMenuExtraControlsGroup
-                ]) ), appData.leftPanelWidth));
+                ]) ), toolBoxWidth));
 
             theFrame.setToolBox(toolBox);
 
