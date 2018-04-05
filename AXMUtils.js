@@ -233,11 +233,10 @@ define([
         };
 
         /**
-         * Escape html-like characters
+         * Escape html-like characters in unsafe strings
          *
          * @param  {string} string The string to escape for inserting into HTML
          * @return {string}
-         * @public
          */
         function escapeHtml(string) {
             var str = '' + string;
