@@ -233,14 +233,15 @@ define([
         };
 
         /**
-         * Escape html-like characters in unsafe strings
+         * The characters `&`, `<`, `>`, `"`, `'`, and `` ` are unsafe for use 
+         * in HTML content, and must be escaped to avoid XSS.
          *
          * @param  {string} string The string to escape for inserting into HTML
          * @return {string}
          */
-        function escapeHtml(string) {
+        function escapeHTML(string) {
             var str = '' + string;
-            var match = /["'&<>]/.exec(str);
+            var match = /["'&<>`]/.exec(str);
 
             if (!match) {
                 return str;
@@ -260,7 +261,7 @@ define([
                     escape = '&amp;';
                     break;
                 case 39: // '
-                    escape = '&#39;';
+                    escape = '&apos;';
                     break;
                 case 60: // <
                     escape = '&lt;';
@@ -268,6 +269,9 @@ define([
                 case 62: // >
                     escape = '&gt;';
                     break;
+                case 96: // ` (backtick)
+                    escape = '&grave;'
+                    break
                 default:
                     continue;
                 }
@@ -295,7 +299,7 @@ define([
             var newStr = this;
             for (var key in args) {
                 var regex = new RegExp('{' + key + '}', 'g');
-                 newStr = newStr.replace(regex, escapeHtml(args[key]));//keep replacing until all instances of the keys are replaced
+                 newStr = newStr.replace(regex, escapeHTML(args[key]));//keep replacing until all instances of the keys are replaced
             }
             return newStr;
         };
