@@ -290,6 +290,27 @@ define([
         }
 
         /**
+         * Safely parses a string, possibly containing HTML, without running the
+         * risk of executing unwanted JavaScript.
+         * 
+         *  https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
+         *  https://www.w3.org/TR/DOM-Parsing/#widl-DOMParser-parseFromString-Document-DOMString-str-SupportedType-type
+         * 
+         * @param {string} string 
+         * @returns {string}
+         */
+        function decodeHTML(string) {
+            var parser = new DOMParser();
+            try {
+                var doc = aparser.parseFromString(string, "text/html");
+                return doc.documentElement.textContent;
+            } catch (error) {
+                console.error('Error parsing HTML string: "' + error.message + '"');
+                return string;
+            }
+        }
+
+        /**
          * Augments the string class with a function that interpolates tokens of the style {token}
          * @param {{}} args - key-value pairs with interpolation tokens
          * @returns {String} - interpolated string
@@ -299,7 +320,7 @@ define([
             var newStr = this;
             for (var key in args) {
                 var regex = new RegExp('{' + key + '}', 'g');
-                 newStr = newStr.replace(regex, escapeHTML(args[key]));//keep replacing until all instances of the keys are replaced
+                 newStr = newStr.replace(regex, decodeHTML(escapeHTML(args[key])));//keep replacing until all instances of the keys are replaced
             }
             return newStr;
         };
