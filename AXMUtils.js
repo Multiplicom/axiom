@@ -302,7 +302,7 @@ define([
         function decodeHTML(string) {
             var parser = new DOMParser();
             try {
-                var doc = aparser.parseFromString(string, "text/html");
+                var doc = parser.parseFromString(string, "text/html");
                 return doc.documentElement.textContent;
             } catch (error) {
                 console.error('Error parsing HTML string: "' + error.message + '"');
