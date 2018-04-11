@@ -258,8 +258,6 @@ define([
             grid.sepH = settings.sepH || 12;
             grid.sepV = settings.sepV || 7;
             grid.alternatingLines = settings.alternatingLines;
-            grid.className = settings.className;
-
 
             grid.set = null; //not applicable here
             grid._parentAdd = grid.add;
@@ -297,46 +295,72 @@ define([
                 return grid._rows.length;
             };
 
+            Object.defineProperties(grid, {
+                className: {
+                    get: function getClassName() {
+                        if (grid.alternatingLines){
+                            return "AlternatingLineGrid";
+                        }
+                        
+                        if (settings.className) {
+                            return settings.className;
+                        }
+
+                        return "";
+                    }
+                }
+            })
+
+            grid.createElement = function createElement() {
+                var componentEl = document.createElement("div");
+                componentEl.id = grid._id + "_wrapper";
+                componentEl.style.display = "inline-block";
+                
+                if (grid.className) {
+                    componentEl.className = grid.className;
+                }
+
+                var tableEl = document.createElement("table");
+                grid._rows.forEach(function addRow(row, rowNumber) {
+                    var rowEl = document.createElement("tr");
+
+                    row.forEach(function addCell(item) {
+                        var cellEl = (settings.hasHeader && rowNumber == 0) 
+                            ? document.createElement("th") 
+                            : document.createElement("td");
+
+                        cellEl.style.paddingRight = grid.sepH + "px";
+                        cellEl.style.paddingBottom = grid.sepV + "px";
+
+                        if (item != null && item.createElement) {
+                            cellEl.appendChild(item.createElement())
+                        } else if (item != null && item.createHtml) {
+                            console.warn('Setting innerHTML');
+                            cellEl.innerHTML = item.createHtml();
+                        }
+
+                        rowEl.appendChild(cellEl);
+                    });
+
+                    tableEl.appendChild(rowEl);
+                });
+                
+                componentEl.appendChild(tableEl);
+                return componentEl;
+            }
+
 
             /**
              * Returns the html implementing the control
              * @returns {String|string|*}
              */
             grid.createHtml = function() {
-                var div = DOM.Div({id: grid._id+'_wrapper'});
-                div.addStyle('display','inline-block');
-
-                var className = "";
-                if (grid.alternatingLines)
-                    className = "AlternatingLineGrid";
-                if (grid.className)
-                    className = grid.className;
-                var st = '<table class="{clss}">'.AXMInterpolate({clss: className});
-                $.each(grid._rows, function(rowNr, row) {
-                    st += '<tr>';
-                    $.each(row, function(colNr, item) {
-                        var token = 'td';
-                        if (settings.hasHeader && (rowNr==0))
-                        token = 'th';
-                        st += '<{token} style="padding-right:{sepH}px;padding-bottom:{sepV}px;">'.AXMInterpolate({
-                            token: token,
-                            sepH: grid.sepH, sepV: grid.sepV
-                        });
-                        if (item != null)
-                            st += item.createHtml();
-                        st += '</{token}>'.AXMInterpolate({token: token});
-                    });
-                    st += '</tr>';
-                });
-                st += '</table>';
-                div.addElem(st);
-
-                return div.toString();
+                return grid.createElement().outerHTML;
             };
 
             grid.liveUpdate = function() {
-                var $El = $('#' + grid._id+'_wrapper');
-                $El.html(grid.createHtml());
+                var gridEl = document.getElementById(grid._id + "_wrapper");
+                gridEl.replaceChild(gridEl.firstChild, this.createElement().firstChild);
                 grid.attachEventHandlers();
             };
 
