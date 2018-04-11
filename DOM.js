@@ -215,11 +215,11 @@ define([
 
             if (this.myComponents && this.myComponents.length) {
                 for (var component of this.myComponents) {
-                    if (component.createElement) {
+                    if (component && component.createElement) {
                         el.appendChild(component.createElement());
                     }
 
-                    if (typeof component === 'string') {
+                    if (component && typeof component === 'string') {
                         __instance.collect(component);
                         el.insertAdjacentHTML("beforeend", component);
                     }

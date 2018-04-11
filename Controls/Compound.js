@@ -360,7 +360,7 @@ define([
 
             grid.liveUpdate = function() {
                 var gridEl = document.getElementById(grid._id + "_wrapper");
-                gridEl.replaceChild(gridEl.firstChild, this.createElement().firstChild);
+                gridEl.replaceChild(this.createElement().firstChild, gridEl.firstChild);
                 grid.attachEventHandlers();
             };
 

@@ -81,30 +81,41 @@ define([
                 return icon;
             };
 
+            icon.createElement = function createElement() {
+                var componentEl = document.createElement("div");
+                componentEl.style.position = "relative";
+                componentEl.style.display = "inline-block";
+                componentEl.style.overflow = "visible";
+
+                var iconEl = document.createElement("i");
+                iconEl.className = ["fa", icon._name || icon.name].join(" ");
+                iconEl.style.opacity = icon._opacity;
+                iconEl.style.fontSize = Math.round(icon._sizeFactor * icon._baseSize) + "px";
+
+                icon._decorators.forEach(function decorateIcon(decor) {
+                    var decorationEl = document.createElement("div");
+                    decorationEl.style.position = "absolute";
+                    decorationEl.style[decor.xPos] = Math.round(decor.offsetX * icon._sizeFactor) + "px";
+                    decorationEl.style[decor.yPos] = Math.round(decor.offsetY * icon._sizeFactor) + "px";
+                    decorationEl.style.opacity = decor.opacity;
+                    decorationEl.style.color = decor.color;
+                    decorationEl.style.overflow = "visible";
+
+                    // TODO Icon
+                    var badgeIconEl = document.createElement("i");
+                    badgeIconEl.className = ["fa", decor.name || ""].join(" ");
+                    badgeIconEl.style.fontSize = Math.round(icon._sizeFactor * icon._baseSize * decor.size) + "px";
+
+                    decorationEl.appendChild(badgeIconEl);
+                    componentEl.appendChild(decorationEl);
+                });
+
+                componentEl.appendChild(iconEl);
+                return componentEl;
+            };
+
             icon.renderHtml = function() {
-                var str = '<div style="position:relative;display:inline-block;overflow:visible">';
-                str +=  '<i style="font-size:{size}px;opacity:{opac}" class="fa {name}"/>'.AXMInterpolate({
-                    name:icon._name,
-                    opac:icon._opacity,
-                    size:Math.round(icon._sizeFactor*icon._baseSize)
-                });
-
-                $.each(icon._decorators, function(idx, decor) {
-                    var substr =  '<div style="position:absolute;{xpos}:{left}px;{ypos}:{top}px;opacity:{opacity};color:{color};overflow:visible"><i style="font-size:{size}px" class="fa {name}"/></div>'.AXMInterpolate({
-                        name:decor.name,
-                        xpos: decor.xPos,
-                        ypos: decor.yPos,
-                        left: Math.round(decor.offsetX*icon._sizeFactor),
-                        top: Math.round(decor.offsetY*icon._sizeFactor),
-                        size:Math.round(icon._sizeFactor*icon._baseSize*decor.size),
-                        opacity: decor.opacity,
-                        color: decor.color
-                    });
-                    str += substr;
-                });
-                str += "</div>";
-
-                return str;
+                return icon.createElement().outerHTML;
             };
 
             icon.getSize = function() {
