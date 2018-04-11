@@ -14,6 +14,60 @@
 //DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+let __instance = null;
+class Diagnostics {
+    constructor () {
+        if (!__instance) {
+            __instance = this;
+        }
+
+        this.tracingEnabled = false;
+        this.collected = new Map();
+        return __instance;
+    }
+
+    hashCode(str) {
+        return str.split('').reduce((prevHash, currVal) =>
+          (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
+    }
+
+    collect(c) {
+        function approximateStack() {
+            var err = new Error();
+            return err.stack;
+        }
+
+        if (!this.tracingEnabled) {
+            return;
+        }
+
+        if (!this.collected.has(c)) {
+            this.collected.set(c, {count: 0, stack: approximateStack()});
+        } 
+
+        let updated = this.collected.get(c);
+        updated.count = updated.count + 1;
+        this.collected.set(c, updated);                
+    }
+
+    report(n) {
+        if (!this.tracingEnabled) {
+            return;
+        }
+
+        let now = new Date();
+
+        let obj = Array.from(this.collected.entries())
+            .filter(([_, trace]) => trace.count > 5)
+            .reduce((report, [k, trace]) => {
+                report[this.hashCode(k)] = ({ count: trace.count, stack: trace.stack })
+                return report;
+            }, {});
+            
+        console.log(`[${now.toISOString()}] ${JSON.stringify(obj, null, 2)}`);
+    }
+}
+
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils"
@@ -22,6 +76,9 @@ define([
         require, $, _,
         AXMUtils
     ) {
+
+        var tracer = new Diagnostics();
+        setInterval(tracer.report.bind(__instance), 10000);
 
 
         /**
@@ -44,6 +101,8 @@ define([
             this.myClasses = [];
             this.myStyles = {};
             this.myComponents = [];
+
+            this.tracer = new Diagnostics();
 
             //do the stuff with the arguments provided
             if (typeof args != 'undefined') {
@@ -161,6 +220,7 @@ define([
                     }
 
                     if (typeof component === 'string') {
+                        __instance.collect(component);
                         el.insertAdjacentHTML("beforeend", component);
                     }
                 }
