@@ -233,6 +233,84 @@ define([
         };
 
         /**
+         * The characters `&`, `<`, `>`, `"`, `'`, and `` ` are unsafe for use 
+         * in HTML content, and must be escaped to avoid XSS.
+         *
+         * @param  {string} string The string to escape for inserting into HTML
+         * @return {string}
+         */
+        function escapeHTML(string) {
+            var str = '' + string;
+            var match = /["'&<>`]/.exec(str);
+
+            if (!match) {
+                return str;
+            }
+
+            var escape;
+            var html = '';
+            var index = 0;
+            var lastIndex = 0;
+
+            for (index = match.index; index < str.length; index++) {
+                switch (str.charCodeAt(index)) {
+                case 34: // "
+                    escape = '&quot;';
+                    break;
+                case 38: // &
+                    escape = '&amp;';
+                    break;
+                case 39: // '
+                    escape = '&apos;';
+                    break;
+                case 60: // <
+                    escape = '&lt;';
+                    break;
+                case 62: // >
+                    escape = '&gt;';
+                    break;
+                case 96: // ` (backtick)
+                    escape = '&grave;'
+                    break
+                default:
+                    continue;
+                }
+
+                if (lastIndex !== index) {
+                    html += str.substring(lastIndex, index);
+                }
+
+                lastIndex = index + 1;
+                html += escape;
+            }
+
+            return lastIndex !== index
+                ? html + str.substring(lastIndex, index)
+                : html;
+        }
+
+        /**
+         * Safely parses a string, possibly containing HTML, without running the
+         * risk of executing unwanted JavaScript.
+         * 
+         *  https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
+         *  https://www.w3.org/TR/DOM-Parsing/#widl-DOMParser-parseFromString-Document-DOMString-str-SupportedType-type
+         * 
+         * @param {string} string 
+         * @returns {string}
+         */
+        function decodeHTML(string) {
+            var parser = new DOMParser();
+            try {
+                var doc = parser.parseFromString(string, "text/html");
+                return doc.documentElement.textContent;
+            } catch (error) {
+                console.error('Error parsing HTML string: "' + error.message + '"');
+                return string;
+            }
+        }
+
+        /**
          * Augments the string class with a function that interpolates tokens of the style {token}
          * @param {{}} args - key-value pairs with interpolation tokens
          * @returns {String} - interpolated string
@@ -242,7 +320,7 @@ define([
             var newStr = this;
             for (var key in args) {
                 var regex = new RegExp('{' + key + '}', 'g');
-                 newStr = newStr.replace(regex, args[key]);//keep replacing until all instances of the keys are replaced
+                 newStr = newStr.replace(regex, decodeHTML(escapeHTML(args[key])));//keep replacing until all instances of the keys are replaced
             }
             return newStr;
         };
