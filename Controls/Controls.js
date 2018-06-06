@@ -544,7 +544,7 @@ define([
              * @private
              */
             control._onClicked = function(ev) {
-                control.isChecked = control._getSub$El('').is(':checked');
+                control._value = control._getSub$El('').is(':checked');
                 control._checkCheckedClass();
                 control.performNotify();
             };
@@ -582,8 +582,8 @@ define([
              */
             control.getValue = function () {
                 if (control._getSub$El('').length>0)
-                    control.isChecked = control._getSub$El('').is(':checked');
-                return control.isChecked;
+                    control._value = control._getSub$El('').is(':checked');
+                return control._value;
             };
 
 
@@ -596,9 +596,9 @@ define([
                 if (newVal == control.getValue()) return false;
                 control._value = newVal;
                 if (control._value)
-                    control._getSub$El('').attr('checked', 'checked');
+                    control._getSub$El('').prop('checked', 'checked');
                 else
-                    control._getSub$El('').removeAttr('checked');
+                    control._getSub$El('').removeProp('checked');
                 if (!preventNotify)
                     control.performNotify();
                 control._checkCheckedClass();
@@ -839,8 +839,10 @@ define([
                 control._getSub$El('').bind("propertychange input paste", control._onModified);
                 control._getSub$El('').bind("keyup", control._onModified);
                 control._checkNonEmptyClass();
-                if (control._hasDefaultFocus)
+                if (control._hasDefaultFocus) {
+                    control._getSub$El('').focus();
                     control._getSub$El('').select();
+                }
                 if (control._clearButton)
                     control._clearButton.attachEventHandlers();
             };
@@ -1201,7 +1203,7 @@ define([
              */
             control.attachEventHandlers = function() {
                 control._getSub$El('slider').change(control._onChange);
-                control._setNewValue();
+                setTimeout(function() {control._setNewValue();}, 700);
             };
 
 

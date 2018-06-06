@@ -94,7 +94,8 @@ define([
                 }
 
                 $.each(tableInfo.getColumns(), function (idx, col) {
-                    panel._columns.push(col);
+                    if (col.isVisibleInTable())
+                        panel._columns.push(col);
                 });
             };
             panel.updateTableInfo();
@@ -800,6 +801,8 @@ define([
              */
             panel.resize = function(xl, yl) {
                 AXMUtils.Test.checkIsNumber(xl, yl);
+                if (!panel)
+                    return;
                 panel._availableWidth = xl;
                 panel._availableHeight = yl;
                 panel._measureSize();
@@ -922,4 +925,3 @@ define([
 
         return Module;
     });
-

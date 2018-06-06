@@ -413,6 +413,11 @@ define([
                 if (ev1.wheelDelta) { delta = ev1.wheelDelta / 120; }
                 else
                 if (ev1.detail) { delta = -ev1.detail / 3; }
+                else if (ev.deltaY) {
+                    delta = ev.deltaY;
+                    if (ev.deltaFactor)
+                        delta = delta *ev.deltaFactor/16;
+                }
                 return delta;
             };
 

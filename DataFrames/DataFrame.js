@@ -515,7 +515,7 @@ define([
                     if (!columnOrder)
                         columnOrder = fields;
                     else{
-                        if(fields.length == columnOrder.length) {
+                        if(line.length > 0 && fields.length == columnOrder.length) {
                             var rowData = {};
                             $.each(columnOrder, function(colNr, propId) {
                                 //if(!fields[colNr])
