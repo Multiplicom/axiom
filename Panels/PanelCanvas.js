@@ -235,7 +235,7 @@ define([
              * Saves the canvas element content to a data url
              */
             panel.save = function() {
-                var win=window.open('_blank');
+                var win=window.open('', '_blank');
                 win.document.write("<img src='"+ panel.getCanvasElement('main').toDataURL('image/png') +"'/>");
             };
 
