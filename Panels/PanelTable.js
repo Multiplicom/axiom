@@ -15,13 +15,13 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_", "blob", "filesaver",
+        "require", "jquery", "_", "blob", "filesaver", "he",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg", "AXM/Icon",
         "AXM/Windows/SimplePopups",
         "AXM/Tables/TableInfo"
     ],
     function (
-        require, $, _, Blob, FileSaver,
+        require, $, _, Blob, FileSaver, he,
         AXMUtils, DOM, Controls, Frame, PanelBase, Msg, Icon,
         SimplePopups,
         TableInfo
@@ -827,7 +827,7 @@ define([
                     });
                     data += line + '\n';
                 }
-                var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+                var blob = new Blob([he.decode(data)], {type: "text/plain;charset=utf-8"});
                 FileSaver(blob, 'TableContent.txt');
                 if (cnt < panel._tableData.getRowCount())
                     SimplePopups.ErrorBox('Download was restricted to the first {cnt} rows'.AXMInterpolate({cnt: cnt}));

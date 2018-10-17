@@ -16,11 +16,11 @@
 
 define([
         "require", "jquery", "_", "jquery_cookie", "blob", "filesaver",
-        "AXM/Test", "AXM/Msg"
+        "AXM/Test", "AXM/Msg", "he"
     ],
     function (
         require, $, _, dummy_jquery_cookie, Blob, FileSaver,
-        Test, Msg
+        Test, Msg, he
     ) {
 
         /**
@@ -738,7 +738,7 @@ define([
          * @param {string} fileName - file name
          */
         Module.saveTextFile = function(data, fileName) {
-            var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+            var blob = new Blob([he.decode(data)], {type: "text/plain;charset=utf-8"});
             FileSaver(blob, fileName);
         };
 
