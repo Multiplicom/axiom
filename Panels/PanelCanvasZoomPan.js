@@ -546,7 +546,7 @@ define([
             panel._handleScrolled = function(params) {
                 var delta = params.deltaY;
                 if ((delta!=0)&&(!panel._selectionMode)) {
-                    if (delta < 0)//zoom out
+                    if (delta > 0)//zoom out
                         var scaleFactor = 1.0 / (1.0 + 0.4 * Math.abs(delta));
                     else//zoom in
                         var scaleFactor = 1.0 + 0.4 * Math.abs(delta);
