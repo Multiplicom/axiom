@@ -437,23 +437,14 @@ define([
         Module.create$ElScrollHandler = function($El, handler, preventDefault) {
 
             var getMouseWheelDeltaY = function (ev) {
-                var delta = 0;
-                var ev1 = ev;
-                if (ev.originalEvent)
-                    ev1 = ev.originalEvent;
+                var ev1 = ev.originalEvent || ev;
                 if ((ev1.wheelDeltaX !== undefined) && (ev1.wheelDelta) ) { // check that we are scrolling vertically
                     if (Math.abs(ev1.wheelDeltaX) >= Math.abs(ev1.wheelDelta))
                         return 0;
                 }
-                if (ev1.wheelDelta) { delta = ev1.wheelDelta / 120; }
-                else
-                if (ev1.detail) { delta = -ev1.detail / 3; }
-                else if (ev.deltaY) {
-                    delta = ev.deltaY;
-                    if (ev.deltaFactor)
-                        delta = delta *ev.deltaFactor/16;
-                }
-                return delta;
+                return  ev1.wheelDelta ? -ev1.wheelDelta / 120 :
+                        ev1.deltaY     ? ev1.deltaY * (ev.deltaFactor/16 || 1)
+                                       : 0;
             };
 
             var getMouseWheelDeltaX = function (ev) {
