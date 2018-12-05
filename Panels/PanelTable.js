@@ -18,13 +18,15 @@ define([
         "require", "jquery", "_", "blob", "filesaver", "he",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg", "AXM/Icon",
         "AXM/Windows/SimplePopups",
-        "AXM/Tables/TableInfo"
+        "AXM/Tables/TableInfo",
+        "js.cookie"
     ],
     function (
         require, $, _, Blob, FileSaver, he,
         AXMUtils, DOM, Controls, Frame, PanelBase, Msg, Icon,
         SimplePopups,
-        TableInfo
+        TableInfo,
+        Cookies
     ) {
 
         /**
@@ -609,7 +611,7 @@ define([
                     });
                     var content = window.btoa(JSON.stringify(colSettings));
                     if (content.length < appData.maxCookieLength)
-                        $.cookie('TableSettings_' + panel.getTypeId(), content);
+                        Cookies.set('TableSettings_' + panel.getTypeId(), content);
                 }
             };
 
@@ -620,7 +622,7 @@ define([
              */
             panel._loadColumnSettings = function() {
                 if (panel._storeLayout) {
-                    var encodedContent = $.cookie('TableSettings_' + panel.getTypeId());
+                    var encodedContent = Cookies.get('TableSettings_' + panel.getTypeId());
                     if (!encodedContent)
                         return;
                     var content = window.atob(encodedContent);
