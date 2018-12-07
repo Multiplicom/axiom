@@ -771,6 +771,27 @@ define([
             control._title = settings.title || '';
 
 
+            Object.defineProperties(control, {
+                defaultOption: { writable: true },
+                _defaultOptionEl: {
+                    get: function () {
+                        if (!control.defaultOption) {
+                            return "";
+                        }
+
+                        var optionEl = document.createElement("option");
+                        optionEl.value = "";
+                        optionEl.disabled = true;
+                        optionEl.innerText = control.defaultOption;
+                        if (control._states.length > 1) {
+                            optionEl.setAttribute("selected", "selected");
+                        }
+                        
+                        return optionEl.outerHTML;
+                    }
+                }
+            });
+
             /**
              * Removes all the states from the list
              */
@@ -778,7 +799,6 @@ define([
                 control._states = [];
                 control._getSub$El('').html(control._buildSelectContent());
             };
-
 
             /**
              * Add a new state to the list
@@ -788,7 +808,7 @@ define([
              */
             control.addState = function(id, name, group) {
                 if (!group) group = '';
-                control._states.push({id:id, name:name, group:group});
+                control._states.push({ id: id, name: name, group: group });
                 control._getSub$El('').html(control._buildSelectContent());
             };
 
@@ -830,16 +850,20 @@ define([
              * @private
              */
             control._buildSelectContent = function() {
-                var st = '';
+                var st = control._defaultOptionEl;
+                    
                 var lastGroupName = '';
                 $.each(control._states, function(idx, state) {
                     var groupName = state.group || '';
                     if (groupName != lastGroupName) {
-                        if (lastGroupName)
+                        if (lastGroupName) {
                             st += '</optgroup>';
+                        }
                         lastGroupName = groupName;
-                        if (groupName)
+
+                        if (groupName) {
                             st += '<optgroup label="{name}">'.AXMInterpolate({name: groupName});
+                        }
                     }
                     st += '<option value="{id}" {selected}>{name}</option>'.AXMInterpolate({
                         id: state.id,
@@ -1772,7 +1796,7 @@ define([
             };
 
             var control = Module.DropList(settings);
-            control.addState('', _TRL("-- All dates --"));
+            control.defaultOption = _TRL("-- All dates --");
             var monthNames = [_TRL('January'), _TRL('February'), _TRL('March'), _TRL('April'), _TRL('May'), _TRL('June'), _TRL('July'), _TRL('August'), _TRL('September'), _TRL('October'), _TRL('November'), _TRL('December')];
             var currentDate = new Date();
             var currentMonth = currentDate.getMonth();
