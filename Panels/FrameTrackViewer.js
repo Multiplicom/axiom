@@ -989,7 +989,7 @@ define([
                 var deltaY = params.deltaY;
                 if (!params.controlPressed) { // Scroll action used for zoom
                     if (deltaY!=0) {
-                        if (deltaY > 0)//zoom out
+                        if (deltaY < 0)//zoom out
                             var scaleFactor = 1.0 / (1.0 + 0.2 * Math.abs(deltaY));
                         else//zoom in
                             var scaleFactor = 1.0 + 0.2 * Math.abs(deltaY);

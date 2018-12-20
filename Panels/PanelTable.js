@@ -555,7 +555,7 @@ define([
              * @private
              */
             panel._handleScrolled = function(params) {
-                if (params.deltaY > 0)
+                if (params.deltaY < 0)
                     panel._accumulatedScrollLineDiff += 3;
                 else
                     panel._accumulatedScrollLineDiff -= 3;
