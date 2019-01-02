@@ -17,13 +17,11 @@
 
 define([
         "require", "jquery", "datetimepicker", "AXM/Externals/awesomplete/awesomplete", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound",
-        "AXM/Externals/CodeMirror/lib/codemirror", "AXM/Externals/CodeMirror/modes/yaml/yaml"
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound"
     ],
     function (
         require, $, datetimepicker, awesomplete, _,
-        AXMUtils, DOM, Icon, Color, Compound,
-        CodeMirror
+        AXMUtils, DOM, Icon, Color, Compound
     ) {
 
 
@@ -1420,6 +1418,7 @@ define([
             control._width = settings.width || 120;
             control._height = settings.height || 100;
             control._value = settings.value || '';
+            control._tab_size = 2;
             if (settings.type != "yaml")
                 throw Exception("Invalid code type");
 
@@ -1429,7 +1428,9 @@ define([
              * @returns {string}
              */
             control.createHtml = function() {
-                var rootEl = DOM.Div({id: control._getSubId('')});
+                var rootEl = DOM.Create("textarea", {id: control._getSubId('')});
+                rootEl.addAttribute("spellcheck", "false");
+                rootEl.addAttribute("autofocus", "true");
                 rootEl.addCssClass("CodeEditor");
                 rootEl.addStyle("min-width", (control._width+5)+"px");
                 rootEl.addStyle("min-height", (control._height+5)+"px");
@@ -1439,14 +1440,67 @@ define([
 
 
             /**
+             * Converts tab to 2 whitespace character
+             * @param {Object} ta - DOM textarea instance
+             * @returns {boolean}
+             */
+            var _tab_press_handler = function (ta){
+                var org_start = ta.selectionStart; // save for reference
+                ta.value = ta.value.substring(0, ta.selectionStart)
+                    + ' '.repeat(control._tab_size)
+                    + ta.value.substring(ta.selectionEnd);
+                ta.selectionStart = ta.selectionEnd = org_start + 2; // put caret at right position again
+                return true; // prevent default
+            };
+
+
+            /**
+             * Backspace delete 2 whitespace characters if possible
+             * @param {Object} ta - DOM textarea instance
+             * @returns {boolean}
+             */
+            var _backspace_press_handler = function (ta){
+                if (ta.selectionStart !== ta.selectionEnd)
+                    return false; // default to backspace
+                if(ta.selectionStart === 0) // special case
+                    return false; // default to backspace
+
+                var org_start = ta.selectionStart;
+                var newline_index = ta.value.lastIndexOf('\n', org_start-1);
+
+                var after_newline = newline_index === -1 ? 0 : newline_index + 1;
+                var to_delete = ta.value.substring(after_newline, org_start);
+
+                if( to_delete.trim() || to_delete === '' )
+                    return false; // characters on the left or it's an empty string => revert to default backspace
+
+                var space_length =  to_delete.length - (to_delete.length%control._tab_size || control._tab_size);
+                var spaces = ' '.repeat(space_length);
+                ta.value = ta.value.substring(0, after_newline) + spaces + ta.value.substring(org_start);
+                ta.selectionStart = ta.selectionEnd = after_newline + space_length; // put caret at right position again
+                return true; // prevent default
+            };
+
+
+            var _keypress_handler = {
+                9: _tab_press_handler,
+                'Tab': _tab_press_handler,
+                8: _backspace_press_handler,
+                'Backspace': _backspace_press_handler
+            };
+
+            /**
              * Attaches the html event handlers after DOM insertion
              */
             control.attachEventHandlers = function() {
-                control.cm = CodeMirror(control._getSub$El('')[0], {
-                    value: control._value,
-                    mode:  "yaml"
+                control.editor = control._getSub$El('')[0];
+                control.editor.value = control._value; // set default value
+
+                // register keypress handlers
+                $(control.editor).keydown(function(e) {
+                    var handler =  _keypress_handler[e.key || e.keyCode];
+                    handler && handler(this) && e.preventDefault();  // this = textarea
                 });
-                control.cm.setSize(control._width, control._height);
             };
 
             /**
@@ -1454,11 +1508,10 @@ define([
              * @returns {string}
              */
             control.getValue = function () {
-                if (control.cm)
-                    control._value = control.cm.getValue();
+                if (control.editor)
+                    control._value = control.editor.value;
                 return control._value;
             };
-
 
 
             return control;
