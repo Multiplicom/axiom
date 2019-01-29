@@ -557,7 +557,8 @@ define([
             panel._handleScrolled = function(params) {
                 if (params.deltaY < 0)
                     panel._accumulatedScrollLineDiff += 3;
-                else
+                // ignore deltaY == 0. That is horizontal scrolling and here we only calculate vertical scrolling!
+                if (params.deltaY > 0)
                     panel._accumulatedScrollLineDiff -= 3;
                 panel._updateScrollLineDiff();
             };
