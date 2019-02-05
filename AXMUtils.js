@@ -441,9 +441,18 @@ define([
                     if (Math.abs(ev1.wheelDeltaX) >= Math.abs(ev1.wheelDelta))
                         return 0;
                 }
-                return  ev1.wheelDelta ? -ev1.wheelDelta / 120 :
-                        ev1.deltaY     ? ev1.deltaY * (ev.deltaFactor/16 || 1)
-                                       : 0;
+
+                if (ev1.wheelDelta) { // Chrome, Safari
+                    delta = ev1.wheelDelta / 120;
+                } else if (ev.deltaY) { // FF, IE
+                    delta = ev.deltaY * (ev.deltaFactor/16 || 1);  // IE doesn't like if we use 'ev1' instead of 'ev'
+                } else if (ev1.detail) { // not sure when this is used, or why it's undefined, 0 or NaN
+                    delta = -ev1.detail / 3;
+                }
+
+                // console.log({wd: ev1.wheelDelta, dY: ev.deltaY, dF: ev.deltaFactor, detail: -ev.detail});
+
+                return delta;
             };
 
             var getMouseWheelDeltaX = function (ev) {
@@ -457,7 +466,7 @@ define([
                 return 0;
             };
 
-            $El.bind('DOMMouseScroll mousewheel', function(ev) {
+            $El.bind('mousewheel', function(ev) {
                 Module.closeTransientPopups();
                 handler({
                     deltaY: getMouseWheelDeltaY(ev),
@@ -475,7 +484,7 @@ define([
 
 
         Module.remove$ElScrollHandler = function($El) {
-            $El.unbind('DOMMouseScroll mousewheel');
+            $El.unbind('mousewheel');
         };
 
         var _keyDownHandlerStack = [];
