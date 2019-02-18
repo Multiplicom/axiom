@@ -53,7 +53,7 @@ define([
             $.each(compatibleDataFrames, function(idx, frame) {
                 win.ctrlDataFrame.addState(idx+1, frame.getName());
             });
-            grp.add(Controls.Compound.GroupHor({}, ['Dataframe: ', win.ctrlDataFrame]));
+            grp.add(Controls.Compound.GroupHor({verticalAlignCenter: true, separator: 7}, ['Dataframe: ', win.ctrlDataFrame]));
 
             var btOK = Controls.Button({
                 text: _TRL('Execute'),
