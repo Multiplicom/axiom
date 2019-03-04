@@ -557,28 +557,32 @@ define([
                 sched.completedTokens[token] = true;
             };
 
+            /**
+             * Run scheduled functions for which all required tokens are marked as completed, up
+             * to a maximum processing time.
+             * @private
+             */
             sched._tryNext = function() {
-                var nextAction = null;
-                var completed = true;
-                $.each(sched.scheduledFunctions, function(idx, item) {
-                    if (!item.started) {
-                        completed = false;
-                        var canExecute = true;
-                        $.each(item.requiredList, function(idx2, requiredToken) {
-                            if (!sched.completedTokens[requiredToken])
-                                canExecute = false;
-                        });
-                        if (canExecute)
-                            nextAction = item;
-                    }
+                var runnableActions = _.filter(sched.scheduledFunctions, function(action) {
+                    return !action.started &&
+                        _.all(action.requiredList, function(token) { return !!sched.completedTokens[token] });
                 });
 
-                if (nextAction) {
-                    nextAction.started = true;
-                    nextAction.func();
+                var startTime = new Date().getTime();
+
+                for (i = 0; i < runnableActions.length; i++) {
+                    var action = runnableActions[i];
+                    action.started = true;
+                    action.func();
+                    // only execute up to a certain time limit to avoid unresponsiveness
+                    if (new Date().getTime() - startTime > 100)
+                        break;
                 }
-                if (!completed)
-                    setTimeout(sched._tryNext, 50);
+
+                // if there are unstarted tasks left (either due to timeout or because their dependencies are not met),
+                // schedule a new processing iteration to run immediately after other processing is done
+                if (_.any(sched.scheduledFunctions, function(action) { return !action.started; }))
+                    setTimeout(sched._tryNext, 0);
             };
 
             /**
