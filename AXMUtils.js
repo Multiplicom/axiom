@@ -580,9 +580,10 @@ define([
                 }
 
                 // if there are unstarted tasks left (either due to timeout or because their dependencies are not met),
-                // schedule a new processing iteration to run immediately after other processing is done
+                // schedule a new processing iteration to run in the future
+                // wait at least 50ms to avoid high-frequency checking for task dependencies that are still running
                 if (_.any(sched.scheduledFunctions, function(action) { return !action.started; }))
-                    setTimeout(sched._tryNext, 0);
+                    setTimeout(sched._tryNext, 50);
             };
 
             /**
