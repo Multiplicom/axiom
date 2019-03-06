@@ -393,13 +393,18 @@ define([
                     var tooltip = DOM.Div();
                     tooltip.addCssClass("AXMToolTip");
                     tooltip.addStyle("position", "absolute");
-                    var screenX = panel.posXCanvas2Screen(panel._toolTipInfo.px);
-                    var screenY = panel.posYCanvas2Screen(panel._toolTipInfo.py);
-                    tooltip.addStyle("left", (screenX + 10) + 'px');
-                    tooltip.addStyle("top", (screenY + 10) + 'px');
                     tooltip.addStyle("z-index", '9999999');
                     tooltip.addElem(panel._toolTipInfo.content);
-                    $('.AXMContainer').append(tooltip.toString());
+
+                    // To place the tooltip nicely we must first know it's dimensions
+                    var $tooltip = $( $.parseHTML(tooltip.toString()) );
+                    $('.AXMContainer').append($tooltip);
+
+                    var screenX = panel.posXCanvas2Screen(panel._toolTipInfo.px);
+                    var screenY = panel.posYCanvas2Screen(panel._toolTipInfo.py);
+                    screenX += ($tooltip.width()  + 10 + screenX > $(window).width())  ? -($tooltip.width()+10)  : 10;
+                    screenY += ($tooltip.height() + 10 + screenY > $(window).height()) ? -($tooltip.height()+10) : 10;
+                    $tooltip.css({top: screenY, left: screenX, position:'absolute'});
                 }
             };
 
