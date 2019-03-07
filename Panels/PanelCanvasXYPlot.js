@@ -222,10 +222,10 @@ define([
              */
             panel.pointVisibleInViewport = function(vlx, vly, width, height) {
                 return (
-                    vlx - 0.5 * width >= 0 &&
-                    vlx + 0.5 * width <= panel._cnvWidth &&
-                    vly - 0.5 * height >= 0 &&
-                    vly + 0.5 * height <= panel._cnvHeight
+                    vlx + 0.5 * width >= 0 &&
+                    vlx - 0.5 * width <= panel._cnvWidth &&
+                    vly + 0.5 * height >= 0 &&
+                    vly - 0.5 * height <= panel._cnvHeight
                 );
             };
 
