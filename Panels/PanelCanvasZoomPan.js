@@ -188,6 +188,7 @@ define([
             panel._dragActionPan = true;
             panel._canZoomX = true;
             panel._canZoomY = true;
+            panel._canZoomAxesSimultaneously = true;
             panel._minRangeX = 1e-9;  // to counter floating precision errors
             panel._minRangeY = 1e-9;
             panel._toolTipInfo = { ID: null };
@@ -253,6 +254,16 @@ define([
             panel.setZoomDirections = function(canZoomX, canZoomY) {
                 panel._canZoomX = canZoomX;
                 panel._canZoomY = canZoomY;
+            };
+
+            /**
+             * Specifies whether both axes are zoomed simultaneously, or independently.
+             * In the latter case, regular scrolling only zooms along the first axis (X).
+             * To zoom along the second axis (Y), the Ctrl modifier must be pressed while scrolling.
+             * @param {boolean} canZoomAxesSimultaneously
+             */
+            panel.setCanZoomAxesSimultaneously = function(canZoomAxesSimultaneously) {
+                panel._canZoomAxesSimultaneously = canZoomAxesSimultaneously;
             };
 
             /**
@@ -525,18 +536,19 @@ define([
              * @param {float} scaleFactor - zoom factor
              * @param {float} px - center x position
              * @param {float} py - center y position
+             * @param {float} params - the event params
              * @private
              */
-            panel._handleZoom = function(scaleFactor, px, py) {
+            panel._handleZoom = function(scaleFactor, px, py, params) {
                 var centerFracX = (px-panel.scaleMarginX)*1.0/(panel.drawSizeX-panel.scaleMarginX);
                 var centerFracY = (panel.drawSizeY-panel.scaleMarginY-py)/(panel.drawSizeY-panel.scaleMarginY);
                 var newXScaler = panel.xScaler;
-                if (panel.canZoomX(scaleFactor)) {
+                if (panel.canZoomX(scaleFactor) && (panel._canZoomAxesSimultaneously || !params.controlPressed)) {
                     newXScaler = Scaler(panel.xScaler);
                     newXScaler.zoom(scaleFactor, centerFracX);
                 }
                 var newYScaler = panel.yScaler;
-                if (panel.canZoomY(scaleFactor)) {
+                if (panel.canZoomY(scaleFactor) && (panel._canZoomAxesSimultaneously || params.controlPressed)) {
                     newYScaler = Scaler(panel.yScaler);
                     newYScaler.zoom(scaleFactor, centerFracY);
                 }
@@ -557,7 +569,7 @@ define([
                         var scaleFactor = 1.0 + 0.4 * Math.abs(delta);
                     var px = panel.getEventPosX(params.event);
                     var py = panel.getEventPosY(params.event);
-                    panel._handleZoom(scaleFactor, px, py);
+                    panel._handleZoom(scaleFactor, px, py, params);
                 }
             };
 
