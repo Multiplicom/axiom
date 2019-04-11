@@ -213,6 +213,23 @@ define([
             };
 
             /**
+             * Tests whether part of the rectangular area around a point is visible in the viewport
+             * @param {float} vlx - the window x coordinate of the center point
+             * @param {float} vly - the window y coordinate of the center point
+             * @param {float} width - the window width of the rectangle centered at the point
+             * @param {float} height - the window height of the rectangle centered at the point
+             * @returns {bool} - whether part of the area is visible
+             */
+            panel.pointVisibleInViewport = function(vlx, vly, width, height) {
+                return (
+                    vlx + 0.5 * width >= 0 &&
+                    vlx - 0.5 * width <= panel._cnvWidth &&
+                    vly + 0.5 * height >= 0 &&
+                    vly - 0.5 * height <= panel._cnvHeight
+                );
+            };
+
+            /**
              * To be implemented by derived class to define the plot
              * @param drawInfo
              */
@@ -249,6 +266,10 @@ define([
                     debugger;
                 var px = /*Math.round*/(vlx * drawInfo.scaleX + drawInfo.offsetX);
                 var py = /*Math.round*/(vly * drawInfo.scaleY + drawInfo.offsetY);
+
+                if (!panel.pointVisibleInViewport(px, py, size * 2, size * 2))
+                    return;
+
                 var ctx = drawInfo.ctx;
                 ctx.beginPath();
                 ctx.arc(px, py, size, 0, 2 * Math.PI, false);
@@ -257,7 +278,6 @@ define([
                 if (drawOutline)
                     ctx.stroke();
             };
-
 
             /**
              * Draws a text labe;

@@ -147,7 +147,7 @@ define([
                     var el = panel.get$El();
                     AXMUtils.create$ElScrollHandler(el, function(data) {
                         //el.animate({ scrollTop: el.scrollTop()+data.deltaY*16}, 25);
-                        panel.get$El().scrollTop(panel.get$El().scrollTop()+data.deltaY*16);
+                        panel.get$El().scrollTop(panel.get$El().scrollTop()+ -data.deltaY*16);
                     });
                 }
 

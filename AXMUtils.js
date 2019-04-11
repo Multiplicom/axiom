@@ -430,9 +430,18 @@ define([
                     if (Math.abs(ev1.wheelDeltaX) >= Math.abs(ev1.wheelDelta))
                         return 0;
                 }
-                return  ev1.wheelDelta ? -ev1.wheelDelta / 120 :
-                        ev1.deltaY     ? ev1.deltaY * (ev.deltaFactor/16 || 1)
-                                       : 0;
+
+                if (ev1.wheelDelta) { // Chrome, Safari
+                    delta = ev1.wheelDelta / 120;
+                } else if (ev.deltaY) { // FF, IE
+                    delta = ev.deltaY * (ev.deltaFactor/16 || 1);  // IE doesn't like if we use 'ev1' instead of 'ev'
+                } else if (ev1.detail) { // not sure when this is used, or why it's undefined, 0 or NaN
+                    delta = -ev1.detail / 3;
+                }
+
+                // console.log({wd: ev1.wheelDelta, dY: ev.deltaY, dF: ev.deltaFactor, detail: -ev.detail});
+
+                return delta;
             };
 
             var getMouseWheelDeltaX = function (ev) {
@@ -446,7 +455,7 @@ define([
                 return 0;
             };
 
-            $El.bind('DOMMouseScroll mousewheel', function(ev) {
+            $El.bind('mousewheel', function(ev) {
                 Module.closeTransientPopups();
                 handler({
                     deltaY: getMouseWheelDeltaY(ev),
@@ -464,7 +473,7 @@ define([
 
 
         Module.remove$ElScrollHandler = function($El) {
-            $El.unbind('DOMMouseScroll mousewheel');
+            $El.unbind('mousewheel');
         };
 
         var _keyDownHandlerStack = [];
@@ -537,27 +546,32 @@ define([
                 sched.completedTokens[token] = true;
             };
 
+            /**
+             * Run scheduled functions for which all required tokens are marked as completed, up
+             * to a maximum processing time.
+             * @private
+             */
             sched._tryNext = function() {
-                var nextAction = null;
-                var completed = true;
-                $.each(sched.scheduledFunctions, function(idx, item) {
-                    if (!item.started) {
-                        completed = false;
-                        var canExecute = true;
-                        $.each(item.requiredList, function(idx2, requiredToken) {
-                            if (!sched.completedTokens[requiredToken])
-                                canExecute = false;
-                        });
-                        if (canExecute)
-                            nextAction = item;
-                    }
+                var runnableActions = _.filter(sched.scheduledFunctions, function(action) {
+                    return !action.started &&
+                        _.all(action.requiredList, function(token) { return !!sched.completedTokens[token] });
                 });
 
-                if (nextAction) {
-                    nextAction.started = true;
-                    nextAction.func();
+                var startTime = new Date().getTime();
+
+                for (i = 0; i < runnableActions.length; i++) {
+                    var action = runnableActions[i];
+                    action.started = true;
+                    action.func();
+                    // only execute up to a certain time limit to avoid unresponsiveness
+                    if (new Date().getTime() - startTime > 100)
+                        break;
                 }
-                if (!completed)
+
+                // if there are unstarted tasks left (either due to timeout or because their dependencies are not met),
+                // schedule a new processing iteration to run in the future
+                // wait at least 50ms to avoid high-frequency checking for task dependencies that are still running
+                if (_.any(sched.scheduledFunctions, function(action) { return !action.started; }))
                     setTimeout(sched._tryNext, 50);
             };
 
