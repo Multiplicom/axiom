@@ -746,6 +746,20 @@ define([
             FileSaver(blob, fileName);
         };
 
+        Module.saveDataUrl = function(url, fileName) {
+            var comps = url.split(',');
+            var metadata = comps[0];
+            var contentType = metadata.split(';')[0].split(':')[1];
+            var data = comps[1];
+            var utf = atob(data);
+
+            var binary = [];
+            for (var i = 0; i < utf.length; i++)
+                binary.push(utf.charCodeAt(i));
+
+            var blob = new Blob([new Uint8Array(binary)], {type: contentType});
+            FileSaver(blob, fileName);
+        };
 
         /**
          * (To be overwritten) Determines if the user has universal privileges

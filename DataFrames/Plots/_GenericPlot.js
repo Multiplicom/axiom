@@ -314,6 +314,10 @@ define([
                     win.plot.save();
                 };
 
+                win.saveImage = function() {
+                    win.plot.saveLocalFile();
+                };
+
                 win.init = function() {
 
                     var rootFrame = Frame.FrameSplitterHor();
@@ -353,8 +357,10 @@ define([
                     win._formInfoText = PanelHtml.create('', {});
                     rightGroup.addMember(Frame.FrameFinal(win._formInfoText).setAutoSize(Frame.dimY));
 
-                    if (win.plot)
+                    if (win.plot) {
                         win.addPlotCommand('fa-external-link', _TRL('Open plot'), win.openImage);
+                        win.addPlotCommand('fa-download', _TRL("Download plot to local machine"), win.saveImage);
+                    }
 
                     if (win.setPlotCommands)
                         win.setPlotCommands();
