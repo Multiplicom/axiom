@@ -240,25 +240,11 @@ define([
 
 
             /**
-             * Generates a data url for canvas element content
-             * @returns {string}
-             */
-            cnvs.getDataUrl = function() {
-                return cnvs.getCanvasElement(cnvs._baseLayerId).toDataURL('image/png');
-            }
-
-            /**
              * Saves the canvas element content to a data url
              */
             cnvs.save = function() {
-                window.open(cnvs.getDataUrl(),'_blank');
-            };
-
-            /**
-             * Saves the canvas element to a local file
-             */
-            cnvs.saveLocalFile = function() {
-                AXMUtils.saveDataUrl(cnvs.getDataUrl(), 'plot.png');
+                var dataUrl = cnvs.getCanvasElement(cnvs._baseLayerId).toDataURL('image/png');
+                window.open(dataUrl,'_blank');
             };
 
 
