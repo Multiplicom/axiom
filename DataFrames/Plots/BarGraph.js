@@ -17,14 +17,14 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Controls/Controls", "AXM/Color", "AXM/Panels/PanelCanvasZoomPan", "AXM/Windows/SimplePopups",
-        "AXM/DataFrames/Plots/_GenericPlot",
+        "AXM/DataFrames/Plots/_GenericPlot", "AXM/DataFrames/Plots/Components/ColorLegend",
         "AXM/DataFrames/DataTypes"
 
     ],
     function (
         require, $, _,
         AXMUtils, Controls, Color, PanelCanvasZoomPan, SimplePopups,
-        _GenericPlot,
+        _GenericPlot, ColorLegend,
         DataTypes
     ) {
 
@@ -62,7 +62,12 @@ define([
                     _TRL('Sort by:'),
                     win.ctrlSortType
                 ]));
-                win.colorLegendCtrl = Controls.Static({});
+
+                win.colorLegendCtrl = ColorLegend.create({
+                    selectionHandler: function(property, value) {
+                        win.selectPropertyValues(property, [value]);
+                    }
+                });
                 dispGroup.add(win.colorLegendCtrl);
 
             };
@@ -203,8 +208,6 @@ define([
                 var propCat = win.getAspectProperty('category');
                 var dataCat = propCat.data;
 
-                win.colorLegendCtrl.modifyText('');
-
                 var catMap = {};
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
                     var val = dataCat[rowNr];
@@ -267,15 +270,8 @@ define([
                         catMap[val1].mapCategories2[val2].count += 1;
                     }
 
-                    var legendData = propCat2.mapColors(dataCat2);
+                    win.colorLegendCtrl.setProperty(propCat2);
 
-                    var legendHtml = '';
-                    $.each(legendData, function(idx, legendItem) {
-                        legendHtml += '<span style="background-color: {col};">&nbsp;&nbsp;&nbsp;</span>&nbsp;'.AXMInterpolate({col: legendItem.color.toString()});
-                        legendHtml += legendItem.content;
-                        legendHtml += '<br>';
-                    });
-                    win.colorLegendCtrl.modifyText(legendHtml);
 
                 }
             };

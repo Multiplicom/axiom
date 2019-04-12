@@ -96,7 +96,11 @@ define([
                     });
                 dispGroup.add(win.ctrl_showOutline);
 
-                win.colorLegendCtrl = ColorLegend.create({});
+                win.colorLegendCtrl = ColorLegend.create({
+                    selectionHandler: function(property, value) {
+                        win.selectPropertyValues(property, [value]);
+                    }
+                });
                 dispGroup.add(win.colorLegendCtrl);
 
                 win.corrCtrl = Controls.Static({});
@@ -199,7 +203,6 @@ define([
                     win.updateColorLegend();
                 win.render();
             };
-
 
             win.updateColorLegend = function() {
                 win.colorLegendCtrl.setProperty(win.getAspectProperty('color'));

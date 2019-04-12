@@ -28,22 +28,23 @@ define([
         var Module = {};
 
         Module.LegendItem = function(settings) {
-            legendItem = Control.Check(settings);
+            settings.reactOnClick = true;
+            var legendItem = Control.Static(settings);
 
             legendItem.createHtml = function() {
-                var rootEl = DOM.Create("input", {id: legendItem._getSubId('')});
-                rootEl.addAttribute("type", 'checkbox');
-                if (legendItem._value)
-                    rootEl.addAttribute('checked', "checked");
+                var rootEl = DOM.Create("div", {id: legendItem._getSubId('')});
 
-                DOM.Create('span', {id: legendItem._getSubId('color'), parent: rootEl})
+                DOM.Label({id: legendItem._getSubId('_color'), parent: rootEl})
                     .addStyle('background-color', settings.color)
+                    .addStyle('cursor', 'pointer')
                     .addElem('&nbsp;&nbsp;&nbsp;');
 
-                DOM.Create('span', {id: legendItem._getSubId('spacer'), parent: rootEl})
+                DOM.Label({id: legendItem._getSubId('_spacer'), parent: rootEl})
+                    .addStyle('cursor', 'pointer')
                     .addElem('&nbsp;');
 
-                DOM.Label({ id: legendItem._getSubId('label'), parent: rootEl, target: legendItem._getSubId('')})
+                DOM.Label({ id: legendItem._getSubId('_label'), parent: rootEl, target: legendItem._getSubId('')})
+                    .addStyle('cursor', 'pointer')
                     .addElem(settings.text);
 
                 return rootEl.toString();
@@ -52,7 +53,7 @@ define([
             return legendItem;
         };
 
-        Module.create = function() {
+        Module.create = function(settings) {
 
             var colorLegend = Compound.CompoundControlBase();
 
@@ -77,7 +78,8 @@ define([
                         colorLegend.add(
                             Module.LegendItem({ text: legendItem.content, color: legendItem.color.toString() })
                                 .addNotificationHandler(function() {
-
+                                    if (settings.selectionHandler)
+                                        settings.selectionHandler(property, legendItem.content);
                                 })
                         );
                     });

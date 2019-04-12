@@ -17,13 +17,13 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Color", "AXM/Panels/PanelCanvasXYPlot", "AXM/Windows/PopupWindow", "AXM/Controls/Controls", "AXM/Windows/SimplePopups",
-        "AXM/DataFrames/Plots/_GenericPlot",
+        "AXM/DataFrames/Plots/_GenericPlot", "AXM/DataFrames/Plots/Components/ColorLegend",
         "AXM/DataFrames/DataTypes"
     ],
     function (
         require, $, _,
         AXMUtils, Color, PanelCanvasXYPlot, PopupWindow, Controls, SimplePopups,
-        _GenericPlot,
+        _GenericPlot, ColorLegend,
         DataTypes
     ) {
 
@@ -48,7 +48,11 @@ define([
                     });
                 dispGroup.add(win._ctrlNormalise);
 
-                win.colorLegendCtrl = Controls.Static({});
+                win.colorLegendCtrl = ColorLegend.create({
+                    selectionHandler: function(property, value) {
+                        win.selectPropertyValues(property, [value]);
+                    }
+                });
                 dispGroup.add(win.colorLegendCtrl);
             };
 
@@ -138,8 +142,6 @@ define([
 
                 var propCat = win.getAspectProperty('category');
                 var dataCat = propCat.data;
-
-                win.colorLegendCtrl.modifyText('');
 
                 var catMap = {};
                 for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
@@ -249,16 +251,9 @@ define([
                 win.plot.setXRange(rangeX.getMin(), rangeX.getMax());
                 win.plot.setYRange(rangeY.getMin(), rangeY.getMax());
 
-                var legendData = propCat.mapColors(dataCat);
-                var legendHtml = '';
-                $.each(legendData, function(idx, legendItem) {
-                    legendHtml += '<span style="background-color: {col};">&nbsp;&nbsp;&nbsp;</span>&nbsp;'.AXMInterpolate({col: legendItem.color.toString()});
-                    legendHtml += legendItem.content;
-                    legendHtml += '<br>';
-                });
-                win.colorLegendCtrl.modifyText(legendHtml);
-                win.plot.setXLabel(propVal.getDispName());
+                win.colorLegendCtrl.setProperty(propCat);
 
+                win.plot.setXLabel(propVal.getDispName());
             };
 
 
