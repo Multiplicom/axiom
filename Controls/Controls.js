@@ -164,7 +164,7 @@ define([
                 if (control._cssClass)
                     div.addCssClass(control._cssClass);
                 div.addElem(control._text);
-                return div.toString();
+                return div;
             };
 
 
@@ -382,7 +382,7 @@ define([
                     helpDiv.addElem('<i class="fa fa-question-circle"></i>');
                 }
 
-                return div.toString();
+                return div;
             };
 
 
@@ -575,7 +575,7 @@ define([
 
                 div.addElem(settings.text);
 
-                return div.toString();
+                return div;
             };
 
 
@@ -641,7 +641,7 @@ define([
                 var label = DOM.Label({ id: control._getSubId('label'), parent:rootEl, target: control._getSubId('') })
                     .addElem(settings.text);
 
-                return rootEl.toString();
+                return rootEl;
             };
 
 
@@ -818,7 +818,7 @@ define([
                 if (control._disabled)
                     cmb.addAttribute('disabled', "disabled");
                 cmb.addElem(control._buildSelectContent());
-                return wrapper.toString();
+                return wrapper;
             };
 
 
@@ -967,7 +967,7 @@ define([
                     div.addStyle('width',control._width+'px');
 
                 div.addElem(control._buildButtonContent());
-                return wrapper.toString();
+                return wrapper;
             };
 
 
@@ -1121,10 +1121,12 @@ define([
                 if (settings.placeHolder)
                     rootEl.addAttribute("placeholder", settings.placeHolder);
 
-                var str = rootEl.toString();
-                if (control._clearButton)
-                    str += control._clearButton.createHtml();
-                return str;
+                if (control._clearButton) {
+                    rootEl.addElem(control._clearButton.createHtml());
+                }
+
+
+                return rootEl;
             };
 
 
@@ -1302,9 +1304,8 @@ define([
                     rootEl.addStyle('font-family', 'Verdana, Arial, Helvetica, sans-serif');
                 }
 
-                var str = rootEl.toString();
                 if (control._clearButton)
-                    str += control._clearButton.createHtml();
+                    rootEl.addElem(control._clearButton.createHtml());
                 return str;
             };
 
@@ -1434,7 +1435,6 @@ define([
                 rootEl.addCssClass("CodeEditor");
                 rootEl.addStyle("min-width", (control._width+5)+"px");
                 rootEl.addStyle("min-height", (control._height+5)+"px");
-                var str = rootEl.toString();
                 return str;
             };
 
@@ -1549,7 +1549,7 @@ define([
                 div.addCssClass('AXMFileDrop');
                 var txtDiv = DOM.Div({parent: div});
                 txtDiv.addElem(control._text);
-                return div.toString();
+                return div;
             };
 
 
@@ -1665,7 +1665,7 @@ define([
                     .addStyle('width',control._width+'px')
                     .addStyle('white-space', 'normal')
                     .addStyle('position', 'relative');
-                return div.toString();
+                return div;
             };
 
 
@@ -1762,7 +1762,7 @@ define([
                 if (control._value)
                     rootEl.value=(control._value);
 
-                return rootEl.toString();
+                return rootEl;
             };
 
 
@@ -1928,7 +1928,7 @@ define([
                         divColors.addElem('<br>');
                 });
 
-                return div.toString();
+                return div;
             };
 
 

@@ -40,8 +40,9 @@ define([
             rootWindow._rootFrame = iFrameRoot;
 
             rootWindow.render = function() {
-                var st = rootWindow._rootFrame.createHtml();
-                $('.AXMContainer').html(st);
+                var axiomNode = document.querySelector(".AXMContainer");
+                axiomNode.appendChild(rootWindow._rootFrame.htmlElement());
+                
                 rootWindow._rootFrame.attachEventHandlers();
                 rootWindow._monitorResize();
             };

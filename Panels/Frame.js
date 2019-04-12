@@ -372,11 +372,7 @@ define([
                 return $('#'+frame._id);
             };
 
-            /**
-             * Returns the html implementing thee frame
-             * @returns {string}
-             */
-            frame.createHtml = function() {
+            frame.htmlElement = function () {
                 var frameDiv = DOM.Div({id: frame._id});
                 frameDiv.addCssClass('AXMFrame');
                 if (frame.hasTitleBar())
@@ -387,7 +383,16 @@ define([
                     frameClient.addElem(frame.createHtmlClient());
 
 
-                return frameDiv.toString();
+                return frameDiv.htmlElement();
+            };
+
+            /**
+             * Returns the html implementing thee frame
+             * @returns {string}
+             */
+            frame.createHtml = function() {
+                var el = frame.htmlElement();
+                return el.outerHTML;
             };
 
             frame.updateHtml = function() {
@@ -759,7 +764,9 @@ define([
              */
             frame.createHtmlClient = function() {
                 frame._normaliseSizeFractions();
-                var html = '';
+
+                var fragment = document.createElement("div")
+
                 for (var fnr = 1; fnr < frame._memberFrames.length; fnr++) {
                     var splitdiv = DOM.Div({ id: frame.getSplitterDivId(fnr) });
                     splitdiv.addCssClass('AXMSplitter');
@@ -771,12 +778,12 @@ define([
                     }
                     if (frame.splitterColor)
                         splitdiv.addStyle('background-color', frame.splitterColor);
-                    html += splitdiv.toString();
+                    fragment.appendChild(splitdiv.htmlElement())
                 }
                 $.each(frame._memberFrames, function(idx, memberFrame) {
-                    html += memberFrame.createHtml();
+                    fragment.insertAdjacentHTML("beforeend", memberFrame.createHtml());
                 });
-                return html;
+                return fragment;
             };
 
 
@@ -1455,7 +1462,7 @@ define([
                     div.addCssClass(frame._cssClass);
                 div.addElem(frame._panel.createHtml());
 
-                return div.toString();
+                return div;
             };
 
             /**

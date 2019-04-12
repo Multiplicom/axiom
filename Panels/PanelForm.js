@@ -83,7 +83,7 @@ define([
                     rootDiv.addStyle('display', 'flex');
                     rootDiv.addStyle('align-items', 'center');
                 }
-                return rootDiv.toString();
+                return rootDiv;
             };
 
 

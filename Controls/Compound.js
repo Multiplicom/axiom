@@ -168,7 +168,7 @@ define([
                     }
                     elemDiv.addElem(member.createHtml());
                 });
-                return div.toString();
+                return div;
             };
 
             compound.liveUpdate = function() {
@@ -233,7 +233,7 @@ define([
                         elemDiv.addStyle('margin-right', compound._separator+'px');
                     elemDiv.addElem(member.createHtml());
                 });
-                return div.toString();
+                return div;
             };
 
             return compound;
@@ -331,7 +331,7 @@ define([
                 st += '</table>';
                 div.addElem(st);
 
-                return div.toString();
+                return div;
             };
 
             grid.liveUpdate = function() {
@@ -414,7 +414,7 @@ define([
                     var memdiv = DOM.Div({id: wrapper._memDivId, parent: div});
                     memdiv.addElem(wrapper._member.createHtml());
                 }
-                return div.toString();
+                return div;
             };
 
             wrapper.transferFrom = function(src) {
@@ -453,7 +453,7 @@ define([
                 var div = DOM.Div({id: wrapper._id});
                 div.addCssClass(styleClass);
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
 
@@ -488,7 +488,7 @@ define([
                 div.addStyle('margin-bottom', marginBottom+'px');
                 //div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -518,7 +518,7 @@ define([
                 else
                     div.addStyle('width', width+'px');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -544,7 +544,7 @@ define([
                 //div.addStyle('margin-left', marginLeft+'px');
                 //div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -571,7 +571,7 @@ define([
                 div.addStyle('top', '0px');
                 div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -600,7 +600,7 @@ define([
                 divTitle.addElem(wrapper._title);
                 var divBody = DOM.Div({parent: divContainer});
                 divBody.addElem(wrapper._member.createHtml());
-                return divContainer.toString();
+                return divContainer;
             };
 
             return wrapper;
@@ -631,7 +631,7 @@ define([
                 //divBody.addStyle('top', '0px');
                 divBody.addStyle('z-index', '1');
                 divBody.addElem(wrapper._member.createHtml());
-                return divContainer.toString();
+                return divContainer;
             };
 
             return wrapper;
@@ -657,7 +657,7 @@ define([
                 div.addCssClass('AXMFormVScroller');
                 div.addStyle('height', heigth+'px');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -696,7 +696,7 @@ define([
                 if (!wrapper._show)
                     div.addStyle('display', 'none');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
 
@@ -792,7 +792,7 @@ define([
                     .addStyle('opacity',0.15)
                     .addStyle('margin-left','7px')
                     .addStyle('margin-right','7px');
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -817,7 +817,7 @@ define([
                     .addStyle('display','inline-block')
                     .addStyle('width',w + 'px')
                     .addStyle('height','1px');
-                return div.toString();
+                return div;
             };
             return wrapper;
         };
@@ -840,7 +840,7 @@ define([
                 var div = DOM.Div()
                     .addStyle('width','1px')
                     .addStyle('height',h + 'px');
-                return div.toString();
+                return div;
             };
             return wrapper;
         };

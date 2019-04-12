@@ -123,7 +123,7 @@ define([
                 if (panel._scrollbarH)
                     rootDiv.addStyle('overflow-x', 'scroll');
                 rootDiv.addElem(panel._content);
-                return rootDiv.toString();
+                return rootDiv;
             };
 
 

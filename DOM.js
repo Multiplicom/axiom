@@ -128,56 +128,56 @@ define([
             return this;
         };
 
+        function isNode (el) {
+            return el && el.nodeName && el.nodeType
+        }
+
+        function isFauxHTMLElement(el) {
+            return !!el.htmlElement; 
+        }
+
+
+        Module._Element.prototype.htmlElement = function() {
+            var el = document.createElement(this.myType);
+
+            for (var id in this.myAttributes) {
+                el.setAttribute(id, this.myAttributes[id]);
+            }
+
+            if (this.myClasses.length > 0) {
+                el.className = this.myClasses.join(" ");
+            }
+
+            for (var id in this.myStyles) {
+                el.style.setProperty(id, this.myStyles[id]);
+            }
+
+            for (var i = 0; i < this.myComponents.length; i++) {
+                var component = this.myComponents[i];
+                if (isNode(component)) { 
+                    el.appendChild(component);
+                } else if (isFauxHTMLElement(component)) {
+                    el.appendChild(component.htmlElement());
+                } else {
+                    // if (typeof component === 'string') {
+                    // Need to assume it's an HTML snippet
+
+                    if (component !== "") {
+                        el.insertAdjacentHTML("beforeend", component.toString());
+                    }
+                }
+            }
+
+            return el;
+        };
 
         /**
          * Converts the object to html markup string
          * @returns {string} - html string
          */
         Module._Element.prototype.toString = function () {
-            var rs = '<' + this.myType;
-
-            for (var id in this.myAttributes) {
-                rs += ' ';
-                rs += id + '="' + this.myAttributes[id] + '"';
-                first = false;
-            }
-
-            if (this.myClasses.length>0) {
-                rs += ' class="';
-                rs += this.myClasses.join(' ');
-                rs += '"';
-            }
-
-            if (true) {
-                rs += ' style="';
-                var first = true;
-                for (id in this.myStyles) {
-                    if (!first) rs += ';';
-                    rs += id + ":" + this.myStyles[id];
-                    first = false;
-                }
-                rs += '"';
-            }
-            rs += '>';
-
-            rs += this.CreateInnerHtml();
-
-            rs += '</' + this.myType + '>';
-            return rs;
-        };
-
-
-        /**
-         * Returns the html markup string for the member elements
-         * @returns {string}
-         */
-        Module._Element.prototype.CreateInnerHtml = function () {
-            var rs = '';
-            for (var compnr = 0; compnr < this.myComponents.length; compnr++) {
-                if (this.myComponents[compnr])
-                rs += this.myComponents[compnr].toString();
-            }
-            return rs;
+            var htmlElement = this.htmlElement()
+            return htmlElement.outerHTML;
         };
 
 
