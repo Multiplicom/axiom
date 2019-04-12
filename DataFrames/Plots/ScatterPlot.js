@@ -17,14 +17,14 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Color", "AXM/Panels/PanelCanvasXYPlot", "AXM/Windows/PopupWindow", "AXM/Controls/Controls", "AXM/Windows/SimplePopups",
-        "AXM/DataFrames/Plots/_GenericPlot", "AXM/DataFrames/Plots/Components/ColorLegend",
+        "AXM/DataFrames/Plots/_GenericPlot",
         "AXM/DataFrames/DataTypes", "AXM/DataFrames/ViewRow", "AXM/Stats"
 
     ],
     function (
         require, $, _,
         AXMUtils, Color, PanelCanvasXYPlot, PopupWindow, Controls, SimplePopups,
-        _GenericPlot, ColorLegend,
+        _GenericPlot,
         DataTypes, ViewRow, Stats
     ) {
 
@@ -96,7 +96,8 @@ define([
                     });
                 dispGroup.add(win.ctrl_showOutline);
 
-                win.colorLegendCtrl = ColorLegend.create({});
+
+                win.colorLegendCtrl = Controls.Static({});
                 dispGroup.add(win.colorLegendCtrl);
 
                 win.corrCtrl = Controls.Static({});
@@ -202,7 +203,20 @@ define([
 
 
             win.updateColorLegend = function() {
-                win.colorLegendCtrl.setProperty(win.getAspectProperty('color'));
+                var propColor = null;
+                win.colorLegendCtrl.modifyText('');
+                if (win.hasAspectProperty('color')) {
+                    propColor = win.getAspectProperty('color');
+                    var dataColor = propColor.data;
+                    var legendData = propColor.mapColors(dataColor);
+                    var legendHtml = '';
+                    $.each(legendData, function(idx, legendItem) {
+                        legendHtml += '<span style="background-color: {col};">&nbsp;&nbsp;&nbsp;</span>&nbsp;'.AXMInterpolate({col: legendItem.color.toString()});
+                        legendHtml += legendItem.content;
+                        legendHtml += '<br>';
+                    });
+                    win.colorLegendCtrl.modifyText(legendHtml);
+                }
             };
 
             win._hasLassoSelected = function(points) {
