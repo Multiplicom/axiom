@@ -538,29 +538,17 @@ define([
 
 
             /**
-             * Updates the table pager offset
-             * @private
-             */
-            panel._updateScrollLineDiff = function() {
-                if (panel._accumulatedScrollLineDiff) {
-                    panel.navigateLineDiff(panel._accumulatedScrollLineDiff);
-                    panel._accumulatedScrollLineDiff = 0;
-                }
-            };
-
-
-            /**
              * Handles the mouse scroll wheel event
              * @param params
              * @private
              */
             panel._handleScrolled = function(params) {
-                if (params.deltaY < 0)
-                    panel._accumulatedScrollLineDiff += 3;
-                // ignore deltaY == 0. That is horizontal scrolling and here we only calculate vertical scrolling!
-                if (params.deltaY > 0)
-                    panel._accumulatedScrollLineDiff -= 3;
-                panel._updateScrollLineDiff();
+                panel._accumulatedScrollLineDiff += params.deltaY;
+                if (Math.abs(panel._accumulatedScrollLineDiff) >= 1) {
+                    var nLines = Math.sign(panel._accumulatedScrollLineDiff) * Math.floor(Math.abs(panel._accumulatedScrollLineDiff));
+                    panel.navigateLineDiff(nLines);
+                    panel._accumulatedScrollLineDiff -= nLines;
+                }
             };
 
 
@@ -766,7 +754,7 @@ define([
                         $ElLeftBody.find('#'+panel._getRowLeftId(rowNr)).remove();
                         $ElRightBody.find('#'+panel._getRowRightId(rowNr)).remove();
                     }
-                    for (var rowNr = rowLastPrev+1; rowNr <=rowLast; rowNr++) {
+                    for (var rowNr = Math.max(rowLastPrev+1, panel._tableOffset); rowNr <=rowLast; rowNr++) {
                         var rowHtml = panel._renderTableRow(rowNr);
                         $ElLeftBody.append(rowHtml.left);
                         $ElRightBody.append(rowHtml.right);
@@ -778,7 +766,7 @@ define([
                         $ElLeftBody.find('#'+panel._getRowLeftId(rowNr)).remove();
                         $ElRightBody.find('#'+panel._getRowRightId(rowNr)).remove();
                     }
-                    for (var rowNr = tableOffsetPrev-1; rowNr >= panel._tableOffset; rowNr--) {
+                    for (var rowNr = Math.min(tableOffsetPrev-1, rowLast); rowNr >= panel._tableOffset; rowNr--) {
                         var rowHtml = panel._renderTableRow(rowNr);
                         $ElLeftBody.prepend(rowHtml.left);
                         $ElRightBody.prepend(rowHtml.right);
