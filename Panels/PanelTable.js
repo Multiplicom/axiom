@@ -543,7 +543,7 @@ define([
              * @private
              */
             panel._handleScrolled = function(params) {
-                panel._accumulatedScrollLineDiff += params.deltaY;
+                panel._accumulatedScrollLineDiff -= params.deltaY;
                 if (Math.abs(panel._accumulatedScrollLineDiff) >= 1) {
                     var nLines = Math.sign(panel._accumulatedScrollLineDiff) * Math.floor(Math.abs(panel._accumulatedScrollLineDiff));
                     panel.navigateLineDiff(nLines);
