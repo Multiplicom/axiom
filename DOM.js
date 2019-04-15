@@ -38,7 +38,7 @@ define([
          * @param {Module._Element} args.parent - (optional) parent element
          * @private
          */
-        Module._Element = function (itype, args) {
+        Module._Element = function(itype, args) {
             this.myType = itype;
             this.myAttributes = {};
             this.myClasses = [];
@@ -46,11 +46,20 @@ define([
             this.myComponents = [];
 
             //do the stuff with the arguments provided
-            if (typeof args != 'undefined') {
-                if ('id' in args) this.setID(args.id);
-                if ('parent' in args) {
-                    if (!(args.parent instanceof Module._Element)) AXMUtils.reportBug("DocEl parent is not a DocEl");
+            if (typeof args != "undefined") {
+                if ("id" in args) this.setID(args.id);
+                if ("parent" in args) {
+                    if (!(args.parent instanceof Module._Element))
+                        AXMUtils.reportBug("DocEl parent is not a DocEl");
                     args.parent.addElem(this);
+                }
+
+                if (Object.prototype,hasOwnProperty.call(args, "className")) {
+                    this.myClasses = this.myClasses.concat(this.className);
+                }
+
+                if (Object.prototype.hasOwnProperty.call(args, "style")) {
+                    $.extend(this.myStyles, args.style)
                 }
             }
         };
