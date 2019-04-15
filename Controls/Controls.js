@@ -121,6 +121,24 @@ define([
             return control;
         };
 
+        Module.Adhoc = function(type, settings) {
+            var control = Module.SingleControlBase(settings);
+            settings = $.extend(settings, {
+                id: control._getSubId()
+            });
+
+            var controlEl = DOM.Create(type, settings);
+
+            if (!!settings.element && !settings.element instanceof Module._Element) {
+                throw Error("Unsupported base type");
+            }
+
+            control.createHtml = function createHtml() {
+                return controlEl;
+            };
+
+            return control;
+        };
 
         /**
          * Implements a static text control
