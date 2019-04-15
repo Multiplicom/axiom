@@ -303,40 +303,47 @@ define([
              * @returns {String|string|*}
              */
             grid.createHtml = function() {
-                var div = DOM.Div({id: grid._id+'_wrapper'});
-                div.addStyle('display','inline-block');
-
-                var className = "";
-                if (grid.alternatingLines)
-                    className = "AlternatingLineGrid";
-                if (grid.className)
-                    className = grid.className;
-                var st = '<table class="{clss}">'.AXMInterpolate({clss: className});
-                $.each(grid._rows, function(rowNr, row) {
-                    st += '<tr>';
-                    $.each(row, function(colNr, item) {
-                        var token = 'td';
-                        if (settings.hasHeader && (rowNr==0))
-                        token = 'th';
-                        st += '<{token} style="padding-right:{sepH}px;padding-bottom:{sepV}px;">'.AXMInterpolate({
-                            token: token,
-                            sepH: grid.sepH, sepV: grid.sepV
-                        });
-                        if (item != null)
-                            st += item.createHtml();
-                        st += '</{token}>'.AXMInterpolate({token: token});
-                    });
-                    st += '</tr>';
+                var div = DOM.Div({
+                    id: grid._id + "_wrapper",
+                    style: { display: "inline-block" }
                 });
-                st += '</table>';
-                div.addElem(st);
+                var tableEl = DOM.Table({ parent: div });
 
-                return div;
+                if (grid.alternatingLines) {
+                    tableEl.className = "AlternatingLineGrid";
+                }
+
+                if (grid.className) {
+                    tableEl.className = grid.className;
+                }
+
+                grid._rows.forEach(function addRow(row, i) {
+                    var rowEl = DOM.Tr();
+                    row.forEach(function addCell(item) {
+                        var styles = {
+                            "padding-right": grid.sepH + "px",
+                            "padding-bottom": grid.sepV + "px"
+                        };
+                        var cellEl =
+                            settings.hasHeader && i == 0
+                                ? DOM.Th({ style: styles })
+                                : DOM.Td({ style: styles });
+
+                        if (item) {
+                            cellEl.addElem(item.createHtml());
+                        }
+                        rowEl.addElem(cellEl);
+                    });
+                    tableEl.addElem(rowEl);
+                });
+
+                return tableEl;
             };
 
             grid.liveUpdate = function() {
-                var $El = $('#' + grid._id+'_wrapper');
-                $El.html(grid.createHtml());
+                var el = document.querySelector("#" + grid._id + "_wrapper");
+                el.replaceChild(grid.createHtml().htmlElement(), el.firstChild);
+
                 grid.attachEventHandlers();
             };
 
