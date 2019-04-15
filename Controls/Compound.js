@@ -174,6 +174,7 @@ define([
             compound.liveUpdate = function() {
                 var el = document.querySelector("#" + compound._id + "_wrapper");
                 var updatedControl = compound.createHtml();
+                // TODO Update: Not really performant DOM ops
                 if (el.firstChild) {
                     el.replaceChild(updatedControl.htmlElement(), el.firstChild);
                 } else {

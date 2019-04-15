@@ -159,7 +159,6 @@ define([
                 return control;
             };
 
-            var controlEl = DOM.Create(type, settings);
 
             /**
              * Returns the jQuery element containing the control
@@ -261,15 +260,23 @@ define([
              * @returns {String}
              */
             control.createHtml = function() {
-                var div = DOM.Div({ id:control._getSubId('') });
-                if (control._title)
-                    div.addAttribute('title', control._title);
-                if (control._inLine)
-                    div.addStyle('display', 'inline-block').addStyle('vertical-align','middle');
-                if (settings.maxWidth)
-                    div.addStyle('max-width', settings.maxWidth+'px').addStyle('overflow-x', 'hidden').addStyle('text-overflow', 'ellipsis');
-                if (control._cssClass)
+                var div = DOM.Div({ id: control._getSubId("") });
+                if (control._title) div.addAttribute("title", control._title);
+                if (control._inLine) {
+                    div.addStyle("display", "inline-block").addStyle(
+                        "vertical-align",
+                        "middle"
+                    );
+                }
+                if (settings.maxWidth) {
+                    div.addStyle("max-width", settings.maxWidth + "px")
+                        .addStyle("overflow-x", "hidden")
+                        .addStyle("text-overflow", "ellipsis");
+                }
+
+                if (control._cssClass) {
                     div.addCssClass(control._cssClass);
+                }
                 div.addElem(control._text);
                 return div;
             };

@@ -16,16 +16,22 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils"],
+        "AXM/AXMUtils", "AXM/DOM"],
     function (
         require, $, _,
         AXMUtils) {
+
+        var DOM = require("AXM/DOM");
 
         var Module = {};
 
         Module.createEmpty = function() {
             return Module.createFA("")
         };
+
+        function px(n) {
+            return Math.round(n) + "px";
+        }
 
         Module.createFA = function(name, baseSizeFactor) {
             var icon = AXMUtils.object('icon');
@@ -82,29 +88,42 @@ define([
             };
 
             icon.renderHtml = function() {
-                var str = '<div style="position:relative;display:inline-block;overflow:visible">';
-                str +=  '<i style="font-size:{size}px;opacity:{opac}" class="fa {name}"></i>'.AXMInterpolate({
-                    name:icon._name,
-                    opac:icon._opacity,
-                    size:Math.round(icon._sizeFactor*icon._baseSize)
+                var iconEl = DOM.Div({
+                    style: { position: "relative", display: "inline-block ", overflow: "visible" }
+                });
+
+                DOM.I({
+                    parent: iconEl,
+                    className: ["fa", icon._name],
+                    style: {
+                        "font-size": px(icon._sizeFactor * icon._baseSize),
+                        opacity: icon._opacity
+                    }
                 });
 
                 $.each(icon._decorators, function(idx, decor) {
-                    var substr =  '<div style="position:absolute;{xpos}:{left}px;{ypos}:{top}px;opacity:{opacity};color:{color};overflow:visible"><i style="font-size:{size}px" class="fa {name}"/></div>'.AXMInterpolate({
-                        name:decor.name,
-                        xpos: decor.xPos,
-                        ypos: decor.yPos,
-                        left: Math.round(decor.offsetX*icon._sizeFactor),
-                        top: Math.round(decor.offsetY*icon._sizeFactor),
-                        size:Math.round(icon._sizeFactor*icon._baseSize*decor.size),
+                    var style = {
+                        position: "absolute",
                         opacity: decor.opacity,
-                        color: decor.color
-                    });
-                    str += substr;
-                });
-                str += "</div>";
+                        color: decor.color,
+                        overflow: "visible"
+                    };
 
-                return str;
+                    style[decor.xPos] = px(decor.offsetX * icon._sizeFactor);
+                    style[decor.yPos] = px(decor.offsetY * icon._sizeFactor);
+
+                    var decorator = DOM.Div({style: style});
+                    DOM.I({
+                        parent: decorator,
+                        className: ["fa", icon._name],
+                        style: {
+                            "font-size": px(icon._sizeFactor * icon._baseSize * decor.size)
+                        },
+                    });
+                    iconEl.addElem(decorator);
+                });
+
+                return iconEl;
             };
 
             icon.getSize = function() {
@@ -142,13 +161,9 @@ define([
             };
 
             icon.renderHtml = function() {
-                var str = '<div style="position:relative">';
-                str += '<img src="{file}" alt=""/>'.AXMInterpolate({
-                    file: icon._name
-                });
-                str += "</div>";
-
-                return str;
+                var iconEl = DOM.Div({ style: { position: "relative" } });
+                DOM.Img({ parent: iconEl, attr: { src: icon._name } });
+                return iconEl;
             };
 
             icon.getSize = function() {
