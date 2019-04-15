@@ -35,6 +35,9 @@ define([
          * Abstact base class for a html element
          * @param {string} itype - element type
          * @param {{}} args - various possible arguments
+         * @param {Object} args.attr - sets the attr for the underlying DOM element
+         * @param {Object} args.style - sets the style(s) for the underlying DOM element
+         * @param {string|Array} args.className - sets the value of the class attribute 
          * @param {Module._Element} args.parent - (optional) parent element
          * @private
          */
@@ -53,13 +56,17 @@ define([
                         AXMUtils.reportBug("DocEl parent is not a DocEl");
                     args.parent.addElem(this);
                 }
-
-                if (Object.prototype,hasOwnProperty.call(args, "className")) {
-                    this.myClasses = this.myClasses.concat(this.className);
+                
+                if (Object.prototype.hasOwnProperty.call(args, "className")) {
+                    this.myClasses = this.myClasses.concat(args.className);
                 }
-
+                
                 if (Object.prototype.hasOwnProperty.call(args, "style")) {
-                    $.extend(this.myStyles, args.style)
+                    $.extend(this.myStyles, args.style);
+                }
+                
+                if (Object.prototype.hasOwnProperty.call(args, "attr")) {
+                    $.extend(this.myAttributes, args.attr)
                 }
             }
         };
