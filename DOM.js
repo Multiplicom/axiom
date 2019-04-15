@@ -124,6 +124,14 @@ define([
             return this;
         };
 
+        /**
+         * Adds a text node
+         * @param icomp - element
+         * @returns {Module._Element} - self
+         */
+        Module._Element.prototype.addText = function (text) {
+            return this.addElem(document.createTextNode(text));
+        }
 
         /**
          * Returns a member element
