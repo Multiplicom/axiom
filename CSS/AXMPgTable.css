@@ -48,6 +48,17 @@
     color: rgb(100,100,100);
 }
 
+.AXMPgTableRight th.AXMPgTableFilterCell, .AXMPgTableLeft th.AXMPgTableFilterCell {
+    padding: 6px;
+    height: 24px;
+}
+
+.AXMPgTableRight th.AXMPgTableFilterCell input, .AXMPgTableLeft th.AXMPgTableFilterCell input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 22px;
+}
+
 /************ Set colour for top & left headers ****************/
 
 .AXMPgTableRight th, .AXMPgTableLeft th, .AXMPgTableLeft td {
