@@ -172,8 +172,13 @@ define([
             };
 
             compound.liveUpdate = function() {
-                var $El = $('#' + compound._id+'_wrapper');
-                $El.html(compound.createHtml());
+                var el = document.querySelector("#" + compound._id + "_wrapper");
+                var updatedControl = compound.createHtml();
+                if (el.firstChild) {
+                    el.replaceChild(updatedControl.htmlElement(), el.firstChild);
+                } else {
+                    el.appendChild(updatedControl.htmlElement());
+                }
                 compound.attachEventHandlers();
             };
 
