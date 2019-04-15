@@ -140,6 +140,95 @@ define([
             return control;
         };
 
+        Module.Text = function(settings) {
+            var control = Module.SingleControlBase(settings);
+            control.element = document.createTextNode(settings.text || '');
+            
+            control.setReactOnClick = function() {
+                control._reactOnClick = true;
+                return control;
+            };
+
+            /**
+             * Creates the html of the control
+             * @returns {String}
+             */
+            control.createHtml = function() {
+                var control = DOM.Div({ id: control._getSubId("") });
+                control.addElem(control.element);
+                return control;
+            };
+
+            var controlEl = DOM.Create(type, settings);
+
+            /**
+             * Returns the jQuery element containing the control
+             * @returns {jQuery}
+             */
+            control.get$El = function() {
+                return $("#" + control._getSubId(''));
+            };
+
+            /**
+             * Modifies the text of the control
+             * @param {string} newText - new text content
+             */
+            control.modifyText = function(newText) {
+                control._text = newText;
+                var selectedEl = document.querySelector('#'+control._id)
+                selectedEl.textContent = newText;
+            };
+
+            /**
+             * Modifies the css Class of the control
+             * @param {string} newClass - new css class
+             */
+            control.modifyCssClass = function(newClass) {
+                control._getSub$El('').removeClass(control._cssClass);
+                control.setCssClass(newClass);
+                control._getSub$El('').addClass(newClass);
+            };
+
+            /**
+             * Modifies the tooltip of the control
+             * @param {string} newText - new tooltip content
+             */
+            control.modifyTooltip = function(newText) {
+                control._title = newText;
+                control.get$El().prop('title', newText);
+            };
+
+            /**
+             * Attaches html event handlers after DOM insertion
+             */
+            control.attachEventHandlers = function() {
+                if (control._reactOnClick)
+                    control._getSub$El('').click(control._onClicked);
+            };
+
+            /**
+             * Detaches html event handlers
+             */
+            control.detachEventHandlers = function() {
+                if (control && control._reactOnClick)
+                    control._getSub$El('').unbind('click');
+            };
+
+            /**
+             * Handles the on click event
+             * @param ev
+             * @returns {boolean}
+             * @private
+             */
+            control._onClicked = function(ev) {
+                control.performNotify();
+                ev.stopPropagation();
+                return false;
+            };
+
+            return control;
+        };
+
         /**
          * Implements a static text control
          * @param {{}} settings - control settings
