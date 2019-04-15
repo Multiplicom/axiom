@@ -625,31 +625,31 @@ define([
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
             control._height = settings.height || 45;
-            control._enabled = true;
-            if (settings.enabled === false)
-                control._enabled = false;
+            control._enabled = !!settings.enabled;
             control._value = settings.checked || false;
             control._checkedClass = settings.checkedClass || null;
 
             control.createHtml = function() {
+                var controlEl = DOM.Div();
+                var inputEl = DOM.Create("input", { parent: controlEl, id: control._getSubId("") });
 
-                var rootEl = DOM.Create("input", {id: control._getSubId('')});
-                rootEl.addAttribute("type", 'checkbox');
-                if (control._value)
-                    rootEl.addAttribute('checked', "checked");
+                inputEl.addAttribute("type", "checkbox");
+                if (control._value) inputEl.addAttribute("checked", "checked");
 
-                var label = DOM.Label({ id: control._getSubId('label'), parent:rootEl, target: control._getSubId('') })
-                    .addElem(settings.text);
+                var label = DOM.Label({
+                    id: control._getSubId("label"),
+                    parent: controlEl,
+                    target: control._getSubId("")
+                }).addElem(settings.text);
 
-                return rootEl;
+                return controlEl;
             };
-
 
             /**
              * Attaches the html event handlers after DOM insertion
              */
             control.attachEventHandlers = function() {
-                control._getSub$El('').click(control._onClicked);
+                control._getSub$El("").click(control._onClicked);
                 control._checkCheckedClass();
                 control._updateEnabledState();
             };
@@ -658,8 +658,8 @@ define([
              * Detach the html event handlers
              */
             control.detachEventHandlers = function() {
-                if(control){
-                    control._getSub$El('').unbind('click');
+                if (control) {
+                    control._getSub$El("").unbind("click");
                 }
             };
 
@@ -669,11 +669,10 @@ define([
              * @private
              */
             control._onClicked = function(ev) {
-                control._value = control._getSub$El('').is(':checked');
+                control._value = control._getSub$El("").is(":checked");
                 control._checkCheckedClass();
                 control.performNotify();
             };
-
 
             /**
              * Updates the html reflecting the enabled state
@@ -681,15 +680,13 @@ define([
              */
             control._updateEnabledState = function() {
                 if (control._enabled) {
-                    control._getSub$El('').prop('disabled', false);
-                    control._getSub$El('label').removeClass('AXMDisabledText');
-                }
-                else {
-                    control._getSub$El('').prop('disabled', true);
-                    control._getSub$El('label').addClass('AXMDisabledText');
+                    control._getSub$El("").prop("disabled", false);
+                    control._getSub$El("label").removeClass("AXMDisabledText");
+                } else {
+                    control._getSub$El("").prop("disabled", true);
+                    control._getSub$El("label").addClass("AXMDisabledText");
                 }
             };
-
 
             /**
              * Modifies the enabled state of the control
@@ -700,17 +697,14 @@ define([
                 control._updateEnabledState();
             };
 
-
             /**
              * Returns the current checked state of the control
              * @returns {boolean}
              */
-            control.getValue = function () {
-                if (control._getSub$El('').length>0)
-                    control._value = control._getSub$El('').is(':checked');
+            control.getValue = function() {
+                if (control._getSub$El("").length > 0) control._value = control._getSub$El("").is(":checked");
                 return control._value;
             };
-
 
             /**
              * Modifies the checked state of the control
@@ -720,30 +714,22 @@ define([
             control.setValue = function(newVal, preventNotify) {
                 if (newVal == control.getValue()) return false;
                 control._value = newVal;
-                if (control._value)
-                    control._getSub$El('').prop('checked', 'checked');
-                else
-                    control._getSub$El('').removeProp('checked');
-                if (!preventNotify)
-                    control.performNotify();
+                if (control._value) control._getSub$El("").prop("checked", "checked");
+                else control._getSub$El("").removeProp("checked");
+                if (!preventNotify) control.performNotify();
                 control._checkCheckedClass();
                 return true;
             };
-
 
             /**
              * Modifies the css checked class
              * @private
              */
             control._checkCheckedClass = function() {
-                if (!control._checkedClass)
-                    return;
-                if (control.getValue())
-                    control._getSub$El('label').addClass(control._checkedClass);
-                else
-                    control._getSub$El('label').removeClass(control._checkedClass);
+                if (!control._checkedClass) return;
+                if (control.getValue()) control._getSub$El("label").addClass(control._checkedClass);
+                else control._getSub$El("label").removeClass(control._checkedClass);
             };
-
 
             return control;
         };
@@ -1098,35 +1084,46 @@ define([
              * @returns {string}
              */
             control.createHtml = function() {
+                var elementId = control._getSubId("");
+                
+                var parentEl = DOM.Div();
+                var inputEl = DOM.Create("input", { parent: parentEl, id: elementId });
 
-                var elementId = control._getSubId('');
-                var rootEl = DOM.Create("input", {id: elementId});
-                rootEl.addCssClass('AXMEdit');
+                inputEl.addCssClass("AXMEdit");
 
-                if (settings.bold)
-                    rootEl.addStyle('font-weight', 'bold');
-
-                if (control._disabled)
-                    rootEl.addAttribute('disabled', "disabled");
-
-                if (control._width)
-                    rootEl.addStyle('width',control._width+'px');
-                if (control._height)
-                    rootEl.addStyle('height',control._height+'px');
-                if (!control._isPassWord)
-                    rootEl.addAttribute("type", 'text');
-                else
-                    rootEl.addAttribute("type", 'password');
-                rootEl.addAttribute("value", control._value);
-                if (settings.placeHolder)
-                    rootEl.addAttribute("placeholder", settings.placeHolder);
-
-                if (control._clearButton) {
-                    rootEl.addElem(control._clearButton.createHtml());
+                if (settings.bold) {
+                    inputEl.addStyle("font-weight", "bold");
                 }
 
+                if (control._disabled) {
+                    inputEl.addAttribute("disabled", "disabled");
+                }
 
-                return rootEl;
+                if (control._width) {
+                    inputEl.addStyle("width", control._width + "px");
+                }
+                
+                if (control._height) {
+                    inputEl.addStyle("height", control._height + "px");
+                }
+
+                if (!control._isPassWord) {
+                    inputEl.addAttribute("type", "text");
+                } else {
+                    inputEl.addAttribute("type", "password");
+                }
+
+                inputEl.addAttribute("value", control._value);
+                if (settings.placeHolder) {
+                    inputEl.addAttribute("placeholder", settings.placeHolder);
+                }
+
+                if (control._clearButton) {
+                    parentEl.addElem(control._clearButton.createHtml());
+                    return parentEl
+                }
+
+                return inputEl;
             };
 
 
@@ -1273,40 +1270,45 @@ define([
              * @returns {string}
              */
             control.createHtml = function() {
+                var controlEl = DOM.Div();
+                var textAreaEl = DOM.Create("textarea", {
+                    parent: controlEl,
+                    id: control._getSubId("")
+                });
+                textAreaEl.addCssClass("AXMEdit");
 
-                var rootEl = DOM.Create("textarea", {id: control._getSubId('')});
-                rootEl.addCssClass('AXMEdit');
+                textAreaEl.addAttribute("rows", control._lineCount);
 
-                rootEl.addAttribute('rows', control._lineCount);
+                if (control._disabled) textAreaEl.addAttribute("disabled", "disabled");
 
-                if (control._disabled)
-                    rootEl.addAttribute('disabled', "disabled");
+                if (control._width) textAreaEl.addStyle("width", control._width + "px");
 
-                if (control._width)
-                    rootEl.addStyle('width',control._width+'px');
+                textAreaEl.addElem(control._value);
 
-                rootEl.addElem(control._value);
-
-                rootEl.addAttribute('autocorrect', "off");
-                rootEl.addAttribute('autocapitalize', "off");
-                rootEl.addAttribute('autocomplete', "off");
-                if (control._noResize)
-                    rootEl.addAttribute('resize', "none");
+                textAreaEl.addAttribute("autocorrect", "off");
+                textAreaEl.addAttribute("autocapitalize", "off");
+                textAreaEl.addAttribute("autocomplete", "off");
+                if (control._noResize) textAreaEl.addAttribute("resize", "none");
                 if (control._noWrap) {
-                    rootEl.addStyle('overflow-x','scroll');
-                    rootEl.addStyle('white-space','pre');
-                    rootEl.addAttribute('wrap', "off");
+                    textAreaEl.addStyle("overflow-x", "scroll");
+                    textAreaEl.addStyle("white-space", "pre");
+                    textAreaEl.addAttribute("wrap", "off");
                 }
                 if (control._fixedfont) {
-                    rootEl.addStyle('font-family', 'Courier');
-                }
-                else {
-                    rootEl.addStyle('font-family', 'Verdana, Arial, Helvetica, sans-serif');
+                    textAreaEl.addStyle("font-family", "Courier");
+                } else {
+                    textAreaEl.addStyle(
+                        "font-family",
+                        "Verdana, Arial, Helvetica, sans-serif"
+                    );
                 }
 
-                if (control._clearButton)
-                    rootEl.addElem(control._clearButton.createHtml());
-                return str;
+                if (control._clearButton) {
+                    controlEl.addElem(control._clearButton.createHtml());
+                    return controlEl;
+                }
+
+                return textAreaEl;
             };
 
 
