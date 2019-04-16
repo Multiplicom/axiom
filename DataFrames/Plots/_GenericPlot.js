@@ -357,10 +357,8 @@ define([
                     win._formInfoText = PanelHtml.create('', {});
                     rightGroup.addMember(Frame.FrameFinal(win._formInfoText).setAutoSize(Frame.dimY));
 
-                    if (win.plot) {
-                        win.addPlotCommand('fa-external-link', _TRL('Open plot'), win.openImage);
+                    if (win.plot)
                         win.addPlotCommand('fa-download', _TRL("Download plot to local machine"), win.saveImage);
-                    }
 
                     if (win.setPlotCommands)
                         win.setPlotCommands();
