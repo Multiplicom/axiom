@@ -79,7 +79,7 @@ define([
                             Module.LegendItem({ text: legendItem.content, color: legendItem.color.toString() })
                                 .addNotificationHandler(function() {
                                     if (settings.selectionHandler)
-                                        settings.selectionHandler(property, legendItem.content);
+                                        settings.selectionHandler(property, legendItem.representedValue);
                                 })
                         );
                     });

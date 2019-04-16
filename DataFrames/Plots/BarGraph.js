@@ -64,8 +64,8 @@ define([
                 ]));
 
                 win.colorLegendCtrl = ColorLegend.create({
-                    selectionHandler: function(property, value) {
-                        win.selectPropertyValues(property, [value]);
+                    selectionHandler: function(property, representedValues) {
+                        win.selectPropertyValues(property, representedValues);
                     }
                 });
                 dispGroup.add(win.colorLegendCtrl);
