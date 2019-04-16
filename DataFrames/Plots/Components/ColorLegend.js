@@ -37,6 +37,7 @@ define([
                 DOM.Label({id: legendItem._getSubId('_color'), parent: rootEl})
                     .addStyle('background-color', settings.color)
                     .addStyle('cursor', 'pointer')
+                    .addAttribute('title', settings.tooltip)
                     .addElem('&nbsp;&nbsp;&nbsp;');
 
                 DOM.Label({id: legendItem._getSubId('_spacer'), parent: rootEl})
@@ -75,9 +76,17 @@ define([
                 if (property != null) {
                     var legendData = property.mapColors(property.data);
                     $.each(legendData, function(idx, legendItem) {
+
+                        var tooltip = legendItem.representedValue.type === 'range' ?
+                            "Select values from " + legendItem.representedValue.min + " to " + legendItem.representedValue.max :
+                            "Select " + legendItem.representedValue.value;
+
                         colorLegend.add(
-                            Module.LegendItem({ text: legendItem.content, color: legendItem.color.toString() })
-                                .addNotificationHandler(function() {
+                            Module.LegendItem({
+                                text: legendItem.content,
+                                color: legendItem.color.toString(),
+                                tooltip: tooltip
+                            }).addNotificationHandler(function() {
                                     if (settings.selectionHandler)
                                         settings.selectionHandler(property, legendItem.representedValue);
                                 })
