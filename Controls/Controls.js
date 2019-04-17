@@ -739,18 +739,18 @@ define([
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
             control._height = settings.height || 45;
-            control._enabled = !!settings.enabled;
+            control._enabled = settings.enabled === false ? false : true;
             control._value = settings.checked || false;
             control._checkedClass = settings.checkedClass || null;
 
             control.createHtml = function() {
                 var controlEl = DOM.Div();
-                var inputEl = DOM.Create("input", { parent: controlEl, id: control._getSubId("") });
+                var inputEl = DOM.Input({ parent: controlEl, id: control._getSubId("") });
 
                 inputEl.addAttribute("type", "checkbox");
                 if (control._value) inputEl.addAttribute("checked", "checked");
 
-                var label = DOM.Label({
+                DOM.Label({
                     id: control._getSubId("label"),
                     parent: controlEl,
                     target: control._getSubId("")
