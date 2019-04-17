@@ -175,22 +175,35 @@ define([
             for (var id in this.myStyles) {
                 el.style.setProperty(id, this.myStyles[id]);
             }
-
+            
+            var fragment = document.createDocumentFragment();
             for (var i = 0; i < this.myComponents.length; i++) {
                 var component = this.myComponents[i];
                 if (isNode(component)) { 
-                    el.appendChild(component);
+                    fragment.appendChild(component);
                 } else if (isFauxHTMLElement(component)) {
-                    el.appendChild(component.htmlElement());
+                    fragment.appendChild(component.htmlElement());
                 } else {
-                    // if (typeof component === 'string') {
                     // Need to assume it's an HTML snippet
                     if (component !== "") {
+                        // documentFragment doesn't have a method 
+                        // Give up batch update and append child
+                        if (fragment.childElementCount > 0) {
+                            console.debug(`Reset: Committing ${fragment.childElementCount} elements to DOM`)
+                            el.appendChild(fragment);
+                            fragment = document.createDocumentFragment();
+                        }
+                        
                         el.insertAdjacentHTML("beforeend", component.toString());
                     }
                 }
             }
 
+            if (fragment.childElementCount > 0) {
+                console.debug(`Committing ${fragment.childElementCount} elements to DOM`)
+                el.appendChild(fragment);
+            }
+            
             return el;
         };
 
