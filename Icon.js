@@ -83,7 +83,7 @@ define([
 
             icon.renderHtml = function() {
                 var str = '<div style="position:relative;display:inline-block;overflow:visible">';
-                str +=  '<i style="font-size:{size}px;opacity:{opac}" class="fa {name}"/>'.AXMInterpolate({
+                str +=  '<i style="font-size:{size}px;opacity:{opac}" class="fa {name}"></i>'.AXMInterpolate({
                     name:icon._name,
                     opac:icon._opacity,
                     size:Math.round(icon._sizeFactor*icon._baseSize)
