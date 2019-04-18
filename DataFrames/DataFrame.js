@@ -116,7 +116,8 @@ define([
                     $.each(uniqueCats, function(idx, catStr) {
                         colorLegend.push({
                             content: property.content2DisplayString(catStr),
-                            color: property.getSingleColor(catStr)
+                            color: property.getSingleColor(catStr),
+                            representedValue: { type: 'exact', value: catStr }
                         });
                     });
                 }
@@ -132,11 +133,23 @@ define([
                             var value = i*scale.Jump1;
                             var fr = (value-property._colorRangeMin)/property._colorRange;
                             colorLegend.push({
+                                value: value,
                                 content: scale.value2String(value),
                                 color: Color.HSL2Color(0.5-fr*0.75,0.6,0.5)
                             });
                         }
                     }
+
+                    // add the represented ranges
+                    $.each(colorLegend, function(idx, legendEntry) {
+                        var representedValuesMin = idx == 0 ?
+                            property._colorRangeMin :
+                            colorLegend[idx-1].value + 0.5 * (legendEntry.value - colorLegend[idx-1].value);
+                        var representedValuesMax = idx == colorLegend.length - 1 ?
+                            property._colorRangeMax :
+                            legendEntry.value + 0.5 * (colorLegend[idx+1].value - legendEntry.value);
+                        legendEntry.representedValue = { type: 'range', min: representedValuesMin, max: representedValuesMax };
+                    });
 
                 }
                 return colorLegend;

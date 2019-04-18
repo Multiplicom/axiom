@@ -304,6 +304,28 @@ define([
                     win.dataFrame.objectType.rowSelNotifyChanged();
                 };
 
+                /*
+                * Select rows for which the <property> value matches one of a given set of values.
+                * @param {property} the property by which to select
+                * @param {values} the set of values by which to select
+                */
+                win.selectPropertyValues = function(property, representedValues) {
+
+                    var selector =
+                        representedValues.type === 'range' ?
+                            function(val) { return val >= representedValues.min && val <= representedValues.max; } :
+                            function(val) { return val == representedValues.value };
+
+                    var propertyData = win.dataFrame.getProperty(property.getId()).data;
+                    var primKeyData = win.getPrimKeyProperty().data;
+                    var selList = [];
+                    for (var rowNr = 0; rowNr < win.dataFrame.getRowCount(); rowNr++) {
+                        if (selector(propertyData[rowNr]))
+                            selList.push(primKeyData[rowNr]);
+                    }
+                    win.performRowSelected(selList);
+                };
+
                 win.doQuery = function() {
                     FrameQuery.create(win.dataFrame, '', function(selList, expr) {
                         win.performRowSelected(selList, expr);
