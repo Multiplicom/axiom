@@ -236,9 +236,23 @@ define([
              */
             panel.save = function() {
                 var win=window.open('', '_blank');
-                win.document.write("<img src='"+ panel.getCanvasElement('main').toDataURL('image/png') +"'/>");
+                win.document.write("<img src='"+ panel.getDataUrl() +"'/>");
             };
 
+            /**
+             * Generates a data url for the panel canvas element content
+             * @returns {string}
+             */
+            panel.getDataUrl = function() {
+                return panel.getCanvasElement('main').toDataURL('image/png');
+            }
+
+            /**
+             * Saves the panel canvas element to a local file
+             */
+            panel.saveLocalFile = function() {
+                AXMUtils.saveDataUrl(panel.getDataUrl(), 'plot.png');
+            };
 
             return panel;
         } ;
