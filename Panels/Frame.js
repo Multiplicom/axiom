@@ -383,7 +383,7 @@ define([
                     frameClient.addElem(frame.createHtmlClient());
 
 
-                return frameDiv.htmlElement();
+                return frameDiv.node$;
             };
 
             /**
@@ -778,7 +778,7 @@ define([
                     }
                     if (frame.splitterColor)
                         splitdiv.addStyle('background-color', frame.splitterColor);
-                    fragment.appendChild(splitdiv.htmlElement())
+                    fragment.appendChild(splitdiv.node$)
                 }
                 $.each(frame._memberFrames, function(idx, memberFrame) {
                     fragment.insertAdjacentHTML("beforeend", memberFrame.createHtml());

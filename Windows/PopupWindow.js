@@ -230,7 +230,7 @@ define([
                     background.addStyle('z-index', window.zIndex-1);
                     
                     var rootNode = document.querySelector('.AXMContainer');
-                    rootNode.appendChild(background.htmlElement());
+                    rootNode.appendChild(background.node$);
 
 
                     var blockerEl = $('#'+blockerid);
@@ -354,7 +354,7 @@ define([
 
                 // $('.AXMContainer').append(rootDiv.toString());
                 var axiomContainer = document.querySelector('.AXMContainer');
-                axiomContainer.appendChild(rootDiv.htmlElement());
+                axiomContainer.appendChild(rootDiv.node$);
                 window._$ElContainer = $('#' + window._id);
 
 

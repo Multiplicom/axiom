@@ -208,7 +208,7 @@ define([
                 frame._frameStacker.dynAddMember(theFrame);
 
                 var wrapperEl = document.getElementById(tabInfo.parentContainer._panelTabs.getContentElementId()).querySelector(".flexTabWrapper")
-                wrapperEl.appendChild(tabInfo.createHtml().htmlElement());
+                wrapperEl.appendChild(tabInfo.createHtml().node$);
                 setTimeout(function() {
                     frame._panelTabs.scrollToBottom();
                 }, 200);

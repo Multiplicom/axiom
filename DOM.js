@@ -30,6 +30,14 @@ define([
          */
         var Module = {};
 
+        function containsKey(o, p) {
+            return Object.prototype.hasOwnProperty.call(o, p);
+        }
+    
+        function getObjectType(o) {
+            return Object.prototype.toString.call(o);
+        }
+
 
         /**
          * Abstact base class for a html element
@@ -38,44 +46,50 @@ define([
          * @param {Object} args.attr - sets the attr for the underlying DOM element
          * @param {Object} args.style - sets the style(s) for the underlying DOM element
          * @param {string|Array} args.className - sets the value of the class attribute 
-         * @param {Module._Element} args.parent - (optional) parent element
+         * @param {DOMElement} args.parent - (optional) parent element
          * @private
          */
-        Module._Element = function(itype, args) {
-            this.myType = itype;
-            this.myAttributes = {};
-            this.myClasses = [];
-            this.myStyles = {};
-            this.myComponents = [];
+        DOMElement = function() {
+            var args = Array.prototype.slice.call(arguments);
 
-            //do the stuff with the arguments provided
-            if (typeof args != "undefined") {
-                if ("id" in args) this.setID(args.id);
-                if ("parent" in args) {
-                    if (!(args.parent instanceof Module._Element))
-                        AXMUtils.reportBug("DocEl parent is not a DocEl");
-                    args.parent.addElem(this);
-                }
-                
-                if (Object.prototype.hasOwnProperty.call(args, "className")) {
-                    this.myClasses = this.myClasses.concat(args.className);
-                }
-                
-                if (Object.prototype.hasOwnProperty.call(args, "style")) {
-                    $.extend(this.myStyles, args.style);
-                }
-                
-                if (Object.prototype.hasOwnProperty.call(args, "attr")) {
-                    $.extend(this.myAttributes, args.attr)
-                }
+            // args[0] {String} tagName
+            this.myType = args.shift(1);
+
+            // args[1] {Object} properties
+            var properties = args.shift(1) || {};
+            if (containsKey(properties, "parent")) {
+                // `parent` is a special property that sets the child
+                properties.parent.addElem(this);
             }
+
+            this.properties = Object.keys(properties).reduce(
+                function createProps(props, p) {
+                    if (p !== "parent") {
+                        props[p] = properties[p];
+                    }
+
+                    return props;
+                },
+                {
+                    style: {}
+                }
+            );
+
+            if (containsKey(properties, "id")) {
+                this.setID(properties.id);
+            }
+
+            this.myClasses = properties.className ? [].concat(properties.className) : [];
+
+            // args[2] {Array} - children
+            this.myComponents = args.shift(1) || [];
         };
 
         /**
          * Sets the html id
          * @param {string} iID
          */
-        Module._Element.prototype.setID = function (iID) {
+        DOMElement.prototype.setID = function (iID) {
             this.myID = iID;
             this.addAttribute("id", iID);
         };
@@ -85,7 +99,7 @@ define([
          * Returns the html id
          * @returns {string}
          */
-        Module._Element.prototype.getID = function () {
+        DOMElement.prototype.getID = function () {
             return this.myID;
         };
 
@@ -94,10 +108,10 @@ define([
          * Adds a html attribute
          * @param {string} id - attribute id
          * @param {string} content - attribute content
-         * @returns {Module._Element} - self
+         * @returns {DOMElement} - self
          */
-        Module._Element.prototype.addAttribute = function (id, content) {
-            this.myAttributes[id] = '' + content;
+        DOMElement.prototype.addAttribute = function (id, content) {
+            this.properties[id] = '' + content.toString();
             return this;
         };
 
@@ -106,10 +120,10 @@ define([
          * Adds a css style
          * @param {string} id - syle id
          * @param {string} content - style content
-         * @returns {Module._Element} - self
+         * @returns {DOMElement} - self
          */
-        Module._Element.prototype.addStyle = function (id, content) {
-            this.myStyles[id] = '' + content.toString();
+        DOMElement.prototype.addStyle = function (id, content) {
+            this.properties.style[id] = content.toString();
             return this;
         };
 
@@ -117,9 +131,9 @@ define([
         /**
          * Adds a member element
          * @param icomp - element
-         * @returns {Module._Element} - self
+         * @returns {DOMElement} - self
          */
-        Module._Element.prototype.addElem = function (icomp) {
+        DOMElement.prototype.addElem = function (icomp) {
             this.myComponents.push(icomp);
             return this;
         };
@@ -127,9 +141,9 @@ define([
         /**
          * Adds a text node
          * @param icomp - element
-         * @returns {Module._Element} - self
+         * @returns {DOMElement} - self
          */
-        Module._Element.prototype.addText = function (text) {
+        DOMElement.prototype.addText = function (text) {
             return this.addElem(document.createTextNode(text));
         }
 
@@ -138,81 +152,120 @@ define([
          * @param {int} nr
          * @returns {*} - element
          */
-        Module._Element.prototype.getElem = function (nr) {
+        DOMElement.prototype.getElem = function (nr) {
             return this.myComponents[nr];
         };
 
         /**
          * Adds a css class
          * @param {string} iclss
-         * @returns {Module._Element} - self
+         * @returns {DOMElement} - self
          */
-        Module._Element.prototype.addCssClass = function (iclss) {
+        DOMElement.prototype.addCssClass = function (iclss) {
             this.myClasses.push(iclss);
             return this;
         };
 
-        function isNode (el) {
+        function isDOMNode (el) {
             return el && el.nodeName && el.nodeType
         }
 
-        function isFauxHTMLElement(el) {
-            return !!el.htmlElement; 
+        this._el = null;
+
+        Object.defineProperties(DOMElement.prototype, {
+            styles: {
+                get: function getStyles() {
+                    return containsKey(this.properties, "style")
+                        ? this.properties.style
+                        : {};
+                }
+            },
+            el$: {
+                get: function getElement() {
+                    if (!this._el) {
+                        // If no tagName is defined, create a fragment instead
+                        this._el = this.myType
+                            ? document.createElement(this.myType)
+                            : document.createDocumentFragment();
+                    }
+
+                    return this._el;
+                }
+            },
+            node$: {
+                get: function getNode() {
+                    for (var propName in this.properties) {
+                        if (propName !== "style" && propName !== "className") {
+                            this.el$.setAttribute(propName, this.properties[propName]);
+                        }
+                    }
+
+                    for (var styleName in this.styles) {
+                        this.el$.style.setProperty(styleName, this.styles[styleName]);
+                    }
+
+                    if (this.myClasses.length > 0) {
+                        this.el$.className = this.myClasses.join(" ");
+                    }
+
+                    this.addChildren();
+
+                    return this.el$;
+                }
+            }
+        });
+
+        DOMElement.prototype.addChildren = function addChildren () {
+            if (this.myComponents.length === 1) {
+                return appendChild(this.el$, this.myComponents[0]);
+            }
+
+            if (this.myComponents.length > 1) {
+                var documentFragment = document.createDocumentFragment();
+
+                for (var i = 0; i < this.myComponents.length; i++) {
+                    documentFragment = appendChild(documentFragment, this.myComponents[i]);
+                }
+
+                return appendChild(this.el$, documentFragment);
+            } 
+
         }
 
 
-        Module._Element.prototype.htmlElement = function() {
-            var el = document.createElement(this.myType);
-
-            for (var id in this.myAttributes) {
-                el.setAttribute(id, this.myAttributes[id]);
+        function appendChild(parent, component) {
+            if (isDOMNode(component)) {
+                parent.appendChild(component);
+                return parent;
             }
 
-            if (this.myClasses.length > 0) {
-                el.className = this.myClasses.join(" ");
+            if (component instanceof DOMElement) {
+                parent.appendChild(component.node$);
+                return parent;
             }
 
-            for (var id in this.myStyles) {
-                el.style.setProperty(id, this.myStyles[id]);
+            // Need to assume it's an HTML snippet
+            if (component == "") {
+                // No op
+                return parent;
             }
+
+            var contextFragment = document
+                .createRange()
+                .createContextualFragment(component.toString());
             
-            var fragment = document.createDocumentFragment();
-            for (var i = 0; i < this.myComponents.length; i++) {
-                var component = this.myComponents[i];
-                if (isNode(component)) { 
-                    fragment.appendChild(component);
-                } else if (isFauxHTMLElement(component)) {
-                    fragment.appendChild(component.htmlElement());
-                } else {
-                    // Need to assume it's an HTML snippet
-                    if (component !== "") {
-                        // documentFragment doesn't have a method 
-                        // Give up batch update and append child
-                        if (fragment.childElementCount > 0) {
-                            console.debug(`Reset: Committing ${fragment.childElementCount} elements to DOM`)
-                            el.appendChild(fragment);
-                            fragment = document.createDocumentFragment();
-                        }
-                        
-                        el.insertAdjacentHTML("beforeend", component.toString());
-                    }
-                }
-            }
-
-            if (fragment.childElementCount > 0) {
-                console.debug(`Committing ${fragment.childElementCount} elements to DOM`)
-                el.appendChild(fragment);
-            }
-            
-            return el;
+            parent.appendChild(contextFragment);
+            return parent;
         };
 
         /**
          * Converts the object to html markup string
          * @returns {string} - html string
          */
-        Module._Element.prototype.toString = function () {
-            var htmlElement = this.htmlElement()
+        DOMElement.prototype.toString = function () {
+            // TODO Deprecate this method to avoid rount tripping
+            // between DOM Objects and HTML snippets.
+            var htmlElement = this.node$
             return htmlElement.outerHTML;
         };
 
@@ -220,20 +273,20 @@ define([
         /**
          * Returns an object containing a generic html element
          * @param {string} itype - element type
-         * @param {{}} args - see Module._Element
-         * @returns {Module._Element} - the element instance
+         * @param {{}} args - see DOMElement
+         * @returns {DOMElement} - the element instance
          * @constructor
          */
         Module.Create = function (itype, args) {
-            var that = new Module._Element(itype, args);
+            var that = new DOMElement(itype, args);
             return that;
         };
 
 
         /**
          * Returns a div element
-         * @param {{}} args - see Module._Element
-         * @returns {Module._Element} - the element instance
+         * @param {{}} args - see DOMElement
+         * @returns {DOMElement} - the element instance
          * @constructor
          */
         Module.Div = function (args) {
@@ -243,9 +296,9 @@ define([
 
         /**
          * Returns a label element
-         * @param {{}} args - see Module._Element
+         * @param {{}} args - see DOMElement
          * @param {string} args.target - target of the label
-         * @returns {Module._Element} - the element instance
+         * @returns {DOMElement} - the element instance
          * @constructor
          */
         Module.Label = function (args) {

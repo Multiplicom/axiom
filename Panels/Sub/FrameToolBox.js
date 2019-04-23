@@ -62,7 +62,7 @@ define([
                 toolBoxStart.addElem(startIcon);
 
                 var frame = document.getElementById(toolBox._frame._id)
-                frame.appendChild(toolBoxStart.htmlElement());
+                frame.appendChild(toolBoxStart.node$);
 
                 var rootDiv = DOM.Div({id: toolBox._id});
                 rootDiv.addCssClass("ToolBoxContainer");

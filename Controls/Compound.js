@@ -176,9 +176,9 @@ define([
                 var updatedControl = compound.createHtml();
                 // TODO Update: Not really performant DOM ops
                 if (el.firstChild) {
-                    el.replaceChild(updatedControl.htmlElement(), el.firstChild);
+                    el.replaceChild(updatedControl.node$, el.firstChild);
                 } else {
-                    el.appendChild(updatedControl.htmlElement());
+                    el.appendChild(updatedControl.node$);
                 }
                 compound.attachEventHandlers();
             };
@@ -348,7 +348,7 @@ define([
 
             grid.liveUpdate = function() {
                 var el = document.querySelector("#" + grid._id + "_wrapper");
-                el.replaceChild(grid.createHtml().htmlElement(), el.firstChild);
+                el.replaceChild(grid.createHtml().node$, el.firstChild);
 
                 grid.attachEventHandlers();
             };
