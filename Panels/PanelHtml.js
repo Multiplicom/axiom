@@ -76,8 +76,21 @@ define([
              * @param {string} content - html content
              */
             panel.setContent = function(content) {
-                panel._content = content;
-                panel.get$El().html(content);
+                if (typeof content === 'string' || content instanceof String) {
+                    panel._content = content;
+                    panel.get$El().html(content.toString());
+                }
+
+                if (content instanceof DOMElement) {
+                    var panelContent = document.getElementById(panel.getContentElementId());
+                    // remove all content
+                    panelContent.innerHTML = '';
+                    
+                    var documentFragment = document.createDocumentFragment();
+                    documentFragment.appendChild(content.node$);
+
+                    panelContent.appendChild(documentFragment);
+                }
             };
 
             /**

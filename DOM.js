@@ -232,24 +232,25 @@ define([
 
         }
 
-
         function appendChild(parent, component) {
+            // Native element
             if (isDOMNode(component)) {
                 parent.appendChild(component);
                 return parent;
             }
 
+            // Axiom DOMElement
             if (component instanceof DOMElement) {
                 parent.appendChild(component.node$);
                 return parent;
             }
 
-            // Need to assume it's an HTML snippet
+            // No op
             if (component == "") {
-                // No op
                 return parent;
             }
-
+            
+            // Need to assume it's an HTML snippet
             var contextFragment = document
                 .createRange()
                 .createContextualFragment(component.toString());
@@ -277,10 +278,19 @@ define([
          * @returns {DOMElement} - the element instance
          * @constructor
          */
-        Module.Create = function (itype, args) {
-            var that = new DOMElement(itype, args);
+        Module.Create = function (itype, args, children) {
+            var that = new DOMElement(itype, args, children);
             return that;
         };
+
+        Module.Fragment = function createDOMFragment(children) {
+            return new DOMElement(null, {}, children);
+        }
+
+        Module.Text = function createTextNode() {
+            var args = Array.prototype.slice.call(arguments);
+            return document.createTextNode(args.join(""));
+        }
 
 
         /**
@@ -419,8 +429,8 @@ define([
             "wbr"
         ].forEach(function addElementHelper(domType) {
             var methodName = domType.charAt(0).toUpperCase() + domType.slice(1);
-            Module[methodName] = function createElement(settings) {
-                return Module.Create(domType, settings);
+            Module[methodName] = function createElement(settings, children) {
+                return Module.Create(domType, settings, children);
             };
         });
 
