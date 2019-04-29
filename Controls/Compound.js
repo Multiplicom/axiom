@@ -387,6 +387,8 @@ define([
     
                     el.appendChild(documentFragment);
                 }
+
+                grid.attachEventHandlers();
             };
                 
             return grid;
