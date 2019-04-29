@@ -186,14 +186,18 @@ define([
             };
 
             compound.liveUpdate = function() {
-                var el = document.querySelector("#" + compound._id + "_wrapper");
-                var updatedControl = compound.createHtml();
-                // TODO Update: Not really performant DOM ops
-                if (el.firstChild) {
-                    el.replaceChild(updatedControl.node$, el.firstChild);
-                } else {
-                    el.appendChild(updatedControl.node$);
+                var el = document.getElementById(compound._id + "_wrapper");
+                
+                if (el) {
+                    el.innerHTML = '';
+                    
+                    var updatedControl = compound.createHtml();
+                    var documentFragment = document.createDocumentFragment();
+                    documentFragment.appendChild(updatedControl.node$);
+    
+                    el.appendChild(documentFragment);
                 }
+
                 compound.attachEventHandlers();
             };
 
