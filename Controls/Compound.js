@@ -29,6 +29,15 @@ define([
          */
         var Module = {};
 
+        function Unit () {}
+        
+        Unit.px = function asPixels(pixels) {
+            return pixels + "px";
+        }
+
+        Unit.pc = function asPercentage(percentage) {
+            return percentage + "%";
+        }
 
         /**
          * Automatically converts a string to a static control. if the input was not a strung (e.g. a control), it is returned
@@ -159,12 +168,17 @@ define([
              * @returns {string}
              */
             compound.createHtml = function() {
-                var div = DOM.Div({id: compound._id+'_wrapper'});
+                var div = DOM.Div({ id: compound._id + "_wrapper" });
                 $.each(compound._members, function(idx, member) {
-                    var elemDiv = DOM.Div({parent:div});
-                    if (idx>0) {
-                        if (compound._separator)
-                            elemDiv.addElem('<div style="height:{h}px"/>'.AXMInterpolate({h:compound._separator}));
+                    var elemDiv = DOM.Div({ parent: div });
+                    if (idx > 0 && compound._separator) {
+                        elemDiv.addElem(
+                            DOM.Div({
+                                style: {
+                                    height: Unit.px(compound._separator)
+                                }
+                            })
+                        );
                     }
                     elemDiv.addElem(member.createHtml());
                 });
@@ -303,32 +317,41 @@ define([
                 return grid._rows.length;
             };
 
+            Object.defineProperty(grid, "classNames", {
+                get: function getGridClassNames() {
+                    var classes = [];
+                    if (grid.alternatingLines) {
+                        classes.push("AlternatingLineGrid");
+                    }
+    
+                    if (grid.className) {
+                        classes.push(grid.className);
+                    }
+
+                    return classes; 
+                }
+            })
+
 
             /**
              * Returns the html implementing the control
              * @returns {String|string|*}
              */
             grid.createHtml = function() {
-                var div = DOM.Div({
-                    id: grid._id + "_wrapper",
-                    style: { display: "inline-block" }
+                var tableEl = DOM.Table({
+                    className: grid.classNames,
+                    parent: DOM.Div({
+                        id: grid._id + "_wrapper",
+                        style: { display: "inline-block" }
+                    })
                 });
-                var tableEl = DOM.Table({ parent: div });
-
-                if (grid.alternatingLines) {
-                    tableEl.className = "AlternatingLineGrid";
-                }
-
-                if (grid.className) {
-                    tableEl.className = grid.className;
-                }
 
                 grid._rows.forEach(function addRow(row, i) {
                     var rowEl = DOM.Tr();
                     row.forEach(function addCell(item) {
                         var styles = {
-                            "padding-right": grid.sepH + "px",
-                            "padding-bottom": grid.sepV + "px"
+                            "padding-right": Unit.px(grid.sepH),
+                            "padding-bottom": Unit.px(grid.sepV)
                         };
                         var cellEl =
                             settings.hasHeader && i == 0
@@ -347,13 +370,18 @@ define([
             };
 
             grid.liveUpdate = function() {
-                var el = document.querySelector("#" + grid._id + "_wrapper");
-                el.replaceChild(grid.createHtml().node$, el.firstChild);
+                var el = document.getElementById(grid._id + "_wrapper");
 
-                grid.attachEventHandlers();
+                if (el) {
+                    el.innerHTML = '';
+                    
+                    var documentFragment = document.createDocumentFragment();
+                    documentFragment.appendChild(grid.createHtml().node$);
+    
+                    el.appendChild(documentFragment);
+                }
             };
-
-
+                
             return grid;
         };
 
