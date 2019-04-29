@@ -338,12 +338,15 @@ define([
              * @returns {String|string|*}
              */
             grid.createHtml = function() {
+                var gridContent = DOM.Div({
+                    id: grid._id + "_wrapper",
+                    style: { display: "inline-block" }
+                });
+
+
                 var tableEl = DOM.Table({
                     className: grid.classNames,
-                    parent: DOM.Div({
-                        id: grid._id + "_wrapper",
-                        style: { display: "inline-block" }
-                    })
+                    parent: gridContent
                 });
 
                 grid._rows.forEach(function addRow(row, i) {
@@ -366,7 +369,7 @@ define([
                     tableEl.addElem(rowEl);
                 });
 
-                return tableEl;
+                return gridContent;
             };
 
             grid.liveUpdate = function() {
