@@ -744,19 +744,24 @@ define([
             control._checkedClass = settings.checkedClass || null;
 
             control.createHtml = function() {
-                var controlEl = DOM.Div();
-                var inputEl = DOM.Input({ parent: controlEl, id: control._getSubId("") });
-
-                inputEl.addAttribute("type", "checkbox");
-                if (control._value) inputEl.addAttribute("checked", "checked");
-
-                DOM.Label({
-                    id: control._getSubId("label"),
-                    parent: controlEl,
-                    target: control._getSubId("")
-                }).addElem(settings.text);
-
-                return controlEl;
+                return DOM.Div({}, [
+                    DOM.Input(
+                        $.extend(
+                            {
+                                type: "checkbox",
+                                id: control._getSubId("")
+                            },
+                            control._value ? { checked: "" } : {}
+                        )
+                    ),
+                    DOM.Label(
+                        {
+                            id: control._getSubId("label"),
+                            for: control._getSubId(""),
+                        },
+                        [DOM.Text(settings.text)]
+                    )
+                ]);
             };
 
             /**
