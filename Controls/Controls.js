@@ -140,9 +140,10 @@ define([
             return control;
         };
 
-        Module.Text = function(settings) {
-            var control = Module.SingleControlBase(settings);
-            control.element = document.createTextNode(settings.text || '');
+        Module.Text = function(text, settings) {
+            var control = Module.SingleControlBase(settings || {});
+            control._text = text;
+            control.textEl = DOM.Text(text || "");
             
             control.setReactOnClick = function() {
                 control._reactOnClick = true;
@@ -154,9 +155,7 @@ define([
              * @returns {String}
              */
             control.createHtml = function() {
-                var control = DOM.Div({ id: control._getSubId("") });
-                control.addElem(control.element);
-                return control;
+                return DOM.Span({ id: control._getSubId("") }, [control.textEl]);
             };
 
 
@@ -174,7 +173,7 @@ define([
              */
             control.modifyText = function(newText) {
                 control._text = newText;
-                var selectedEl = document.querySelector('#'+control._id)
+                var selectedEl = document.getElementById(control._id)
                 selectedEl.textContent = newText;
             };
 
