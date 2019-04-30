@@ -22,22 +22,14 @@ define([
         require, $, _,
         AXMUtils, DOM) {
 
+        var Unit = require("AXM/Units");
+
 
         /**
          * Module encapsulating a set of classes that represent HTML controls that group other controls
          * @type {{}}
          */
         var Module = {};
-
-        function Unit () {}
-        
-        Unit.px = function asPixels(pixels) {
-            return pixels + "px";
-        }
-
-        Unit.pc = function asPercentage(percentage) {
-            return percentage + "%";
-        }
 
         /**
          * Automatically converts a string to a static control. if the input was not a strung (e.g. a control), it is returned

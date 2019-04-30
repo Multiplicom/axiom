@@ -16,22 +16,19 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM"],
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
     function (
         require, $, _,
         AXMUtils) {
 
         var DOM = require("AXM/DOM");
+        var Unit = require("AXM/Units")
 
         var Module = {};
 
         Module.createEmpty = function() {
             return Module.createFA("")
         };
-
-        function px(n) {
-            return Math.round(n) + "px";
-        }
 
         Module.createFA = function(name, baseSizeFactor) {
             var icon = AXMUtils.object('icon');
@@ -89,14 +86,18 @@ define([
 
             icon.renderHtml = function() {
                 var iconEl = DOM.Div({
-                    style: { position: "relative", display: "inline-block ", overflow: "visible" }
+                    style: {
+                        position: "relative",
+                        display: "inline-block ",
+                        overflow: "visible"
+                    }
                 });
 
                 DOM.I({
                     parent: iconEl,
                     className: ["fa", icon._name],
                     style: {
-                        "font-size": px(icon._sizeFactor * icon._baseSize),
+                        "font-size": Unit.px(icon._sizeFactor * icon._baseSize),
                         opacity: icon._opacity
                     }
                 });
@@ -106,19 +107,21 @@ define([
                         position: "absolute",
                         opacity: decor.opacity,
                         color: decor.color,
-                        overflow: "visible"
+                        overflow: "visible",
                     };
 
-                    style[decor.xPos] = px(decor.offsetX * icon._sizeFactor);
-                    style[decor.yPos] = px(decor.offsetY * icon._sizeFactor);
+                    style[decor.xPos] = Unit.px(decor.offsetX * icon._sizeFactor);
+                    style[decor.yPos] = Unit.px(decor.offsetY * icon._sizeFactor);
 
-                    var decorator = DOM.Div({style: style});
+                    var decorator = DOM.Div({ style: style });
                     DOM.I({
                         parent: decorator,
-                        className: ["fa", icon._name],
+                        className: ["fa", decor.name],
                         style: {
-                            "font-size": px(icon._sizeFactor * icon._baseSize * decor.size)
-                        },
+                            "font-size": Unit.px(
+                                icon._sizeFactor * icon._baseSize * decor.size
+                            )
+                        }
                     });
                     iconEl.addElem(decorator);
                 });
