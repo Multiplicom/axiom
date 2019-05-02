@@ -266,8 +266,8 @@ define([
         DOMElement.prototype.toString = function () {
             // TODO Deprecate this method to avoid rount tripping
             // between DOM Objects and HTML snippets.
-            var htmlElement = this.node$
-            return htmlElement.outerHTML;
+            
+            return this.node$.outerHTML || "";
         };
 
 
@@ -290,6 +290,10 @@ define([
         Module.Text = function createTextNode() {
             var args = Array.prototype.slice.call(arguments);
             return document.createTextNode(args.join(""));
+        }
+
+        Module.Empty = function createEmptyNode() {
+            return Module.Fragment([]);
         }
 
 
