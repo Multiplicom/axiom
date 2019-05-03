@@ -34,11 +34,6 @@ define([
             return Object.prototype.hasOwnProperty.call(o, p);
         }
     
-        function getObjectType(o) {
-            return Object.prototype.toString.call(o);
-        }
-
-
         /**
          * Abstact base class for a html element
          * @param {string} itype - element type
@@ -194,30 +189,33 @@ define([
             },
             node$: {
                 get: function getNode() {
+                    // Node needs to be cloned otherwise the its children are
+                    // appended twice if the node is "materialized" again.
+                    var el = this.el$.cloneNode();
+
                     for (var propName in this.properties) {
                         if (propName !== "style" && propName !== "className") {
-                            this.el$.setAttribute(propName, this.properties[propName]);
+                            el.setAttribute(propName, this.properties[propName]);
                         }
                     }
 
                     for (var styleName in this.styles) {
-                        this.el$.style.setProperty(styleName, this.styles[styleName]);
+                        el.style.setProperty(styleName, this.styles[styleName]);
                     }
 
                     if (this.myClasses.length > 0) {
-                        this.el$.className = this.myClasses.join(" ");
+                        el.className = this.myClasses.join(" ");
                     }
-
-                    this.addChildren();
-
-                    return this.el$;
+                    
+                    this.addChildren(el);
+                    return el;
                 }
             }
         });
 
-        DOMElement.prototype.addChildren = function addChildren () {
+        DOMElement.prototype.addChildren = function addChildren (el) {
             if (this.myComponents.length === 1) {
-                return appendChild(this.el$, this.myComponents[0]);
+                return appendChild(el, this.myComponents[0]);
             }
 
             if (this.myComponents.length > 1) {
@@ -227,7 +225,7 @@ define([
                     documentFragment = appendChild(documentFragment, this.myComponents[i]);
                 }
 
-                return appendChild(this.el$, documentFragment);
+                return appendChild(el, documentFragment);
             } 
 
         }
@@ -294,6 +292,10 @@ define([
 
         Module.Empty = function createEmptyNode() {
             return Module.Fragment([]);
+        }
+
+        Module.Svg = function createSvgNode(args) {
+            return Module.Create("svg", args)
         }
 
 
