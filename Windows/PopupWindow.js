@@ -356,30 +356,7 @@ define([
                     window._$ElContainer.children('.AXMPopupWindowClient').append(transfer$Elem.detach());
                 }
 
-                if (window._autoCenter || window._autoCenterTop || window._autoCenterbottom) {
-                    var windowSizeX = window._$ElContainer.width();
-                    window._$ElContainer
-                        .css('top', 4)
-                        .css('left', Math.max(0, (browserSize.sizeX-windowSizeX)/2));
-                }
-
-                if (window._autoCenterbottom)
-                    window._$ElContainer
-                        .css('bottom', 4);
-
-                if (window._autoCenter) {
-                    var windowSizeY = window._$ElContainer.height();
-                    window._$ElContainer
-                        .css('top', Math.max(0, (browserSize.sizeY-windowSizeY)/2));
-                }
-
-                if (window._isLogin) {
-                    window._$ElContainer
-                        .css('top', 50 + '%')
-                        .css('left', 50 + '%')
-                        .css('margin-right', -50 + '%')
-                        .css('transform', 'translate(-50%, -50%)');
-                }
+                window.setPositionCenter();
 
                 if (window._rootFrame) {
                     if (!transfer$Elem)
@@ -706,6 +683,38 @@ define([
                 });
                 window.zIndex = AXMUtils.getNextZIndex();
                 window._$ElContainer.css('z-index',window.zIndex);
+            };
+
+            /**
+             * Set window to the center of the browser window.
+             */
+            window.setPositionCenter = function(){
+                var browserSize = AXMUtils.getBrowserSize();
+
+                if (window._autoCenter || window._autoCenterTop || window._autoCenterbottom) {
+                    var windowSizeX = window._$ElContainer.width();
+                    window._$ElContainer
+                        .css('top', 4)
+                        .css('left', Math.max(0, (browserSize.sizeX-windowSizeX)/2));
+                }
+
+                if (window._autoCenterbottom)
+                    window._$ElContainer
+                        .css('bottom', 4);
+
+                if (window._autoCenter) {
+                    var windowSizeY = window._$ElContainer.height();
+                    window._$ElContainer
+                        .css('top', Math.max(0, (browserSize.sizeY-windowSizeY)/2));
+                }
+
+                if (window._isLogin) {
+                    window._$ElContainer
+                        .css('top', 50 + '%')
+                        .css('left', 50 + '%')
+                        .css('margin-right', -50 + '%')
+                        .css('transform', 'translate(-50%, -50%)');
+                }
             };
 
 
