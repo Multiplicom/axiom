@@ -228,7 +228,11 @@ define([
                     if (window._opaqueBlocking)
                         background.addCssClass('AXMBlockingBackGroundOpaque');
                     background.addStyle('z-index', window.zIndex-1);
-                    $('.AXMContainer').append(background.toString());
+                    
+                    var rootNode = document.querySelector('.AXMContainer');
+                    rootNode.appendChild(background.node$);
+
+
                     var blockerEl = $('#'+blockerid);
                     blockerEl.mousedown(function (ev) {
                         if (true/*ev.target.id == 'BlockingBackGround'*/) {
@@ -348,7 +352,9 @@ define([
                     DOM.Div({parent: rootDiv}).addCssClass('AXMPopupWindowGripSW GripSW2');
                 }
 
-                $('.AXMContainer').append(rootDiv.toString());
+                // $('.AXMContainer').append(rootDiv.toString());
+                var axiomContainer = document.querySelector('.AXMContainer');
+                axiomContainer.appendChild(rootDiv.node$);
                 window._$ElContainer = $('#' + window._id);
 
 

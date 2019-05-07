@@ -57,10 +57,12 @@ define([
 
                 var toolBoxStart = DOM.Div({});
                 toolBoxStart.addCssClass("ToolBoxStart");
-                //toolBoxStart.addStyle("top", "4px");
-                toolBoxStart.addElem('<div class="ToolBoxStartIcon">' + toolBox.getIcon().renderHtml() + '</div>');
-                toolBox._frame.getRoot$El().append(toolBoxStart.toString());
+                var startIcon = DOM.Div({ className: "ToolBoxStartIcon" });
+                startIcon.addElem(toolBox.getIcon().renderHtml());
+                toolBoxStart.addElem(startIcon);
 
+                var frame = document.getElementById(toolBox._frame._id)
+                frame.appendChild(toolBoxStart.node$);
 
                 var rootDiv = DOM.Div({id: toolBox._id});
                 rootDiv.addCssClass("ToolBoxContainer");

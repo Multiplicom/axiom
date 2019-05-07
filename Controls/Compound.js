@@ -22,13 +22,14 @@ define([
         require, $, _,
         AXMUtils, DOM) {
 
+        var Unit = require("AXM/Units");
+
 
         /**
          * Module encapsulating a set of classes that represent HTML controls that group other controls
          * @type {{}}
          */
         var Module = {};
-
 
         /**
          * Automatically converts a string to a static control. if the input was not a strung (e.g. a control), it is returned
@@ -159,21 +160,36 @@ define([
              * @returns {string}
              */
             compound.createHtml = function() {
-                var div = DOM.Div({id: compound._id+'_wrapper'});
+                var div = DOM.Div({ id: compound._id + "_wrapper" });
                 $.each(compound._members, function(idx, member) {
-                    var elemDiv = DOM.Div({parent:div});
-                    if (idx>0) {
-                        if (compound._separator)
-                            elemDiv.addElem('<div style="height:{h}px"/>'.AXMInterpolate({h:compound._separator}));
+                    var elemDiv = DOM.Div({ parent: div });
+                    if (idx > 0 && compound._separator) {
+                        elemDiv.addElem(
+                            DOM.Div({
+                                style: {
+                                    height: Unit.px(compound._separator)
+                                }
+                            })
+                        );
                     }
                     elemDiv.addElem(member.createHtml());
                 });
-                return div.toString();
+                return div;
             };
 
             compound.liveUpdate = function() {
-                var $El = $('#' + compound._id+'_wrapper');
-                $El.html(compound.createHtml());
+                var el = document.getElementById(compound._id + "_wrapper");
+                
+                if (el) {
+                    el.innerHTML = '';
+                    
+                    var updatedControl = compound.createHtml();
+                    var documentFragment = document.createDocumentFragment();
+                    documentFragment.appendChild(updatedControl.node$);
+    
+                    el.appendChild(documentFragment);
+                }
+
                 compound.attachEventHandlers();
             };
 
@@ -233,7 +249,7 @@ define([
                         elemDiv.addStyle('margin-right', compound._separator+'px');
                     elemDiv.addElem(member.createHtml());
                 });
-                return div.toString();
+                return div;
             };
 
             return compound;
@@ -297,50 +313,76 @@ define([
                 return grid._rows.length;
             };
 
+            Object.defineProperty(grid, "classNames", {
+                get: function getGridClassNames() {
+                    var classes = [];
+                    if (grid.alternatingLines) {
+                        classes.push("AlternatingLineGrid");
+                    }
+    
+                    if (grid.className) {
+                        classes.push(grid.className);
+                    }
+
+                    return classes; 
+                }
+            })
+
 
             /**
              * Returns the html implementing the control
              * @returns {String|string|*}
              */
             grid.createHtml = function() {
-                var div = DOM.Div({id: grid._id+'_wrapper'});
-                div.addStyle('display','inline-block');
-
-                var className = "";
-                if (grid.alternatingLines)
-                    className = "AlternatingLineGrid";
-                if (grid.className)
-                    className = grid.className;
-                var st = '<table class="{clss}">'.AXMInterpolate({clss: className});
-                $.each(grid._rows, function(rowNr, row) {
-                    st += '<tr>';
-                    $.each(row, function(colNr, item) {
-                        var token = 'td';
-                        if (settings.hasHeader && (rowNr==0))
-                        token = 'th';
-                        st += '<{token} style="padding-right:{sepH}px;padding-bottom:{sepV}px;">'.AXMInterpolate({
-                            token: token,
-                            sepH: grid.sepH, sepV: grid.sepV
-                        });
-                        if (item != null)
-                            st += item.createHtml();
-                        st += '</{token}>'.AXMInterpolate({token: token});
-                    });
-                    st += '</tr>';
+                var gridContent = DOM.Div({
+                    id: grid._id + "_wrapper",
+                    style: { display: "inline-block" }
                 });
-                st += '</table>';
-                div.addElem(st);
 
-                return div.toString();
+
+                var tableEl = DOM.Table({
+                    className: grid.classNames,
+                    parent: gridContent
+                });
+
+                grid._rows.forEach(function addRow(row, i) {
+                    var rowEl = DOM.Tr();
+                    row.forEach(function addCell(item) {
+                        var styles = {
+                            "padding-right": Unit.px(grid.sepH),
+                            "padding-bottom": Unit.px(grid.sepV)
+                        };
+                        var cellEl =
+                            settings.hasHeader && i == 0
+                                ? DOM.Th({ style: styles })
+                                : DOM.Td({ style: styles });
+
+                        if (item) {
+                            cellEl.addElem(item.createHtml());
+                        }
+                        rowEl.addElem(cellEl);
+                    });
+                    tableEl.addElem(rowEl);
+                });
+
+                return gridContent;
             };
 
             grid.liveUpdate = function() {
-                var $El = $('#' + grid._id+'_wrapper');
-                $El.html(grid.createHtml());
+                var el = document.getElementById(grid._id + "_wrapper");
+
+                if (el) {
+                    el.innerHTML = '';
+                    
+                    var documentFragment = document.createDocumentFragment();
+                    documentFragment.appendChild(grid.createHtml().node$);
+    
+                    el.appendChild(documentFragment);
+                }
+
                 grid.attachEventHandlers();
             };
-
-
+                
             return grid;
         };
 
@@ -414,7 +456,7 @@ define([
                     var memdiv = DOM.Div({id: wrapper._memDivId, parent: div});
                     memdiv.addElem(wrapper._member.createHtml());
                 }
-                return div.toString();
+                return div;
             };
 
             wrapper.transferFrom = function(src) {
@@ -453,7 +495,7 @@ define([
                 var div = DOM.Div({id: wrapper._id});
                 div.addCssClass(styleClass);
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
 
@@ -488,7 +530,7 @@ define([
                 div.addStyle('margin-bottom', marginBottom+'px');
                 //div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -518,7 +560,7 @@ define([
                 else
                     div.addStyle('width', width+'px');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -544,7 +586,7 @@ define([
                 //div.addStyle('margin-left', marginLeft+'px');
                 //div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -571,7 +613,7 @@ define([
                 div.addStyle('top', '0px');
                 div.addStyle('display', 'inline-block');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -600,7 +642,7 @@ define([
                 divTitle.addElem(wrapper._title);
                 var divBody = DOM.Div({parent: divContainer});
                 divBody.addElem(wrapper._member.createHtml());
-                return divContainer.toString();
+                return divContainer;
             };
 
             return wrapper;
@@ -631,7 +673,7 @@ define([
                 //divBody.addStyle('top', '0px');
                 divBody.addStyle('z-index', '1');
                 divBody.addElem(wrapper._member.createHtml());
-                return divContainer.toString();
+                return divContainer;
             };
 
             return wrapper;
@@ -657,7 +699,7 @@ define([
                 div.addCssClass('AXMFormVScroller');
                 div.addStyle('height', heigth+'px');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -696,7 +738,7 @@ define([
                 if (!wrapper._show)
                     div.addStyle('display', 'none');
                 div.addElem(wrapper._member.createHtml());
-                return div.toString();
+                return div;
             };
 
 
@@ -792,7 +834,7 @@ define([
                     .addStyle('opacity',0.15)
                     .addStyle('margin-left','7px')
                     .addStyle('margin-right','7px');
-                return div.toString();
+                return div;
             };
 
             return wrapper;
@@ -817,7 +859,7 @@ define([
                     .addStyle('display','inline-block')
                     .addStyle('width',w + 'px')
                     .addStyle('height','1px');
-                return div.toString();
+                return div;
             };
             return wrapper;
         };
@@ -840,7 +882,7 @@ define([
                 var div = DOM.Div()
                     .addStyle('width','1px')
                     .addStyle('height',h + 'px');
-                return div.toString();
+                return div;
             };
             return wrapper;
         };

@@ -557,3 +557,44 @@ textarea.CodeEditor {
     resize: none;
     outline: none;
 }
+
+.toggle-control input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: inline-block;
+    position: relative;
+    border-radius: 50px;
+    overflow: hidden;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background-color: #707070;
+    transition: background-color ease 0.3s;
+  }
+  
+  .toggle-control input:before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: 2;
+    width: 40%;
+    height: 82%;
+    background: #fff;
+    left: 2px;
+    top: 2px;
+    border-radius: 50%;
+    font: 10px/28px;
+    color: #fff;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    transition: all linear 0.1s;
+  }
+  
+  .toggle-control input:checked {
+    background-color: #4CD964;
+  }
+  
+  .toggle-control input:checked:before {
+    left: 55%;
+  }

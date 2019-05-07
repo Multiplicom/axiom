@@ -16,12 +16,14 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Msg", "AXM/Panels/Frame"
+        "AXM/AXMUtils", "AXM/Msg", "AXM/Panels/Frame", "AXM/DOM", "AXM/Events"
     ],
     function (
         require, $, _,
         AXMUtils, Msg, Frame
     ) {
+        var DOM = require("AXM/DOM"),
+            EventPool = require("AXM/Events");
 
         /**
          * Module encapsulating the functionality for the one and only Axiom window that represents the full web app client area
@@ -40,8 +42,13 @@ define([
             rootWindow._rootFrame = iFrameRoot;
 
             rootWindow.render = function() {
-                var st = rootWindow._rootFrame.createHtml();
-                $('.AXMContainer').html(st);
+                var rootElement = DOM.Create();
+                rootElement.addElem(rootWindow._rootFrame.htmlElement());
+                
+                var axiomNode = document.querySelector(".AXMContainer");
+                axiomNode.appendChild(rootElement.node$);
+                EventPool.attach();
+                
                 rootWindow._rootFrame.attachEventHandlers();
                 rootWindow._monitorResize();
             };

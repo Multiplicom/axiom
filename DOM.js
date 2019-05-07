@@ -15,14 +15,20 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_",
-        "AXM/AXMUtils"
+        "require", 
+        "jquery", 
+        "_",
+        "AXM/AXMUtils",
+        "AXM/Events"
     ],
     function (
-        require, $, _,
+        require, 
+        $, 
+        _,
         AXMUtils
     ) {
 
+        var EventPool = require("AXM/Events");
 
         /**
          * Module encapsulation a set of classes that represent HTML elements
@@ -30,36 +36,72 @@ define([
          */
         var Module = {};
 
-
+        function containsKey(o, p) {
+            return Object.prototype.hasOwnProperty.call(o, p);
+        }
+    
         /**
          * Abstact base class for a html element
          * @param {string} itype - element type
          * @param {{}} args - various possible arguments
-         * @param {Module._Element} args.parent - (optional) parent element
+         * @param {Object} args.attr - sets the attr for the underlying DOM element
+         * @param {Object} args.style - sets the style(s) for the underlying DOM element
+         * @param {string|Array} args.className - sets the value of the class attribute 
+         * @param {DOMElement} args.parent - (optional) parent element
          * @private
          */
-        Module._Element = function (itype, args) {
-            this.myType = itype;
-            this.myAttributes = {};
-            this.myClasses = [];
-            this.myStyles = {};
-            this.myComponents = [];
+        DOMElement = function() {
+            var args = Array.prototype.slice.call(arguments);
 
-            //do the stuff with the arguments provided
-            if (typeof args != 'undefined') {
-                if ('id' in args) this.setID(args.id);
-                if ('parent' in args) {
-                    if (!(args.parent instanceof Module._Element)) AXMUtils.reportBug("DocEl parent is not a DocEl");
-                    args.parent.addElem(this);
-                }
+            // args[0] {String} tagName
+            this.myType = args.shift(1);
+
+            // args[1] {Object} properties
+            var properties = args.shift(1) || {};
+            if (containsKey(properties, "parent")) {
+                // `parent` is a special property that sets the child
+                properties.parent.addElem(this);
             }
+
+            this.properties = Object.keys(properties).reduce(
+                function getAttributes(attrs, p) {
+                    if (p !== "parent" && p.slice(0, 2) !== "on") {
+                        attrs[p] = properties[p];
+                    }
+
+                    return attrs;
+                },
+                {
+                    style: {}
+                }
+            );
+
+            this.listeners = Object.keys(properties).reduce(
+                function getEventListeners(handlers, propName) {
+                    if (propName.slice(0, 2) === "on") {
+                        handlers[propName] = properties[propName];
+                    }
+
+                    return handlers;
+                },
+                {},
+            );
+
+            if (containsKey(properties, "id")) {
+                this.setID(properties.id);
+            }
+
+            this.myClasses = properties.className ? [].concat(properties.className) : [];
+
+            // args[2] {Array} - children
+            this.myComponents = args.shift(1) || [];
         };
 
         /**
          * Sets the html id
          * @param {string} iID
          */
-        Module._Element.prototype.setID = function (iID) {
+        DOMElement.prototype.setID = function (iID) {
             this.myID = iID;
             this.addAttribute("id", iID);
         };
@@ -69,7 +111,7 @@ define([
          * Returns the html id
          * @returns {string}
          */
-        Module._Element.prototype.getID = function () {
+        DOMElement.prototype.getID = function () {
             return this.myID;
         };
 
@@ -78,10 +120,10 @@ define([
          * Adds a html attribute
          * @param {string} id - attribute id
          * @param {string} content - attribute content
-         * @returns {Module._Element} - self
+         * @returns {DOMElement} - self
          */
-        Module._Element.prototype.addAttribute = function (id, content) {
-            this.myAttributes[id] = '' + content;
+        DOMElement.prototype.addAttribute = function (id, content) {
+            this.properties[id] = '' + content.toString();
             return this;
         };
 
@@ -90,10 +132,10 @@ define([
          * Adds a css style
          * @param {string} id - syle id
          * @param {string} content - style content
-         * @returns {Module._Element} - self
+         * @returns {DOMElement} - self
          */
-        Module._Element.prototype.addStyle = function (id, content) {
-            this.myStyles[id] = '' + content.toString();
+        DOMElement.prototype.addStyle = function (id, content) {
+            this.properties.style[id] = content.toString();
             return this;
         };
 
@@ -101,103 +143,191 @@ define([
         /**
          * Adds a member element
          * @param icomp - element
-         * @returns {Module._Element} - self
+         * @returns {DOMElement} - self
          */
-        Module._Element.prototype.addElem = function (icomp) {
+        DOMElement.prototype.addElem = function (icomp) {
             this.myComponents.push(icomp);
             return this;
         };
 
+        /**
+         * Adds a text node
+         * @param icomp - element
+         * @returns {DOMElement} - self
+         */
+        DOMElement.prototype.addText = function (text) {
+            return this.addElem(document.createTextNode(text));
+        }
 
         /**
          * Returns a member element
          * @param {int} nr
          * @returns {*} - element
          */
-        Module._Element.prototype.getElem = function (nr) {
+        DOMElement.prototype.getElem = function (nr) {
             return this.myComponents[nr];
         };
 
         /**
          * Adds a css class
          * @param {string} iclss
-         * @returns {Module._Element} - self
+         * @returns {DOMElement} - self
          */
-        Module._Element.prototype.addCssClass = function (iclss) {
+        DOMElement.prototype.addCssClass = function (iclss) {
             this.myClasses.push(iclss);
             return this;
         };
 
+        function isDOMNode (el) {
+            return el && el.nodeName && el.nodeType
+        }
+
+        this._el = null;
+
+        Object.defineProperties(DOMElement.prototype, {
+            styles: {
+                get: function getStyles() {
+                    return containsKey(this.properties, "style")
+                        ? this.properties.style
+                        : {};
+                }
+            },
+            el$: {
+                get: function getElement() {
+                    if (!this._el) {
+                        // If no tagName is defined, create a fragment instead
+                        this._el = this.myType
+                            ? document.createElement(this.myType)
+                            : document.createDocumentFragment();
+                    }
+
+                    return this._el;
+                }
+            },
+            node$: {
+                get: function getNode() {
+                    // Node needs to be cloned otherwise the its children are
+                    // appended twice if the node is "materialized" again.
+                    var el = this.el$.cloneNode();
+
+                    for (var propName in this.properties) {
+                        if (propName !== "style" && propName !== "className") {
+                            el.setAttribute(propName, this.properties[propName]);
+                        }
+                    }
+
+                    for (var event in this.listeners) {
+                        EventPool.addEventListener(
+                            this.getID(),
+                            event.slice(2),
+                            this.listeners[event]
+                        );
+                    }
+
+                    for (var styleName in this.styles) {
+                        el.style.setProperty(styleName, this.styles[styleName]);
+                    }
+
+                    if (this.myClasses.length > 0) {
+                        el.className = this.myClasses.join(" ");
+                    }
+                    
+                    this.addChildren(el);
+                    return el;
+                }
+            }
+        });
+
+        DOMElement.prototype.addChildren = function addChildren (el) {
+            if (this.myComponents.length === 1) {
+                return appendChild(el, this.myComponents[0]);
+            }
+
+            if (this.myComponents.length > 1) {
+                var documentFragment = document.createDocumentFragment();
+
+                for (var i = 0; i < this.myComponents.length; i++) {
+                    documentFragment = appendChild(documentFragment, this.myComponents[i]);
+                }
+
+                return appendChild(el, documentFragment);
+            } 
+
+        }
+
+        function appendChild(parent, component) {
+            // Native element
+            if (isDOMNode(component)) {
+                parent.appendChild(component);
+                return parent;
+            }
+
+            // Axiom DOMElement
+            if (component instanceof DOMElement) {
+                parent.appendChild(component.node$);
+                return parent;
+            }
+
+            // No op
+            if (component == "" || component == null) {
+                return parent;
+            }
+
+            // Need to assume it's an HTML snippet
+            var contextFragment = document
+                .createRange()
+                .createContextualFragment(component.toString());
+            
+            parent.appendChild(contextFragment);
+            return parent;
+        };
 
         /**
          * Converts the object to html markup string
          * @returns {string} - html string
          */
-        Module._Element.prototype.toString = function () {
-            var rs = '<' + this.myType;
-
-            for (var id in this.myAttributes) {
-                rs += ' ';
-                rs += id + '="' + this.myAttributes[id] + '"';
-                first = false;
-            }
-
-            if (this.myClasses.length>0) {
-                rs += ' class="';
-                rs += this.myClasses.join(' ');
-                rs += '"';
-            }
-
-            if (true) {
-                rs += ' style="';
-                var first = true;
-                for (id in this.myStyles) {
-                    if (!first) rs += ';';
-                    rs += id + ":" + this.myStyles[id];
-                    first = false;
-                }
-                rs += '"';
-            }
-            rs += '>';
-
-            rs += this.CreateInnerHtml();
-
-            rs += '</' + this.myType + '>';
-            return rs;
-        };
-
-
-        /**
-         * Returns the html markup string for the member elements
-         * @returns {string}
-         */
-        Module._Element.prototype.CreateInnerHtml = function () {
-            var rs = '';
-            for (var compnr = 0; compnr < this.myComponents.length; compnr++) {
-                if (this.myComponents[compnr])
-                rs += this.myComponents[compnr].toString();
-            }
-            return rs;
+        DOMElement.prototype.toString = function () {
+            // TODO Deprecate this method to avoid rount tripping
+            // between DOM Objects and HTML snippets.
+            
+            return this.node$.outerHTML || "";
         };
 
 
         /**
          * Returns an object containing a generic html element
          * @param {string} itype - element type
-         * @param {{}} args - see Module._Element
-         * @returns {Module._Element} - the element instance
+         * @param {{}} args - see DOMElement
+         * @returns {DOMElement} - the element instance
          * @constructor
          */
-        Module.Create = function (itype, args) {
-            var that = new Module._Element(itype, args);
+        Module.Create = function (itype, args, children) {
+            var that = new DOMElement(itype, args, children);
             return that;
         };
+
+        Module.Fragment = function createDOMFragment(children) {
+            return new DOMElement(null, {}, children);
+        }
+
+        Module.Text = function createTextNode() {
+            var args = Array.prototype.slice.call(arguments);
+            return document.createTextNode(args.join(""));
+        }
+
+        Module.Empty = function createEmptyNode() {
+            return Module.Fragment([]);
+        }
+
+        Module.Svg = function createSvgNode(args) {
+            return Module.Create("svg", args)
+        }
 
 
         /**
          * Returns a div element
-         * @param {{}} args - see Module._Element
-         * @returns {Module._Element} - the element instance
+         * @param {{}} args - see DOMElement
+         * @returns {DOMElement} - the element instance
          * @constructor
          */
         Module.Div = function (args) {
@@ -207,9 +337,9 @@ define([
 
         /**
          * Returns a label element
-         * @param {{}} args - see Module._Element
+         * @param {{}} args - see DOMElement
          * @param {string} args.target - target of the label
-         * @returns {Module._Element} - the element instance
+         * @returns {DOMElement} - the element instance
          * @constructor
          */
         Module.Label = function (args) {
@@ -219,7 +349,121 @@ define([
             return that;
         };
 
-
+        [
+            "a",
+            "abbr",
+            "address",
+            "area",
+            "article",
+            "aside",
+            "audio",
+            "b",
+            "base",
+            "bdi",
+            "bdo",
+            "blockquote",
+            "body",
+            "br",
+            "button",
+            "canvas",
+            "caption",
+            "cite",
+            "code",
+            "col",
+            "colgroup",
+            "data",
+            "datalist",
+            "dd",
+            "del",
+            "dfn",
+            "div",
+            "dl",
+            "dt",
+            "em",
+            "embed",
+            "fieldset",
+            "figcaption",
+            "figure",
+            "footer",
+            "form",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "head",
+            "header",
+            "hr",
+            "html",
+            "i",
+            "iframe",
+            "img",
+            "input",
+            "ins",
+            "kbd",
+            "keygen",
+            "label",
+            "legend",
+            "li",
+            "link",
+            "main",
+            "map",
+            "mark",
+            "meta",
+            "meter",
+            "nav",
+            "noscript",
+            "object",
+            "ol",
+            "optgroup",
+            "option",
+            "output",
+            "p",
+            "param",
+            "pre",
+            "progress",
+            "q",
+            "rb",
+            "rp",
+            "rt",
+            "rtc",
+            "ruby",
+            "s",
+            "samp",
+            "script",
+            "section",
+            "select",
+            "small",
+            "source",
+            "span",
+            "strong",
+            "style",
+            "sub",
+            "sup",
+            "table",
+            "tbody",
+            "td",
+            "template",
+            "textarea",
+            "tfoot",
+            "th",
+            "thead",
+            "time",
+            "title",
+            "tr",
+            "track",
+            "u",
+            "ul",
+            "var",
+            "video",
+            "wbr"
+        ].forEach(function addElementHelper(domType) {
+            var methodName = domType.charAt(0).toUpperCase() + domType.slice(1);
+            Module[methodName] = function createElement(settings, children) {
+                return Module.Create(domType, settings, children);
+            };
+        });
 
         return Module;
     });

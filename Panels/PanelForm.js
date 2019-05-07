@@ -83,7 +83,7 @@ define([
                     rootDiv.addStyle('display', 'flex');
                     rootDiv.addStyle('align-items', 'center');
                 }
-                return rootDiv.toString();
+                return rootDiv;
             };
 
 
@@ -108,8 +108,18 @@ define([
              * Re-creates the html to reflect a change in the control(s)
              */
             panel.reCreate = function() {
-                if (panel._rootControl)
-                    $('#frm'+panel._id).html(panel._rootControl.createHtml());
+                var el = document.getElementById("frm" + panel._id);
+                
+                if (el) {
+                    el.innerHTML = '';
+                    
+                    var updatedControl = panel._rootControl.createHtml();
+                    var documentFragment = document.createDocumentFragment();
+                    documentFragment.appendChild(updatedControl.node$);
+    
+                    el.appendChild(documentFragment);
+                }
+
                 panel.attachEventHandlers();
             };
 

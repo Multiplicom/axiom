@@ -89,14 +89,14 @@ define([
                 if (!tabInfo._isFixed) {
                     var closeDiv = DOM.Create('span', {parent: tabDiv});
                     closeDiv.addCssClass('AXMFlexTabCloser');
-                    closeDiv.addElem('<i class="fa fa-times-circle"/>');
+                    closeDiv.addElem('<i class="fa fa-times-circle"></i>');
 
                     var popupDiv = DOM.Create('span', {parent: tabDiv});
                     popupDiv.addCssClass('AXMFlexTabToPopup');
-                    popupDiv.addElem('<i class="fa fa-arrow-circle-right"/>');
+                    popupDiv.addElem('<i class="fa fa-arrow-circle-right"></i>');
                 }
 
-                return tabDiv.toString();
+                return tabDiv;
             };
 
             /**
@@ -207,7 +207,8 @@ define([
                 frame._myTabs.push(tabInfo);
                 frame._frameStacker.dynAddMember(theFrame);
 
-                tabInfo.parentContainer._panelTabs.get$El().find('.flexTabWrapper').append(tabInfo.createHtml());
+                var wrapperEl = document.getElementById(tabInfo.parentContainer._panelTabs.getContentElementId()).querySelector(".flexTabWrapper")
+                wrapperEl.appendChild(tabInfo.createHtml().node$);
                 setTimeout(function() {
                     frame._panelTabs.scrollToBottom();
                 }, 200);
