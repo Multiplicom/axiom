@@ -15,14 +15,20 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_",
-        "AXM/AXMUtils"
+        "require", 
+        "jquery", 
+        "_",
+        "AXM/AXMUtils",
+        "AXM/Events"
     ],
     function (
-        require, $, _,
+        require, 
+        $, 
+        _,
         AXMUtils
     ) {
 
+        var EventPool = require("AXM/Events");
 
         /**
          * Module encapsulation a set of classes that represent HTML elements
@@ -58,16 +64,27 @@ define([
             }
 
             this.properties = Object.keys(properties).reduce(
-                function createProps(props, p) {
-                    if (p !== "parent") {
-                        props[p] = properties[p];
+                function getAttributes(attrs, p) {
+                    if (p !== "parent" && p.slice(0, 2) !== "on") {
+                        attrs[p] = properties[p];
                     }
 
-                    return props;
+                    return attrs;
                 },
                 {
                     style: {}
                 }
+            );
+
+            this.listeners = Object.keys(properties).reduce(
+                function getEventListeners(handlers, propName) {
+                    if (propName.slice(0, 2) === "on") {
+                        handlers[propName] = properties[propName];
+                    }
+
+                    return handlers;
+                },
+                {},
             );
 
             if (containsKey(properties, "id")) {
@@ -199,6 +216,14 @@ define([
                         }
                     }
 
+                    for (var event in this.listeners) {
+                        EventPool.addEventListener(
+                            this.getID(),
+                            event.slice(2),
+                            this.listeners[event]
+                        );
+                    }
+
                     for (var styleName in this.styles) {
                         el.style.setProperty(styleName, this.styles[styleName]);
                     }
@@ -244,10 +269,10 @@ define([
             }
 
             // No op
-            if (component == "") {
+            if (component == "" || component == null) {
                 return parent;
             }
-            
+
             // Need to assume it's an HTML snippet
             var contextFragment = document
                 .createRange()
