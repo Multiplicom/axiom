@@ -140,6 +140,70 @@ define([
             return control;
         };
 
+        function ToggleControl(props) {
+            Module.SingleControlBase.call(this, props);
+
+            this.props = props || {
+                defaultState: false
+            };
+            this.value = !!this.props.defaultState; // Coerce to boolean
+
+            this.defaultStyles = {
+                width: "40px",
+                height: "21px"
+            };
+
+            this.handlers = Object.keys(this.props).reduce(
+                function getEventListeners(handlers, propName) {
+                    if (propName.slice(0, 2) === "on") {
+                        handlers[propName] = props[propName];
+                    }
+
+                    return handlers;
+                },
+                {},
+                this
+            );
+
+            this.createHtml = function createHTML() {
+                return DOM.Div(
+                    $.extend(this.handlers, {
+                        id: this._getSubId("-control"),
+                        className: "toggle-control",
+                        style: {
+                            display: "flex",
+                            "align-items": "center",
+                            cursor: "pointer"
+                        }
+                    }),
+                    [
+                        DOM.Input(
+                            $.extend(this.value ? { checked: "checked" } : {}, {
+                                id: this._getSubId(""),
+                                type: "checkbox",
+                                style: this.props.style
+                                    ? $.extend(this.defaultStyles, this.props.style)
+                                    : this.defaultStyles
+                            })
+                        ),
+                        DOM.Label({ for: this._getSubId("") }, [
+                            this.props.text || ""
+                        ])
+                    ]
+                );
+            };
+        };
+
+        Object.defineProperties(ToggleControl.prototype, {
+            value: {
+                writable: true
+            }
+        });
+
+        ToggleControl.prototype = new Module.SingleControlBase();
+
+        Module.Toggle = ToggleControl;
+
         Module.Text = function(text, settings) {
             var control = Module.SingleControlBase(settings || {});
             control._text = text;
