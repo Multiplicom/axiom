@@ -131,11 +131,9 @@ define([
              */
             panel.createHtml = function() {
 
-                panel._divid_leftHeadTitleRow = panel._getSubId('leftheadtitlerow');
-                panel._divid_leftHeadFilterRow = panel._getSubId('leftheadfilterrow');
+                panel._divid_leftHeadRow = panel._getSubId('leftheadrow');
                 panel._divid_leftBody = panel._getSubId('leftbody');
-                panel._divid_rightHeadTitleRow = panel._getSubId('rightheadtitlerow');
-                panel._divid_rightHeadFilterRow = panel._getSubId('rightheadfilterrow');
+                panel._divid_rightHeadRow = panel._getSubId('rightheadrow');
                 panel._divid_rightBody = panel._getSubId('rightbody');
 
                 var divRoot = DOM.Div({id: 'tb' + panel._id})
@@ -176,8 +174,7 @@ define([
                     .addCssClass('AXMPgTableLeft');
                 var colLeftGroup = DOM.Create('colgroup', {parent: divLeftTable});
                 var divLeftTableHead = DOM.Create('thead', {parent: divLeftTable});
-                var divLeftTableHeadTitleRow = DOM.Create('tr', {parent: divLeftTableHead, id: panel._divid_leftHeadTitleRow});
-                var divLeftTableHeadFilterRow = DOM.Create('tr', {parent: divLeftTableHead, id: panel._divid_leftHeadFilterRow});
+                var divLeftTableHeadRow = DOM.Create('tr', {parent: divLeftTableHead, id: panel._divid_leftHeadRow});
                 var divLeftTableBody = DOM.Create('tbody', {parent: divLeftTable, id:panel._divid_leftBody});
 
 
@@ -187,8 +184,7 @@ define([
                     .addCssClass('AXMPgTableRight');
                 var colRightGroup = DOM.Create('colgroup', {parent: divRightTable});
                 var divRightTableHead = DOM.Create('thead', {parent: divRightTable});
-                var divRightTableHeadTitleRow = DOM.Create('tr', {parent: divRightTableHead, id: panel._divid_rightHeadTitleRow});
-                var divRightTableHeadFilterRow = DOM.Create('tr', {parent: divRightTableHead, id: panel._divid_rightHeadFilterRow});
+                var divRightTableHeadRow = DOM.Create('tr', {parent: divRightTableHead, id: panel._divid_rightHeadRow});
                 var divRightTableBody = DOM.Create('tbody', {parent: divRightTable, id:panel._divid_rightBody});
 
 
@@ -209,8 +205,10 @@ define([
              * Attached the html event handlers after DOM insertion
              */
             panel.attachEventHandlers = function() {
-                var $ElLeftHeadTitleRow = $('#'+panel._divid_leftHeadTitleRow);
-                var $ElRightHeadTitleRow = $('#'+panel._divid_rightHeadTitleRow);
+                var $ElLeftHeadRow = $('#'+panel._divid_leftHeadRow);
+                var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
+                var $ElRightBody = $('#'+panel._divid_rightBody);
+                var $ElLeftBody = $('#'+panel._divid_leftBody);
 
                 var headerLeftHtml = '';
                 var headerRightHtml = '';
@@ -233,38 +231,13 @@ define([
                     else
                         headerLeftHtml += cell.toString();
                 });
-                $ElLeftHeadTitleRow.html(headerLeftHtml);
-                $ElRightHeadTitleRow.html(headerRightHtml);
-
-
-                var $ElLeftHeadFilterRow = $('#'+panel._divid_leftHeadFilterRow);
-                var $ElRightHeadFilterRow = $('#'+panel._divid_rightHeadFilterRow);
-                var headerLeftFilterHtml = '';
-                var headerRightFilterHtml = '';
-                $.each(panel._columns, function createHeader (colNr, colInfo) {
-                    var cell = DOM.Create('th', {id:panel._getColSubId('header_filter', colNr)})
-                        .addCssClass('AXMPgTableFilterCell');
-                    if (colInfo.canSort()) {
-                        var input = DOM.Create('input', {})
-                            .addAttribute('type', 'text')
-                            .addCssClass('AXMPgTableFilterInput');
-                        cell.addElem(input);
-                    }
-
-                    if (panel._colIsRightPart(colInfo))
-                        headerRightFilterHtml += cell.toString();
-                    else
-                        headerLeftFilterHtml += cell.toString();
-                });
-                $ElLeftHeadFilterRow.html(headerLeftFilterHtml);
-                $ElRightHeadFilterRow.html(headerRightFilterHtml);
-
+                $ElLeftHeadRow.html(headerLeftHtml);
+                $ElRightHeadRow.html(headerRightHtml);
 
                 $.each(panel._columns, function(colNr, colInfo) {
                     var $ElColDrag = panel._getColSub$El('dragger', colNr);
                     var $ElCol =panel._getColSub$El(colNr, '');
                     var $ElColHeader =panel._getColSub$El('header', colNr);
-                    var $ElColHeaderFilter =panel._getColSub$El('header_filter', colNr);
                     if (colInfo.canOpen())
                         $ElColHeader.mousedown(function(ev) {
                             colInfo.callOnOpen();
@@ -273,12 +246,6 @@ define([
                     $ElColHeader.find('.AXMPgTableColSortBox').mousedown(function() {
                         panel._toggleSortByField(colInfo._id);
                     });
-
-                    var $ElFilter = $ElColHeaderFilter.find('.AXMPgTableFilterInput');
-                    $ElFilter.on('input', function() {
-                        console.log("Filter: " + $ElFilter.val());
-                    });
-
                     if (panel._colIsRightPart(colInfo)) {
                         var dispSizeStart = 0;
                         AXMUtils.create$ElDragHandler($ElColDrag,
@@ -296,8 +263,6 @@ define([
                     }
                 });
 
-
-                var $ElLeftBody = $('#'+panel._divid_leftBody);
                 $ElLeftBody.click(function(event) {
                     panel._handleCellClicked($(event.target),
                         {
@@ -306,21 +271,20 @@ define([
                         }
                     );
                 });
-
-                var $ElRightBody = $('#'+panel._divid_rightBody);
                 $ElRightBody.click(function(event) {
                     panel._handleCellClicked($(event.target),
-                        {
-                            shiftPressed: event.shiftKey,
+                    {
+                        shiftPressed: event.shiftKey,
                             controlPressed: event.ctrlKey
-                        }
+                    }
                     );
                 });
 
                 AXMUtils.create$ElScrollHandler(panel._getSub$El('leftTableScrollContainer'), panel._handleScrolled);
                 AXMUtils.create$ElScrollHandler(panel._getSub$El('rightTableScrollContainer'), panel._handleScrolled);
 
-                $ElRightBody.contextmenu(function(event) {
+                $('#'+panel._divid_rightBody).contextmenu(function(event) {
+                    //alert('contextmenu');
                     event.stopPropagation();
                     event.preventDefault();
                     return false;
@@ -336,8 +300,8 @@ define([
              */
             panel.detachEventHandlers = function() {
                 if(panel){
-                    var $ElLeftHeadRow = $('#'+panel._divid_leftHeadTitleRow);
-                    var $ElRightHeadRow = $('#'+panel._divid_rightHeadTitleRow);
+                    var $ElLeftHeadRow = $('#'+panel._divid_leftHeadRow);
+                    var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
                     var $ElRightBody = $('#'+panel._divid_rightBody);
                     var $ElLeftBody = $('#'+panel._divid_leftBody);
 
@@ -899,7 +863,7 @@ define([
                 var leftWidth = $('#'+panel._id+'_leftTableScrollContainer').width();
                 $('#'+panel._id+'_rightTableScrollContainer').width((panel._availableWidth-leftWidth)+'px');
 
-                var $ElRightHeadRow = $('#'+panel._divid_rightHeadTitleRow);
+                var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
                 var $ElRightBody = $('#'+panel._divid_rightBody);
                 var tableHeight = $ElRightBody.height();
                 var rowFirst = panel._tableOffset;
