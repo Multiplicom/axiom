@@ -418,48 +418,35 @@ define([
         };
 
         /**
-         * Creates a mouse scroll handler for a jQuery element
+         * Creates a mouse wheel handler for a jQuery element
          * @param {jQuery} $El - jQuery element
          * @param {function} handler - called when scrolling happens
          */
         Module.create$ElScrollHandler = function($El, handler, preventDefault) {
 
-            var getMouseWheelDeltaY = function (ev) {
-                var ev1 = ev.originalEvent || ev;
-                if ((ev1.wheelDeltaX !== undefined) && (ev1.wheelDelta) ) { // check that we are scrolling vertically
-                    if (Math.abs(ev1.wheelDeltaX) >= Math.abs(ev1.wheelDelta))
-                        return 0;
+            var getOriginalEvent = function(ev) { return ev.originalEvent || ev; };
+
+            var getRawDeltaX = function (ev) { return getOriginalEvent(ev).deltaX / 16; };
+            var getRawDeltaY = function(ev) { return -getOriginalEvent(ev).deltaY / 16; };
+
+            var getScrollDirection = function(ev) {
+                // prefer a single direction for scrolling; the direction with the largest delta.
+                if (Math.abs(getRawDeltaX(ev)) >= Math.abs(getRawDeltaY(ev))) {
+                    return 'X';
+                } else {
+                    return 'Y';
                 }
-
-                if (ev1.wheelDelta) { // Chrome, Safari
-                    delta = ev1.wheelDelta / 120;
-                } else if (ev.deltaY) { // FF, IE
-                    delta = ev.deltaY * (ev.deltaFactor/16 || 1);  // IE doesn't like if we use 'ev1' instead of 'ev'
-                } else if (ev1.detail) { // not sure when this is used, or why it's undefined, 0 or NaN
-                    delta = -ev1.detail / 3;
-                }
-
-                // console.log({wd: ev1.wheelDelta, dY: ev.deltaY, dF: ev.deltaFactor, detail: -ev.detail});
-
-                return delta;
             };
 
-            var getMouseWheelDeltaX = function (ev) {
-                var ev1 = ev;
-                if (ev.originalEvent)
-                    ev1 = ev.originalEvent;
-                if ((ev1.wheelDeltaX !== undefined) && (ev1.wheelDelta) ) { // check that we are scrolling horizontally
-                    if (Math.abs(ev1.wheelDeltaX) >= Math.abs(ev1.wheelDelta))
-                        return ev1.wheelDeltaX / 120;
-                }
-                return 0;
-            };
+            var getDeltaX = function(ev) { return getScrollDirection(ev) === 'X' ? getRawDeltaX(ev) : 0; };
+            var getDeltaY = function(ev) { return getScrollDirection(ev) === 'Y' ? getRawDeltaY(ev) : 0; };
 
-            $El.bind('mousewheel', function(ev) {
+            $El.bind('wheel', function(ev) {
+
                 Module.closeTransientPopups();
                 handler({
-                    deltaY: getMouseWheelDeltaY(ev),
-                    deltaX: getMouseWheelDeltaX(ev),
+                    deltaX: getDeltaX(ev),
+                    deltaY: getDeltaY(ev),
                     controlPressed: ev.ctrlKey,
                     altPressed: ev.altKey,
                     event: ev
