@@ -84,7 +84,7 @@ define([
 
                     return handlers;
                 },
-                {},
+                {}
             );
 
             if (containsKey(properties, "id")) {
