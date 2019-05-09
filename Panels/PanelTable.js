@@ -975,6 +975,28 @@ define([
 
             theFrame.addControl(thePanel._pagerInfo);
 
+            if (tableData.supportsFilterExpressions()) {
+
+                var btFilterQuery = Controls.Edit({
+                    height: 20,
+                    width: 150,
+                    placeHolder: _TRL('Filter rows...')
+                });
+
+                var handleQueryUpdate = function() {
+                    tableData.applyFilterExpression(btFilterQuery.getValue());
+                    // invalidate and scroll to the top
+                    thePanel.navigateFirstPage();
+                }
+
+                btFilterQuery.addNotificationHandler(AXMUtils.debounce(handleQueryUpdate, 300));
+
+                theFrame.addSeparator();
+
+                theFrame.addControl(btFilterQuery);
+            }
+
+
             theFrame.getTablePanel = function() {
                 return thePanel;
             };

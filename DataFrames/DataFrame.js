@@ -658,23 +658,6 @@ define([
 
             };
 
-            dataFrame.filterRows = function(filterFunction) {
-                var filteredIndexes = [];
-                for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
-                    var rowInfo = dataFrame.getRowInfo(rowNr);
-                    if (filterFunction(rowInfo))
-                        filteredIndexes.push(rowNr);
-                }
-                dataFrame._rowCount = filteredIndexes.length;
-                $.each(dataFrame.getProperties(), function(idx, propInfo) {
-                    var filteredData = [];
-                    for (var i = 0; i < filteredIndexes.length; i++)
-                        filteredData.push(propInfo.data[filteredIndexes[i]]);
-                    propInfo.data = filteredData;
-                });
-            };
-
-
             dataFrame.getContentString_Raw = function() {
                 var str = '';
                 str += '#RD_TEXT\n';

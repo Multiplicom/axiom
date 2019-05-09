@@ -17,12 +17,12 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Msg", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Controls/Controls", "AXM/Windows/SimplePopups", "AXM/Tables/TableData", "AXM/Tables/TableInfo",
-        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty", "AXM/DataFrames/ExecuteCode", "AXM/DataFrames/CopyProperty", "AXM/DataFrames/Append"
+        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty", "AXM/DataFrames/ExecuteCode", "AXM/DataFrames/CopyProperty", "AXM/DataFrames/Append", "AXM/DataFrames/Filter/FilterExpression"
     ],
     function (
         require, $, _,
         AXMUtils, Msg, PopupWindow, Frame, PanelForm, PanelTable, Controls, SimplePopups, TableData, TableInfo,
-        ViewRow, CalcProperty, ExecuteCode, CopyProperty, Append
+        ViewRow, CalcProperty, ExecuteCode, CopyProperty, Append, FilterExpression
     ) {
 
         var Module = {
@@ -56,6 +56,11 @@ define([
             for (var i=0; i<dataFrame.getRowCount(); i++)
                 tableData.sortIdx.push(i);
 
+            // Init filtering
+            tableData.filterIdx = [];
+            for (var i=0; i<dataFrame.getRowCount(); i++)
+                tableData.filterIdx.push(i);
+
             var tableInfo = TableInfo.tableInfo(typeId);
 
             tableData.resetBuffer = function() {
@@ -80,6 +85,11 @@ define([
                         return discr;
                     });
                 }
+
+                // reset filtering
+                tableData.filterIdx = [];
+                for (var i=0; i<dataFrame.getRowCount(); i++)
+                    tableData.filterIdx.push(i);
             };
 
 
@@ -88,7 +98,7 @@ define([
             };
 
             tableData.getRow = function(rowNr) {
-                return dataFrame.getRowInfo(tableData.sortIdx[rowNr]);
+                return dataFrame.getRowInfo(tableData.sortIdx[tableData.filterIdx[rowNr]]);
             };
 
             tableData.getRowId = function(rowNr) {
@@ -99,9 +109,25 @@ define([
             };
 
             tableData.getRowCount = function() {
-                return dataFrame.getRowCount();
+                return tableData.filterIdx.length;
             };
 
+            tableData.supportsFilterExpressions = function() { return true; };
+
+            tableData.applyFilterExpression = function(expressionString) {
+                tableData.filterRows(FilterExpression.create(expressionString).evaluate);
+            };
+
+            tableData.filterRows = function(filterFunction) {
+                tableData.filterIdx = [];
+                for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
+                    // filter the rows in sorted order, so filterIdx refers to indices in sortIdx
+                    var rowInfo = dataFrame.getRowInfo(tableData.sortIdx[rowNr]);
+                    if (filterFunction(rowInfo))
+                        tableData.filterIdx.push(rowNr);
+                }
+                console.log("filtered indexes: " + tableData.filterIdx.length);
+            };
 
             $.each(dataFrame.getProperties(), function(idx, propInfo) {
                 var colInfo = tableInfo.addColumn(propInfo.getId());
