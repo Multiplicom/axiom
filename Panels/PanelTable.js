@@ -980,7 +980,8 @@ define([
                 var btFilterQuery = Controls.Edit({
                     height: 20,
                     width: 150,
-                    placeHolder: _TRL('Filter rows...')
+                    placeHolder: _TRL('Filter rows...'),
+                    hasClearButton: true
                 });
 
                 var handleQueryUpdate = function() {

@@ -19,7 +19,7 @@ main -> _                                   {% function(d) { return { type: 'emp
 
 # expansion of the conditions: one or more single condition expressions
 conditions -> condition _ AND _ conditions  {% function(d) { return [d[0]].concat(d[4]) } %}
-    | condition                             {% id %}
+    | condition                             {% function(d) { return [d[0]] } %}
 
 # a single condition can be
 # - a numerical comparison:
@@ -45,7 +45,7 @@ NUMCOMP -> GT                               {% function(d) { return 'GT' } %}
     | EQ                                    {% function(d) { return 'EQ' } %}
 
 EQ -> "==" | "=" | "is"
-LIKE -> "~"
+LIKE -> "~" | "like" | "LIKE"
 GT -> ">"
 GTE -> ">=" | "=>"
 LT -> "<"
@@ -55,8 +55,9 @@ BETWEEN -> "BETWEEN" | "between"
 
 field -> [\w]:+                             {% function(d) { return d[0].join('') } %}
 num -> [\d\.]:+                             {% function(d) { return parseFloat(d[0].join('')) } %}
-str -> "\"" [\w]:+ "\""                     {% function(d) { return d[1].join('') } %}
-    | "'" [\w]:+ "'"                        {% function(d) { return d[1].join('') } %}
+str -> "\"" [^\s]:+ "\""                     {% function(d) { return d[1].join('') } %}
+    | "'" [^\s]:+ "'"                        {% function(d) { return d[1].join('') } %}
+    | [\w]:+                                {% function(d) { return d[0].join('') } %}
 anyVal -> [^\s]:+                           {% function(d) { return d[0].join('') } %}
 
 # whitespace

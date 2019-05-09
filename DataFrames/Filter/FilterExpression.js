@@ -81,7 +81,7 @@ define([
                     case 'LTE': return field <= condition.value;
                     // no type coercion! value should be parsed already to the correct type
                     case 'EQ': return field === condition.value;
-                    case 'LIKE': return field > condition.value;
+                    case 'LIKE': return field.toString().toLowerCase().includes(condition.value.toLowerCase());
                     case 'BETWEEN': return field >= condition.low && field <= condition.high;
                     default: return false;
                 }

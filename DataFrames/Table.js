@@ -126,7 +126,6 @@ define([
                     if (filterFunction(rowInfo))
                         tableData.filterIdx.push(rowNr);
                 }
-                console.log("filtered indexes: " + tableData.filterIdx.length);
             };
 
             $.each(dataFrame.getProperties(), function(idx, propInfo) {
