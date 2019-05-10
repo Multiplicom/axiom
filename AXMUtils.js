@@ -426,7 +426,7 @@ define([
 
             var getOriginalEvent = function(ev) { return ev.originalEvent || ev; };
 
-            var getRawDeltaX = function (ev) { return getOriginalEvent(ev).deltaX / 16; };
+            var getRawDeltaX = function (ev) { return -getOriginalEvent(ev).deltaX / 16; };
             var getRawDeltaY = function(ev) { return -getOriginalEvent(ev).deltaY / 16; };
 
             var getScrollDirection = function(ev) {
