@@ -18,7 +18,7 @@ main -> _                                        {% function(d) { return { type:
     | _ anyVal _                                 {% function(d) { return { type: 'globalQuery', value: d[1] } } %}
 
 # expansion of the conditions: one or more single condition expressions
-conditions -> condition __ AND __ conditions     {% function(d) { return [d[0]].concat(d[4]) } %}
+conditions -> condition _ AND _ conditions       {% function(d) { return [d[0]].concat(d[4]) } %}
     | condition                                  {% function(d) { return [d[0]] } %}
 
 # a single condition can be
@@ -30,12 +30,12 @@ conditions -> condition __ AND __ conditions     {% function(d) { return [d[0]].
 #    property = 'abc'
 #    property ~ 'val1|val2'
 condition -> property _ NUMCOMP _ num            {% function(d) { return { property: d[0], op: d[2], value: d[4] } } %}
-    | property __ BETWEEN __ num __ AND __ num   {% function(d) { return { property: d[0], op: 'BETWEEN', low: d[4], high: d[8] } } %}
+    | property _ BETWEEN _ num _ AND _ num       {% function(d) { return { property: d[0], op: 'BETWEEN', low: d[4], high: d[8] } } %}
     | property _ STRCOMP _ str                   {% function(d) { return { property: d[0], op: d[2], value: d[4] } } %}
 
 # string comparison operators
 STRCOMP -> EQ                                    {% function(d) { return 'EQ' } %}
-    | __ LIKE __                                 {% function(d) { return 'LIKE' } %}
+    | LIKE                                       {% function(d) { return 'LIKE' } %}
 
 # numerical comparison operators
 NUMCOMP -> GT                                    {% function(d) { return 'GT' } %}
@@ -44,20 +44,20 @@ NUMCOMP -> GT                                    {% function(d) { return 'GT' } 
     | LTE                                        {% function(d) { return 'LTE' } %}
     | EQ                                         {% function(d) { return 'EQ' } %}
 
-EQ -> "==" | "=" | "is"
-LIKE -> "~" | "like" | "LIKE"
+
+EQ -> "==" | "=" | __ "is" __
+LIKE -> "~" | __ "like" __ | __ "LIKE" __
 GT -> ">"
 GTE -> ">=" | "=>"
 LT -> "<"
 LTE -> "<=" | "=<"
-AND -> "AND" | "and"
-BETWEEN -> "BETWEEN" | "between"
+AND -> __ "AND" __ | __ "and" __
+BETWEEN -> __ "BETWEEN" __ | __ "between" __
 
 property -> [\w]:+                               {% function(d) { return d[0].join('') } %}
 num -> [\d\.]:+                                  {% function(d) { return parseFloat(d[0].join('')) } %}
 str -> "\"" [^\s]:+ "\""                         {% function(d) { return d[1].join('') } %}
     | "'" [^\s]:+ "'"                            {% function(d) { return d[1].join('') } %}
-    | [\w]:+                                     {% function(d) { return d[0].join('') } %}
 anyVal -> [^\s]:+                                {% function(d) { return d[0].join('') } %}
 
 # optional whitespace

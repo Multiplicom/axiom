@@ -76,7 +76,7 @@ define([
                         if (val === null || val === undefined)
                             return false;
                         if (!(val instanceof String))
-                            val = val.toString()
+                            val = val.toString();
                         return val.toLowerCase().includes(queryLowerCase);
 
                     });
