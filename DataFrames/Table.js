@@ -17,12 +17,12 @@
 define([
         "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/Msg", "AXM/Windows/PopupWindow", "AXM/Panels/Frame", "AXM/Panels/PanelForm", "AXM/Panels/PanelTable", "AXM/Controls/Controls", "AXM/Windows/SimplePopups", "AXM/Tables/TableData", "AXM/Tables/TableInfo",
-        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty", "AXM/DataFrames/ExecuteCode", "AXM/DataFrames/CopyProperty", "AXM/DataFrames/Append", "AXM/DataFrames/Filter/FilterExpression"
+        "AXM/DataFrames/ViewRow", "AXM/DataFrames/CalcProperty", "AXM/DataFrames/ExecuteCode", "AXM/DataFrames/CopyProperty", "AXM/DataFrames/Append"
     ],
     function (
         require, $, _,
         AXMUtils, Msg, PopupWindow, Frame, PanelForm, PanelTable, Controls, SimplePopups, TableData, TableInfo,
-        ViewRow, CalcProperty, ExecuteCode, CopyProperty, Append, FilterExpression
+        ViewRow, CalcProperty, ExecuteCode, CopyProperty, Append
     ) {
 
         var Module = {
@@ -114,8 +114,8 @@ define([
 
             tableData.supportsFilterExpressions = function() { return true; };
 
-            tableData.applyFilterExpression = function(expressionString) {
-                tableData.filterRows(FilterExpression.create(expressionString).evaluate);
+            tableData.applyFilterExpression = function(expression) {
+                tableData.filterRows(expression.evaluate);
             };
 
             /**

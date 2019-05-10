@@ -19,14 +19,16 @@ define([
         "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg", "AXM/Icon",
         "AXM/Windows/SimplePopups",
         "AXM/Tables/TableInfo",
-        "js.cookie"
+        "js.cookie",
+        "AXM/DataFrames/Filter/FilterExpression"
     ],
     function (
         require, $, _, Blob, FileSaver, he,
         AXMUtils, DOM, Controls, Frame, PanelBase, Msg, Icon,
         SimplePopups,
         TableInfo,
-        Cookies
+        Cookies,
+        FilterExpression
     ) {
 
         /**
@@ -980,7 +982,10 @@ define([
                 });
 
                 var handleQueryUpdate = function() {
-                    tableData.applyFilterExpression(btFilterQuery.getValue());
+                    var expression = FilterExpression.create(btFilterQuery.getValue());
+                    btFilterQuery.setValid(expression.isValid());
+
+                    tableData.applyFilterExpression(expression);
                     // invalidate and scroll to the top
                     thePanel.navigateFirstPage();
                 }

@@ -45,6 +45,10 @@ define([
                 console.log(err);
             }
 
+            expr.isValid = function() {
+                return !!expr.parsed;
+            };
+
             /**
              * Evaluates a query across all properties of a data frame.
              * A row matches the query if any of its properties contains the query string (case-insensitive)
@@ -150,7 +154,7 @@ define([
                 var nRows = dataFrameProps[0].data.length;
 
                 // invalid expression: nothing matches
-                if (!expr.parsed)
+                if (!expr.isValid())
                     return [];
 
                 // empty expression (whitespace): everything matches
