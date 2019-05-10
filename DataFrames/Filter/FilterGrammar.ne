@@ -27,8 +27,8 @@ conditions -> condition _ AND _ conditions       {% function(d) { return [d[0]].
 # - a range intersection:
 #    field between 1 and 2
 # - a string comparison:
-#    property = 'abc'
-#    property ~ 'val1|val2'
+#    property = 'abc' for exact matching
+#    property like 'val1' for partial matching
 condition -> property _ NUMCOMP _ num            {% function(d) { return { property: d[0], op: d[2], value: d[4] } } %}
     | property _ BETWEEN _ num _ AND _ num       {% function(d) { return { property: d[0], op: 'BETWEEN', low: d[4], high: d[8] } } %}
     | property _ STRCOMP _ str                   {% function(d) { return { property: d[0], op: d[2], value: d[4] } } %}
