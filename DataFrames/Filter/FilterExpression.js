@@ -57,7 +57,6 @@ define([
              * @return Array[int]: indices of rows matching the query.
              */
             expr.evaluateGlobalQuery = function(dataFrameProps, query) {
-
                 var nRows = dataFrameProps[0].data.length;
                 var queryLowerCase = query.toLowerCase();
 
@@ -71,23 +70,20 @@ define([
                 var rowsPassing = [];
 
                 _.each(dataFrameProps, function(prop) {
-
                     // evaluate a single property (column)
-
+                    // only evaluate rows that are not passing yet
                     var rowsPassingProp = _.filter(rowsToEvaluate, function(rowIdx) {
-
                         var val = prop.data[rowIdx];
                         if (val === null || val === undefined)
                             return false;
                         if (!(val instanceof String))
                             val = val.toString();
                         return val.toLowerCase().includes(queryLowerCase);
-
                     });
 
+                    // remove the newly passing rows from the evaluation list,
                     rowsToEvaluate = _.difference(rowsToEvaluate, rowsPassingProp);
                     rowsPassing = rowsPassing.concat(rowsPassingProp);
-
                 });
 
                 return rowsPassing;
@@ -127,8 +123,7 @@ define([
                 var nRows = dataFrameProps[0].data.length;
 
                 // we'll evaluate the query condition-by-condition.
-
-                // the rows we still need to evaluate in the next condition
+                // rowsLeft == the rows we still need to evaluate in the next condition
                 // (those that already match all previous conditions)
                 var rowsLeft = _.range(nRows);
 
