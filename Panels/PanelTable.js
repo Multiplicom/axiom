@@ -971,15 +971,10 @@ define([
                 text:''
             });
 
-            theFrame.addSeparator();
-
-            theFrame.addControl(thePanel._pagerInfo);
-
             if (tableData.supportsFilterExpressions()) {
 
                 var btFilterQuery = Controls.Edit({
-                    height: 20,
-                    width: 150,
+                    width: 200,
                     placeHolder: _TRL('Filter rows...'),
                     hasClearButton: true
                 });
@@ -990,13 +985,16 @@ define([
                     thePanel.navigateFirstPage();
                 }
 
-                btFilterQuery.addNotificationHandler(AXMUtils.debounce(handleQueryUpdate, 300));
+                btFilterQuery.addNotificationHandler(AXMUtils.debounce(handleQueryUpdate, 200));
 
                 theFrame.addSeparator();
 
                 theFrame.addControl(btFilterQuery);
             }
 
+            theFrame.addSeparator();
+
+            theFrame.addControl(thePanel._pagerInfo);
 
             theFrame.getTablePanel = function() {
                 return thePanel;

@@ -6,15 +6,15 @@ var grammar = {
     Lexer: undefined,
     ParserRules: [
     {"name": "main", "symbols": ["_"], "postprocess": function(d) { return { type: 'empty' } }},
-    {"name": "main", "symbols": ["_", "conditions", "_"], "postprocess": function(d) { return { type: 'fieldConditions', conditions: d[1] } }},
+    {"name": "main", "symbols": ["_", "conditions", "_"], "postprocess": function(d) { return { type: 'propertyConditions', conditions: d[1] } }},
     {"name": "main", "symbols": ["_", "anyVal", "_"], "postprocess": function(d) { return { type: 'globalQuery', value: d[1] } }},
-    {"name": "conditions", "symbols": ["condition", "_", "AND", "_", "conditions"], "postprocess": function(d) { return [d[0]].concat(d[4]) }},
+    {"name": "conditions", "symbols": ["condition", "__", "AND", "__", "conditions"], "postprocess": function(d) { return [d[0]].concat(d[4]) }},
     {"name": "conditions", "symbols": ["condition"], "postprocess": function(d) { return [d[0]] }},
-    {"name": "condition", "symbols": ["field", "_", "NUMCOMP", "_", "num"], "postprocess": function(d) { return { field: d[0], op: d[2], value: d[4] } }},
-    {"name": "condition", "symbols": ["field", "_", "BETWEEN", "_", "num", "_", "AND", "_", "num"], "postprocess": function(d) { return { field: d[0], op: 'BETWEEN', low: d[4], high: d[8] } }},
-    {"name": "condition", "symbols": ["field", "_", "STRCOMP", "_", "str"], "postprocess": function(d) { return { field: d[0], op: d[2], value: d[4] } }},
+    {"name": "condition", "symbols": ["property", "_", "NUMCOMP", "_", "num"], "postprocess": function(d) { return { property: d[0], op: d[2], value: d[4] } }},
+    {"name": "condition", "symbols": ["property", "__", "BETWEEN", "__", "num", "__", "AND", "__", "num"], "postprocess": function(d) { return { property: d[0], op: 'BETWEEN', low: d[4], high: d[8] } }},
+    {"name": "condition", "symbols": ["property", "_", "STRCOMP", "_", "str"], "postprocess": function(d) { return { property: d[0], op: d[2], value: d[4] } }},
     {"name": "STRCOMP", "symbols": ["EQ"], "postprocess": function(d) { return 'EQ' }},
-    {"name": "STRCOMP", "symbols": ["LIKE"], "postprocess": function(d) { return 'LIKE' }},
+    {"name": "STRCOMP", "symbols": ["__", "LIKE", "__"], "postprocess": function(d) { return 'LIKE' }},
     {"name": "NUMCOMP", "symbols": ["GT"], "postprocess": function(d) { return 'GT' }},
     {"name": "NUMCOMP", "symbols": ["GTE"], "postprocess": function(d) { return 'GTE' }},
     {"name": "NUMCOMP", "symbols": ["LT"], "postprocess": function(d) { return 'LT' }},
@@ -48,9 +48,9 @@ var grammar = {
     {"name": "BETWEEN", "symbols": ["BETWEEN$string$1"]},
     {"name": "BETWEEN$string$2", "symbols": [{"literal":"b"}, {"literal":"e"}, {"literal":"t"}, {"literal":"w"}, {"literal":"e"}, {"literal":"e"}, {"literal":"n"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "BETWEEN", "symbols": ["BETWEEN$string$2"]},
-    {"name": "field$ebnf$1", "symbols": [/[\w]/]},
-    {"name": "field$ebnf$1", "symbols": ["field$ebnf$1", /[\w]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "field", "symbols": ["field$ebnf$1"], "postprocess": function(d) { return d[0].join('') }},
+    {"name": "property$ebnf$1", "symbols": [/[\w]/]},
+    {"name": "property$ebnf$1", "symbols": ["property$ebnf$1", /[\w]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "property", "symbols": ["property$ebnf$1"], "postprocess": function(d) { return d[0].join('') }},
     {"name": "num$ebnf$1", "symbols": [/[\d\.]/]},
     {"name": "num$ebnf$1", "symbols": ["num$ebnf$1", /[\d\.]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "num", "symbols": ["num$ebnf$1"], "postprocess": function(d) { return parseFloat(d[0].join('')) }},
@@ -68,7 +68,10 @@ var grammar = {
     {"name": "anyVal", "symbols": ["anyVal$ebnf$1"], "postprocess": function(d) { return d[0].join('') }},
     {"name": "_$ebnf$1", "symbols": []},
     {"name": "_$ebnf$1", "symbols": ["_$ebnf$1", /[\s]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "_", "symbols": ["_$ebnf$1"], "postprocess": function(d) { return null }}
+    {"name": "_", "symbols": ["_$ebnf$1"], "postprocess": function(d) { return null }},
+    {"name": "__$ebnf$1", "symbols": [/[\s]/]},
+    {"name": "__$ebnf$1", "symbols": ["__$ebnf$1", /[\s]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": function(d) { return null }}
 ]
   , ParserStart: "main"
 }

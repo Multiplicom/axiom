@@ -118,13 +118,21 @@ define([
                 tableData.filterRows(FilterExpression.create(expressionString).evaluate);
             };
 
+            /**
+             * Filter the rows of the underlying dataframe, by applying a filter function.
+             * The filter function should return an array with indices of rows passing the filter.
+             * @param filterFunction: the filter function, with signature `function(dataFrameProperties): int[]`
+             */
             tableData.filterRows = function(filterFunction) {
+                // for performance reasons, don't use a row-based but column-based evaluator,
+                // avoiding any col-major to row-major conversions.
+                var dataFrameFilteredIdx = filterFunction(dataFrame.getProperties());
+
+                // we have the filtered rows in underlying data frame order;
+                // now sort them according to the sortIdx.
                 tableData.filterIdx = [];
-                for (var rowNr = 0; rowNr < dataFrame.getRowCount(); rowNr++) {
-                    // filter the rows in sorted order, so filterIdx refers to indices in sortIdx
-                    var rowInfo = dataFrame.getRowInfo(tableData.sortIdx[rowNr]);
-                    if (filterFunction(rowInfo))
-                        tableData.filterIdx.push(rowNr);
+                for (var rowNr = 0; rowNr < dataFrameFilteredIdx.length; rowNr++) {
+                    tableData.filterIdx.push(tableData.sortIdx[dataFrameFilteredIdx[rowNr]]);
                 }
             };
 
@@ -142,7 +150,7 @@ define([
                 title: '{name} (Table)'.AXMInterpolate({name: dataFrame.getName()}),
                 blocking:false,
                 autoCenter: true,
-                sizeX: 700,
+                sizeX: 800,
                 sizeY: 500,
                 canDock:true
             });
