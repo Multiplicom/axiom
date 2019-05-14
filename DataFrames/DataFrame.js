@@ -771,7 +771,7 @@ define([
                 win.setRootFrame(rootFrame);
 
                 rootFrame.addCommand({
-                    icon: "fa-external-link"
+                    icon: "fa-download"
                 }, function() {
                     var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
                     FileSaver(blob,  'data.txt');

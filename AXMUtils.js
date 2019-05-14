@@ -722,6 +722,11 @@ define([
             FileSaver(blob, fileName);
         };
 
+        /**
+         * Saves a base64-encoded data URL to the client's computer.
+         * @param url the data URL
+         * @param fileName the file name to save as
+         */
         Module.saveDataUrl = function(url, fileName) {
             var comps = url.split(',');
             var metadata = comps[0];
@@ -735,6 +740,28 @@ define([
 
             var blob = new Blob([new Uint8Array(binary)], {type: contentType});
             FileSaver(blob, fileName);
+        };
+
+        /**
+         * Saves the file obtained by fetching the response from an HTTP URL to the client's computer.
+         * @param url the HTTP URL
+         * @param fileName the file name to save as
+         */
+        Module.saveHttpUrl = function(url, fileName) {
+            // jQuery cannot handle binary response data without adding a special transport adapter.
+            // Therefore, use XMLHttpRequest directly.
+            // ref: https://www.henryalgus.com/reading-binary-files-using-jquery-ajax/
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'blob';
+            xhr.onload = function(e) {
+                if (this.status === 200) {
+                    // get binary data as a response
+                    var blob = this.response;
+                    FileSaver(blob, fileName);
+                }
+            };
+            xhr.send();
         };
 
         /**
