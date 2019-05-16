@@ -31,6 +31,15 @@ body {
     outline: none;
 }
 
+.AXMEdit.invalid {
+    border-color: #990000;
+    background-color: #f7e2e9;
+}
+
+.AXMEdit.invalid:hover {
+    background-color: #f1ceda;
+}
+
 /*************************** Frames  **************************************************/
 
 .AXMFrame, .AXMSplitter {
