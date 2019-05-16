@@ -50,55 +50,56 @@ define([
             var primKey = objectType.getPrimKey();
 
             var tableData = TableData.create(typeId, primKey);
-
-            // Init sorting
-            tableData.sortIdx = [];
-            for (var i=0; i<dataFrame.getRowCount(); i++)
-                tableData.sortIdx.push(i);
-
-            // Init filtering
-            tableData.filterIdx = [];
-            for (var i=0; i<dataFrame.getRowCount(); i++)
-                tableData.filterIdx.push(i);
-
             var tableInfo = TableInfo.tableInfo(typeId);
 
-            tableData.resetBuffer = function() {
-                var sortColId = tableData.getSortColumn();
-                var sortInv = tableData.getSortInverse();
-                if (sortColId) {
-                    var sortVals = [];
-                    // previous Indexes used for stable sorting
-                    var previousIndexes = [];
-                    for (var i=0; i<dataFrame.getRowCount(); i++) {
-                        sortVals.push(dataFrame.getRowInfo(i)[sortColId]);
-                        previousIndexes[tableData.sortIdx[i]] = i;
-                    }
-                    tableData.sortIdx.sort(function(idx1, idx2) {
-                        var val1 = sortVals[idx1];
-                        var val2 = sortVals[idx2];
-                        var discr = ((val1 < val2) ? -1 : ((val1 > val2) ? 1 : 0));
-                        if (discr === 0)
-                            discr = previousIndexes[idx1] - previousIndexes[idx2];
-                        if (sortInv)
-                            discr = -discr;
-                        return discr;
-                    });
+            /**
+             * Populate the sortIdx by sorting the filterIdx based on the table sort column + direction
+             */
+            tableData._applySort = function() {
+
+                // default: the underlying data frame order, but only those indexes that have been filtered
+                // create a copy!
+                tableData.sortIdx = tableData.filterIdx.slice();
+
+                // if a sort col is set: use its values to sort
+                // stable sort, based on the underlying data frame order (which is fixed for the lifetime of the DF)
+                if (tableData.getSortColumn()) {
+                    var sortByVals = dataFrame.getProperty(tableData.getSortColumn()).data;
+                    tableData.sortIdx = _.sortBy(tableData.sortIdx, function(idx) { return sortByVals[idx]; });
                 }
 
-                // reset filtering
-                tableData.filterIdx = [];
-                for (var i=0; i<dataFrame.getRowCount(); i++)
-                    tableData.filterIdx.push(i);
+                if (tableData.getSortInverse())
+                    tableData.sortIdx = tableData.sortIdx.reverse();
             };
 
+            /**
+             * Populate the filterIdx by evaluating the filter expression set on the table.
+             */
+            tableData._applyFilter = function() {
+
+                // `dataFrameFilteredIdx` contains the row indexes from the original dataFrame that match the filter
+                // default filter: none (all indexes match)
+                tableData.filterIdx = _.range(dataFrame.getRowCount());
+
+                // if an expression is set, evaluate it
+                // for performance reasons, don't use a row-based but column-based evaluator,
+                // avoiding any col-major to row-major conversions.
+                if (tableData.filterExpression)
+                    tableData.filterIdx = tableData.filterExpression.evaluate(dataFrame.getProperties());
+            };
+
+            tableData.resetBuffer = function() {
+                // sort depends on filter!
+                tableData._applyFilter();
+                tableData._applySort();
+            };
 
             tableData.requireRowRange = function() {
                 return true;
             };
 
             tableData.getRow = function(rowNr) {
-                return dataFrame.getRowInfo(tableData.sortIdx[tableData.filterIdx[rowNr]]);
+                return dataFrame.getRowInfo(tableData.sortIdx[rowNr]);
             };
 
             tableData.getRowId = function(rowNr) {
@@ -112,28 +113,13 @@ define([
                 return tableData.filterIdx.length;
             };
 
-            tableData.supportsFilterExpressions = function() { return true; };
-
-            tableData.applyFilterExpression = function(expression) {
-                tableData.filterRows(expression.evaluate);
+            tableData.supportsFilterExpressions = function() {
+                return true;
             };
 
-            /**
-             * Filter the rows of the underlying dataframe, by applying a filter function.
-             * The filter function should return an array with indices of rows passing the filter.
-             * @param filterFunction: the filter function, with signature `function(dataFrameProperties): int[]`
-             */
-            tableData.filterRows = function(filterFunction) {
-                // for performance reasons, don't use a row-based but column-based evaluator,
-                // avoiding any col-major to row-major conversions.
-                var dataFrameFilteredIdx = filterFunction(dataFrame.getProperties());
-
-                // we have the filtered rows in underlying data frame order;
-                // now sort them according to the sortIdx.
-                tableData.filterIdx = [];
-                for (var rowNr = 0; rowNr < dataFrameFilteredIdx.length; rowNr++) {
-                    tableData.filterIdx.push(tableData.sortIdx[dataFrameFilteredIdx[rowNr]]);
-                }
+            tableData.setFilterExpression = function(expression) {
+                tableData.filterExpression = expression;
+                tableData.resetBuffer();
             };
 
             $.each(dataFrame.getProperties(), function(idx, propInfo) {
@@ -143,6 +129,7 @@ define([
                 colInfo.enableSort();
             });
 
+            // Initialize the sort and filter indexes
             tableData.resetBuffer();
 
             var Compound = Controls.Compound;

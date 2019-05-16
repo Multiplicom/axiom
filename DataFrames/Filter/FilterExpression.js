@@ -42,6 +42,7 @@ define([
                     expr.parsed = parser.results[0];
                 }
             } catch (err) {
+                console.log("Invalid filter expression. Parser returned error:");
                 console.log(err);
             }
 

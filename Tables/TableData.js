@@ -115,7 +115,7 @@ define([
              * To be implemented by subclasses.
              * @param expression
              */
-            tableData.applyFilterExpression = function(expression) {
+            tableData.setFilterExpression = function(expression) {
                 if (tableData.supportsFilterExpressions())
                     Test.reportBug('Not implemented');
             };

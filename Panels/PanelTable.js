@@ -985,7 +985,7 @@ define([
                     var expression = FilterExpression.create(btFilterQuery.getValue());
                     btFilterQuery.setValid(expression.isValid());
 
-                    tableData.applyFilterExpression(expression);
+                    tableData.setFilterExpression(expression);
                     // invalidate and scroll to the top
                     thePanel.navigateFirstPage();
                 }
