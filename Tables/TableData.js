@@ -100,6 +100,25 @@ define([
                 Test.reportBug('Not implemented');
             };
 
+            /**
+             * Returns the table data provider supports filter expressions.
+             * To be overridden by subclasses.
+             * @returns {boolean} Whether the table data provider supports filter expressions.
+             */
+            tableData.supportsFilterExpressions = function() {
+                return false;
+            };
+
+            /**
+             * Sets the expression to filter the table's rows by.
+             * Has no effect unless tableData.supportsFilterExpressions() == true
+             * To be implemented by subclasses.
+             * @param expression
+             */
+            tableData.setFilterExpression = function(expression) {
+                if (tableData.supportsFilterExpressions())
+                    Test.reportBug('Not implemented');
+            };
 
             // Item selection functionality
 
