@@ -798,13 +798,15 @@ define([
          * @returns {Object} - control instance
          * @constructor
          */
-        Module.Check = function(settings) {
+        Module.Check = function(settings, children) {
             var control = Module.SingleControlBase(settings);
             control._width = settings.width || 120;
             control._height = settings.height || 45;
             control._enabled = settings.enabled === false ? false : true;
             control._value = settings.checked || false;
             control._checkedClass = settings.checkedClass || null;
+
+            children = children ? children : [];
 
             control.createHtml = function() {
                 return DOM.Div({}, [
@@ -820,9 +822,11 @@ define([
                     DOM.Label(
                         {
                             id: control._getSubId("label"),
-                            for: control._getSubId(""),
+                            for: control._getSubId("")
                         },
-                        [DOM.Text(settings.text)]
+                        []
+                            .concat(settings.text ? [DOM.Text(settings.text)] : [])
+                            .concat(children)
                     )
                 ]);
             };
