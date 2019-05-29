@@ -19,14 +19,16 @@ define([
         "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg", "AXM/Icon",
         "AXM/Windows/SimplePopups",
         "AXM/Tables/TableInfo",
-        "js.cookie"
+        "js.cookie",
+        "AXM/DataFrames/Filter/FilterExpression"
     ],
     function (
         require, $, _, Blob, FileSaver, he,
         AXMUtils, DOM, Controls, Frame, PanelBase, Msg, Icon,
         SimplePopups,
         TableInfo,
-        Cookies
+        Cookies,
+        FilterExpression
     ) {
 
         /**
@@ -958,6 +960,30 @@ define([
             thePanel._pagerInfo = Controls.Static({
                 text:''
             });
+
+            if (tableData.supportsFilterExpressions()) {
+
+                var btFilterQuery = Controls.Edit({
+                    width: 200,
+                    placeHolder: _TRL('Filter rows...'),
+                    hasClearButton: true
+                });
+
+                var handleQueryUpdate = function() {
+                    var expression = FilterExpression.create(btFilterQuery.getValue());
+                    btFilterQuery.setValid(expression.isValid());
+
+                    tableData.setFilterExpression(expression);
+                    // invalidate and scroll to the top
+                    thePanel.navigateFirstPage();
+                }
+
+                btFilterQuery.addNotificationHandler(AXMUtils.debounce(handleQueryUpdate, 200));
+
+                theFrame.addSeparator();
+
+                theFrame.addControl(btFilterQuery);
+            }
 
             theFrame.addSeparator();
 

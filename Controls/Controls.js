@@ -1310,6 +1310,20 @@ define([
 
 
             /**
+             * Sets whether the control input is valid.
+             * @param valid: boolean indicating whether the control input is valid.
+             */
+            control.setValid = function(valid) {
+                control._valid = valid;
+                $el = $("#" + control._getSubId(''));
+                if (valid)
+                    $el.removeClass('invalid');
+                else
+                    $el.addClass('invalid');
+            };
+
+
+            /**
              * Attaches the html event handlers after DOM insertion
              */
             control.attachEventHandlers = function() {

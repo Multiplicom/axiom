@@ -50,38 +50,49 @@ define([
             var primKey = objectType.getPrimKey();
 
             var tableData = TableData.create(typeId, primKey);
-
-            // Init sorting
-            tableData.sortIdx = [];
-            for (var i=0; i<dataFrame.getRowCount(); i++)
-                tableData.sortIdx.push(i);
-
             var tableInfo = TableInfo.tableInfo(typeId);
 
-            tableData.resetBuffer = function() {
-                var sortColId = tableData.getSortColumn();
-                var sortInv = tableData.getSortInverse();
-                if (sortColId) {
-                    var sortVals = [];
-                    // previous Indexes used for stable sorting
-                    var previousIndexes = [];
-                    for (var i=0; i<dataFrame.getRowCount(); i++) {
-                        sortVals.push(dataFrame.getRowInfo(i)[sortColId]);
-                        previousIndexes[tableData.sortIdx[i]] = i;
-                    }
-                    tableData.sortIdx.sort(function(idx1, idx2) {
-                        var val1 = sortVals[idx1];
-                        var val2 = sortVals[idx2];
-                        var discr = ((val1 < val2) ? -1 : ((val1 > val2) ? 1 : 0));
-                        if (discr === 0)
-                            discr = previousIndexes[idx1] - previousIndexes[idx2];
-                        if (sortInv)
-                            discr = -discr;
-                        return discr;
-                    });
+            /**
+             * Populate the sortIdx by sorting the filterIdx based on the table sort column + direction
+             */
+            tableData._applySort = function() {
+
+                // default: the underlying data frame order, but only those indexes that have been filtered
+                // create a copy!
+                tableData.sortIdx = tableData.filterIdx.slice();
+
+                // if a sort col is set: use its values to sort
+                // stable sort, based on the underlying data frame order (which is fixed for the lifetime of the DF)
+                if (tableData.getSortColumn()) {
+                    var sortByVals = dataFrame.getProperty(tableData.getSortColumn()).data;
+                    tableData.sortIdx = _.sortBy(tableData.sortIdx, function(idx) { return sortByVals[idx]; });
                 }
+
+                if (tableData.getSortInverse())
+                    tableData.sortIdx = tableData.sortIdx.reverse();
             };
 
+            /**
+             * Populate the filterIdx by evaluating the filter expression set on the table.
+             */
+            tableData._applyFilter = function() {
+
+                // `dataFrameFilteredIdx` contains the row indexes from the original dataFrame that match the filter
+                // default filter: none (all indexes match)
+                tableData.filterIdx = _.range(dataFrame.getRowCount());
+
+                // if an expression is set, evaluate it
+                // for performance reasons, don't use a row-based but column-based evaluator,
+                // avoiding any col-major to row-major conversions.
+                if (tableData.filterExpression)
+                    tableData.filterIdx = tableData.filterExpression.evaluate(dataFrame.getProperties());
+            };
+
+            tableData.resetBuffer = function() {
+                // sort depends on filter!
+                tableData._applyFilter();
+                tableData._applySort();
+            };
 
             tableData.requireRowRange = function() {
                 return true;
@@ -99,9 +110,17 @@ define([
             };
 
             tableData.getRowCount = function() {
-                return dataFrame.getRowCount();
+                return tableData.filterIdx.length;
             };
 
+            tableData.supportsFilterExpressions = function() {
+                return true;
+            };
+
+            tableData.setFilterExpression = function(expression) {
+                tableData.filterExpression = expression;
+                tableData.resetBuffer();
+            };
 
             $.each(dataFrame.getProperties(), function(idx, propInfo) {
                 var colInfo = tableInfo.addColumn(propInfo.getId());
@@ -110,6 +129,7 @@ define([
                 colInfo.enableSort();
             });
 
+            // Initialize the sort and filter indexes
             tableData.resetBuffer();
 
             var Compound = Controls.Compound;
@@ -117,7 +137,7 @@ define([
                 title: '{name} (Table)'.AXMInterpolate({name: dataFrame.getName()}),
                 blocking:false,
                 autoCenter: true,
-                sizeX: 700,
+                sizeX: 800,
                 sizeY: 500,
                 canDock:true
             });
