@@ -353,7 +353,7 @@ define([
                             "padding-bottom": Unit.px(grid.sepV)
                         };
                         var cellEl =
-                            settings.hasHeader && i == 0
+                            (settings.hasHeader && i === 0) || (settings.hasFooter && i === grid._rows.length - 1)
                                 ? DOM.Th({ style: styles })
                                 : DOM.Td({ style: styles });
 
