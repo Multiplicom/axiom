@@ -17,7 +17,7 @@
 
 define([
         "require", "jquery", "datetimepicker", "AXM/Externals/awesomplete/awesomplete", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound"
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound", "he"
     ],
     function (
         require, $, datetimepicker, awesomplete, _,
@@ -1279,6 +1279,8 @@ define([
              * @returns {string}
              */
             control.createHtml = function() {
+                var he = require("he");
+
                 var elementId = control._getSubId("");
                 
                 var parentEl = DOM.Div();
@@ -1308,7 +1310,7 @@ define([
                     inputEl.addAttribute("type", "password");
                 }
 
-                inputEl.addAttribute("value", control._value);
+                inputEl.addAttribute("value", he.decode(control._value));
                 if (settings.placeHolder) {
                     inputEl.addAttribute("placeholder", settings.placeHolder);
                 }
