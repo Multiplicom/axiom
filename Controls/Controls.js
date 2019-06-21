@@ -1070,6 +1070,15 @@ define([
                 return true;
             };
 
+            /**
+             * Modifies the enabled state of the droplist
+             * @param {boolean} newStatus - new enabled status
+             */
+            control.setEnabled = function(newStatus) {
+                control._disabled = !newStatus;
+                control._getSub$El('').prop("disabled", control._disabled);
+            };
+
             return control;
         };
 
@@ -1319,7 +1328,7 @@ define([
              */
             control.setValid = function(valid) {
                 control._valid = valid;
-                $el = $("#" + control._getSubId(''));
+                var $el = $("#" + control._getSubId(''));
                 if (valid)
                     $el.removeClass('invalid');
                 else
@@ -1435,6 +1444,15 @@ define([
                 }
                 if (!preventNotify)
                     control.performNotify();
+            };
+
+            /**
+             * Modifies the enabled state of the edit control
+             * @param {boolean} newStatus - new enabled status
+             */
+            control.setEnabled = function(newStatus) {
+                control._disabled = !newStatus;
+                control._getSub$El('').prop("disabled", control._disabled);
             };
 
             return control;
