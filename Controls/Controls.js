@@ -1310,7 +1310,7 @@ define([
                     inputEl.addAttribute("type", "password");
                 }
 
-                inputEl.addAttribute("value", he.decode(control._value));
+                inputEl.addAttribute("value", he.decode("" +control._value));
                 if (settings.placeHolder) {
                     inputEl.addAttribute("placeholder", settings.placeHolder);
                 }
