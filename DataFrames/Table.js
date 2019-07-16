@@ -247,7 +247,7 @@ define([
                     width: 160,
                     height: 60,
                     text: _TRL('Save to local computer'),
-                    icon: 'fa-cloud-download'
+                    icon: 'fa-download'
                 })
                     .addNotificationHandler(function() {
                         dataFrame.saveLocalFile();

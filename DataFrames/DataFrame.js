@@ -754,7 +754,7 @@ define([
                 win.setRootFrame(rootFrame);
 
                 rootFrame.addCommand({
-                    icon: "fa-external-link"
+                    icon: "fa-download"
                 }, function() {
                     var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
                     FileSaver(blob,  'data.txt');
@@ -767,7 +767,7 @@ define([
             dataFrame.saveLocalFile = function() {
                 var content = dataFrame.getContentString_Raw(true);
                 var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
-                FileSaver(blob, dataFrame.getName());
+                FileSaver(blob, dataFrame.getName() + '.txt');
             };
 
 
