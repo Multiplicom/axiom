@@ -15,13 +15,8 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-define([
-        "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/DOM"],
-    function (
-        require, $, _,
-        AXMUtils, DOM) {
-
+define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
+    function (require, $, _, AXMUtils, DOM) {
         var Unit = require("AXM/Units");
 
 
