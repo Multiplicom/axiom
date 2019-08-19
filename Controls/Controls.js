@@ -17,13 +17,13 @@
 
 define([
         "require", "jquery", "datetimepicker", "AXM/Externals/awesomplete/awesomplete", "_",
-        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound", "he"
+        "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound", "he", "AXM/Controls/Control"
     ],
     function (
         require, $, datetimepicker, awesomplete, _,
         AXMUtils, DOM, Icon, Color, Compound
     ) {
-
+        var Control = require("AXM/Controls/Control");
 
         /**
          * Module encapsulating a set of classes that represent HTML controls
@@ -38,110 +38,14 @@ define([
          * Base class for a single control
          * @returns {Object}
          * @constructor
+         * @deprecated Superceded by Control (ES5 constructor function) but kept for backwards compatibility.
          */
         Module.SingleControlBase = function() {
-            var control = AXMUtils.object('@Control');
-            control._id = 'CT'+AXMUtils.getUniqueID();
-            control._hasDefaultFocus = false;
-            control._notificationHandlers = [];
-
-
-            /**
-             * Returns the element ID of a subcomponent
-             * @param {string} extension - subcomponent id
-             * @returns {string}
-             * @private
-             */
-            control._getSubId = function (extension) {
-                return control._id+extension;
-            };
-
-
-            /**
-             * Returns a jQuery element of a subcomponent
-             * @param {string} extension - subcomponent id
-             * @returns {jQuer-HTMLElement}
-             * @private
-             */
-            control._getSub$El = function (extension) {
-                return $('#' + control._getSubId(extension));
-            };
-
-
-            /**
-             * Adds a handler function that is called when the status of the control changes
-             * @param {function} handlerFunc - callback
-             * @returns {Object} - self
-             */
-            control.addNotificationHandler = function(handlerFunc) {
-                if (!handlerFunc)
-                    debugger;
-                control._notificationHandlers.push(handlerFunc);
-                return control;
-            };
-
-            /**
-             * Call this function to assign default focus to the control upon initialisation
-             * @returns {Object} - self
-             */
-            control.setHasDefaultFocus = function () {
-                control._hasDefaultFocus = true;
-                return control;
-            };
-
-
-            /**
-             * Empty base class function
-             */
-            control.attachEventHandlers = function() {
-            };
-
-            /**
-             * Empty base class function
-             */
-            control.detachEventHandlers = function() {
-            };
-
-            /**
-             * Notifies all notification handlers
-             * @param {{}} msg - (optional) notification message
-             */
-            control.performNotify = function(msg) {
-                $.each(control._notificationHandlers, function(idx, fnc) {
-                    if (fnc)
-                        fnc(msg);
-                });
-            };
-
-            /**
-             * Called by the framework when a control needs to be teared down. To be implemented in derived classes
-             */
-            control.tearDown = function() {};
-
-            return control;
-        };
-
-        Module.Adhoc = function(type, settings) {
-            var control = Module.SingleControlBase(settings);
-            settings = $.extend(settings, {
-                id: control._getSubId()
-            });
-
-            var controlEl = DOM.Create(type, settings);
-
-            if (!!settings.element && !settings.element instanceof Module._Element) {
-                throw Error("Unsupported base type");
-            }
-
-            control.createHtml = function createHtml() {
-                return controlEl;
-            };
-
-            return control;
+            return new Control();
         };
 
         function ToggleControl(props) {
-            Module.SingleControlBase.call(this, props);
+            Control.call(this, props);
 
             this.props = props || {
                 defaultState: false
@@ -186,9 +90,7 @@ define([
                                     : this.defaultStyles
                             })
                         ),
-                        DOM.Label({ for: this._getSubId("") }, [
-                            this.props.text || ""
-                        ])
+                        DOM.Label({ for: this._getSubId("") }, [this.props.text || ""])
                     ]
                 );
             };
@@ -200,7 +102,7 @@ define([
             }
         });
 
-        ToggleControl.prototype = new Module.SingleControlBase();
+        ToggleControl.prototype = Object.create(Control.prototype);
 
         Module.Toggle = ToggleControl;
 
