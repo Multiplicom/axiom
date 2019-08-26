@@ -41,16 +41,16 @@ define([
         }
     
         /**
-         * Abstact base class for a html element
-         * @param {string} itype - element type
-         * @param {{}} args - various possible arguments
-         * @param {Object} args.attr - sets the attr for the underlying DOM element
-         * @param {Object} args.style - sets the style(s) for the underlying DOM element
-         * @param {string|Array} args.className - sets the value of the class attribute 
-         * @param {DOMElement} args.parent - (optional) parent element
-         * @private
+         * Represents a virtual HTML element or DOM Node. 
+         * @param {string} itype element type
+         * @param {[] args various possible arguments
+         * @param {{}} args.attr sets the attr for the underlying DOM element
+         * @param {{}} args.style sets the style(s) for the underlying DOM element
+         * @param {string|Array} args.className sets the value of the class attribute 
+         * @param {DOMElement} args.parent (optional) parent element
+         * @class
          */
-        DOMElement = function() {
+        DOMElement = function DOMElement () {
             var args = Array.prototype.slice.call(arguments);
 
             // args[0] {String} tagName
@@ -93,7 +93,7 @@ define([
 
             this.myClasses = properties.className ? [].concat(properties.className) : [];
 
-            // args[2] {Array} - children
+            // args[2] {Array} children
             this.myComponents = args.shift(1) || [];
         };
 
@@ -118,9 +118,9 @@ define([
 
         /**
          * Adds a html attribute
-         * @param {string} id - attribute id
-         * @param {string} content - attribute content
-         * @returns {DOMElement} - self
+         * @param {string} id attribute id
+         * @param {string} content attribute content
+         * @returns {DOMElement} self
          */
         DOMElement.prototype.addAttribute = function (id, content) {
             this.properties[id] = '' + content.toString();
@@ -130,9 +130,9 @@ define([
 
         /**
          * Adds a css style
-         * @param {string} id - syle id
-         * @param {string} content - style content
-         * @returns {DOMElement} - self
+         * @param {string} id syle id
+         * @param {string} content style content
+         * @returns {DOMElement} self
          */
         DOMElement.prototype.addStyle = function (id, content) {
             this.properties.style[id] = content.toString();
@@ -142,18 +142,19 @@ define([
 
         /**
          * Adds a member element
-         * @param icomp - element
-         * @returns {DOMElement} - self
+         * @argument {DOMElement|DOMElement[]} args Element(s) to add as children
+         * @returns {DOMElement} self
          */
-        DOMElement.prototype.addElem = function (icomp) {
-            this.myComponents.push(icomp);
+        DOMElement.prototype.addElem = function addComponent () {
+            var components = Array.prototype.slice.call(arguments);
+            Array.prototype.push.apply(this.myComponents, components);
             return this;
         };
 
         /**
          * Adds a text node
-         * @param icomp - element
-         * @returns {DOMElement} - self
+         * @param icomp element
+         * @returns {DOMElement} self
          */
         DOMElement.prototype.addText = function (text) {
             return this.addElem(document.createTextNode(text));
@@ -162,7 +163,7 @@ define([
         /**
          * Returns a member element
          * @param {int} nr
-         * @returns {*} - element
+         * @returns {*} element
          */
         DOMElement.prototype.getElem = function (nr) {
             return this.myComponents[nr];
@@ -171,7 +172,7 @@ define([
         /**
          * Adds a css class
          * @param {string} iclss
-         * @returns {DOMElement} - self
+         * @returns {DOMElement} self
          */
         DOMElement.prototype.addCssClass = function (iclss) {
             this.myClasses.push(iclss);
@@ -210,6 +211,7 @@ define([
                     // appended twice if the node is "materialized" again.
                     var el = this.el$.cloneNode();
 
+                    // Set properties/attributes on the HTMLElement
                     for (var propName in this.properties) {
                         if (propName !== "style" && propName !== "className") {
                             el.setAttribute(propName, this.properties[propName]);
@@ -224,21 +226,30 @@ define([
                         );
                     }
 
+                    // Add styles to the HTMLElement
                     for (var styleName in this.styles) {
                         el.style.setProperty(styleName, this.styles[styleName]);
                     }
 
+                    // Constructs a CSS class name and adds it to the HTMLElement
                     if (this.myClasses.length > 0) {
                         el.className = this.myClasses.join(" ");
                     }
                     
-                    this.addChildren(el);
+                    // Adds the subcomponents to the materialized HTMLElement
+                    this.__addChildren(el);
                     return el;
                 }
             }
         });
 
-        DOMElement.prototype.addChildren = function addChildren (el) {
+        /**
+         * For private use only. Adds the child components when
+         * materializing the class as an actual HTMLElement.
+         * @param {HTMLElement} el The physical HTMLElement to which the subcomponents will be added.
+         * @see {DOMElement.prototype.addElem} A method for adding children to a component. :-)
+         */
+        DOMElement.prototype.__addChildren = function addChildren (el) {
             if (this.myComponents.length === 1) {
                 return appendChild(el, this.myComponents[0]);
             }
@@ -284,7 +295,7 @@ define([
 
         /**
          * Converts the object to html markup string
-         * @returns {string} - html string
+         * @returns {string} html string
          */
         DOMElement.prototype.toString = function () {
             // TODO Deprecate this method to avoid rount tripping
@@ -296,9 +307,9 @@ define([
 
         /**
          * Returns an object containing a generic html element
-         * @param {string} itype - element type
-         * @param {{}} args - see DOMElement
-         * @returns {DOMElement} - the element instance
+         * @param {string} itype element type
+         * @param {{}} args see DOMElement
+         * @returns {DOMElement} the element instance
          * @constructor
          */
         Module.Create = function (itype, args, children) {
@@ -326,8 +337,8 @@ define([
 
         /**
          * Returns a div element
-         * @param {{}} args - see DOMElement
-         * @returns {DOMElement} - the element instance
+         * @param {{}} args see DOMElement
+         * @returns {DOMElement} the element instance
          * @constructor
          */
         Module.Div = function (args) {
@@ -337,9 +348,9 @@ define([
 
         /**
          * Returns a label element
-         * @param {{}} args - see DOMElement
-         * @param {string} args.target - target of the label
-         * @returns {DOMElement} - the element instance
+         * @param {{}} args see DOMElement
+         * @param {string} args.target target of the label
+         * @returns {DOMElement} the element instance
          * @constructor
          */
         Module.Label = function (args) {
