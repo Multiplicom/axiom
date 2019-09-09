@@ -11,7 +11,7 @@
 	padding-left: 0;
 	padding-top: 1px;
 	position: absolute;
-	z-index: 9999;
+	z-index: 999999;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	display: none;
@@ -215,7 +215,7 @@
 .xdsoft_datetimepicker .xdsoft_label {
 	display: inline;
 	position: relative;
-	z-index: 9999;
+	z-index: 999999;
 	margin: 0;
 	padding: 5px 3px;
 	font-size: 14px;
