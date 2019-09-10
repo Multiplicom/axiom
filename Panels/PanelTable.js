@@ -753,7 +753,7 @@ define([
                 var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
                 diff = panel._tableOffset - tableOffsetPrev; // Corrected difference
 
-                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent.bind(this), panel.renderFail))
+                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent.bind(panel), panel.renderFail))
                     return; // We need to fetch data first - no fast update here - full rendering will happen
 
                 if (diff > 0) {
