@@ -442,12 +442,17 @@ define([
              * Sets the html code for the table content
              */
             panel.renderTableContent = function() {
+                if (this) {
+                    panel = this;
+                }
+
                 panel._tableRowCount = panel._tableData.getRowCount();
                 var rowFirst = panel._tableOffset;
                 var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
 
-                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent, panel.renderFail))
+                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent.bind(panel), panel.renderFail)) {
                     return;
+                }
 
                 var $ElRightBody = $('#'+panel._divid_rightBody);
                 var $ElLeftBody = $('#'+panel._divid_leftBody);
@@ -748,7 +753,7 @@ define([
                 var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
                 diff = panel._tableOffset - tableOffsetPrev; // Corrected difference
 
-                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent, panel.renderFail))
+                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent.bind(panel), panel.renderFail))
                     return; // We need to fetch data first - no fast update here - full rendering will happen
 
                 if (diff > 0) {
