@@ -57,18 +57,6 @@ define([
                 height: "21px"
             };
 
-            this.handlers = Object.keys(this.props).reduce(
-                function getEventListeners(handlers, propName) {
-                    if (propName.slice(0, 2) === "on") {
-                        handlers[propName] = props[propName];
-                    }
-
-                    return handlers;
-                },
-                {},
-                this
-            );
-
             this.createHtml = function createHTML() {
                 return DOM.Div(
                     $.extend(this.handlers, {

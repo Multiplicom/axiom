@@ -9,9 +9,11 @@ define(["require"], function() {
             this._getSub$El("").click(
                 function onControlClicked(event) {
                     if (this) {
-                        this.performNotify();
+                        this.performNotify(event);
                         event.stopPropagation();
-                        return false;
+                        // Don't return false, callback can 
+                        // use Event.preventDefault instead 
+                        // choose the behavior it likes.
                     }
                 }.bind(this) 
             );
