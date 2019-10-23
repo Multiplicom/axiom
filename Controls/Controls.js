@@ -1547,7 +1547,7 @@ define([
                 rootEl.addCssClass("CodeEditor");
                 rootEl.addStyle("min-width", (control._width+5)+"px");
                 rootEl.addStyle("min-height", (control._height+5)+"px");
-                return str;
+                return rootEl;
             };
 
 
