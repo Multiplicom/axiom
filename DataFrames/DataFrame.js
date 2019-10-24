@@ -127,16 +127,25 @@ define([
                     property._colorRangeMax = range.getMax();
                     property._colorRange = range.getMax()-range.getMin();
 
-                    var scale = DrawUtils.getScaleJump(property._colorRange/20);
-                    for (var i=Math.ceil(property._colorRangeMin/scale.Jump1); i<=Math.floor(property._colorRangeMax/scale.Jump1); i++) {
-                        if (i%scale.JumpReduc==0) {
-                            var value = i*scale.Jump1;
-                            var fr = (value-property._colorRangeMin)/property._colorRange;
-                            colorLegend.push({
-                                value: value,
-                                content: scale.value2String(value),
-                                color: Color.HSL2Color(0.5-fr*0.75,0.6,0.5)
-                            });
+                    if (property._colorRange === 0){ //can't do anything good here...
+                        colorLegend.push({
+                            value: property._colorRangeMin,
+                            content: property._colorRangeMin,
+                            color: Color.HSL2Color(0.5,0.6,0.5)
+                        });
+                    }
+                    else{
+                        var scale = DrawUtils.getScaleJump(property._colorRange/20);
+                        for (var i=Math.ceil(property._colorRangeMin/scale.Jump1); i<=Math.floor(property._colorRangeMax/scale.Jump1); i++) {
+                            if (i%scale.JumpReduc==0) {
+                                var value = i*scale.Jump1;
+                                var fr = (value-property._colorRangeMin)/property._colorRange;
+                                colorLegend.push({
+                                    value: value,
+                                    content: scale.value2String(value),
+                                    color: Color.HSL2Color(0.5-fr*0.75,0.6,0.5)
+                                });
+                            }
                         }
                     }
 
