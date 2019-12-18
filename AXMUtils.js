@@ -15,11 +15,11 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_", "blob", "filesaver",
+        "require", "jquery", "_", "filesaver",
         "AXM/Test", "AXM/Msg", "he"
     ],
     function (
-        require, $, _, Blob, FileSaver,
+        require, $, _, FileSaver,
         Test, Msg, he
     ) {
         /**

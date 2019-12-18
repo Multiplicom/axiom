@@ -15,7 +15,7 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_", "blob", "filesaver", "he",
+        "require", "jquery", "_", "filesaver", "he",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg", "AXM/Icon",
         "AXM/Windows/SimplePopups",
         "AXM/Tables/TableInfo",
@@ -23,7 +23,7 @@ define([
         "AXM/DataFrames/Filter/FilterExpression"
     ],
     function (
-        require, $, _, Blob, FileSaver, he,
+        require, $, _, FileSaver, he,
         AXMUtils, DOM, Controls, Frame, PanelBase, Msg, Icon,
         SimplePopups,
         TableInfo,
