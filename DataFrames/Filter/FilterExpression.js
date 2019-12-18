@@ -17,7 +17,7 @@
 define([
         "require", "jquery", "_", "nearley",
         "AXM/AXMUtils",
-        "FilterGrammar"
+        "./FilterGrammar"
     ],
     function (
         require, $, _, nearley,
