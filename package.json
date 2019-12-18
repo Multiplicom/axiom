@@ -1,0 +1,19 @@
+{
+  "name": "@agilent/axiom",
+  "version": "1.4.0",
+  "main": "index.js",
+  "repository": "git@github.com:Multiplicom/axiom.git",
+  "author": "Michiel Vermeir <michiel.vermeir@agilent.com>",
+  "license": "MIT",
+  "dependencies": {
+    "core-js": "^3.5.0",
+    "file-saver": "^2.0.2",
+    "he": "^1.2.0",
+    "jquery": "^3.4.1",
+    "jquery-datetimepicker": "^2.5.21",
+    "jquery-mousewheel": "^3.1.13",
+    "js-cookie": "^2.2.1",
+    "lodash": "^2.4.2",
+    "nearley": "^2.19.0"
+  }
+}

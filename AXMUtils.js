@@ -541,7 +541,7 @@ define([
             sched._tryNext = function() {
                 var runnableActions = _.filter(sched.scheduledFunctions, function(action) {
                     return !action.started &&
-                        _.all(action.requiredList, function(token) { return !!sched.completedTokens[token] });
+                        _.every(action.requiredList, function(token) { return !!sched.completedTokens[token] });
                 });
 
                 var startTime = new Date().getTime();
@@ -558,7 +558,7 @@ define([
                 // if there are unstarted tasks left (either due to timeout or because their dependencies are not met),
                 // schedule a new processing iteration to run in the future
                 // wait at least 50ms to avoid high-frequency checking for task dependencies that are still running
-                if (_.any(sched.scheduledFunctions, function(action) { return !action.started; }))
+                if (_.some(sched.scheduledFunctions, function(action) { return !action.started; }))
                     setTimeout(sched._tryNext, 50);
             };
 
