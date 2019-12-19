@@ -16,11 +16,11 @@
 
 
 define([
-        "require", "jquery", "datetimepicker", "AXM/Externals/awesomplete/awesomplete", "_",
+        "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound", "he", "AXM/Controls/Control"
     ],
     function (
-        require, $, datetimepicker, awesomplete, _,
+        require, $, _,
         AXMUtils, DOM, Icon, Color, Compound
     ) {
         var Control = require("AXM/Controls/Control");
@@ -1879,23 +1879,26 @@ define([
 
 
             control.attachEventHandlers = function() {
-                $.datetimepicker.setLocale('en');
-                $("#"+control._datetimepickerid).datetimepicker({
-                    value:control._value,
-                    defaultTime:control._defaultTime,
-                    defaultDate:control._defaultDate,
-                    timepicker:control._timepicker,
-                    inline:control._inline,
-                    //mask:control._mask
-                    format:control._format,
-                    formatDate:control._formatDate,
-                    formatTime:control._formatTime,
-                    scrollMonth: control._scrollMonth,
-                    scrollTime: control._scrollTime,
-                    scrollInput: control._scrollInput
-
+                Promise.all([
+                    import("jquery-datetimepicker"),
+                    import("jquery-datetimepicker/jquery.datetimepicker.css")
+                ]).then(() => {
+                    $.datetimepicker.setLocale("en");
+                    
+                    $("#" + control._datetimepickerid).datetimepicker({
+                        value: control._value,
+                        defaultTime: control._defaultTime,
+                        defaultDate: control._defaultDate,
+                        timepicker: control._timepicker,
+                        inline: control._inline,
+                        format: control._format,
+                        formatDate: control._formatDate,
+                        formatTime: control._formatTime,
+                        scrollMonth: control._scrollMonth,
+                        scrollTime: control._scrollTime,
+                        scrollInput: control._scrollInput
+                    });
                 });
-
             };
 
 
