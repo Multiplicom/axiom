@@ -11,6 +11,8 @@
 node_modules/
 dist/
 demo/
+yarn.lock
+package-lock.json
 
 # VS Code
 .vscode
