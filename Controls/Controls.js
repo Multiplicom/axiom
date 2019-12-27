@@ -1239,6 +1239,9 @@ define([
                 if (control._clearButton)
                     control._clearButton.attachEventHandlers();
                 if (settings.choices){
+                    require("awesomplete/awesomplete.css")
+                    const Awesomplete = require("awesomplete");
+                    
                     var input = document.getElementById(control._id);
                     control._choices = new Awesomplete(input, {
 	                      list: settings.choices
