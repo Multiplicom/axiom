@@ -279,6 +279,12 @@ define([
                 return parent;
             }
 
+            // Axiom Control
+            if (component.renderHtml) {
+                var renderedControl = component.renderHtml();
+                return appendChild(parent, renderedControl);
+            }
+
             // No op
             if (component == "" || component == null) {
                 return parent;
