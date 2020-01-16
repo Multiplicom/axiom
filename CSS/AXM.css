@@ -1,5 +1,6 @@
 @import "AXMPopupWindow.css";
 @import "AXMPgTable.css";
+@import "local.css";
 
 html,body {
     height:100%;

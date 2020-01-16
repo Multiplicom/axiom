@@ -220,7 +220,10 @@ define([
                     for (var eventType in this.listeners) {
                         // Event delegation
                         delegate(
-                            '.AXMContainer'
+                            // This is the root of the component 
+                            // tree, events don't need to bubble any
+                            // further.
+                            '.AXMContainer',
                             `${this.myType}#${this.getID()}`, 
                             eventType.slice(2).toLowerCase(), 
                             this.listeners[eventType]
