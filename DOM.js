@@ -27,8 +27,7 @@ define([
         _,
         AXMUtils
     ) {
-
-        var EventPool = require("AXM/Events");
+        const delegate = require('delegate');
 
         /**
          * Module encapsulation a set of classes that represent HTML elements
@@ -218,11 +217,13 @@ define([
                         }
                     }
 
-                    for (var event in this.listeners) {
-                        EventPool.addEventListener(
-                            this.getID(),
-                            event.slice(2),
-                            this.listeners[event]
+                    for (var eventType in this.listeners) {
+                        // Event delegation
+                        delegate(
+                            '.AXMContainer'
+                            `${this.myType}#${this.getID()}`, 
+                            eventType.slice(2).toLowerCase(), 
+                            this.listeners[eventType]
                         );
                     }
 
