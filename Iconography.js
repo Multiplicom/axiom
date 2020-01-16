@@ -76,6 +76,10 @@ class Icon {
         this.classNames.push(additionalClassName);
     }
 
+    overrideStyle(additionalStyling = { k, v }) {
+        Object.assign(this.style, additionalStyling);
+    }
+
     getSize() {
         return this._sizeFactor;
     }
