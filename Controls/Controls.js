@@ -1640,6 +1640,8 @@ define([
          * @param {int} settings.width - width of the drop area
          * @param {int} settings.height - height of the drop area
          * @param {string} settings.text - text displayed in the drop area
+         * @param {string} settings.cssClass - cssClass used for the main control
+         * @param {string} settings.dragOverClass - cssClass used when dragging files over the control
          * @returns {Object} - returns the control instance
          * @constructor
          */
@@ -1648,6 +1650,8 @@ define([
             control._width = settings.width || 160;
             control._height = settings.height || 60;
             control._text = settings.text || 'Drop file(s)';
+            control._class = settings.cssClass || 'AXMFileDrop';
+            control._dragOverClass = settings.dragOverClass || 'AXMFileDropDragOver';
             control._files = null;
 
 
@@ -1661,7 +1665,7 @@ define([
                     .addStyle('height',control._height+'px')
                     .addStyle('white-space', 'normal')
                     .addStyle('position', 'relative');
-                div.addCssClass('AXMFileDrop');
+                div.addCssClass(control._class);
                 var txtDiv = DOM.Div({parent: div});
                 txtDiv.addElem(control._text);
                 return div;
@@ -1672,7 +1676,7 @@ define([
              * Handles the drag over html event
              */
             control.onDragOver = function() {
-                control._getSub$El('').addClass('AXMFileDropDragOver');
+                control._getSub$El('').addClass(control._dragOverClass);
             };
 
 
@@ -1680,7 +1684,7 @@ define([
              * Handles the drag leave html event
              */
             control.onDragLeave = function() {
-                control._getSub$El('').removeClass('AXMFileDropDragOver');
+                control._getSub$El('').removeClass(control._dragOverClass);
             };
 
 
@@ -1689,7 +1693,7 @@ define([
              * @param ev
              */
             control.onDrop = function(ev) {
-                control._getSub$El('').removeClass('AXMFileDropDragOver');
+                control._getSub$El('').removeClass(control._dragOverClass);
                 control._files = ev.originalEvent.dataTransfer.files;
                 control.performNotify();
             };
