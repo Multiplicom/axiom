@@ -441,7 +441,7 @@ define([
             var getDeltaX = function(ev) { return getScrollDirection(ev) === 'X' ? getRawDeltaX(ev) : 0; };
             var getDeltaY = function(ev) { return getScrollDirection(ev) === 'Y' ? getRawDeltaY(ev) : 0; };
 
-            $El.bind('wheel', function(ev) {
+            $El.bind('mousewheel', function(ev) {
 
                 Module.closeTransientPopups();
                 handler({
