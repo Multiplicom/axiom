@@ -54,7 +54,7 @@ define([
             };
 
             var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: content+'<p/>'}));
+            grp.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
 
             var btOK = Controls.Button({
                 text: _TRL('OK'),
@@ -99,7 +99,7 @@ define([
             });
 
             var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: content+'<p/>'}));
+            grp.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
 
             var btOK = Controls.Button({
                 text: settings.textOK || _TRL('OK'),
@@ -159,7 +159,7 @@ define([
             });
 
             var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: content+'<p/>'}));
+            grp.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
 
             var btYes = Controls.Button({
                 text: settings.textYes || _TRL('Yes'),
@@ -222,7 +222,7 @@ define([
             });
 
             var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: intro+'<p/>'}));
+            grp.add(Controls.Static({text: typeof intro === "object" ? intro : intro +'<p/>'}));
 
             var buttons = [];
             $.each(actions, function(idx, action) {
@@ -431,7 +431,7 @@ define([
 
             var grp2 = Controls.Compound.GroupVert({});
             grp1.add(grp2);
-            grp2.add(Controls.Static({text: content+'<p/>'}));
+            grp2.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
 
             var btOK = Controls.Button({
                 text: _TRL('Close')
