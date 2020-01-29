@@ -7,7 +7,7 @@ class Help extends Control {
         super();
     }
 
-    createHtml() {
+    render() {
         return new Icon("fa-question-circle");
     }
 }
@@ -39,7 +39,7 @@ class Button extends Control {
         this.props = props;
     }
 
-    createHtml() {
+    render() {
         return DOM.Fragment([
             DOM.Div(
                 {

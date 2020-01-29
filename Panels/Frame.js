@@ -379,8 +379,8 @@ define([
                     DOM.Div({parent: frameDiv, id:frame.getTitleDivId()}).addCssClass('AXMFrameTitle')
                         .addElem(frame._title);
                 var frameClient = DOM.Div({parent:frameDiv}).addCssClass('AXMFrameClient');
-                if (frame.createHtmlClient)
-                    frameClient.addElem(frame.createHtmlClient());
+                if (frame.renderClient)
+                    frameClient.addElem(frame.renderClient());
 
 
                 return frameDiv.node$;
@@ -390,14 +390,14 @@ define([
              * Returns the html implementing thee frame
              * @returns {string}
              */
-            frame.createHtml = function() {
+            frame.render = function() {
                 var el = frame.htmlElement();
                 return el.outerHTML;
             };
 
             frame.updateHtml = function() {
-                if (frame.createHtmlClient) {
-                    var content = frame.createHtmlClient();
+                if (frame.renderClient) {
+                    var content = frame.renderClient();
                     frame.$ElContainer.children('.AXMFrameClient').html(content);
                 }
             };
@@ -762,7 +762,7 @@ define([
              * Returns the html of the client area
              * @returns {string}
              */
-            frame.createHtmlClient = function() {
+            frame.renderClient = function() {
                 frame._normaliseSizeFractions();
 
                 var fragment = document.createElement("div")
@@ -781,7 +781,7 @@ define([
                     fragment.appendChild(splitdiv.node$)
                 }
                 $.each(frame._memberFrames, function(idx, memberFrame) {
-                    fragment.insertAdjacentHTML("beforeend", memberFrame.createHtml());
+                    fragment.insertAdjacentHTML("beforeend", memberFrame.render());
                 });
                 return fragment;
             };
@@ -1082,11 +1082,11 @@ define([
              * Returns the html for the client area
              * @returns {string}
              */
-            frame.createHtmlClient = function() {
+            frame.renderClient = function() {
                 var html = '';
 
                 $.each(frame._memberFrames, function(idx, memberFrame) {
-                    html += memberFrame.createHtml();
+                    html += memberFrame.render();
                 });
                 return html;
             };
@@ -1137,7 +1137,7 @@ define([
                     $elClient.append(theFrame.getRoot$El().detach());
                 }
                 else {
-                    $elClient.append(theFrame.createHtml());
+                    $elClient.append(theFrame.render());
                     theFrame.getRoot$El().css('display', 'none');
                     theFrame.attachEventHandlers();
                 }
@@ -1276,19 +1276,19 @@ define([
                 return st;
             };
 
-            var _super_createHtmlClient = frame.createHtmlClient;
+            var _super_renderClient = frame.renderClient;
             /**
              * Returns the html implementing the client area
              * @returns {string}
              */
-            frame.createHtmlClient = function() {
+            frame.renderClient = function() {
                 var html = '';
 
                 var tabDiv = DOM.Div({}).addCssClass('AXMFrameTabContainer');
                 var tabDivInner = DOM.Div({parent:tabDiv}).addCssClass('AXMFrameTabContainerInner');
                 tabDivInner.addElem(frame._getTabsHtml());
                 html += tabDiv.toString();
-                html += _super_createHtmlClient();
+                html += _super_renderClient();
                 return html;
             };
 
@@ -1455,12 +1455,12 @@ define([
              * Returns the html implementing the client area
              * @returns {string}
              */
-            frame.createHtmlClient = function() {
+            frame.renderClient = function() {
                 var div = DOM.Div({id: frame._id+'_finalclient'});
                 div.addCssClass('AXMFrameFinalClientArea');
                 if (frame._cssClass)
                     div.addCssClass(frame._cssClass);
-                div.addElem(frame._panel.createHtml());
+                div.addElem(frame._panel.render());
 
                 return div;
             };

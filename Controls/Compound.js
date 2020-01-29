@@ -154,7 +154,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the control
              * @returns {string}
              */
-            compound.createHtml = function() {
+            compound.render = function() {
                 var div = DOM.Div({ id: compound._id + "_wrapper" });
                 $.each(compound._members, function(idx, member) {
                     var elemDiv = DOM.Div({ parent: div });
@@ -167,7 +167,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
                             })
                         );
                     }
-                    elemDiv.addElem(member.createHtml());
+                    elemDiv.addElem(member.render());
                 });
                 return div;
             };
@@ -178,7 +178,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
                 if (el) {
                     el.innerHTML = '';
                     
-                    var updatedControl = compound.createHtml();
+                    var updatedControl = compound.render();
                     var documentFragment = document.createDocumentFragment();
                     documentFragment.appendChild(updatedControl.node$);
     
@@ -226,7 +226,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the control
              * @returns {string}
              */
-            compound.createHtml = function() {
+            compound.render = function() {
                 var div = DOM.Div();
                 if (compound._noWrap)
                     div.addStyle('white-space', 'nowrap');
@@ -242,7 +242,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
                     elemDiv.addStyle('white-space', 'normal');
                     if(idx < maxElem)
                         elemDiv.addStyle('margin-right', compound._separator+'px');
-                    elemDiv.addElem(member.createHtml());
+                    elemDiv.addElem(member.render());
                 });
                 return div;
             };
@@ -328,7 +328,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the control
              * @returns {String|string|*}
              */
-            grid.createHtml = function() {
+            grid.render = function() {
                 var gridContent = DOM.Div({
                     id: grid._id + "_wrapper",
                     style: { display: "inline-block" }
@@ -353,7 +353,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
                                 : DOM.Td({ style: styles });
 
                         if (item) {
-                            cellEl.addElem(item.createHtml());
+                            cellEl.addElem(item.render());
                         }
                         rowEl.addElem(cellEl);
                     });
@@ -370,7 +370,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
                     el.innerHTML = '';
                     
                     var documentFragment = document.createDocumentFragment();
-                    documentFragment.appendChild(grid.createHtml().node$);
+                    documentFragment.appendChild(grid.render().node$);
     
                     el.appendChild(documentFragment);
                 }
@@ -444,12 +444,12 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
             var wrapper = Module.WrapperControlBase(ctrl);
             wrapper.extend('@ControlTransferrer');
 
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div({id: wrapper._id});
                 if (wrapper._member) {
                     wrapper._memDivId = AXMUtils.getUniqueID();
                     var memdiv = DOM.Div({id: wrapper._memDivId, parent: div});
-                    memdiv.addElem(wrapper._member.createHtml());
+                    memdiv.addElem(wrapper._member.render());
                 }
                 return div;
             };
@@ -486,10 +486,10 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the wrapped control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div({id: wrapper._id});
                 div.addCssClass(styleClass);
-                div.addElem(wrapper._member.createHtml());
+                div.addElem(wrapper._member.render());
                 return div;
             };
 
@@ -512,7 +512,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the wrapped control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div({id: wrapper._id});
                 if (marginRight == undefined) {
                     marginRight = marginLeft;
@@ -524,7 +524,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
                 div.addStyle('margin-top', marginTop+'px');
                 div.addStyle('margin-bottom', marginBottom+'px');
                 //div.addStyle('display', 'inline-block');
-                div.addElem(wrapper._member.createHtml());
+                div.addElem(wrapper._member.render());
                 return div;
             };
 
@@ -546,7 +546,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the wrapped control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div({id: wrapper._id});
                 if (isMinimum)
                     div.addStyle('min-width', width+'px');
@@ -554,7 +554,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
                     div.addStyle('max-width', width+'px');
                 else
                     div.addStyle('width', width+'px');
-                div.addElem(wrapper._member.createHtml());
+                div.addElem(wrapper._member.render());
                 return div;
             };
 
@@ -575,12 +575,12 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the wrapped control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div({id: wrapper._id});
                 div.addCssClass('AXMFormStandardMargin');
                 //div.addStyle('margin-left', marginLeft+'px');
                 //div.addStyle('display', 'inline-block');
-                div.addElem(wrapper._member.createHtml());
+                div.addElem(wrapper._member.render());
                 return div;
             };
 
@@ -601,13 +601,13 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the wrapped control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div({id: wrapper._id});
                 div.addStyle('position', 'absolute');
                 div.addStyle('right', '0px');
                 div.addStyle('top', '0px');
                 div.addStyle('display', 'inline-block');
-                div.addElem(wrapper._member.createHtml());
+                div.addElem(wrapper._member.render());
                 return div;
             };
 
@@ -630,13 +630,13 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the wrapped control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var divContainer = DOM.Div({id: wrapper._id});
                 var divTitle = DOM.Div({parent: divContainer});
                 divTitle.addCssClass('AXMFormSectionHeader');
                 divTitle.addElem(wrapper._title);
                 var divBody = DOM.Div({parent: divContainer});
-                divBody.addElem(wrapper._member.createHtml());
+                divBody.addElem(wrapper._member.render());
                 return divContainer;
             };
 
@@ -658,7 +658,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the wrapped control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var divContainer = DOM.Div({id: wrapper._id});
                 divContainer.addStyle('position', 'relative');
                 var str = '<div style="position:absolute;top:-15px;left:-7px;z-index:0"><i class="fa fa-history" style="font-size: 80px;color:rgb(225, 240, 253)"></i></div>';
@@ -667,7 +667,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
                 divBody.addStyle('position', 'relative');
                 //divBody.addStyle('top', '0px');
                 divBody.addStyle('z-index', '1');
-                divBody.addElem(wrapper._member.createHtml());
+                divBody.addElem(wrapper._member.render());
                 return divContainer;
             };
 
@@ -689,11 +689,11 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the wrapped control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div({id: wrapper._id});
                 div.addCssClass('AXMFormVScroller');
                 div.addStyle('height', heigth+'px');
-                div.addElem(wrapper._member.createHtml());
+                div.addElem(wrapper._member.render());
                 return div;
             };
 
@@ -728,11 +728,11 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the wrapped control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div({id: wrapper._id});
                 if (!wrapper._show)
                     div.addStyle('display', 'none');
-                div.addElem(wrapper._member.createHtml());
+                div.addElem(wrapper._member.render());
                 return div;
             };
 
@@ -819,7 +819,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div()
                     .addStyle('display','inline-block')
                     .addStyle('vertical-align','middle')
@@ -849,7 +849,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div()
                     .addStyle('display','inline-block')
                     .addStyle('width',w + 'px')
@@ -873,7 +873,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 var div = DOM.Div()
                     .addStyle('width','1px')
                     .addStyle('height',h + 'px');
@@ -896,7 +896,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * Returns the html implementing the control
              * @returns {string}
              */
-            wrapper.createHtml = function() {
+            wrapper.render = function() {
                 return `<i class="AXMBigIcon fa ${icon}"></i>`;
             };
             return wrapper;

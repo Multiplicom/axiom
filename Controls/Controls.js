@@ -57,7 +57,7 @@ define([
                 height: "21px"
             };
 
-            this.createHtml = function createHTML() {
+            this.render = function render() {
                 return DOM.Div(
                     $.extend(this.handlers, {
                         id: this._getSubId("-control"),
@@ -108,7 +108,7 @@ define([
              * Creates the html of the control
              * @returns {String}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 return DOM.Span({ id: control._getSubId("") }, [control.textEl]);
             };
 
@@ -212,7 +212,7 @@ define([
              * Creates the html of the control
              * @returns {String}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var div = DOM.Div({ id: control._getSubId("") });
                 if (control._title) div.addAttribute("title", control._title);
                 if (control._inLine) {
@@ -316,7 +316,7 @@ define([
         Module.RawHtml = function(content) {
             var control = Module.SingleControlBase({});
 
-            control.createHtml = function() {
+            control.render = function() {
                 return content;
             };
 
@@ -382,7 +382,7 @@ define([
              * Creates the control html
              * @returns {String}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('width',control._width+'px')
                     .addStyle('height',control._height+'px')
@@ -404,7 +404,7 @@ define([
                     var divIcon = DOM.Div({parent: div})
                         .addCssClass('AXMButtonIcon')
                         .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle');
-                    divIcon.addElem(control._icon.renderHtml());
+                    divIcon.addElem(control._icon.render());
                 }
 
                 if (!control._icon && settings.text) {
@@ -426,7 +426,7 @@ define([
                             .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle')
                             .addStyle('width', iconWidth + 'px')
                             .addStyle('text-align','center');
-                        divIcon.addElem(control._icon.renderHtml());
+                        divIcon.addElem(control._icon.render());
                     }
                     if (settings.text) {
                         var divText = DOM.Div({parent: div})
@@ -633,7 +633,7 @@ define([
              * Creates the control html
              * @returns {string} - html
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var div = DOM.Create('div', { id:control._getSubId('') });
                 div.addCssClass(control._class);
                 $.each(control._extraClasses, function(idx, className) {
@@ -698,7 +698,7 @@ define([
 
             children = children ? children : [];
 
-            control.createHtml = function() {
+            control.render = function() {
                 return DOM.Div({}, [
                     DOM.Input(
                         $.extend(
@@ -869,7 +869,7 @@ define([
              * Returns the html implementing this control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var wrapper = DOM.Div();
                 wrapper.addStyle('display', 'inline-block');
                 if(control._title)
@@ -1026,7 +1026,7 @@ define([
              * Returns the html implementing this control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var wrapper = DOM.Div();
                 wrapper.addStyle('display', 'inline-block');
                 var div = DOM.Create('div', { id: control._getSubId(''), parent: wrapper });
@@ -1158,7 +1158,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var he = require("he");
 
                 var elementId = control._getSubId("");
@@ -1196,7 +1196,7 @@ define([
                 }
 
                 if (control._clearButton) {
-                    parentEl.addElem(control._clearButton.createHtml());
+                    parentEl.addElem(control._clearButton.render());
                     return parentEl
                 }
 
@@ -1372,7 +1372,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var controlEl = DOM.Div();
                 var textAreaEl = DOM.Create("textarea", {
                     parent: controlEl,
@@ -1407,7 +1407,7 @@ define([
                 }
 
                 if (control._clearButton) {
-                    controlEl.addElem(control._clearButton.createHtml());
+                    controlEl.addElem(control._clearButton.render());
                     return controlEl;
                 }
 
@@ -1533,7 +1533,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var rootEl = DOM.Create("textarea", {id: control._getSubId('')});
                 rootEl.addAttribute("spellcheck", "false");
                 rootEl.addAttribute("autofocus", "true");
@@ -1649,7 +1649,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('width',control._width+'px')
                     .addStyle('height',control._height+'px')
@@ -1751,7 +1751,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
 
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('width',control._width+'px')
@@ -1855,7 +1855,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 control._datetimepickerid=control._getSubId('datetimepicker');
                 var rootEl = DOM.Create("input", {id: control._datetimepickerid});
                 rootEl.addCssClass('AXMEdit');
@@ -2023,7 +2023,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
 
                 var div = DOM.Div({ id:control._getSubId('') });
                 var divCurrent = DOM.Div({ parent: div, id:control._getSubId('current') });

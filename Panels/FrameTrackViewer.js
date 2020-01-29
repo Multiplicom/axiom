@@ -160,7 +160,7 @@ define([
             };
 
 
-            track.createHtml = function () {
+            track.render = function () {
                 var rootDiv = DOM.Div({id: 'track_' + track.getId()});
                 if (!track.isVisible())
                     rootDiv.addStyle("display", "none");
@@ -184,7 +184,7 @@ define([
                 centerDiv.addStyle("display", "inline-block");
                 centerDiv.addStyle('vertical-align', "top");
                 centerDiv.addStyle('position', 'relative');
-                centerDiv.addElem(track.cnvs.createHtml());
+                centerDiv.addElem(track.cnvs.render());
 
                 var rightDiv = DOM.Div({parent: rootDiv});
                 rightDiv.addStyle("display", "inline-block");
@@ -840,7 +840,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.createHtml = function () {
+            panel.render = function () {
                 var rootDiv = DOM.Div({id: panel.getId() + '_content'});
                 rootDiv.addCssClass('AXMHtmlPanelBody');
                 rootDiv.addStyle('width', '100%');
@@ -852,7 +852,7 @@ define([
                     rootDiv.addStyle('overflow-y', 'hidden');
 
                 $.each(panel._tracks, function (idx, track) {
-                    rootDiv.addElem(track.createHtml());
+                    rootDiv.addElem(track.render());
                 });
 
                 return rootDiv.toString();
@@ -1127,7 +1127,7 @@ define([
                 thePanel.addTrack(track);
 
                 if (isLive) {
-                    $El.append(track.createHtml());
+                    $El.append(track.render());
                     track.attachEventHandlers();
                 }
 

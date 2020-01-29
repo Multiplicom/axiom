@@ -131,7 +131,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.createHtml = function() {
+            panel.render = function() {
 
                 panel._divid_leftHeadRow = panel._getSubId('leftheadrow');
                 panel._divid_leftBody = panel._getSubId('leftbody');
@@ -145,7 +145,7 @@ define([
                     .addStyle('overflow-y', 'hidden')
                     .addStyle('white-space', 'nowrap');
 
-                divRoot.addElem(panel.createHtmlBody());
+                divRoot.addElem(panel.renderBody());
 
                 return divRoot.toString();
             };
@@ -154,7 +154,7 @@ define([
              * Returns the html implementing the table body
              * @returns {string}
              */
-            panel.createHtmlBody = function() {
+            panel.renderBody = function() {
                 panel._loadColumnSettings();
 
                 var divLeftTableContainer = DOM.Div({ id: panel._getSubId('leftTableScrollContainer')})
@@ -882,7 +882,7 @@ define([
                 if (tableid==panel._tableInfo.tableId) {
                     panel.updateTableInfo();
                     panel._tableData.resetBuffer();
-                    $('#tb'+panel._id).html(panel.createHtmlBody());
+                    $('#tb'+panel._id).html(panel.renderBody());
                     panel.renderTableContent();
                     panel.attachEventHandlers();
                 }

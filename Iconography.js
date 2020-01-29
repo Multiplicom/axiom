@@ -45,7 +45,7 @@ class IconStack {
         this.scaling = scaling;
     }
 
-    renderHtml() {
+    render() {
         return DOM.Span(
             { className: `fa-stack fa-lg` },
             this.icons.map(icon => {
@@ -116,7 +116,7 @@ class Icon {
         });
     }
 
-    renderHtml() {
+    render() {
         // Avoids wrapper el when there's no decorations
         // for the icon.
         if (this.decorators.length < 1) {

@@ -84,7 +84,7 @@ define([
                 return icon;
             };
 
-            icon.renderHtml = function() {
+            icon.render = function() {
                 var iconEl = DOM.Div({
                     style: {
                         position: "relative",
@@ -163,7 +163,7 @@ define([
                 return icon;
             };
 
-            icon.renderHtml = function() {
+            icon.render = function() {
                 var iconEl = DOM.Div({ style: { position: "relative" } });
                 DOM.Img({ parent: iconEl, attr: { src: icon._name } });
                 return iconEl;
