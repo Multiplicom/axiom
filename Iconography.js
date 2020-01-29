@@ -57,7 +57,7 @@ class IconStack {
 }
 
 class Icon {
-    constructor(name, { decorators = [], style = {}, classNames = [ ] } = {}) {
+    constructor({ name, decorators = [], style = {}, classNames = [ ] } = {}) {
         Object.assign(this, AXMUtils.object("icon"));
 
         this.name = name;
