@@ -79,7 +79,7 @@ define([
             //##############  Create in instance of a plot window ##########################
             plotType.createGeneric = function(dataFrame, aspectMap) {
                 var win = PopupWindow.create({
-                    title: _TRL('{name} ({plotname})').AXMInterpolate({name: dataFrame.getName(), plotname: plotType.getPlotTypeName()}),
+                    title: _TRL(`${dataFrame.getName()} (${plotType.getPlotTypeName()})`),
                     blocking:false,
                     autoCenter: true,
                     sizeX: 800,
@@ -247,10 +247,7 @@ define([
                             }
                         }
                     ];
-                    var introText = _TRL('{disptext}<br><b>{count} points</b>').AXMInterpolate({
-                        disptext: dispText || '',
-                        count: selList.length
-                    });
+                    var introText = _TRL(`${dispText || ''}<br><b>${selList.length} points</b>`);
                     SimplePopups.ActionChoiceBox(_TRL('Highlighted points'), introText, actions);
                 };
 
@@ -264,7 +261,7 @@ define([
                             selCount += 1;
                     }
 
-                    win._ctrlSelectionCount.modifyText(_TRL('{cnt} points selected').AXMInterpolate({cnt: selCount}));
+                    win._ctrlSelectionCount.modifyText(_TRL(`${selCount} points selected`));
                     win.plot.render();
                 };
 

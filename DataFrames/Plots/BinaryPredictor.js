@@ -145,15 +145,12 @@ define([
                 content += '<h1>Parametric</h1>';
                 var dfNeg = Stats.NormDfEstimator(valsNeg);
                 dfNeg.calcParametric();
-                content += '<h3>Negative</h3>Count= {ct}<br>Average= {av}<br>Standard deviation= {stdev}<br>'.AXMInterpolate({ct: dfNeg.getCount(), av: dfNeg.getMean(), stdev: dfNeg.getStdev() });
+                content += `<h3>Negative</h3>Count= ${dfNeg.getCount()}<br>Average= ${dfNeg.getMean()}<br>Standard deviation= ${dfNeg.getStdev()}<br>`;
                 var dfPos = Stats.NormDfEstimator(valsPos);
                 dfPos.calcParametric();
-                content += '<h3>Positive</h3>Count= {ct}<br>Average= {av}<br>Standard deviation= {stdev}<br>'.AXMInterpolate({ct: dfPos.getCount(), av: dfPos.getMean(), stdev: dfPos.getStdev() });
+                content += `<h3>Positive</h3>Count= ${dfPos.getCount()}<br>Average= ${dfPos.getMean()}<br>Standard deviation= ${dfPos.getStdev()}<br>`;
 
-                content += '<h3>Distance</h3>Difference= {diff}<br><b>Weighted difference= {wdiff}</b>'.AXMInterpolate({
-                    diff: Math.abs(dfNeg.getMean()-dfPos.getMean()),
-                    wdiff: Math.abs(dfNeg.getMean()-dfPos.getMean())/((dfNeg.getStdev()+dfPos.getStdev())/2)
-                });
+                content += `<h3>Distance</h3>Difference= ${Math.abs(dfNeg.getMean()-dfPos.getMean())}<br><b>Weighted difference= ${Math.abs(dfNeg.getMean()-dfPos.getMean())/((dfNeg.getStdev()+dfPos.getStdev())/2)}</b>`;
 
 
                 // make sure negatives are smaller than positives
@@ -247,14 +244,14 @@ define([
                 }
 
                 content += '<h1>Cost estimate</h1>';
-                content += 'Negative limit= {lim}<br>'.AXMInterpolate({lim:bestDivisionNeg});
-                content += 'Positive limit= {lim}<br>'.AXMInterpolate({lim:bestDivisionPos});
-                content += 'FN= {fn}<br>'.AXMInterpolate({fn: ctFN});
-                content += 'FP= {fp}<br>'.AXMInterpolate({fp: ctFP});
-                content += 'UN= {un}<br>'.AXMInterpolate({un: ctUN});
+                content += `Negative limit= ${bestDivisionNeg}<br>`;
+                content += `Positive limit= ${bestDivisionPos}<br>`;
+                content += `FN= ${ctFN}<br>`;
+                content += `FP= ${ctFP}<br>`;
+                content += `UN= ${ctUN}<br>`;
 
                 var totCost = ctFN*costFN + ctFP*costFP + ctUN*costUN;
-                content += '<b>Cost= {cost}</b><br>'.AXMInterpolate({cost: totCost});
+                content += `<b>Cost= ${totCost}</b><br>`;
 
                 win.plot.setContent(content);
 

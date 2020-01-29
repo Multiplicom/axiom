@@ -402,7 +402,7 @@ define([
                         if(frame.getCurrentTabInfo() && frame.getCurrentTabInfo().headerInfo.labels[key]){
                             labelClass = frame.getCurrentTabInfo().headerInfo.labels[key].cssClass || "ViewTitleDecorator";
                         }
-                        var newLabelHtml = '<div class="{cl}">'.AXMInterpolate({cl: labelClass}) + newLabel + '</div>';
+                        var newLabelHtml = `<div class="${labelClass}">` + newLabel + '</div>';
                         viewLabelCtrl.modifyText(newLabelHtml);
                         if (newLabel){
                             viewLabelCtrl.get$El().show();

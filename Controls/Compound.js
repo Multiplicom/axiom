@@ -897,7 +897,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * @returns {string}
              */
             wrapper.createHtml = function() {
-                return '<i class="AXMBigIcon fa {icon}"></i>'.AXMInterpolate({icon: icon});
+                return `<i class="AXMBigIcon fa ${icon}"></i>`;
             };
             return wrapper;
         };

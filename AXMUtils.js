@@ -821,15 +821,7 @@ define([
             //thebox.addStyle('border', '4px solid black');
             //thebox.addStyle('z-index', Module.getNextZIndex());
 
-            var theBox = '<div id="{id}" style="position:absolute;opacity:0.3;left:{left};top:{top};width:{width};height:{height};border:{border};z-index:{zindex}"></div>'.AXMInterpolate({
-                id: transId,
-                left: px0 + 'px',
-                top: py0 + 'px',
-                width: lx0 + 'px',
-                height: ly0 + 'px',
-                border: '4px solid black',
-                zindex: Module.getNextZIndex()
-            });
+            var theBox = `<div id="${transId}" style="position:absolute;opacity:0.3;left:${px0 + 'px'};top:${py0 + 'px'};width:${lx0 + 'px'};height:${ly0 + 'px'};border:${'4px solid black'};z-index:${Module.getNextZIndex()}"></div>`;
 
             $('.AXMContainer').append(theBox);
 

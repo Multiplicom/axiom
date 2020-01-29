@@ -324,10 +324,7 @@ define([
                     if (dataCat[rowNr] == catInfo.catVal)
                         selList.push(dataPrimKey[rowNr]);
                 }
-                var dispText = _TRL('{propname}= {value}').AXMInterpolate({
-                    propname: win.getAspectProperty('category').getDispName(),
-                    value: catInfo.dispName
-                });
+                var dispText = _TRL(`${win.getAspectProperty('category').getDispName()}= ${catInfo.dispName}`);
                 win.performRowSelected(selList,dispText);
             };
 

@@ -899,13 +899,9 @@ define([
                             st += '</optgroup>';
                         lastGroupName = groupName;
                         if (groupName)
-                            st += '<optgroup label="{name}">'.AXMInterpolate({name: groupName});
+                            st += `<optgroup label="${groupName}">`;
                     }
-                    st += '<option value="{id}" {selected}>{name}</option>'.AXMInterpolate({
-                        id: state.id,
-                        name: state.name,
-                        selected: (state.id == control._value) ? 'selected="selected"' : ''
-                    });
+                    st += `<option value="${state.id}" ${(state.id == control._value) ? 'selected="selected"' : ''}>${state.name}</option>`;
                 });
                 if (lastGroupName)
                     st += '</optgroup>';
@@ -1061,13 +1057,7 @@ define([
                     //}
 
                     var item_id = control._getSubId('_id_' + state.id);
-                    st += '<div class="RadioButtonItem"><input type="radio" id="{item_id}" name="{control_id}" value="{id}" {selected}></input><label for="{item_id}">{name}</label></div>'.AXMInterpolate({
-                        control_id: control._getSubId(''),
-                        id: state.id,
-                        item_id: item_id,
-                        name: state.name,
-                        selected: (state.id == control._value) ? 'checked="checked"' : ''
-                    });
+                    st += `<div class="RadioButtonItem"><input type="radio" id="${item_id}" name="${control._getSubId('')}" value="${state.id}" ${(state.id == control._value) ? 'checked="checked"' : ''}></input><label for="${item_id}">${state.name}</label></div>`;
                 });
                 //if (lastGroupName)
                 //    st += '</radiogroup>';

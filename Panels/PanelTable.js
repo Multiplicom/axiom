@@ -342,7 +342,7 @@ define([
              */
             panel.renderCell = function(rowNr, colNr, rowData, colInfo) {
                 if (colInfo.isOpener) {
-                    var cell = '<div class="AXMPgTableLinkCell" title="{txt}">'.AXMInterpolate({txt:_TRL('Open this item')});
+                    var cell = `<div class="AXMPgTableLinkCell" title="${_TRL('Open this item')}">`;
                     cell += '<div class="AXMPgTableLinkIcon"><i class="fa fa-external-link-square"></i></div>';
                     cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"/>';
                     cell += '</div>';
@@ -350,7 +350,7 @@ define([
                 }
                 if (colInfo.isSelector) {
                     var rowId = rowData[panel._tableData.getPrimKey()];
-                    var cell = '<div class="AXMPgTableSelectorCell" title="{txt}">'.AXMInterpolate({txt:_TRL('Select this item')});
+                    var cell = `<div class="AXMPgTableSelectorCell" title="${_TRL('Select this item')}">`;
                     if (!panel._tableData.isItemSelected(rowId))
                         cell += '<div class="AXMPgTableSelectorIcon"><i class="fa fa-circle-thin"></i></div>';
                     else
@@ -383,7 +383,7 @@ define([
                 if (rowNr < 0)
                     AXMUtils.Test.reportBug('Negative row number');
                 if (rowNr >= panel._tableData.getRowCount())
-                    AXMUtils.Test.reportBug('Row number {nr} outside count {count}'.AXMInterpolate({nr: rowNr, count: panel._tableData.getRowCount()}));
+                    AXMUtils.Test.reportBug(`Row number ${rowNr} outside count ${panel._tableData.getRowCount()}`);
                 var rowLeftHtml = '<tr id="' + panel._getRowLeftId(rowNr) + '">';
                 var rowRightHtml = '<tr id="' + panel._getRowRightId(rowNr) + '">';
                 var rowData = panel._tableData.getRow(rowNr);
@@ -402,11 +402,7 @@ define([
                         titleText = colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
                     if (titleText.indexOf('<') >= 0)
                         titleText = ""; // ugly hack because we don't want html content to be used in the tooltip
-                    var cell = '<td style="{styles}" id="tbcell_{id}" title="{titletext}">'.AXMInterpolate({
-                            styles: styles,
-                            id: panel.getId()+'_'+rowNr+'_'+colNr,
-                            titletext: titleText
-                        })
+                    var cell = `<td style="${styles}" id="tbcell_${panel.getId()+'_'+rowNr+'_'+colNr}" title="${titleText}">`
                         + panel.renderCell(rowNr, colNr, rowData, colInfo)
                         + '</td>';
                     if (panel._colIsRightPart(colInfo))
@@ -430,11 +426,7 @@ define([
             panel._renderPager = function() {
                 var rowFirst = panel._tableOffset;
                 var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
-                panel._pagerInfo.modifyText('<span style="font-size:90%">Current: {start}-{stop}<br>Total: {total}</span>'.AXMInterpolate({
-                    start:rowFirst+1,
-                    stop:rowLast+1,
-                    total:panel._tableRowCount
-                }));
+                panel._pagerInfo.modifyText(`<span style="font-size:90%">Current: ${rowFirst+1}-${rowLast+1}<br>Total: ${panel._tableRowCount}</span>`);
             };
 
 
@@ -587,7 +579,7 @@ define([
                         }
                         else
                             sortBox.removeClass('AXMPgTableColSortBoxActive');
-                        sortBox.html('<i class="fa fa-arrow-{dir}"></i>'.AXMInterpolate({dir: sortInv?'up':'down' }));
+                        sortBox.html(`<i class="fa fa-arrow-${sortInv?'up':'down'}"></i>`);
                     }
                 });
             };
@@ -828,7 +820,7 @@ define([
                 var blob = new Blob([he.decode(data)], {type: "text/plain;charset=utf-8"});
                 FileSaver(blob, 'TableContent.txt');
                 if (cnt < panel._tableData.getRowCount())
-                    SimplePopups.ErrorBox('Download was restricted to the first {cnt} rows'.AXMInterpolate({cnt: cnt}));
+                    SimplePopups.ErrorBox(`Download was restricted to the first ${cnt} rows`);
             };
 
 

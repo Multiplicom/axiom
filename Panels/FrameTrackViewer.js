@@ -166,7 +166,7 @@ define([
                     rootDiv.addStyle("display", "none");
                 //rootDiv.addStyle('width', '100%');
                 rootDiv.addStyle('height', track._fixedHeight + "px");
-                rootDiv.addStyle('border-bottom', "{w}px solid rgb(220,220,220)".AXMInterpolate({w: Module._trackMarginV}));
+                rootDiv.addStyle('border-bottom', `${Module._trackMarginV}px solid rgb(220,220,220)`);
                 //rootDiv.addStyle('background-color', "rgb(240,240,240)");
                 rootDiv.addStyle('white-space', "nowrap");
                 rootDiv.addStyle('vertical-align', "top");

@@ -83,7 +83,7 @@ define([
                             title: sectionTitle
                         });
                         var sectionLevel = sectionStack.length;
-                        var headerLine = '<div class="reportheader"><h{levela}>{title}</h{levelb}></div>'.AXMInterpolate({levela: sectionLevel, levelb: sectionLevel, title: sectionTitle});
+                        var headerLine = `<div class="reportheader"><h${sectionLevel}>${sectionTitle}</h${sectionLevel}></div>`;
                         fmtLogContent += headerLine;
                         fmtLogContent += '<div class="reportbody">';
                     }
@@ -102,7 +102,7 @@ define([
                                 timeDiffStr = timeDiff%60+'h' + timeDiffStr;
                             }
                         }
-                        fmtLogContent += '<div class="AXMLogElapsedInfo">{title} elapsed {str}</div>'.AXMInterpolate({title: sectionInfo.title, str: timeDiffStr});
+                        fmtLogContent += `<div class="AXMLogElapsedInfo">${sectionInfo.title} elapsed ${timeDiffStr}</div>`;
                         fmtLogContent += '</div></div>';
                     }
                     if (logLine.indexOf('>WARNING>') == 0) {
@@ -127,7 +127,7 @@ define([
 
             while (sectionStack.length > 0) {
                 var sectionInfo = sectionStack.pop();
-                fmtLogContent += '<div class="AXMLogElapsedInfo" style="color: orangered">{title} busy</div>'.AXMInterpolate({title: sectionInfo.title});
+                fmtLogContent += `<div class="AXMLogElapsedInfo" style="color: orangered">${sectionInfo.title} busy</div>`;
                 fmtLogContent += '</div></div>';
 
             }
