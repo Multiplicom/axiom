@@ -798,7 +798,7 @@ define([
             panel.attachEventHandlers = function() {
                 _super_attachEventHandlers();
                 var clickLayer$El = panel.getCanvas$El('selection');
-                AXMUtils.create$ElScrollHandler(clickLayer$El, panel._handleScrolled);
+                AXMUtils.create$ElScrollHandler(clickLayer$El, panel._handleScrolled, true);
                 AXMUtils.create$ElDragHandler(clickLayer$El, panel._panningStart, panel._panningDo, panel._panningStop);
                 clickLayer$El.mousemove(panel._onMouseMove);
                 clickLayer$El.click(panel._onClick);
