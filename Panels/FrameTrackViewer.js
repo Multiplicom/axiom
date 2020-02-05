@@ -110,7 +110,7 @@ define([
             track.setOffsetY = function(newVal, donotUpdate) {
                 track._offsetY = newVal;
                 if (!donotUpdate)
-                    track.render();
+                    track.draw();
             };
 
 
@@ -119,7 +119,7 @@ define([
                 track._offsetY = Math.max(track._offsetY, 0);
                 track._offsetY = Math.min(track._offsetY, track.getYRange());
                 if (!donotUpdate)
-                    track.render();
+                    track.draw();
             };
 
             track.getId = function () {
@@ -306,10 +306,10 @@ define([
                     params);
             };
 
-            track.render = function() {
+            track.draw = function() {
                 track._maxOffsetY = track.getYRange()-track.cnvs.getHeight();
                 track._offsetY = Math.max(Math.min(track._offsetY, track._maxOffsetY), 0);
-                track.cnvs.render();
+                track.cnvs.drawLayers();
             };
 
             track.renderLayer = function(layerId) {
@@ -720,14 +720,14 @@ define([
                 var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 panel._offset = -position+displayWidth/2/panel._zoomfactor;
                 panel._restrictViewToRange();
-                panel.render();
+                panel.draw();
                 panel._notifyPosChanged();
             };
 
             panel.setOffsetAndZoom = function(offset, zoomFactor) {
                 panel._offset = offset;
                 panel._zoomfactor = zoomFactor;
-                panel.render();
+                panel.draw();
 
             };
 
@@ -784,7 +784,7 @@ define([
                 panel._rangeMin = rangeMin;
                 panel._rangeMax = rangeMax;
                 panel._restrictViewToRange();
-                panel.render();
+                panel.draw();
             };
 
             panel.addTrack = function (itrack) {
@@ -851,9 +851,9 @@ define([
                 else
                     rootDiv.addStyle('overflow-y', 'hidden');
 
-                $.each(panel._tracks, function (idx, track) {
+                for (const track of panel._tracks) {
                     rootDiv.addElem(track.render());
-                });
+                }
 
                 return rootDiv.toString();
             };
@@ -917,27 +917,29 @@ define([
                         tyl = (panel._height - fixedPortionH)*1.0/variablePortionBudget;
                     track.resize(panel._width, tyl, params);
                 });
-                panel.render();
+                panel.draw();
             };
 
-            panel.render = function() {
-                if (!panel._isrunning)
+            panel.draw = function() {
+                if (!panel._isrunning) {
                     return;
-                $.each(panel._tracks, function (idx, track) {
-                    if(track.isVisible()){
-                        track.render();
+                }
+                for (const track of panel._tracks) {
+                    if (track.isVisible()) {
+                        track.draw();
                     }
-                });
+                }
             };
 
             panel.renderLayer = function(layerId) {
-                if (!panel._isrunning)
+                if (!panel._isrunning) {
                     return;
-                $.each(panel._tracks, function (idx, track) {
-                    if(track.isVisible()){
+                }
+                for (const track of panel._tracks) {
+                    if (track.isVisible()) {
                         track.renderLayer(layerId);
                     }
-                });
+                }
             };
 
 
@@ -963,7 +965,7 @@ define([
                 panel._zoomfactor = z2;
                 panel._offset = panel._offset + (1.0/z2-1.0/z1)*centralPx;
                 panel._restrictViewToRange();
-                panel.render();
+                panel.draw();
                 panel._notifyPosChanged();
             };
 
@@ -971,7 +973,7 @@ define([
                 panel._offset += offsetDiff;
                 panel._restrictViewToRange();
                 if (!donotUpdate) {
-                    panel.render();
+                    panel.draw();
                     panel._notifyPosChanged();
                 }
             };
@@ -1038,7 +1040,7 @@ define([
                     movedX = true;
                 }
                 if (movedY || movedX) //we need to render explicitly in this case
-                    panel.render();
+                    panel.draw();
                 if (panel._hasPannedX || panel._hasPannedY)
                     panel._hasDragged = true;
             };

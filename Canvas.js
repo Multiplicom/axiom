@@ -166,7 +166,7 @@ define([
              */
             cnvs.drawLayers = function () {
                 for (const layerid of cnvs._canvasLayerIds) {
-                    cnvs.render_exec(layerId);
+                    cnvs.render_exec(layerid);
                 }
             };
 
