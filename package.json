@@ -9,7 +9,6 @@
     "awesomplete": "1.1.5",
     "core-js": "^3.6.0",
     "delegate": "^3.2.0",
-    "eslint-plugin-axiom": "/Users/mvermeir/code/eslint-plugin-axiom",
     "file-saver": "^2.0.2",
     "he": "^1.2.0",
     "jquery": "^3.4.1",
@@ -20,6 +19,7 @@
     "nearley": "^2.19.0"
   },
   "devDependencies": {
+    "eslint-plugin-axiom": "https://github.com/Multiplicom/eslint-plugin-axiom/",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0"
   },
