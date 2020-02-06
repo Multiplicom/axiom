@@ -1,6 +1,7 @@
 @import "AXMPopupWindow.css";
 @import "AXMPgTable.css";
 @import "local.css";
+@import "../node_modules/font-awesome/css/font-awesome.css";
 
 html,body {
     height:100%;
