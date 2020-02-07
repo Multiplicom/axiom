@@ -131,7 +131,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.createHtml = function() {
+            panel.render = function() {
 
                 panel._divid_leftHeadRow = panel._getSubId('leftheadrow');
                 panel._divid_leftBody = panel._getSubId('leftbody');

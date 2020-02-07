@@ -110,7 +110,7 @@ define([
             track.setOffsetY = function(newVal, donotUpdate) {
                 track._offsetY = newVal;
                 if (!donotUpdate)
-                    track.draw();
+                    track.paint();
             };
 
 
@@ -119,7 +119,7 @@ define([
                 track._offsetY = Math.max(track._offsetY, 0);
                 track._offsetY = Math.min(track._offsetY, track.getYRange());
                 if (!donotUpdate)
-                    track.draw();
+                    track.paint();
             };
 
             track.getId = function () {
@@ -160,7 +160,7 @@ define([
             };
 
 
-            track.createHtml = function () {
+            track.render = function () {
                 var rootDiv = DOM.Div({id: 'track_' + track.getId()});
                 if (!track.isVisible())
                     rootDiv.addStyle("display", "none");
@@ -184,7 +184,7 @@ define([
                 centerDiv.addStyle("display", "inline-block");
                 centerDiv.addStyle('vertical-align', "top");
                 centerDiv.addStyle('position', 'relative');
-                centerDiv.addElem(track.cnvs.createHtml());
+                centerDiv.addElem(track.cnvs.render());
 
                 var rightDiv = DOM.Div({parent: rootDiv});
                 rightDiv.addStyle("display", "inline-block");
@@ -306,10 +306,10 @@ define([
                     params);
             };
 
-            track.draw = function() {
+            track.paint = function() {
                 track._maxOffsetY = track.getYRange()-track.cnvs.getHeight();
                 track._offsetY = Math.max(Math.min(track._offsetY, track._maxOffsetY), 0);
-                track.cnvs.drawLayers();
+                track.cnvs.paint();
             };
 
             track.renderLayer = function(layerId) {
@@ -840,7 +840,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.createHtml = function () {
+            panel.render = function () {
                 var rootDiv = DOM.Div({id: panel.getId() + '_content'});
                 rootDiv.addCssClass('AXMHtmlPanelBody');
                 rootDiv.addStyle('width', '100%');
@@ -852,7 +852,7 @@ define([
                     rootDiv.addStyle('overflow-y', 'hidden');
 
                 for (const track of panel._tracks) {
-                    rootDiv.addElem(track.createHtml());
+                    rootDiv.addElem(track.render());
                 }
 
                 return rootDiv.toString();
@@ -926,7 +926,7 @@ define([
                 }
                 for (const track of panel._tracks) {
                     if (track.isVisible()) {
-                        track.draw();
+                        track.paint();
                     }
                 }
             };
@@ -1129,7 +1129,7 @@ define([
                 thePanel.addTrack(track);
 
                 if (isLive) {
-                    $El.append(track.createHtml());
+                    $El.append(track.render());
                     track.attachEventHandlers();
                 }
 

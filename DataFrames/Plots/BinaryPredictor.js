@@ -55,7 +55,7 @@ define([
                 win.ctrl_costUN.addNotificationHandler(win.clear);
 
                 var bt_Update = Controls.Button({text: 'Update'});
-                bt_Update.addNotificationHandler(win.render);
+                bt_Update.addNotificationHandler(win.paint);
                 dispGroup.add(bt_Update);
 
                 //win.ctrl_showEnhInfo = Controls.Check({text: _TRL('Show enhancement'), checked: false})
@@ -93,7 +93,7 @@ define([
             };
 
             win.updateAspect = function(aspectId) {
-                win.render();
+                win.paint();
             };
 
             //win.parseData = function() {
@@ -112,7 +112,7 @@ define([
             };
 
 
-            win.render = function() {
+            win.paint = function() {
                 var propBinVal = win.getAspectProperty('binval');
                 var propPredictor = win.getAspectProperty('predictor');
                 var dataBinVal = propBinVal.data;
@@ -259,13 +259,12 @@ define([
 
 
             win.initPlot = function() {
-//                win.render();
             };
 
 
-            win.plot.render = win.render;
+            win.plot.paint = win.paint;
             win.init();
-            win.render();
+            win.paint();
             return win;
         };
 

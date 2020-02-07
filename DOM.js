@@ -23,7 +23,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/Events"], function(requir
         const nodeType = Object.getPrototypeOf(Node);
         if (nodeType.name === "Control") {
             const controlNode = new Node(props, children);
-            return controlNode.createHtml();
+            return controlNode.render();
         }
 
         return new DOMElement(
@@ -302,8 +302,8 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/Events"], function(requir
         }
 
         // Component => <Icon />, <Button />, etc.
-        if (component && component.createHtml) {
-            var renderedControl = component.createHtml();
+        if (component && component.render) {
+            var renderedControl = component.render();
             return appendChild(parent, renderedControl);
         }
 

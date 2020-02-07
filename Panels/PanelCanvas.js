@@ -81,7 +81,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.createHtml = function() {
+            panel.render = function() {
                 var panelBody = DOM.Div({ id: panel.getId() + "_content" });
                 panelBody.addCssClass("AXMHtmlPanelBody");
                 panelBody.addStyle("width", "100%");
@@ -145,7 +145,7 @@ define([
                             canvasElement.height = panel._cnvHeight*panel.ratio;
                         }
                     });
-                    panel.render();
+                    panel.paint();
                 }
             };
 
@@ -171,7 +171,7 @@ define([
             /**
              * Renders the drawing in the canvas element
              */
-            panel.render = function () {
+            panel.paint = function () {
                 panel.render_exec();
             };
 

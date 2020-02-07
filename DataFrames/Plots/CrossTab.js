@@ -43,19 +43,19 @@ define([
 
                 win.ctrl_showEnhInfo = Controls.Check({text: _TRL('Show enhancement'), checked: false})
                     .addNotificationHandler(function() {
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_showEnhInfo);
 
                 win.ctrl_showFracInfo = Controls.Check({text: _TRL('Show fraction info'), checked: true})
                     .addNotificationHandler(function() {
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_showFracInfo);
 
                 win.ctrl_showSelInfo = Controls.Check({text: _TRL('Show selection info'), checked: true})
                     .addNotificationHandler(function() {
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_showSelInfo);
 
@@ -76,7 +76,7 @@ define([
             };
 
             win.updateAspect = function(aspectId) {
-                win.render();
+                win.paint();
             };
 
             win.parseData = function() {
@@ -229,7 +229,7 @@ define([
                 return content;
             };
 
-            win.render = function() {
+            win.paint = function() {
                 var propCat1 = win.getAspectProperty('category1');
                 var propCat2 = win.getAspectProperty('category2');
 
@@ -321,9 +321,9 @@ define([
             };
 
 
-            win.plot.render = win.render;
+            win.plot.paint = win.paint;
             win.init();
-            win.render();
+            win.paint();
             return win;
         };
 

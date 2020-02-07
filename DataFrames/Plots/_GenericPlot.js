@@ -262,7 +262,7 @@ define([
                     }
 
                     win._ctrlSelectionCount.modifyText(_TRL(`${selCount} points selected`));
-                    win.plot.render();
+                    win.plot.paint();
                 };
 
                 win.addPlotCommand = function(icon, name, action) {
