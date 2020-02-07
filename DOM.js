@@ -24,6 +24,8 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/Events"], function(requir
         if (nodeType.name === "Control") {
             const controlNode = new Node(props, children);
             return controlNode.render();
+        } else if (typeof Node === 'function') {
+            return Node(props, children);
         }
 
         return new DOMElement(
