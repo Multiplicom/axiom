@@ -55,7 +55,7 @@ class Button extends Control {
                 },
                 [this.icon, DOM.Text(this.text)]
             ),
-            ...(this.help ? new Help(this.help) : [])
+            ...(this.help ? [new Help(this.help)] : [])
         ]);
     }
 }
