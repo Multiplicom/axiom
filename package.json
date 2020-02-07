@@ -22,7 +22,7 @@
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
-    "eslint-plugin-axiom": "https://github.com/Multiplicom/eslint-plugin-axiom/"
+    "eslint-plugin-axiom": "git+ssh://git@github.com:Multiplicom/eslint-plugin-axiom.git"
   },
   "scripts": {
     "lint:autofix": "eslint --fix '**/*.js'"
