@@ -58,7 +58,7 @@ define([
                 var toolBoxStart = DOM.Div({});
                 toolBoxStart.addCssClass("ToolBoxStart");
                 var startIcon = DOM.Div({ className: "ToolBoxStartIcon" });
-                startIcon.addElem(toolBox.getIcon().render());
+                startIcon.addElem(toolBox.getIcon().renderHtml());
                 toolBoxStart.addElem(startIcon);
 
                 var frame = document.getElementById(toolBox._frame._id)
@@ -66,7 +66,7 @@ define([
 
                 var rootDiv = DOM.Div({id: toolBox._id});
                 rootDiv.addCssClass("ToolBoxContainer");
-                rootDiv.addElem(toolBox._rootControl.render());
+                rootDiv.addElem(toolBox._rootControl.createHtml());
 
                 $('.AXMContainer').append(rootDiv.toString());
                 toolBox._$ElContainer = $('#' + toolBox._id);

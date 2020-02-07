@@ -16,25 +16,24 @@
 define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/Events"], function(require, $, _, AXMUtils) {
     const delegate = require("delegate");
     const { kebabCase: paramCase }  = require("lodash");
-    const { Component } = require("./Component");
 
     Fragment = (props, children) => h("", props, children);
     h = (Node, props, ...children) => {
         // Reify a Node if it inherits from Control
         const nodeType = Object.getPrototypeOf(Node);
-        if (nodeType.name === "Component") {
+        if (nodeType.name === "Control") {
             const controlNode = new Node(props, children);
-            return controlNode.render();
+            return controlNode.createHtml();
         }
 
         return new DOMElement(
             Node,
             props,
             children.flatMap(node => {
-                if (typeof node === "string") {
-                    return document.createTextNode(node)
+                if (node === "string") {
+                    return document.createTextNode(node);
                 }
-                
+
                 return node;
             })
         );
@@ -303,8 +302,9 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/Events"], function(requir
         }
 
         // Component => <Icon />, <Button />, etc.
-        if (component && component instanceof Component && component.render) {
-            return appendChild(parent, component.render());
+        if (component && component.createHtml) {
+            var renderedControl = component.createHtml();
+            return appendChild(parent, renderedControl);
         }
 
         // No op

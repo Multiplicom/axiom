@@ -101,7 +101,7 @@ define([
              * Returns the html implementing the panel (implemented in derived classes)
              * @returns {string}
              */
-            panel.render = function() {
+            panel.createHtml = function() {
                 return '';
             };
 

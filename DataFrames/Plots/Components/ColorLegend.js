@@ -31,7 +31,7 @@ define([
             settings.reactOnClick = true;
             var legendItem = Control.Static(settings);
 
-            legendItem.render = function() {
+            legendItem.createHtml = function() {
                 var rootEl = DOM.Create("div", {id: legendItem._getSubId('')});
 
                 DOM.Label({id: legendItem._getSubId('_color'), parent: rootEl})
@@ -62,11 +62,11 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            colorLegend.render = function(settings) {
+            colorLegend.createHtml = function(settings) {
                 var div = DOM.Div({id: colorLegend._id+'_wrapper'});
                 $.each(colorLegend._members, function(idx, member) {
                     var elemDiv = DOM.Div({parent:div});
-                    elemDiv.addElem(member.render());
+                    elemDiv.addElem(member.createHtml());
                 });
                 return div.toString();
             };
@@ -98,7 +98,7 @@ define([
 
             colorLegend.liveUpdate = function() {
                 var $El = $('#' + colorLegend._id+'_wrapper');
-                $El.html(colorLegend.render());
+                $El.html(colorLegend.createHtml());
                 colorLegend.attachEventHandlers();
             };
 

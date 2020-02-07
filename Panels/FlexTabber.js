@@ -61,7 +61,7 @@ define([
              * Returns the html for the tab header
              * @returns {string}
              */
-            tabInfo.render = function() {
+            tabInfo.createHtml = function() {
                 var tabDiv = DOM.Div({id: tabInfo.tabId});
                 tabDiv.addCssClass('AXMFlexTab');
                 tabDiv.addCssClass('AXMFlexTabInActive');
@@ -72,7 +72,7 @@ define([
 
                 var iconDiv = DOM.Div({parent:tabContent});
                 iconDiv.addCssClass('AXMFlexTabIcon');
-                iconDiv.addElem(tabInfo.headerInfo.icon.render());
+                iconDiv.addElem(tabInfo.headerInfo.icon.renderHtml());
 
                 var textDiv = DOM.Div({parent:tabContent});
                 textDiv.addCssClass('AXMFlexTabText');
@@ -208,7 +208,7 @@ define([
                 frame._frameStacker.dynAddMember(theFrame);
 
                 var wrapperEl = document.getElementById(tabInfo.parentContainer._panelTabs.getContentElementId()).querySelector(".flexTabWrapper")
-                wrapperEl.appendChild(tabInfo.render().node$);
+                wrapperEl.appendChild(tabInfo.createHtml().node$);
                 setTimeout(function() {
                     frame._panelTabs.scrollToBottom();
                 }, 200);

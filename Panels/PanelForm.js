@@ -67,7 +67,7 @@ define([
              * Returns the html implementing this panel
              * @returns {string}
              */
-            panel.render = function() {
+            panel.createHtml = function() {
                 var rootDiv = DOM.Div({id: 'frm' + panel._id});
                 rootDiv.addStyle('width', '100%');
                 rootDiv.addStyle('height', '100%');
@@ -78,7 +78,7 @@ define([
                 if (panel._autoScrollY)
                     rootDiv.addStyle('overflow-y', 'auto');
                 if (panel._rootControl)
-                    rootDiv.addElem(panel._rootControl.render());
+                    rootDiv.addElem(panel._rootControl.createHtml());
                 if(panel._alignVerticalCenter){
                     rootDiv.addStyle('display', 'flex');
                     rootDiv.addStyle('align-items', 'center');
@@ -113,7 +113,7 @@ define([
                 if (el) {
                     el.innerHTML = '';
                     
-                    var updatedControl = panel._rootControl.render();
+                    var updatedControl = panel._rootControl.createHtml();
                     var documentFragment = document.createDocumentFragment();
                     documentFragment.appendChild(updatedControl.node$);
     

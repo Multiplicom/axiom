@@ -76,7 +76,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            cnvs.render = function() {
+            cnvs.createHtml = function() {
                 var rootDiv = DOM.Div({id: "cnvs_" + cnvs._id+'_content'});
                 rootDiv.addStyle('width', '100%');
                 rootDiv.addStyle('height', '100%');
@@ -162,16 +162,16 @@ define([
 
 
             /**
-             * Draws the canvas element for all layers
+             * Renders the drawing in the canvas element for all layers
              */
-            cnvs.drawLayers = function () {
-                for (const layerid of cnvs._canvasLayerIds) {
-                    cnvs.render_exec(layerid);
-                }
+            cnvs.render = function () {
+                $.each(cnvs._canvasLayerIds, function(idx, layerId) {
+                    cnvs.render_exec(layerId);
+                });
             };
 
             /**
-             * Draws the canvas element for a specific layer
+             * Renders the drawing in the canvas element for a specific layer
              */
             cnvs.renderLayer = function (layerId) {
                 cnvs.render_exec(layerId);

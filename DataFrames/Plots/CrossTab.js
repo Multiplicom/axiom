@@ -279,7 +279,7 @@ define([
                         content += win.renderCellInfo(idx1, idx2);
                         content += '</div></td>';
                     });
-Í
+
                     content += '</tr>';
                 });
 

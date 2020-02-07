@@ -81,7 +81,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.render = function() {
+            panel.createHtml = function() {
                 var panelBody = DOM.Div({ id: panel.getId() + "_content" });
                 panelBody.addCssClass("AXMHtmlPanelBody");
                 panelBody.addStyle("width", "100%");
@@ -98,7 +98,7 @@ define([
                     layer.addStyle("top", "0");
                 }
 
-                return panelBody;
+                return panelBody.toString();
             };
 
 
@@ -145,7 +145,7 @@ define([
                             canvasElement.height = panel._cnvHeight*panel.ratio;
                         }
                     });
-                    panel.drawCanvas();
+                    panel.render();
                 }
             };
 
@@ -171,7 +171,7 @@ define([
             /**
              * Renders the drawing in the canvas element
              */
-            panel.drawCanvas = function () {
+            panel.render = function () {
                 panel.render_exec();
             };
 

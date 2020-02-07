@@ -436,7 +436,7 @@ define([
             panel.finishZoomPan = function() {
                 if (panel.zoompanProcessing) {
                     panel.zoompanProcessing = false;
-                    panel.drawCanvas();
+                    panel.render();
                 }
             };
 
@@ -451,7 +451,7 @@ define([
                 if (panel._directRedraw) {
                     panel.xScaler = newXScaler;
                     panel.yScaler = newYScaler;
-                    panel.drawCanvas();
+                    panel.render();
                 }
                 else {
                     var mainCanvas = panel.getCanvasElement('main');

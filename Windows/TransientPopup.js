@@ -104,7 +104,7 @@ define([
 
                 var divClient = DOM.Div({parent: rootDiv}).addCssClass('AXMTransientClient');
                 if (window._rootControl)
-                    divClient.addElem(window._rootControl.render());
+                    divClient.addElem(window._rootControl.createHtml());
 
                 var arrow = DOM.Div({parent: rootDiv});
                 arrow.addCssClass('AXMTransientContainerArrow');

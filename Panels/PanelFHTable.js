@@ -82,7 +82,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.render = function() {
+            panel.createHtml = function() {
 
                 var divRoot = DOM.Div({id: 'rt' + panel._id})
                     .addStyle('width', '100%')
@@ -91,7 +91,7 @@ define([
                     .addStyle('position', 'relative');
                     //.addStyle('background-color', 'yellow')
 
-                //divRoot.addElem(panel.renderBody());
+                //divRoot.addElem(panel.createHtmlBody());
 
                 var divRoot = DOM.Div({id: 'tb' + panel._id, parent: divRoot})
                     //.addStyle('width', '100%')
@@ -103,7 +103,7 @@ define([
                 //.addStyle('position', 'relative')
                 //.addStyle('background-color', 'yellow')
 
-                //divRoot.addElem(panel.renderBody());
+                //divRoot.addElem(panel.createHtmlBody());
 
                 return divRoot.toString();
             };
@@ -119,7 +119,7 @@ define([
                 $.each(panel._columns, function(idx, column) {
                     content += '<th><div style="padding:6px;padding-top:10px;padding-bottom:10px">';
                     if (column.colControl) {
-                        content += column.colControl.render();
+                        content += column.colControl.createHtml();
                         panel._activeControls.push(column.colControl);
                     }
                     else
@@ -133,7 +133,7 @@ define([
                     $.each(panel._columns, function(idx, column) {
                         content += '<td style="padding:6px;padding-top:10px;padding-bottom:10px">';
                         if (row[column.colId]) {
-                            content += row[column.colId].render();
+                            content += row[column.colId].createHtml();
                             panel._activeControls.push(row[column.colId]);
                         }
                         content += "</td>";
