@@ -1534,13 +1534,18 @@ define([
              * @returns {string}
              */
             control.render = function() {
-                var rootEl = DOM.Create("textarea", {id: control._getSubId('')});
-                rootEl.addAttribute("spellcheck", "false");
-                rootEl.addAttribute("autofocus", "true");
-                rootEl.addCssClass("CodeEditor");
-                rootEl.addStyle("min-width", (control._width+5)+"px");
-                rootEl.addStyle("min-height", (control._height+5)+"px");
-                return rootEl;
+                return (
+                    <textarea
+                        id={control._getSubId('')}
+                        spellcheck={false}
+                        autofocus={true}
+                        className="CodeEditor"
+                        style={{
+                            minWidth: `${control._width + 5}px`,
+                            minHeight: `${control._height + 5}px`
+                        }}
+                    ></textarea>
+                );
             };
 
 
