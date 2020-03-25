@@ -17,8 +17,28 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/Events"], function(requir
     const delegate = require("delegate");
     const { kebabCase: paramCase }  = require("lodash");
 
-    Fragment = (props, children) => h("", props, children);
-    h = (Node, props, ...children) => {
+    /**
+     * A type of virtual node that is allowed to have children, but will not 
+     * rendered as a DOM element. Fragments make it possible to wrap sibling
+     * elements without the need to wrap them in a containing element.
+     * 
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createDocumentFragment
+     */
+    Fragment = function createFragment (props, children) {
+        return  h("", props, children);
+    }
+    
+    /**
+     * Creates a DOMElement with the given props (attributes) and 
+     * child nodes (optional). 
+     * 
+     * @param {Function|Object|string} Node - The Node to be created
+     * @param {Object} props - The attributes to be added to the element
+     * @param {Array} children - A list of virtual nodes to be added as children (optional)
+     * 
+     * @returns {Object} A DOMElement
+     */
+    h = function createDOMElement (Node, props, ...children) {
         // Reify a Node if it inherits from Control
         const nodeType = Object.getPrototypeOf(Node);
         if (nodeType.name === "Control") {
