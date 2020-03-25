@@ -76,7 +76,7 @@ class Icon {
         this.classNames.push(additionalClassName);
     }
 
-    overrideStyle(additionalStyling = { k, v }) {
+    overrideStyle(additionalStyling) {
         Object.assign(this.style, additionalStyling);
     }
 
