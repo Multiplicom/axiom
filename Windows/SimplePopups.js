@@ -415,7 +415,7 @@ define([
          * @constructor
          * @returns {{}} - popup instance
          */
-        Module.ErrorBox = function(content, title, onProceed, { icon, closeBoxText } = {}) {
+        Module.ErrorBox = function(content, title, onProceed, { icon, closeBoxText } = { closeBoxText:_TRL("Close")}) {
             if (!title) title = _TRL("Error");
 
             var win = Popupwin.create({
@@ -449,7 +449,7 @@ define([
             );
 
             var btOK = Controls.Button({
-                text: closeBoxText ? closeBoxText : _TRL("Close"),
+                text: closeBoxText,
                 ...(icon ? { icon } : {})
             }).addNotificationHandler(function() {
                 win.close();
