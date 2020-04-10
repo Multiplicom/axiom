@@ -31,7 +31,7 @@ class Decorator {
 
 class IconStack {
     constructor(icons = [], { scaling } = { scaling: "1x" }) {
-        if (icons.length < 0) {
+        if (icons.length < 1) {
             throw Error(`must have at least one icon to stack`);
         }
 
