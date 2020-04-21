@@ -73,7 +73,7 @@ define([
                 })
                     .addNotificationHandler(function() {
                         win._opacity = Math.pow(win.ctrl_Opacity.getValue(),1.5);
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_Opacity);
 
@@ -86,13 +86,13 @@ define([
                     text: _TRL('Point size')
                 })
                     .addNotificationHandler(function() {
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_PointSize);
 
                 win.ctrl_showOutline = Controls.Check({text: _TRL('Point outline'), checked: false})
                     .addNotificationHandler(function() {
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_showOutline);
 
@@ -129,8 +129,8 @@ define([
                 selGroup.add(btLinearFit);
             };
 
-            win.render = function() {
-                win.plot.render();
+            win.paint = function() {
+                win.plot.paint();
             };
 
             win.plot.getToolTipInfo = function (px, py) {
@@ -201,7 +201,7 @@ define([
                 }
                 if ((aspectId == 'color') || all)
                     win.updateColorLegend();
-                win.render();
+                win.paint();
             };
 
             win.updateColorLegend = function() {
@@ -415,7 +415,7 @@ define([
 
             win.addCurveStr = function(expr) {
                 win._curves.push(expr);
-                win.render();
+                win.paint();
             };
 
             win.setRange = function() {
@@ -469,7 +469,7 @@ define([
                     win.plot.setXRange(parseFloat(pwin.ctrlXMin.getValue()), parseFloat(pwin.ctrlXMax.getValue()));
                     win.plot.setYRange(parseFloat(pwin.ctrlYMin.getValue()), parseFloat(pwin.ctrlYMax.getValue()));
                     pwin.close();
-                    win.render();
+                    win.paint();
                 };
 
                 pwin.setRootControl(Controls.Compound.StandardMargin(grp));
@@ -498,11 +498,11 @@ define([
 
             win.setXRange = function(mn, mx) {
                 win.plot.setXRange(mn, mx);
-                win.render();
+                win.paint();
             };
             win.setYRange = function(mn, mx) {
                 win.plot.setYRange(mn, mx);
-                win.render();
+                win.paint();
             };
 
 
@@ -586,7 +586,7 @@ define([
                     if (!isNaN(slope)){
                         var expr = 'y=' + slope.toString() + ' * x + ' + intercept.toString();
                         win._curves.push(expr);
-                        win.render();
+                        win.paint();
                     }
                     else
                         SimplePopups.ErrorBox(_TRL('Fit could not be calculated for current selection.'));

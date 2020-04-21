@@ -1,0 +1,30 @@
+{
+  "name": "@agilent/axiom",
+  "version": "1.4.0",
+  "main": "index.js",
+  "repository": "git@github.com:Multiplicom/axiom.git",
+  "author": "Michiel Vermeir <michiel.vermeir@agilent.com>",
+  "license": "MIT",
+  "dependencies": {
+    "awesomplete": "1.1.5",
+    "core-js": "^3.6.0",
+    "delegate": "^3.2.0",
+    "file-saver": "^2.0.2",
+    "font-awesome": "^4.7.0",
+    "he": "^1.2.0",
+    "jquery": "^3.4.1",
+    "jquery-datetimepicker": "^2.5.21",
+    "jquery-mousewheel": "^3.1.13",
+    "js-cookie": "^2.2.1",
+    "lodash": "^4.1.15",
+    "nearley": "^2.19.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.8.0",
+    "eslint-plugin-axiom": "git+ssh://git@github.com:Multiplicom/eslint-plugin-axiom.git"
+  },
+  "scripts": {
+    "lint:autofix": "eslint --fix '**/*.js'"
+  }
+}

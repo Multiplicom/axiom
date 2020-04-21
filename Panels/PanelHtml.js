@@ -129,7 +129,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.createHtml = function() {
+            panel.render = function() {
                 var rootDiv = DOM.Div({id: panel.getId()+'_content'});
                 rootDiv.addCssClass('AXMHtmlPanelBody');
                 rootDiv.addStyle('width', '100%');

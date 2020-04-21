@@ -32,7 +32,7 @@ define([
          * @param {boolean} settings.blocking - if true, a blocking message is displayed for the duration of the fetching process
          */
         Module.fetchDocument = function(docId, onCompleted, onFailed, settings) {
-            var url = Module._docRoot + '/{id}.html'.AXMInterpolate({id: docId});
+            var url = Module._docRoot + `/${docId}.html`;
             if (settings.blocking)
                 var busyid = SimplePopups.setBlockingBusy('Fetching document');
             $.get(url, {})
@@ -138,7 +138,7 @@ define([
              * @param {string} docId - documentation item id
              */
             win.loadDocId = function(docId) {
-                win.loadDocUrl(Module._docRoot + '/{docid}.html'.AXMInterpolate({docid: docId}));
+                win.loadDocUrl(Module._docRoot + `/${docId}.html`);
             };
 
             /**

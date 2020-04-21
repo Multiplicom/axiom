@@ -81,22 +81,24 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.createHtml = function() {
-                var rootDiv = DOM.Div({id: panel.getId()+'_content'});
-                rootDiv.addCssClass('AXMHtmlPanelBody');
-                rootDiv.addStyle('width', '100%');
-                rootDiv.addStyle('height', '100%');
-                rootDiv.addStyle('overflow', 'hidden');
+            panel.render = function() {
+                var panelBody = DOM.Div({ id: panel.getId() + "_content" });
+                panelBody.addCssClass("AXMHtmlPanelBody");
+                panelBody.addStyle("width", "100%");
+                panelBody.addStyle("height", "100%");
+                panelBody.addStyle("overflow", "hidden");
 
+                for (const layerId of panel._canvasLayerIds) {
+                    var layer = DOM.Create("canvas", {
+                        id: panel.getCanvasID(layerId),
+                        parent: panelBody
+                    });
+                    layer.addStyle("position", "absolute");
+                    layer.addStyle("left", "0");
+                    layer.addStyle("top", "0");
+                }
 
-                $.each(panel._canvasLayerIds, function(idx, layerid) {
-                    var cnv = DOM.Create('canvas', { id: panel.getCanvasID(layerid), parent: rootDiv });
-                    cnv.addStyle("position","absolute");
-                    cnv.addStyle("left","0");
-                    cnv.addStyle("top","0");
-                });
-
-                return rootDiv.toString();
+                return panelBody.toString();
             };
 
 
@@ -143,7 +145,7 @@ define([
                             canvasElement.height = panel._cnvHeight*panel.ratio;
                         }
                     });
-                    panel.render();
+                    panel.paint();
                 }
             };
 
@@ -169,7 +171,7 @@ define([
             /**
              * Renders the drawing in the canvas element
              */
-            panel.render = function () {
+            panel.paint = function () {
                 panel.render_exec();
             };
 

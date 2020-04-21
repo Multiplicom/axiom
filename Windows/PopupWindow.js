@@ -326,10 +326,10 @@ define([
                         transfer$Elem = window._rootFrame.getRoot$El();
                     }
                     else
-                        divClient.addElem(window._rootFrame.createHtml());
+                        divClient.addElem(window._rootFrame.render());
                 }
                 if (window._rootControl)
-                    divClient.addElem(window._rootControl.createHtml());
+                    divClient.addElem(window._rootControl.render());
 
                 if (window.resizable) {
                     divClient.addStyle('position', 'absolute');
@@ -427,9 +427,9 @@ define([
                         iconContainer.addCssClass("AXMPopupHeaderIcon");
                         
                         if (AXMUtils.isObjectType(window._headerIcon, 'icon')) {
-                            iconContainer.addElem(window._headerIcon.renderHtml());
+                            iconContainer.addElem(window._headerIcon.render());
                         } else {
-                            var iconElement = '<i class="AXMPopupHeaderIcon fa {icon}" style=""></i>'.AXMInterpolate({icon:window._headerIcon})
+                            var iconElement = `<i class="AXMPopupHeaderIcon fa ${window._headerIcon}" style=""></i>`
                             iconContainer.addElem(iconElement);
                         }
 

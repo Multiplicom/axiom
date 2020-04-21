@@ -43,19 +43,19 @@ define([
 
                 win.ctrl_showEnhInfo = Controls.Check({text: _TRL('Show enhancement'), checked: false})
                     .addNotificationHandler(function() {
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_showEnhInfo);
 
                 win.ctrl_showFracInfo = Controls.Check({text: _TRL('Show fraction info'), checked: true})
                     .addNotificationHandler(function() {
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_showFracInfo);
 
                 win.ctrl_showSelInfo = Controls.Check({text: _TRL('Show selection info'), checked: true})
                     .addNotificationHandler(function() {
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_showSelInfo);
 
@@ -76,7 +76,7 @@ define([
             };
 
             win.updateAspect = function(aspectId) {
-                win.render();
+                win.paint();
             };
 
             win.parseData = function() {
@@ -178,9 +178,7 @@ define([
                 var content = '';
                 content += '<table class="AXMCrossTableCell">';
 
-                content += '<tr><th>Count:</th><td><b>{val}</b></td></tr>'.AXMInterpolate({
-                    val: win.totCount
-                });
+                content += `<tr><th>Count:</th><td><b>${win.totCount}</b></td></tr>`;
 
                 content += '</table>';
                 return content;
@@ -193,14 +191,10 @@ define([
                 content += '<div class="AXMCrossTableLarge">'+info.dispName+'</div>';
                 content += '<table class="AXMCrossTableCell">';
 
-                content += '<tr><th>Count:</th><td><b>{val}</b></td></tr>'.AXMInterpolate({
-                    val: info.count
-                });
+                content += `<tr><th>Count:</th><td><b>${info.count}</b></td></tr>`;
 
                 if (win._dispFracInfo) {
-                    content += '<tr><th>Frac&nbsp;tot:</th><td>{val}</td></tr>'.AXMInterpolate({
-                        val: writeFrac(info.count * 1.0 / win.totCount)
-                    });
+                    content += `<tr><th>Frac&nbsp;tot:</th><td>${writeFrac(info.count * 1.0 / win.totCount)}</td></tr>`;
                 }
 
                 content += '</table>';
@@ -213,35 +207,21 @@ define([
                 var cellInfo = win.cellData[idx1][idx2];
 
 
-                content += '<tr><th>Count:</th><td><b>{val}</b></td></tr>'.AXMInterpolate({
-                    val: cellInfo.count
-                });
+                content += `<tr><th>Count:</th><td><b>${cellInfo.count}</b></td></tr>`;
 
                 if (win._dispEnhInfo) {
-                    content += '<tr><th>Enhanc:</th><td>{val}</td></tr>'.AXMInterpolate({
-                        val: writeFrac(cellInfo.enhancement)
-                    });
+                    content += `<tr><th>Enhanc:</th><td>${writeFrac(cellInfo.enhancement)}</td></tr>`;
                 }
 
                 if (win._dispFracInfo) {
-                    content += '<tr><th>Frac&nbsp;tot:</th><td>{val}</td></tr>'.AXMInterpolate({
-                        val: writeFrac(cellInfo.count * 1.0 / win.totCount)
-                    });
-                    content += '<tr><th>Frac&nbsp;Row:</th><td>{val}</td></tr>'.AXMInterpolate({
-                        val: writeFrac(cellInfo.count * 1.0 / win.cats1[idx1].count)
-                    });
-                    content += '<tr><th>Frac&nbsp;Col:</th><td>{val}</td></tr>'.AXMInterpolate({
-                        val: writeFrac(cellInfo.count * 1.0 / win.cats2[idx2].count)
-                    });
+                    content += `<tr><th>Frac&nbsp;tot:</th><td>${writeFrac(cellInfo.count * 1.0 / win.totCount)}</td></tr>`;
+                    content += `<tr><th>Frac&nbsp;Row:</th><td>${writeFrac(cellInfo.count * 1.0 / win.cats1[idx1].count)}</td></tr>`;
+                    content += `<tr><th>Frac&nbsp;Col:</th><td>${writeFrac(cellInfo.count * 1.0 / win.cats2[idx2].count)}</td></tr>`;
                 }
 
                 if (win._dispSelInfo) {
-                    content += '<tr><th>Sel:</th><td>{val}</td></tr>'.AXMInterpolate({
-                        val: cellInfo.selCount
-                    });
-                    content += '<tr><th>Frac&nbsp;Sel:</th><td>{val}</td></tr>'.AXMInterpolate({
-                        val: writeFrac(cellInfo.selCount*1.0/Math.max(cellInfo.count,1))
-                    });
+                    content += `<tr><th>Sel:</th><td>${cellInfo.selCount}</td></tr>`;
+                    content += `<tr><th>Frac&nbsp;Sel:</th><td>${writeFrac(cellInfo.selCount*1.0/Math.max(cellInfo.count,1))}</td></tr>`;
                 }
 
 
@@ -249,7 +229,7 @@ define([
                 return content;
             };
 
-            win.render = function() {
+            win.paint = function() {
                 var propCat1 = win.getAspectProperty('category1');
                 var propCat2 = win.getAspectProperty('category2');
 
@@ -295,7 +275,7 @@ define([
                                 col = Color.Color(1, 1-0.3*colorFr*colorFr, 1-0.6*colorFr);
                             }
                         }
-                        content += '<td style="background-color: {col}"><div id="{id}" style="height:100%;padding:8px">'.AXMInterpolate({id: cellInfo._id, col: col.toString()});
+                        content += `<td style="background-color: ${col.toString()}"><div id="${cellInfo._id}" style="height:100%;padding:8px">`;
                         content += win.renderCellInfo(idx1, idx2);
                         content += '</div></td>';
                     });
@@ -320,14 +300,12 @@ define([
                                     selList.push(dataPrimKey[rowNr]);
                             }
                             var dispText = '';
-                            dispText += _TRL('{propname}= {value}').AXMInterpolate({
-                                propname: win.getAspectProperty('category1').getDispName(),
-                                value: cat1Info.dispName
-                            });
-                            dispText += _TRL('{propname}= {value}').AXMInterpolate({
-                                propname: win.getAspectProperty('category2').getDispName(),
-                                value: cat2Info.dispName
-                            });
+                            dispText += _TRL(
+                                `${win.getAspectProperty("category1").getDispName()}= ${cat1Info.dispName}`
+                            );
+                            dispText += _TRL(
+                                `${win.getAspectProperty("category2").getDispName()}= ${cat2Info.dispName}`
+                            );
                             win.performRowSelected(selList, dispText);
                         })
                     });
@@ -343,9 +321,9 @@ define([
             };
 
 
-            win.plot.render = win.render;
+            win.plot.paint = win.paint;
             win.init();
-            win.render();
+            win.paint();
             return win;
         };
 

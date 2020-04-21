@@ -44,7 +44,7 @@ define([
                 win._ctrlNormalise = Controls.Check({text: _TRL('Normalise per category'), checked: false})
                     .addNotificationHandler(function() {
                         win.parseData();
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win._ctrlNormalise);
 
@@ -60,8 +60,8 @@ define([
                 win.parseData();
             };
 
-            win.render = function() {
-                win.plot.render();
+            win.paint = function() {
+                win.plot.paint();
             };
 
             win.plot.drawPlot = function(drawInfo) {
@@ -135,7 +135,7 @@ define([
 
             win.updateAspect = function(aspectId) {
                 win.parseData();
-                win.render();
+                win.paint();
             };
 
             win.parseData = function() {

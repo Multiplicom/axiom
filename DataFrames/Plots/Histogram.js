@@ -51,7 +51,7 @@ define([
                 })
                     .addNotificationHandler(function() {
                         win.parseData();
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win.ctrl_Resolution);
 
@@ -61,8 +61,8 @@ define([
                 dispGroup.add(win.infoSelectionCtrl);
             };
 
-            win.render = function() {
-                win.plot.render();
+            win.paint = function() {
+                win.plot.paint();
             };
 
             win.initPlot = function() {
@@ -136,7 +136,7 @@ define([
 
             win.updateAspect = function(aspectId) {
                 win.parseData();
-                win.render();
+                win.paint();
             };
 
             /**
@@ -299,7 +299,7 @@ define([
 
             win.setXRange = function(mn, mx) {
                 win.plot.setXRange(mn, mx);
-                win.render();
+                win.paint();
             };
 
             win.listen('DataFrameRowSelChanged', function(objectTypeId) {

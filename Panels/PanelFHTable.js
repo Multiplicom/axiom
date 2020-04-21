@@ -15,13 +15,13 @@
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 define([
-        "require", "jquery", "_", "blob", "filesaver",
+        "require", "jquery", "_", "filesaver",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Controls/Controls", "AXM/Panels/Frame", "AXM/Panels/PanelBase", "AXM/Msg",
         "AXM/Windows/SimplePopups",
         "AXM/Tables/TableInfo"
     ],
     function (
-        require, $, _, Blob, FileSaver,
+        require, $, _, FileSaver,
         AXMUtils, DOM, Controls, Frame, PanelBase, Msg,
         SimplePopups,
         TableInfo
@@ -82,7 +82,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.createHtml = function() {
+            panel.render = function() {
 
                 var divRoot = DOM.Div({id: 'rt' + panel._id})
                     .addStyle('width', '100%')
@@ -110,7 +110,7 @@ define([
 
 
 
-            panel.render = function() {
+            panel.update = function() {
                 panel._clearActiveControls();
 
                 var content ='<table style="padding-top:0px" class="FHTable">';
@@ -119,7 +119,7 @@ define([
                 $.each(panel._columns, function(idx, column) {
                     content += '<th><div style="padding:6px;padding-top:10px;padding-bottom:10px">';
                     if (column.colControl) {
-                        content += column.colControl.createHtml();
+                        content += column.colControl.render();
                         panel._activeControls.push(column.colControl);
                     }
                     else
@@ -133,7 +133,7 @@ define([
                     $.each(panel._columns, function(idx, column) {
                         content += '<td style="padding:6px;padding-top:10px;padding-bottom:10px">';
                         if (row[column.colId]) {
-                            content += row[column.colId].createHtml();
+                            content += row[column.colId].render();
                             panel._activeControls.push(row[column.colId]);
                         }
                         content += "</td>";

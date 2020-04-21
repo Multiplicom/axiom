@@ -81,10 +81,7 @@ define([
                 var opts = opts || ({ styling: true });
 
                 if (opts.styling && coldef.className) {
-                    return "<span class='{className}'>{name}</span>".AXMInterpolate({
-                        className: coldef.className,
-                        name: coldef._name
-                    });
+                    return `<span class='${coldef.className}'>${coldef._name}</span>`;
                 }
 
                 return coldef._name;
@@ -198,7 +195,7 @@ define([
             tabledef.getColumn = function(colId) {
                 var colInfo = tabledef._map_columns[colId];
                 if (!colInfo)
-                    AXMUtils.Test.reportBug('Invalid column {colid} for table {tableid}'.AXMInterpolate({colid: colId, tableid: tabledef.tableId}));
+                    AXMUtils.Test.reportBug(`Invalid column ${colId} for table ${tabledef.tableId}`);
                 return colInfo;
             };
 

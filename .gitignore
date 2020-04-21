@@ -11,6 +11,8 @@
 node_modules/
 dist/
 demo/
+yarn.lock
+package-lock.json
 
 # VS Code
 .vscode
@@ -64,3 +66,5 @@ _region_.tex
 
 # master_data archive folders
 .archive
+
+local.css

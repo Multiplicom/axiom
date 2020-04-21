@@ -134,7 +134,7 @@ define([
 
             var Compound = Controls.Compound;
             var win = PopupWindow.create({
-                title: '{name} (Table)'.AXMInterpolate({name: dataFrame.getName()}),
+                title: `${dataFrame.getName()} (Table)`,
                 blocking:false,
                 autoCenter: true,
                 sizeX: 800,

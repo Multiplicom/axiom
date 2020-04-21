@@ -16,11 +16,11 @@
 
 
 define([
-        "require", "jquery", "datetimepicker", "AXM/Externals/awesomplete/awesomplete", "_",
+        "require", "jquery", "_",
         "AXM/AXMUtils", "AXM/DOM", "AXM/Icon", "AXM/Color", "AXM/Controls/Compound", "he", "AXM/Controls/Control"
     ],
     function (
-        require, $, datetimepicker, awesomplete, _,
+        require, $, _,
         AXMUtils, DOM, Icon, Color, Compound
     ) {
         var Control = require("AXM/Controls/Control");
@@ -57,7 +57,7 @@ define([
                 height: "21px"
             };
 
-            this.createHtml = function createHTML() {
+            this.render = function createHTML() {
                 return DOM.Div(
                     $.extend(this.handlers, {
                         id: this._getSubId("-control"),
@@ -108,7 +108,7 @@ define([
              * Creates the html of the control
              * @returns {String}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 return DOM.Span({ id: control._getSubId("") }, [control.textEl]);
             };
 
@@ -212,7 +212,7 @@ define([
              * Creates the html of the control
              * @returns {String}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var div = DOM.Div({ id: control._getSubId("") });
                 if (control._title) div.addAttribute("title", control._title);
                 if (control._inLine) {
@@ -316,7 +316,7 @@ define([
         Module.RawHtml = function(content) {
             var control = Module.SingleControlBase({});
 
-            control.createHtml = function() {
+            control.render = function() {
                 return content;
             };
 
@@ -382,7 +382,7 @@ define([
              * Creates the control html
              * @returns {String}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('width',control._width+'px')
                     .addStyle('height',control._height+'px')
@@ -404,7 +404,7 @@ define([
                     var divIcon = DOM.Div({parent: div})
                         .addCssClass('AXMButtonIcon')
                         .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle');
-                    divIcon.addElem(control._icon.renderHtml());
+                    divIcon.addElem(control._icon.render());
                 }
 
                 if (!control._icon && settings.text) {
@@ -426,7 +426,7 @@ define([
                             .addStyle('display', 'inline-block').addStyle('line-height', 'inherit').addStyle('vertical-align', 'middle')
                             .addStyle('width', iconWidth + 'px')
                             .addStyle('text-align','center');
-                        divIcon.addElem(control._icon.renderHtml());
+                        divIcon.addElem(control._icon.render());
                     }
                     if (settings.text) {
                         var divText = DOM.Div({parent: div})
@@ -633,7 +633,7 @@ define([
              * Creates the control html
              * @returns {string} - html
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var div = DOM.Create('div', { id:control._getSubId('') });
                 div.addCssClass(control._class);
                 $.each(control._extraClasses, function(idx, className) {
@@ -698,7 +698,7 @@ define([
 
             children = children ? children : [];
 
-            control.createHtml = function() {
+            control.render = function() {
                 return DOM.Div({}, [
                     DOM.Input(
                         $.extend(
@@ -869,7 +869,7 @@ define([
              * Returns the html implementing this control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var wrapper = DOM.Div();
                 wrapper.addStyle('display', 'inline-block');
                 if(control._title)
@@ -899,13 +899,9 @@ define([
                             st += '</optgroup>';
                         lastGroupName = groupName;
                         if (groupName)
-                            st += '<optgroup label="{name}">'.AXMInterpolate({name: groupName});
+                            st += `<optgroup label="${groupName}">`;
                     }
-                    st += '<option value="{id}" {selected}>{name}</option>'.AXMInterpolate({
-                        id: state.id,
-                        name: state.name,
-                        selected: (state.id == control._value) ? 'selected="selected"' : ''
-                    });
+                    st += `<option value="${state.id}" ${(state.id == control._value) ? 'selected="selected"' : ''}>${state.name}</option>`;
                 });
                 if (lastGroupName)
                     st += '</optgroup>';
@@ -1030,7 +1026,7 @@ define([
              * Returns the html implementing this control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var wrapper = DOM.Div();
                 wrapper.addStyle('display', 'inline-block');
                 var div = DOM.Create('div', { id: control._getSubId(''), parent: wrapper });
@@ -1061,13 +1057,7 @@ define([
                     //}
 
                     var item_id = control._getSubId('_id_' + state.id);
-                    st += '<div class="RadioButtonItem"><input type="radio" id="{item_id}" name="{control_id}" value="{id}" {selected}></input><label for="{item_id}">{name}</label></div>'.AXMInterpolate({
-                        control_id: control._getSubId(''),
-                        id: state.id,
-                        item_id: item_id,
-                        name: state.name,
-                        selected: (state.id == control._value) ? 'checked="checked"' : ''
-                    });
+                    st += `<div class="RadioButtonItem"><input type="radio" id="${item_id}" name="${control._getSubId('')}" value="${state.id}" ${(state.id == control._value) ? 'checked="checked"' : ''}></input><label for="${item_id}">${state.name}</label></div>`;
                 });
                 //if (lastGroupName)
                 //    st += '</radiogroup>';
@@ -1168,7 +1158,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var he = require("he");
 
                 var elementId = control._getSubId("");
@@ -1206,7 +1196,7 @@ define([
                 }
 
                 if (control._clearButton) {
-                    parentEl.addElem(control._clearButton.createHtml());
+                    parentEl.addElem(control._clearButton.render());
                     return parentEl
                 }
 
@@ -1239,6 +1229,9 @@ define([
                 if (control._clearButton)
                     control._clearButton.attachEventHandlers();
                 if (settings.choices){
+                    require("awesomplete/awesomplete.css")
+                    const Awesomplete = require("awesomplete");
+                    
                     var input = document.getElementById(control._id);
                     control._choices = new Awesomplete(input, {
 	                      list: settings.choices
@@ -1379,7 +1372,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var controlEl = DOM.Div();
                 var textAreaEl = DOM.Create("textarea", {
                     parent: controlEl,
@@ -1414,7 +1407,7 @@ define([
                 }
 
                 if (control._clearButton) {
-                    controlEl.addElem(control._clearButton.createHtml());
+                    controlEl.addElem(control._clearButton.render());
                     return controlEl;
                 }
 
@@ -1540,14 +1533,19 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
-                var rootEl = DOM.Create("textarea", {id: control._getSubId('')});
-                rootEl.addAttribute("spellcheck", "false");
-                rootEl.addAttribute("autofocus", "true");
-                rootEl.addCssClass("CodeEditor");
-                rootEl.addStyle("min-width", (control._width+5)+"px");
-                rootEl.addStyle("min-height", (control._height+5)+"px");
-                return rootEl;
+            control.render = function() {
+                return (
+                    <textarea
+                        id={control._getSubId('')}
+                        spellcheck={false}
+                        autofocus={true}
+                        className="CodeEditor"
+                        style={{
+                            minWidth: `${control._width + 5}px`,
+                            minHeight: `${control._height + 5}px`
+                        }}
+                    ></textarea>
+                );
             };
 
 
@@ -1637,6 +1635,8 @@ define([
          * @param {int} settings.width - width of the drop area
          * @param {int} settings.height - height of the drop area
          * @param {string} settings.text - text displayed in the drop area
+         * @param {string} settings.cssClass - cssClass used for the main control
+         * @param {string} settings.dragOverClass - cssClass used when dragging files over the control
          * @returns {Object} - returns the control instance
          * @constructor
          */
@@ -1645,6 +1645,8 @@ define([
             control._width = settings.width || 160;
             control._height = settings.height || 60;
             control._text = settings.text || 'Drop file(s)';
+            control._class = settings.cssClass || 'AXMFileDrop';
+            control._dragOverClass = settings.dragOverClass || 'AXMFileDropDragOver';
             control._files = null;
 
 
@@ -1652,13 +1654,13 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('width',control._width+'px')
                     .addStyle('height',control._height+'px')
                     .addStyle('white-space', 'normal')
                     .addStyle('position', 'relative');
-                div.addCssClass('AXMFileDrop');
+                div.addCssClass(control._class);
                 var txtDiv = DOM.Div({parent: div});
                 txtDiv.addElem(control._text);
                 return div;
@@ -1669,7 +1671,7 @@ define([
              * Handles the drag over html event
              */
             control.onDragOver = function() {
-                control._getSub$El('').addClass('AXMFileDropDragOver');
+                control._getSub$El('').addClass(control._dragOverClass);
             };
 
 
@@ -1677,7 +1679,7 @@ define([
              * Handles the drag leave html event
              */
             control.onDragLeave = function() {
-                control._getSub$El('').removeClass('AXMFileDropDragOver');
+                control._getSub$El('').removeClass(control._dragOverClass);
             };
 
 
@@ -1686,7 +1688,7 @@ define([
              * @param ev
              */
             control.onDrop = function(ev) {
-                control._getSub$El('').removeClass('AXMFileDropDragOver');
+                control._getSub$El('').removeClass(control._dragOverClass);
                 control._files = ev.originalEvent.dataTransfer.files;
                 control.performNotify();
             };
@@ -1754,7 +1756,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
 
                 var div = DOM.Div({ id:control._getSubId('') })
                     .addStyle('width',control._width+'px')
@@ -1858,7 +1860,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
                 control._datetimepickerid=control._getSubId('datetimepicker');
                 var rootEl = DOM.Create("input", {id: control._datetimepickerid});
                 rootEl.addCssClass('AXMEdit');
@@ -1879,23 +1881,26 @@ define([
 
 
             control.attachEventHandlers = function() {
-                $.datetimepicker.setLocale('en');
-                $("#"+control._datetimepickerid).datetimepicker({
-                    value:control._value,
-                    defaultTime:control._defaultTime,
-                    defaultDate:control._defaultDate,
-                    timepicker:control._timepicker,
-                    inline:control._inline,
-                    //mask:control._mask
-                    format:control._format,
-                    formatDate:control._formatDate,
-                    formatTime:control._formatTime,
-                    scrollMonth: control._scrollMonth,
-                    scrollTime: control._scrollTime,
-                    scrollInput: control._scrollInput
-
+                Promise.all([
+                    import("jquery-datetimepicker"),
+                    import("jquery-datetimepicker/jquery.datetimepicker.css")
+                ]).then(() => {
+                    $.datetimepicker.setLocale("en");
+                    
+                    $("#" + control._datetimepickerid).datetimepicker({
+                        value: control._value,
+                        defaultTime: control._defaultTime,
+                        defaultDate: control._defaultDate,
+                        timepicker: control._timepicker,
+                        inline: control._inline,
+                        format: control._format,
+                        formatDate: control._formatDate,
+                        formatTime: control._formatTime,
+                        scrollMonth: control._scrollMonth,
+                        scrollTime: control._scrollTime,
+                        scrollInput: control._scrollInput
+                    });
                 });
-
             };
 
 
@@ -2023,7 +2028,7 @@ define([
              * Returns the html implementing the control
              * @returns {string}
              */
-            control.createHtml = function() {
+            control.render = function() {
 
                 var div = DOM.Div({ id:control._getSubId('') });
                 var divCurrent = DOM.Div({ parent: div, id:control._getSubId('current') });
