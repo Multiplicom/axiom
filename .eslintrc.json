@@ -1,0 +1,23 @@
+{
+    "parser": "babel-eslint",
+
+    "env": {
+        "browser": true,
+        "es6": true,
+        "amd": true
+    },
+
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+
+    "plugins": ["axiom"],
+    "rules": {
+        "axiom/use-template-strings": 1,
+        "axiom/no-axm-interpolate": 1
+    }
+}

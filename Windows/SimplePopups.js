@@ -54,7 +54,7 @@ define([
             };
 
             var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: content+'<p/>'}));
+            grp.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
 
             var btOK = Controls.Button({
                 text: _TRL('OK'),
@@ -99,7 +99,7 @@ define([
             });
 
             var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: content+'<p/>'}));
+            grp.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
 
             var btOK = Controls.Button({
                 text: settings.textOK || _TRL('OK'),
@@ -159,7 +159,7 @@ define([
             });
 
             var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: content+'<p/>'}));
+            grp.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
 
             var btYes = Controls.Button({
                 text: settings.textYes || _TRL('Yes'),
@@ -222,7 +222,7 @@ define([
             });
 
             var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: intro+'<p/>'}));
+            grp.add(Controls.Static({text: typeof intro === "object" ? intro : intro +'<p/>'}));
 
             var buttons = [];
             $.each(actions, function(idx, action) {
@@ -415,39 +415,51 @@ define([
          * @constructor
          * @returns {{}} - popup instance
          */
-        Module.ErrorBox = function(content, title, onProceed) {
-            if (!title)
-                title = _TRL("Error");
+        Module.ErrorBox = function(content, title, onProceed, { icon, closeBoxText } = { closeBoxText:_TRL("Close")}) {
+            if (!title) title = _TRL("Error");
 
             var win = Popupwin.create({
                 title: title,
-                blocking:true,
+                blocking: true,
                 autoCenter: true,
                 preventClose: true
             });
 
             var grp1 = Controls.Compound.GroupHor({}).setSeparator(20);
-            grp1.add(Controls.Static({text: '<div style="font-size: 44px;padding:15px;display: inline-block;color:rgb(200,0,0)"><i class="fa fa-exclamation-triangle"></i></div>'}));
+            grp1.add(
+                Controls.Static({
+                    text: (
+                        <i
+                            style={{
+                                fontSize: "44px",
+                                padding: "15px",
+                                display: "inline-block",
+                                color: "rgb(200, 0, 0)"
+                            }}
+                            className="fa fa-exclamation-triangle"
+                        ></i>
+                    )
+                })
+            );
 
             var grp2 = Controls.Compound.GroupVert({});
             grp1.add(grp2);
-            grp2.add(Controls.Static({text: content+'<p/>'}));
+            grp2.add(
+                Controls.Static({ text: typeof content === "object" ? content : content + "<p/>" })
+            );
 
             var btOK = Controls.Button({
-                text: _TRL('Close')
-//                icon: 'fa-check'
-            })
-                .addNotificationHandler(function() {
-                    win.close();
-                    if (onProceed)
-                        onProceed();
-                });
+                text: closeBoxText,
+                ...(icon ? { icon } : {})
+            }).addNotificationHandler(function() {
+                win.close();
+                if (onProceed) onProceed();
+            });
             grp2.add(btOK);
 
             win.setHandler_OnPressedEnter(win.close);
             win.setRootControl(Controls.Compound.StandardMargin(grp1));
             win.start();
-
         };
 
         Module.blockingBusy_list = [];

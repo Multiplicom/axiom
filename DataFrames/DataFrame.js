@@ -683,8 +683,8 @@ define([
             dataFrame.getContentString_Raw = function() {
                 var str = '';
                 str += '#RD_TEXT\n';
-                str += '# datatype: {tpe}\n'.AXMInterpolate({tpe: dataFrame.getObjectType().getTypeId()});
-                str += '# key: {colid}\n'.AXMInterpolate({colid: dataFrame.getObjectType().getPrimKey()});
+                str += `# datatype: ${dataFrame.getObjectType().getTypeId()}\n`;
+                str += `# key: ${dataFrame.getObjectType().getPrimKey()}\n`;
                 $.each(dataFrame._extraTokens, function(key, value) {
                     str += '# extratoken: ' + key + Module.extraTokenDelimiter + value + '\n';
                 });
@@ -839,7 +839,7 @@ define([
             });
             var objectType = dataFrame.getObjectType();
             if (!objectType.hasProperty(objectType.getPrimKey())) {
-                AXMUtils.reportBug(_TRL('Dataframe should have column key column "{key}"'.AXMInterpolate({key: objectType.getPrimKey()})));
+                AXMUtils.reportBug(_TRL(`Dataframe should have column key column "${objectType.getPrimKey()}"`));
                 return;
             }
             if (showAsTable)

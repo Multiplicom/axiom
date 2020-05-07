@@ -40,21 +40,21 @@ define([
             win.plot._directRedraw = true;
             win.plot.setZoomDirections(true, false);
 
-            win.render = function() {
-                win.plot.render();
+            win.paint = function() {
+                win.plot.paint();
             };
 
             win._createDisplayControls = function(dispGroup) {
 
                 win._scaleCheck = Controls.Check({text: _TRL('Scale to 100%'), checked: false})
                     .addNotificationHandler(function() {
-                        win.render();
+                        win.paint();
                     });
                 dispGroup.add(win._scaleCheck);
 
                 win.ctrlSortType = Controls.DropList({}).addNotificationHandler(function() {
                     win.parseData();
-                    win.render();
+                    win.paint();
                 });
                 win.ctrlSortType.addState('val', _TRL("Alphabetical"));
                 win.ctrlSortType.addState('count', _TRL("Count"));
@@ -201,7 +201,7 @@ define([
 
             win.updateAspect = function(aspectId) {
                 win.parseData();
-                win.render();
+                win.paint();
             };
 
             win.parseData = function() {
@@ -324,10 +324,7 @@ define([
                     if (dataCat[rowNr] == catInfo.catVal)
                         selList.push(dataPrimKey[rowNr]);
                 }
-                var dispText = _TRL('{propname}= {value}').AXMInterpolate({
-                    propname: win.getAspectProperty('category').getDispName(),
-                    value: catInfo.dispName
-                });
+                var dispText = _TRL(`${win.getAspectProperty('category').getDispName()}= ${catInfo.dispName}`);
                 win.performRowSelected(selList,dispText);
             };
 

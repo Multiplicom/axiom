@@ -390,7 +390,7 @@ define([
              * Returns the html implementing thee frame
              * @returns {string}
              */
-            frame.createHtml = function() {
+            frame.render = function() {
                 var el = frame.htmlElement();
                 return el.outerHTML;
             };
@@ -781,7 +781,7 @@ define([
                     fragment.appendChild(splitdiv.node$)
                 }
                 $.each(frame._memberFrames, function(idx, memberFrame) {
-                    fragment.insertAdjacentHTML("beforeend", memberFrame.createHtml());
+                    fragment.insertAdjacentHTML("beforeend", memberFrame.render());
                 });
                 return fragment;
             };
@@ -1086,7 +1086,7 @@ define([
                 var html = '';
 
                 $.each(frame._memberFrames, function(idx, memberFrame) {
-                    html += memberFrame.createHtml();
+                    html += memberFrame.render();
                 });
                 return html;
             };
@@ -1137,7 +1137,7 @@ define([
                     $elClient.append(theFrame.getRoot$El().detach());
                 }
                 else {
-                    $elClient.append(theFrame.createHtml());
+                    $elClient.append(theFrame.render());
                     theFrame.getRoot$El().css('display', 'none');
                     theFrame.attachEventHandlers();
                 }
@@ -1460,7 +1460,7 @@ define([
                 div.addCssClass('AXMFrameFinalClientArea');
                 if (frame._cssClass)
                     div.addCssClass(frame._cssClass);
-                div.addElem(frame._panel.createHtml());
+                div.addElem(frame._panel.render());
 
                 return div;
             };
