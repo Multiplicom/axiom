@@ -791,7 +791,7 @@ define([
                 if (newVal == control.getValue()) return false;
                 control._value = newVal;
                 if (control._value) control._getSub$El("").prop("checked", "checked");
-                else control._getSub$El("").removeProp("checked");
+                else control._getSub$El("").prop("checked", "");
                 if (!preventNotify) control.performNotify();
                 control._checkCheckedClass();
                 return true;
