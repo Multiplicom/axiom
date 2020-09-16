@@ -818,6 +818,10 @@ define([
          * @param {int} settings.height - height of the box
          * @param {int} settings.value - initial state id
          * @param {boolean} settings.disabled - if true, the control is disabled
+         * @param {boolean} settings.autoBlankOption - provide an option with ID equal to empty string
+         * if there is more than 1 state. Omitted if there is only 1 state.
+         * @param {string} settings.autoBlankOptionName - set the display name for the option above. If specified,
+         * the autoBlankOption is considered to be true
          * @returns {Object} - control instance
          * @constructor
          */
@@ -829,7 +833,8 @@ define([
             control._value = settings.value || '';
             control._disabled = settings.disabled || false;
             control._title = settings.title || '';
-
+            control._autoBlankState = !!settings.autoBlankOption || settings.autoBlankOptionName;
+            control._autoBlankStateName = settings.autoBlankOptionName || _TRL('-- Select --');
 
             /**
              * Removes all the states from the list
@@ -892,6 +897,10 @@ define([
             control._buildSelectContent = function() {
                 var st = '';
                 var lastGroupName = '';
+                let blankUsed = control._states.map((state) => state.id).includes('');
+                if(control._states.length > 1 && control._autoBlankState && !blankUsed){
+                    st += `<option value="" ${('' == control._value) ? 'selected="selected"' : ''}>${control._autoBlankStateName}</option>`;
+                }
                 $.each(control._states, function(idx, state) {
                     var groupName = state.group || '';
                     if (groupName != lastGroupName) {
