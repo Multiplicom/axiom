@@ -857,15 +857,9 @@ define([
                 var rowHeight = tableHeight * 1.0 / displayedLineCount;
                 var headerHeight = $ElRightHeadRow.height();
 
-                if (panel._tableData._id === 'accounts')
-                    console.info("Measuring: " + panel._tableData._id + ": table line count" + panel._tableLineCount);
-
                 if (rowHeight > 0) {
                     panel._tableLineCount = Math.max(1, Math.floor((panel._availableHeight - headerHeight) / rowHeight) - 1);
                     panel._sizeMeasured = true;
-
-                    console.info("Size measured: " + panel._tableData._id + ": table line count" + panel._tableLineCount);
-                    panel.renderTableContent();
                 }
             };
 
