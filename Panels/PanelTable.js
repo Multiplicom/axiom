@@ -45,7 +45,7 @@ define([
          * @returns {Object} - panel instance
          * @constructor
          */
-        Module.create = function(id, tableData, tableInfo) {
+        Module.create = function (id, tableData, tableInfo) {
             var panel = PanelBase.create(id);
             AXMUtils.Test.checkIsType(tableData, '@TableData');
             AXMUtils.Test.checkIsType(tableInfo, '@TableInfo');
@@ -69,7 +69,7 @@ define([
              * Defines whether or not the user-adjusted layout should be stored
              * @param {boolean} newValue
              */
-            panel.setStoreLayout = function(newValue) {
+            panel.setStoreLayout = function (newValue) {
                 panel._storeLayout = newValue;
             };
 
@@ -77,7 +77,7 @@ define([
             /**
              * To be called to reflect changes in the table info
              */
-            panel.updateTableInfo = function() {
+            panel.updateTableInfo = function () {
 
                 panel._columns = [];
 
@@ -105,24 +105,23 @@ define([
             panel.updateTableInfo();
 
 
-
-            panel._colIsRightPart = function(colInfo) {
+            panel._colIsRightPart = function (colInfo) {
                 return (!colInfo.isOpener) && (!colInfo.isSelector);
             };
 
-            panel._getSubId = function(ext) {
+            panel._getSubId = function (ext) {
                 return panel._id + '_' + ext;
             };
 
-            panel._getSub$El = function(ext) {
+            panel._getSub$El = function (ext) {
                 return $('#' + panel._getSubId(ext));
             };
 
-            panel._getColSubId = function(colNr, ext) {
+            panel._getColSubId = function (colNr, ext) {
                 return panel._id + '_col_' + colNr + '_' + ext;
             };
 
-            panel._getColSub$El = function(colNr, ext) {
+            panel._getColSub$El = function (colNr, ext) {
                 return $('#' + panel._getColSubId(colNr, ext));
             };
 
@@ -131,7 +130,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.render = function() {
+            panel.render = function () {
 
                 panel._divid_leftHeadRow = panel._getSubId('leftheadrow');
                 panel._divid_leftBody = panel._getSubId('leftbody');
@@ -154,20 +153,20 @@ define([
              * Returns the html implementing the table body
              * @returns {string}
              */
-            panel.createHtmlBody = function() {
+            panel.createHtmlBody = function () {
                 panel._loadColumnSettings();
 
-                var divLeftTableContainer = DOM.Div({ id: panel._getSubId('leftTableScrollContainer')})
-                    .addStyle('height','100%')
+                var divLeftTableContainer = DOM.Div({id: panel._getSubId('leftTableScrollContainer')})
+                    .addStyle('height', '100%')
                     .addStyle('display', 'inline-block')
-                    .addStyle('background-color','rgb(247,247,247)');
+                    .addStyle('background-color', 'rgb(247,247,247)');
 
-                var divRightTableContainer = DOM.Div({ id: panel._getSubId('rightTableScrollContainer')})
-                    .addStyle('height','100%')
-                    .addStyle('overflow-x','scroll')
-                    .addStyle('overflow-y','hidden')
+                var divRightTableContainer = DOM.Div({id: panel._getSubId('rightTableScrollContainer')})
+                    .addStyle('height', '100%')
+                    .addStyle('overflow-x', 'scroll')
+                    .addStyle('overflow-y', 'hidden')
                     .addStyle('display', 'inline-block')
-                    .addStyle('background-color','rgb(247,247,247)');
+                    .addStyle('background-color', 'rgb(247,247,247)');
 
 
                 ///////////// Left table ////////////////////////////////
@@ -177,7 +176,7 @@ define([
                 var colLeftGroup = DOM.Create('colgroup', {parent: divLeftTable});
                 var divLeftTableHead = DOM.Create('thead', {parent: divLeftTable});
                 var divLeftTableHeadRow = DOM.Create('tr', {parent: divLeftTableHead, id: panel._divid_leftHeadRow});
-                var divLeftTableBody = DOM.Create('tbody', {parent: divLeftTable, id:panel._divid_leftBody});
+                var divLeftTableBody = DOM.Create('tbody', {parent: divLeftTable, id: panel._divid_leftBody});
 
 
                 ///////////// Right table ///////////////////////////////
@@ -187,16 +186,16 @@ define([
                 var colRightGroup = DOM.Create('colgroup', {parent: divRightTable});
                 var divRightTableHead = DOM.Create('thead', {parent: divRightTable});
                 var divRightTableHeadRow = DOM.Create('tr', {parent: divRightTableHead, id: panel._divid_rightHeadRow});
-                var divRightTableBody = DOM.Create('tbody', {parent: divRightTable, id:panel._divid_rightBody});
+                var divRightTableBody = DOM.Create('tbody', {parent: divRightTable, id: panel._divid_rightBody});
 
 
-                $.each(panel._columns, function(colNr, colInfo) {
+                $.each(panel._columns, function (colNr, colInfo) {
                     var col = DOM.Create('col', {
                         parent: panel._colIsRightPart(colInfo) ? colRightGroup : colLeftGroup,
-                        id: panel._getColSubId(colNr,'')
+                        id: panel._getColSubId(colNr, '')
                     })
                         .addStyle('width', colInfo._dispSize + 'px')
-                        .addStyle('overflow','hidden')
+                        .addStyle('overflow', 'hidden')
                 });
 
                 return divLeftTableContainer.toString() + divRightTableContainer.toString();
@@ -206,28 +205,31 @@ define([
             /**
              * Attached the html event handlers after DOM insertion
              */
-            panel.attachEventHandlers = function() {
-                var $ElLeftHeadRow = $('#'+panel._divid_leftHeadRow);
-                var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
-                var $ElRightBody = $('#'+panel._divid_rightBody);
-                var $ElLeftBody = $('#'+panel._divid_leftBody);
+            panel.attachEventHandlers = function () {
+                var $ElLeftHeadRow = $('#' + panel._divid_leftHeadRow);
+                var $ElRightHeadRow = $('#' + panel._divid_rightHeadRow);
+                var $ElRightBody = $('#' + panel._divid_rightBody);
+                var $ElLeftBody = $('#' + panel._divid_leftBody);
 
                 var headerLeftHtml = '';
                 var headerRightHtml = '';
-                $.each(panel._columns, function createHeader (colNr, colInfo) {
-                    var cell = DOM.Create('th', {id:panel._getColSubId('header',colNr)});
+                $.each(panel._columns, function createHeader(colNr, colInfo) {
+                    var cell = DOM.Create('th', {id: panel._getColSubId('header', colNr)});
                     cell.addElem(colInfo.getName());
-                    cell.addAttribute("title", colInfo.getName({ styling: false }));
+                    cell.addAttribute("title", colInfo.getName({styling: false}));
                     if (colInfo.canSort()) {
                         DOM.Div({parent: cell}).addCssClass('AXMPgTableColSortBox');
                     }
                     if (colInfo.canOpen()) {
-                        cell.addStyle('cursor','pointer');
+                        cell.addStyle('cursor', 'pointer');
                         DOM.Div({parent: cell, id: panel._getColSubId('open', colNr)})
                             .addCssClass('AXMPgTableColOpenBox')
                             .addElem('<i class="fa fa-external-link-square"></i>');
                     }
-                    DOM.Div({parent: cell, id: panel._getColSubId('dragger',colNr)}).addCssClass('AXMPgTableRightColDragger');
+                    DOM.Div({
+                        parent: cell,
+                        id: panel._getColSubId('dragger', colNr)
+                    }).addCssClass('AXMPgTableRightColDragger');
                     if (panel._colIsRightPart(colInfo))
                         headerRightHtml += cell.toString();
                     else
@@ -236,36 +238,36 @@ define([
                 $ElLeftHeadRow.html(headerLeftHtml);
                 $ElRightHeadRow.html(headerRightHtml);
 
-                $.each(panel._columns, function(colNr, colInfo) {
+                $.each(panel._columns, function (colNr, colInfo) {
                     var $ElColDrag = panel._getColSub$El('dragger', colNr);
-                    var $ElCol =panel._getColSub$El(colNr, '');
-                    var $ElColHeader =panel._getColSub$El('header', colNr);
+                    var $ElCol = panel._getColSub$El(colNr, '');
+                    var $ElColHeader = panel._getColSub$El('header', colNr);
                     if (colInfo.canOpen())
-                        $ElColHeader.mousedown(function(ev) {
+                        $ElColHeader.mousedown(function (ev) {
                             colInfo.callOnOpen();
                             return false;
                         });
-                    $ElColHeader.find('.AXMPgTableColSortBox').mousedown(function() {
+                    $ElColHeader.find('.AXMPgTableColSortBox').mousedown(function () {
                         panel._toggleSortByField(colInfo._id);
                     });
                     if (panel._colIsRightPart(colInfo)) {
                         var dispSizeStart = 0;
                         AXMUtils.create$ElDragHandler($ElColDrag,
-                            function() {
+                            function () {
                                 dispSizeStart = colInfo._dispSize;
                             },
-                            function(params) {
+                            function (params) {
                                 colInfo._dispSize = Math.max(35, dispSizeStart + params.diffTotalX);
                                 $ElCol.width(colInfo._dispSize);
                             },
-                            function() {
+                            function () {
                                 panel._storeColumnSettings();
                             }
                         )
                     }
                 });
 
-                $ElLeftBody.click(function(event) {
+                $ElLeftBody.click(function (event) {
                     panel._handleCellClicked($(event.target),
                         {
                             shiftPressed: event.shiftKey,
@@ -273,19 +275,19 @@ define([
                         }
                     );
                 });
-                $ElRightBody.click(function(event) {
+                $ElRightBody.click(function (event) {
                     panel._handleCellClicked($(event.target),
-                    {
-                        shiftPressed: event.shiftKey,
+                        {
+                            shiftPressed: event.shiftKey,
                             controlPressed: event.ctrlKey
-                    }
+                        }
                     );
                 });
 
                 AXMUtils.create$ElScrollHandler(panel._getSub$El('leftTableScrollContainer'), panel._handleScrolled);
                 AXMUtils.create$ElScrollHandler(panel._getSub$El('rightTableScrollContainer'), panel._handleScrolled);
 
-                $('#'+panel._divid_rightBody).contextmenu(function(event) {
+                $('#' + panel._divid_rightBody).contextmenu(function (event) {
                     //alert('contextmenu');
                     event.stopPropagation();
                     event.preventDefault();
@@ -300,18 +302,18 @@ define([
             /**
              * Detach the html event handlers
              */
-            panel.detachEventHandlers = function() {
-                if(panel){
-                    var $ElLeftHeadRow = $('#'+panel._divid_leftHeadRow);
-                    var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
-                    var $ElRightBody = $('#'+panel._divid_rightBody);
-                    var $ElLeftBody = $('#'+panel._divid_leftBody);
+            panel.detachEventHandlers = function () {
+                if (panel) {
+                    var $ElLeftHeadRow = $('#' + panel._divid_leftHeadRow);
+                    var $ElRightHeadRow = $('#' + panel._divid_rightHeadRow);
+                    var $ElRightBody = $('#' + panel._divid_rightBody);
+                    var $ElLeftBody = $('#' + panel._divid_leftBody);
 
 
-                    $.each(panel._columns, function(colNr, colInfo) {
+                    $.each(panel._columns, function (colNr, colInfo) {
                         var $ElColDrag = panel._getColSub$El('dragger', colNr);
-                        var $ElCol =panel._getColSub$El(colNr, '');
-                        var $ElColHeader =panel._getColSub$El('header', colNr);
+                        var $ElCol = panel._getColSub$El(colNr, '');
+                        var $ElColHeader = panel._getColSub$El('header', colNr);
                         if (colInfo.canOpen())
                             $ElColHeader.unbind('mousedown');
                         $ElColHeader.find('.AXMPgTableColSortBox').unbind('mousedown');
@@ -325,7 +327,7 @@ define([
                     AXMUtils.remove$ElScrollHandler(panel._getSub$El('leftTableScrollContainer'));
                     AXMUtils.remove$ElScrollHandler(panel._getSub$El('rightTableScrollContainer'));
 
-                    $('#'+panel._divid_rightBody).unbind('contextmenu');
+                    $('#' + panel._divid_rightBody).unbind('contextmenu');
 
                     panel._updateSortStatus();
                     panel.renderTableContent();
@@ -340,7 +342,7 @@ define([
              * @param {{}} rowData - content of the row
              * @param {AXM.TableInfo.colInfo} colInfo - column information
              */
-            panel.renderCell = function(rowNr, colNr, rowData, colInfo) {
+            panel.renderCell = function (rowNr, colNr, rowData, colInfo) {
                 if (colInfo.isOpener) {
                     var cell = `<div class="AXMPgTableLinkCell" title="${_TRL('Open this item')}">`;
                     cell += '<div class="AXMPgTableLinkIcon"><i class="fa fa-external-link-square"></i></div>';
@@ -364,12 +366,12 @@ define([
                 return colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
             };
 
-            panel._getRowLeftId = function(rowNr) {
-                return 'rowleft_'+panel.getId()+'_'+rowNr;
+            panel._getRowLeftId = function (rowNr) {
+                return 'rowleft_' + panel.getId() + '_' + rowNr;
             };
 
-            panel._getRowRightId = function(rowNr) {
-                return 'rowright_'+panel.getId()+'_'+rowNr;
+            panel._getRowRightId = function (rowNr) {
+                return 'rowright_' + panel.getId() + '_' + rowNr;
             };
 
 
@@ -379,7 +381,7 @@ define([
              * @returns {{left: string, right: string}}
              * @private
              */
-            panel._renderTableRow = function(rowNr) {
+            panel._renderTableRow = function (rowNr) {
                 if (rowNr < 0)
                     AXMUtils.Test.reportBug('Negative row number');
                 if (rowNr >= panel._tableData.getRowCount())
@@ -394,15 +396,15 @@ define([
                     var fgcolor = colInfo.content2ForegroundColor(rowData[colInfo.getId()], rowData);
                     var styles = '';
                     if (bkcolor)
-                        styles += 'background-color:'+bkcolor.toString();
+                        styles += 'background-color:' + bkcolor.toString();
                     if (fgcolor)
-                        styles += 'color:'+fgcolor.toString();
+                        styles += 'color:' + fgcolor.toString();
                     var titleText = '';
-                    if ((!colInfo.isOpener) && (!colInfo.isSelector) )
+                    if ((!colInfo.isOpener) && (!colInfo.isSelector))
                         titleText = colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
                     if (titleText.indexOf('<') >= 0)
                         titleText = ""; // ugly hack because we don't want html content to be used in the tooltip
-                    var cell = `<td style="${styles}" id="tbcell_${panel.getId()+'_'+rowNr+'_'+colNr}" title="${titleText}">`
+                    var cell = `<td style="${styles}" id="tbcell_${panel.getId() + '_' + rowNr + '_' + colNr}" title="${titleText}">`
                         + panel.renderCell(rowNr, colNr, rowData, colInfo)
                         + '</td>';
                     if (panel._colIsRightPart(colInfo))
@@ -423,34 +425,32 @@ define([
              * Sets the html code for the table pager control
              * @private
              */
-            panel._renderPager = function() {
+            panel._renderPager = function () {
                 var rowFirst = panel._tableOffset;
-                var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
-                panel._pagerInfo.modifyText(`<span style="font-size:90%">Current: ${rowFirst+1}-${rowLast+1}<br>Total: ${panel._tableRowCount}</span>`);
+                var rowLast = Math.min(panel._tableRowCount - 1, panel._tableOffset + panel._tableLineCount - 1);
+                panel._pagerInfo.modifyText(`<span style="font-size:90%">Current: ${rowFirst + 1}-${rowLast + 1}<br>Total: ${panel._tableRowCount}</span>`);
             };
 
 
             /**
              * Sets the html code for the table content
+             * @param forceMeasureSize should be set to true if we want to be certain the size of the panel is measured/adjusted even tough the panel._sizeMeasured was already set to true.
              */
-            panel.renderTableContent = function() {
-                if (this) {
-                    panel = this;
-                }
+            panel.renderTableContent = function (forceMeasureSize) {
 
                 panel._tableRowCount = panel._tableData.getRowCount();
                 var rowFirst = panel._tableOffset;
-                var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
+                var rowLast = Math.min(panel._tableRowCount - 1, panel._tableOffset + panel._tableLineCount - 1);
 
-                if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent.bind(panel), panel.renderFail)) {
+                if (!panel._tableData.requireRowRange(rowFirst, rowLast, () => panel.renderTableContent(true), panel.renderFail)) {
                     return;
                 }
 
-                var $ElRightBody = $('#'+panel._divid_rightBody);
-                var $ElLeftBody = $('#'+panel._divid_leftBody);
+                var $ElRightBody = $('#' + panel._divid_rightBody);
+                var $ElLeftBody = $('#' + panel._divid_leftBody);
                 var bodyLeftHtml = '';
                 var bodyRightHtml = '';
-                for (var rowNr = rowFirst; rowNr <= rowLast; rowNr ++) {
+                for (var rowNr = rowFirst; rowNr <= rowLast; rowNr++) {
                     var rowHtml = panel._renderTableRow(rowNr);
                     bodyLeftHtml += rowHtml.left;
                     bodyRightHtml += rowHtml.right;
@@ -461,16 +461,15 @@ define([
                 panel._renderHighlightRowNr();
                 panel._renderPager();
 
-                if (!panel._sizeMeasured)
+                if (!panel._sizeMeasured || forceMeasureSize)
                     panel._measureSize();
             };
-
 
 
             /**
              * Renders an error message
              */
-            panel.renderFail = function() {
+            panel.renderFail = function () {
                 panel._pagerInfo.modifyText('<span style="color:red">Failed to load data</span>');
             };
 
@@ -479,9 +478,9 @@ define([
              * Renders the highlight for the highlighted row
              * @private
              */
-            panel._renderHighlightRowNr = function() {
-                var $ElRightBody = $('#'+panel._divid_rightBody);
-                var $ElLeftBody = $('#'+panel._divid_leftBody);
+            panel._renderHighlightRowNr = function () {
+                var $ElRightBody = $('#' + panel._divid_rightBody);
+                var $ElLeftBody = $('#' + panel._divid_leftBody);
                 $ElRightBody.find('tr').removeClass('AXMPgTableHightlightRow');
                 $ElLeftBody.find('tr').removeClass('AXMPgTableHightlightRow');
                 $("#" + panel._getRowLeftId(panel._currentRowNr)).addClass('AXMPgTableHightlightRow');
@@ -496,7 +495,7 @@ define([
              * @param {{}} settings
              * @private
              */
-            panel._handleCellClicked = function($El, settings) {
+            panel._handleCellClicked = function ($El, settings) {
                 var cellInfo = panel._findTableCell$El($El);
                 if (cellInfo) {
                     panel._currentRowNr = cellInfo.rowNr;
@@ -517,7 +516,7 @@ define([
              * @param {{}} settings
              * @private
              */
-            panel._handleSelectorClicked = function(rowNr, settings) {
+            panel._handleSelectorClicked = function (rowNr, settings) {
                 var rowId = panel._tableData.getRowId(rowNr);
                 if (rowId === null)
                     return;
@@ -525,7 +524,7 @@ define([
                 if ((!settings.shiftPressed) || (panel._lastSelClickedRowNr == null))
                     panel._tableData.setItemSelected(rowId, !prevState);
                 else {
-                    for (var i=Math.min(rowNr,panel._lastSelClickedRowNr); i<=Math.max(rowNr,panel._lastSelClickedRowNr); i++) {
+                    for (var i = Math.min(rowNr, panel._lastSelClickedRowNr); i <= Math.max(rowNr, panel._lastSelClickedRowNr); i++) {
                         var t_rowId = panel._tableData.getRowId(i);
                         if (t_rowId !== null)
                             panel._tableData.setItemSelected(t_rowId, !prevState);
@@ -541,7 +540,7 @@ define([
              * @param params
              * @private
              */
-            panel._handleScrolled = function(params) {
+            panel._handleScrolled = function (params) {
                 panel._accumulatedScrollLineDiff -= params.deltaY;
                 if (Math.abs(panel._accumulatedScrollLineDiff) >= 1) {
                     var nLines = Math.sign(panel._accumulatedScrollLineDiff) * Math.floor(Math.abs(panel._accumulatedScrollLineDiff));
@@ -556,7 +555,7 @@ define([
              * @param {string} colId - column id
              * @private
              */
-            panel._toggleSortByField = function(colId) {
+            panel._toggleSortByField = function (colId) {
                 panel._tableData._toggleSortByField(colId);
                 panel.resetView();
                 panel._updateSortStatus();
@@ -567,19 +566,18 @@ define([
              * Updates the row sort status
              * @private
              */
-            panel._updateSortStatus = function() {
-                $.each(panel._columns, function(colNr, colInfo) {
-                    var $ElColHeader =panel._getColSub$El('header', colNr);
+            panel._updateSortStatus = function () {
+                $.each(panel._columns, function (colNr, colInfo) {
+                    var $ElColHeader = panel._getColSub$El('header', colNr);
                     if (colInfo.canSort()) {
                         var sortInv = false;
                         var sortBox = $ElColHeader.find('.AXMPgTableColSortBox');
                         if (panel._tableData.getSortColumn() == colInfo._id) {
                             sortBox.addClass('AXMPgTableColSortBoxActive');
                             sortInv = panel._tableData.getSortInverse();
-                        }
-                        else
+                        } else
                             sortBox.removeClass('AXMPgTableColSortBoxActive');
-                        sortBox.html(`<i class="fa fa-arrow-${sortInv?'up':'down'}"></i>`);
+                        sortBox.html(`<i class="fa fa-arrow-${sortInv ? 'up' : 'down'}"></i>`);
                     }
                 });
             };
@@ -588,7 +586,7 @@ define([
              * Stores the column layout settings as a local cookie
              * @private
              */
-            panel._storeColumnSettings = function() {
+            panel._storeColumnSettings = function () {
                 if (panel._storeLayout) {
                     var colSettings = [];
                     $.each(panel._columns, function (colNr, colInfo) {
@@ -608,7 +606,7 @@ define([
              * Loads the column layout settings from a local cookie, if present
              * @private
              */
-            panel._loadColumnSettings = function() {
+            panel._loadColumnSettings = function () {
                 if (panel._storeLayout) {
                     var encodedContent = Cookies.get('TableSettings_' + panel.getTypeId());
                     if (!encodedContent)
@@ -635,7 +633,7 @@ define([
              * @returns {rowNr, colNr}
              * @private
              */
-            panel._findTableCell$El = function($El) {
+            panel._findTableCell$El = function ($El) {
                 if ($El.length == 0)
                     return null;
                 var elId = $El.attr('id');
@@ -656,9 +654,9 @@ define([
             /**
              * Clears the content of the table
              */
-            panel.emptyContent = function() {
-                var $ElRightBody = $('#'+panel._divid_rightBody);
-                var $ElLeftBody = $('#'+panel._divid_leftBody);
+            panel.emptyContent = function () {
+                var $ElRightBody = $('#' + panel._divid_rightBody);
+                var $ElLeftBody = $('#' + panel._divid_leftBody);
                 $ElLeftBody.html('');
                 $ElRightBody.html('');
             };
@@ -667,7 +665,7 @@ define([
             /**
              * Resets the table pager to top view
              */
-            panel.resetView = function() {
+            panel.resetView = function () {
                 panel._tableOffset = 0;
                 panel._lastSelClickedRowNr = null;
                 panel._currentRowNr = 0;
@@ -678,7 +676,7 @@ define([
             /**
              * Forces an update of the displayed table content, refreshing any available cache
              */
-            panel.reloadContent = function() {
+            panel.reloadContent = function () {
                 panel._tableData.resetBuffer();
                 panel.invalidate();
             };
@@ -686,7 +684,7 @@ define([
             /**
              * Re-renders the table content
              */
-            panel.invalidate = function() {
+            panel.invalidate = function () {
                 panel.renderTableContent();
             };
 
@@ -694,7 +692,7 @@ define([
             /**
              * Navigates the pager to the first page
              */
-            panel.navigateFirstPage = function() {
+            panel.navigateFirstPage = function () {
                 panel._tableOffset = 0;
                 panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
@@ -703,8 +701,8 @@ define([
             /**
              * Navigates the pager to the previous page
              */
-            panel.navigatePreviousPage = function() {
-                panel._tableOffset = Math.max(0, panel._tableOffset-panel._tableLineCount);
+            panel.navigatePreviousPage = function () {
+                panel._tableOffset = Math.max(0, panel._tableOffset - panel._tableLineCount);
                 panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
@@ -712,8 +710,8 @@ define([
             /**
              * Navigates the pager to the next page
              */
-            panel.navigateNextPage = function() {
-                panel._tableOffset = Math.min(Math.max(0, panel._tableRowCount-panel._tableLineCount+2), panel._tableOffset+panel._tableLineCount);
+            panel.navigateNextPage = function () {
+                panel._tableOffset = Math.min(Math.max(0, panel._tableRowCount - panel._tableLineCount + 2), panel._tableOffset + panel._tableLineCount);
                 panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
@@ -721,8 +719,8 @@ define([
             /**
              * Navigates the pager to the last page
              */
-            panel.navigateLastPage = function() {
-                panel._tableOffset = Math.max(0, panel._tableRowCount-panel._tableLineCount+2);
+            panel.navigateLastPage = function () {
+                panel._tableOffset = Math.max(0, panel._tableRowCount - panel._tableLineCount + 2);
                 panel._lastSelClickedRowNr = null;
                 panel.renderTableContent();
             };
@@ -731,18 +729,18 @@ define([
              * Navigates the pager over a number of lines (positive or negative
              * @param {int} diff - number of lines to change the offset
              */
-            panel.navigateLineDiff = function(diff) {
-                var $ElRightBody = $('#'+panel._divid_rightBody);
-                var $ElLeftBody = $('#'+panel._divid_leftBody);
+            panel.navigateLineDiff = function (diff) {
+                var $ElRightBody = $('#' + panel._divid_rightBody);
+                var $ElLeftBody = $('#' + panel._divid_leftBody);
 
                 var tableOffsetPrev = panel._tableOffset;
-                var rowLastPrev = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
+                var rowLastPrev = Math.min(panel._tableRowCount - 1, panel._tableOffset + panel._tableLineCount - 1);
 
                 panel._tableOffset += diff;
-                panel._tableOffset = Math.min(Math.max(0, panel._tableRowCount-panel._tableLineCount+2), panel._tableOffset);
+                panel._tableOffset = Math.min(Math.max(0, panel._tableRowCount - panel._tableLineCount + 2), panel._tableOffset);
                 panel._tableOffset = Math.max(0, panel._tableOffset);
                 var rowFirst = panel._tableOffset;
-                var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
+                var rowLast = Math.min(panel._tableRowCount - 1, panel._tableOffset + panel._tableLineCount - 1);
                 diff = panel._tableOffset - tableOffsetPrev; // Corrected difference
 
                 if (!panel._tableData.requireRowRange(rowFirst, rowLast, panel.renderTableContent.bind(panel), panel.renderFail))
@@ -750,10 +748,10 @@ define([
 
                 if (diff > 0) {
                     for (var rowNr = tableOffsetPrev; rowNr < panel._tableOffset; rowNr++) {
-                        $ElLeftBody.find('#'+panel._getRowLeftId(rowNr)).remove();
-                        $ElRightBody.find('#'+panel._getRowRightId(rowNr)).remove();
+                        $ElLeftBody.find('#' + panel._getRowLeftId(rowNr)).remove();
+                        $ElRightBody.find('#' + panel._getRowRightId(rowNr)).remove();
                     }
-                    for (var rowNr = Math.max(rowLastPrev+1, panel._tableOffset); rowNr <=rowLast; rowNr++) {
+                    for (var rowNr = Math.max(rowLastPrev + 1, panel._tableOffset); rowNr <= rowLast; rowNr++) {
                         var rowHtml = panel._renderTableRow(rowNr);
                         $ElLeftBody.append(rowHtml.left);
                         $ElRightBody.append(rowHtml.right);
@@ -761,11 +759,11 @@ define([
                 }
 
                 if (diff < 0) {
-                    for (var rowNr = rowLastPrev+1; rowNr >rowLast; rowNr--) {
-                        $ElLeftBody.find('#'+panel._getRowLeftId(rowNr)).remove();
-                        $ElRightBody.find('#'+panel._getRowRightId(rowNr)).remove();
+                    for (var rowNr = rowLastPrev + 1; rowNr > rowLast; rowNr--) {
+                        $ElLeftBody.find('#' + panel._getRowLeftId(rowNr)).remove();
+                        $ElRightBody.find('#' + panel._getRowRightId(rowNr)).remove();
                     }
-                    for (var rowNr = Math.min(tableOffsetPrev-1, rowLast); rowNr >= panel._tableOffset; rowNr--) {
+                    for (var rowNr = Math.min(tableOffsetPrev - 1, rowLast); rowNr >= panel._tableOffset; rowNr--) {
                         var rowHtml = panel._renderTableRow(rowNr);
                         $ElLeftBody.prepend(rowHtml.left);
                         $ElRightBody.prepend(rowHtml.right);
@@ -779,8 +777,8 @@ define([
             /**
              * Saves the table content to the client's machine
              */
-            panel.saveLocal = function() {
-                SimplePopups.ConfirmationBox('Do you want to download the table content<br>to your local computer?', 'Download', {}, function() {
+            panel.saveLocal = function () {
+                SimplePopups.ConfirmationBox('Do you want to download the table content<br>to your local computer?', 'Download', {}, function () {
                     panel._maxDownloadRowCount = 9999;
                     if (panel._tableData.requireRowRange(0, panel._maxDownloadRowCount, panel._exec_Save))
                         panel._exec_Save()
@@ -792,25 +790,25 @@ define([
              * Executes saving the data to the client's machine
              * @private
              */
-            panel._exec_Save = function() {
+            panel._exec_Save = function () {
                 var cnt = Math.min(panel._maxDownloadRowCount, panel._tableData.getRowCount());
                 var data = '';
-                var line  = '';
-                $.each(panel._columns, function addHeaders (colNr, colInfo) {
-                    if (colInfo.getName().length>0) {
-                        if (line.length>0)
+                var line = '';
+                $.each(panel._columns, function addHeaders(colNr, colInfo) {
+                    if (colInfo.getName().length > 0) {
+                        if (line.length > 0)
                             line += '\t';
                         // Get column name without styling (if any)
-                        line += colInfo.getName({ styling: false });
+                        line += colInfo.getName({styling: false});
                     }
                 });
                 data += line + '\n';
-                for (var rowNr = 0; rowNr < cnt ; rowNr ++) {
+                for (var rowNr = 0; rowNr < cnt; rowNr++) {
                     var rowData = panel._tableData.getRow(rowNr);
-                    var line  = '';
-                    $.each(panel._columns, function addRows (colNr, colInfo) {
-                        if (colInfo.getName().length>0) {
-                            if (line.length>0)
+                    var line = '';
+                    $.each(panel._columns, function addRows(colNr, colInfo) {
+                        if (colInfo.getName().length > 0) {
+                            if (line.length > 0)
                                 line += '\t';
                             line += colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
                         }
@@ -829,7 +827,7 @@ define([
              * @param {int} xl - new x size
              * @param {int} yl - new y size
              */
-            panel.resize = function(xl, yl) {
+            panel.resize = function (xl, yl) {
                 AXMUtils.Test.checkIsNumber(xl, yl);
                 if (!panel)
                     return;
@@ -843,75 +841,75 @@ define([
              * Measures the available size for the table, and automatically adjusts the number of lines in the table
              * @private
              */
-            panel._measureSize = function() {
+            panel._measureSize = function () {
                 if (!panel._availableHeight)
                     return;
 
-                var leftWidth = $('#'+panel._id+'_leftTableScrollContainer').width();
-                $('#'+panel._id+'_rightTableScrollContainer').width((panel._availableWidth-leftWidth)+'px');
+                var leftWidth = $('#' + panel._id + '_leftTableScrollContainer').width();
+                $('#' + panel._id + '_rightTableScrollContainer').width((panel._availableWidth - leftWidth) + 'px');
 
-                var $ElRightHeadRow = $('#'+panel._divid_rightHeadRow);
-                var $ElRightBody = $('#'+panel._divid_rightBody);
+                var $ElRightHeadRow = $('#' + panel._divid_rightHeadRow);
+                var $ElRightBody = $('#' + panel._divid_rightBody);
                 var tableHeight = $ElRightBody.height();
                 var rowFirst = panel._tableOffset;
-                var rowLast = Math.min(panel._tableRowCount-1, panel._tableOffset+panel._tableLineCount-1);
+                var rowLast = Math.min(panel._tableRowCount - 1, panel._tableOffset + panel._tableLineCount - 1);
                 var displayedLineCount = Math.max(1, rowLast - rowFirst + 1);
-                var rowHeight = tableHeight*1.0/displayedLineCount;
+                var rowHeight = tableHeight * 1.0 / displayedLineCount;
                 var headerHeight = $ElRightHeadRow.height();
-                if (rowHeight>0) {
+
+                if (rowHeight > 0) {
                     panel._tableLineCount = Math.max(1, Math.floor((panel._availableHeight - headerHeight) / rowHeight) - 1);
                     panel._sizeMeasured = true;
-                    panel.renderTableContent();
                 }
             };
 
-            panel.listen('UpdateTableRecordContent', function(msg) {
-                if (msg.tableId==panel._tableInfo.tableId) {
+            panel.listen('UpdateTableRecordContent', function (msg) {
+                if (msg.tableId == panel._tableInfo.tableId) {
                     panel.reloadContent();
                 }
             });
 
-            panel.listen('DeleteTableRecord', function(msg) {
-                if (msg.tableId==panel._tableInfo.tableId) {
+            panel.listen('DeleteTableRecord', function (msg) {
+                if (msg.tableId == panel._tableInfo.tableId) {
                     panel._tableData.setItemSelected(msg.primKey, false);
                     panel.reloadContent();
                 }
             });
 
-            panel.listen('UpdateTableInfo', function(tableid) {
-                if (tableid==panel._tableInfo.tableId) {
+            panel.listen('UpdateTableInfo', function (tableid) {
+                if (tableid == panel._tableInfo.tableId) {
                     panel.updateTableInfo();
                     panel._tableData.resetBuffer();
-                    $('#tb'+panel._id).html(panel.createHtmlBody());
+                    $('#tb' + panel._id).html(panel.createHtmlBody());
                     panel.renderTableContent();
                     panel.attachEventHandlers();
                 }
             });
 
-            panel.listen('TableSelectionModified', function(tableid) {
-                if (tableid==panel._tableInfo.tableId) {
+            panel.listen('TableSelectionModified', function (tableid) {
+                if (tableid == panel._tableInfo.tableId) {
                     panel.renderTableContent();
                 }
             });
 
             // We keep trying to measure the size, because we don't know when data will arrive
-            var autoRetryMeasureSize = function() {
-                if (panel==null)
+            var autoRetryMeasureSize = function () {
+                if (panel == null)
                     return;
                 if (panel._sizeMeasured)
                     return;
                 panel._measureSize();
                 setTimeout(autoRetryMeasureSize, 200)
             };
-            autoRetryMeasureSize();
+            // autoRetryMeasureSize();
 
             //Remove own object on closing
-            panel.addTearDownHandler(function() {
+            panel.addTearDownHandler(function () {
                 panel = null;
             });
 
             return panel;
-        } ;
+        };
 
 
         /**
@@ -922,7 +920,7 @@ define([
          * @returns {Object} - frame instance
          * @constructor
          */
-        Module.createTableViewerFrame = function(id, tableData, tableInfo) {
+        Module.createTableViewerFrame = function (id, tableData, tableInfo) {
             AXMUtils.Test.checkIsString(id);
             AXMUtils.Test.checkIsType(tableData, '@TableData');
             AXMUtils.Test.checkIsType(tableInfo, '@TableInfo');
@@ -955,7 +953,7 @@ define([
             }, thePanel.navigateLastPage);
 
             thePanel._pagerInfo = Controls.Static({
-                text:''
+                text: ''
             });
 
             if (tableData.supportsFilterExpressions()) {
@@ -966,7 +964,7 @@ define([
                     hasClearButton: true
                 });
 
-                var handleQueryUpdate = function() {
+                var handleQueryUpdate = function () {
                     var expression = FilterExpression.create(btFilterQuery.getValue());
                     btFilterQuery.setValid(expression.isValid());
 
@@ -986,7 +984,7 @@ define([
 
             theFrame.addControl(thePanel._pagerInfo);
 
-            theFrame.getTablePanel = function() {
+            theFrame.getTablePanel = function () {
                 return thePanel;
             };
 
