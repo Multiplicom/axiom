@@ -845,10 +845,11 @@ define([
              * @param {string} id - state id
              * @param {string} name - state display name
              * @param {string} group - (optional) group name the state should belong to
+             * @param {boolean} disabled - (optional) set this state to be a placeholder
              */
-            control.addState = function(id, name, group) {
+            control.addState = function(id, name, group, disabled = false) {
                 if (!group) group = '';
-                control._states.push({id:id, name:name, group:group});
+                control._states.push({id:id, name:name, group:group, disabled: disabled});
                 control._getSub$El('').html(control._buildSelectContent());
             };
 
@@ -901,7 +902,7 @@ define([
                         if (groupName)
                             st += `<optgroup label="${groupName}">`;
                     }
-                    st += `<option value="${state.id}" ${(state.id == control._value) ? 'selected="selected"' : ''}>${state.name}</option>`;
+                    st += `<option value="${state.id}" ${(state.id == control._value) ? 'selected="selected"' : ''} ${!!state.disabled ? 'disabled' : ''}>${state.name}</option>`;
                 });
                 if (lastGroupName)
                     st += '</optgroup>';
