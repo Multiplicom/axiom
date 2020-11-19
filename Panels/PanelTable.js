@@ -860,6 +860,7 @@ define([
                 if (rowHeight > 0) {
                     panel._tableLineCount = Math.max(1, Math.floor((panel._availableHeight - headerHeight) / rowHeight) - 1);
                     panel._sizeMeasured = true;
+                    panel.renderTableContent();
                 }
             };
 
