@@ -3,28 +3,27 @@
 @import "local.css";
 @import "~font-awesome/css/font-awesome.css";
 
-html,body {
-    height:100%;
+html, body {
+    height: 100%;
     overflow: hidden;
 }
 
 body {
-    font-size:12px;
+    font-size: 12px;
     /*font-family: Calibri W01 Regular, Arial, Helvetica, sans-serif;*/
-    font-family: Helvetica,Arial,sans-serif
+    font-family: Helvetica, Arial, sans-serif
 }
 
 .AXMContainer {
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
 
-
 .AXMEdit {
-    border: 1px solid rgb(192,192,192);
-    padding-left:2px;
+    border: 1px solid rgb(192, 192, 192);
+    padding-left: 2px;
 }
 
 .AXMEdit:focus {
@@ -49,54 +48,56 @@ body {
 }
 
 .AXMSplitter {
-    width:20px;
-    height:20px;
-    position:absolute;
+    width: 20px;
+    height: 20px;
+    position: absolute;
 }
+
 .AXMSplitterH {
-    cursor:ew-resize;
+    cursor: ew-resize;
 }
+
 .AXMSplitterV {
-    cursor:ns-resize;
+    cursor: ns-resize;
 }
 
 .AXMFrame {
-    position:absolute;
+    position: absolute;
     overflow: hidden;
 }
 
 .AXMFrameTitle {
     padding: 4px;
-    padding-left:6px;
-    height:12px;
-    font-weight:bold;
-    color: rgb(100,100,100);
-    position:absolute;
-    background-color: rgb(190,190,190);
+    padding-left: 6px;
+    height: 12px;
+    font-weight: bold;
+    color: rgb(100, 100, 100);
+    position: absolute;
+    background-color: rgb(190, 190, 190);
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
     margin-top: 2px;
 }
 
 .AXMFrameClient {
-    position:absolute;
+    position: absolute;
     background-color: white;
     overflow: hidden;
 }
 
 .AXMFrameFinalClientArea {
-    position:absolute;
+    position: absolute;
     background-color: white;
     overflow: hidden;
 }
 
 .AXMFrameClientAreaGrey {
-    background-color: rgb(230,230,230);
+    background-color: rgb(230, 230, 230);
 }
 
 
 .AXMFrameTitle, .AXMFrameTabElementActive {
-    background-color: rgb(220,220,220) !important;
+    background-color: rgb(220, 220, 220) !important;
     /*background: rgb(200, 200, 200); /!* Old browsers *!/*/
     /*background: -moz-linear-gradient(top, rgb(200, 200, 200) 0%, rgb(230, 230, 230) 100%); /!* FF3.6+ *!/*/
     /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(200, 200, 200)), color-stop(100%, rgb(230, 230, 230))); /!* Chrome,Safari4+ *!/*/
@@ -110,38 +111,38 @@ body {
 /*************************** Frames tabs  **************************************************/
 
 .AXMFrameTabContainer {
-    position:absolute;
-    border-bottom: 3px solid rgb(220,220,220); /* BCK2 */
+    position: absolute;
+    border-bottom: 3px solid rgb(220, 220, 220); /* BCK2 */
 }
 
 .AXMFrameTabContainerInner {
     white-space: nowrap;
     overflow: hidden;
-    display:inline-block;
-    padding-right:2px;
+    display: inline-block;
+    padding-right: 2px;
 }
 
 .AXMFrameTabElement {
     font-size: 105%;
-    font-weight:bold;
-    height:22px;
-    padding-top:6px;
+    font-weight: bold;
+    height: 22px;
+    padding-top: 6px;
     padding-left: 17px;
     padding-right: 17px;
-    border: 1px solid rgb(180,180,180);
+    border: 1px solid rgb(180, 180, 180);
     border-bottom: none;
-    display:inline-block;
-    background-color: rgb(245,245,245);
+    display: inline-block;
+    background-color: rgb(245, 245, 245);
     color: rgb(128, 128, 128);
     overflow: hidden;
-    cursor:pointer;
-    margin-top:9px;
-    margin-right:1px;
-    margin-left:5px;
+    cursor: pointer;
+    margin-top: 9px;
+    margin-right: 1px;
+    margin-left: 5px;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    box-shadow: 2px 1px 3px 0px rgba(0,0,0,0.15);
-    transition:background-color 0.15s linear;
+    box-shadow: 2px 1px 3px 0px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.15s linear;
 
 }
 
@@ -150,10 +151,10 @@ body {
     /*top: -2px;*/
     /*padding-bottom: 2px;*/
     /*background-color: rgb(210,210,210); *//* BCK2 */
-    border: 1px solid rgb(160,160,160);
+    border: 1px solid rgb(160, 160, 160);
     border-bottom: none;
-    color: rgb(50,50,50);
-    box-shadow: 2px 1px 3px 0px rgba(0,0,0,0.25);
+    color: rgb(50, 50, 50);
+    box-shadow: 2px 1px 3px 0px rgba(0, 0, 0, 0.25);
 }
 
 .AXMFrameTabElement:hover {
@@ -164,11 +165,11 @@ body {
 }
 
 .AXMFrameTabDisabled, .AXMFrameTabDisabled:hover {
-    background-color: rgb(250,250,250) !important;
-    color: rgb(190,190,190) !important;
-    border-color:rgb(220,220,220) !important;
+    background-color: rgb(250, 250, 250) !important;
+    color: rgb(190, 190, 190) !important;
+    border-color: rgb(220, 220, 220) !important;
     box-shadow: none !important;
-    cursor: default  !important;
+    cursor: default !important;
 }
 
 /*************************** Button Control  **************************************************/
@@ -176,13 +177,13 @@ body {
 .AXMButton {
     display: inline-block;
     box-sizing: border-box;
-    margin-right:-1px;
-    margin-bottom:-1px;
+    margin-right: -1px;
+    margin-bottom: -1px;
 
-    border: 1px solid rgb(210,210,210);
-    width:150px;
-    height:30px;
-    cursor:pointer;
+    border: 1px solid rgb(210, 210, 210);
+    width: 150px;
+    height: 30px;
+    cursor: pointer;
 
     color: rgb(86, 86, 86);
     /*background: rgb(255,255,255);*/
@@ -218,8 +219,6 @@ body {
 }
 
 
-
-
 .AXMButtonCommandBar, .AXMButtonInline {
     display: inline-block;
     background-color: transparent;
@@ -233,12 +232,12 @@ body {
 }
 
 .AXMButtonCommandBar:hover, .AXMButtonInline:hover {
-    background-color: rgba(255,192,0,0.35);
-    color: rgb(50,50,50);
+    background-color: rgba(255, 192, 0, 0.35);
+    color: rgb(50, 50, 50);
 }
 
 /*.AXMButtonInline:hover {*/
-    /*background-color: transparent;*/
+/*background-color: transparent;*/
 /*}*/
 
 .AXMButtonInline:hover .AXMButtonIcon {
@@ -253,12 +252,10 @@ body {
     border-top: 1px solid rgb(168, 187, 204);
     border-right: 1px solid rgb(160, 179, 196);
     border-bottom: 1px solid rgb(160, 179, 196);
-    box-sizing:border-box;
-    -moz-box-sizing:border-box;
-    -webkit-box-sizing:border-box;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
-
-
 
 
 .AXMButtonHelp .AXMButtonIcon {
@@ -278,8 +275,8 @@ body {
 
 
 .AXMCommandBar {
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
     color: rgb(113, 113, 113);
     background: rgb(243, 243, 243);
     /*background: -moz-linear-gradient(top,  rgb(255,255,255) 0%, rgb(230,230,230) 62%, rgb(250,250,250) 100%);*/
@@ -308,31 +305,30 @@ body {
     height: 33px;
     line-height: 33px;
 
-    padding-left:8px;
+    padding-left: 8px;
     font-weight: bold;
 
-    border-top: 1px solid rgb(220,220,220);
-    border-bottom: 1px solid rgb(220,220,220);
+    border-top: 1px solid rgb(220, 220, 220);
+    border-bottom: 1px solid rgb(220, 220, 220);
 
     color: rgb(105, 105, 105);
-    background: rgb(255,255,255);
-    background: -moz-linear-gradient(top,  rgb(255,255,255) 0%, rgb(230,230,230) 62%, rgb(250,250,250) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(255,255,255)), color-stop(62%,rgb(230,230,230)), color-stop(100%,rgb(250,250,250)));
-    background: -webkit-linear-gradient(top,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
-    background: -o-linear-gradient(top,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
-    background: -ms-linear-gradient(top,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
-    background: linear-gradient(to bottom,  rgb(255,255,255) 0%,rgb(230,230,230) 62%,rgb(250,250,250) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#fafafa',GradientType=0 );
+    background: rgb(255, 255, 255);
+    background: -moz-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(230, 230, 230) 62%, rgb(250, 250, 250) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(255, 255, 255)), color-stop(62%, rgb(230, 230, 230)), color-stop(100%, rgb(250, 250, 250)));
+    background: -webkit-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(230, 230, 230) 62%, rgb(250, 250, 250) 100%);
+    background: -o-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(230, 230, 230) 62%, rgb(250, 250, 250) 100%);
+    background: -ms-linear-gradient(top, rgb(255, 255, 255) 0%, rgb(230, 230, 230) 62%, rgb(250, 250, 250) 100%);
+    background: linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(230, 230, 230) 62%, rgb(250, 250, 250) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#fafafa', GradientType=0);
 }
 
 
-
 .reportunit {
-    margin-left:40px;
-    padding-left:10px;
-    border-left:1px solid rgb(220,220,220);
-    border-top:1px solid rgb(220,220,220);
-    margin-top:10px;
+    margin-left: 40px;
+    padding-left: 10px;
+    border-left: 1px solid rgb(220, 220, 220);
+    border-top: 1px solid rgb(220, 220, 220);
+    margin-top: 10px;
     padding-bottom: 10px;
 }
 
@@ -341,7 +337,7 @@ body {
 }
 
 .reportcomment {
-    color: rgb(150,150,150)
+    color: rgb(150, 150, 150)
 }
 
 .reporthyperlink {
@@ -373,7 +369,7 @@ body {
     font-size: 80%;
     color: rgb(145, 145, 145);
     font-weight: normal;
-    padding-top:7px;
+    padding-top: 7px;
 }
 
 .AXMLogWarning {
@@ -383,44 +379,43 @@ body {
 
 .AXMLogError {
     color: rgb(232, 0, 0);
-    background-color: rgb(255,255,100);
+    background-color: rgb(255, 255, 100);
     font-weight: bold;
 }
 
 
-.AXMToolTip
-{
-    opacity:0.9;
-    padding:4px;
+.AXMToolTip {
+    opacity: 0.9;
+    padding: 4px;
     /*border:1px solid black;*/
     background: #fcef79; /* Old browsers */
     background: -moz-linear-gradient(top, #fcef79 1%, #e87f35 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#fcef79), color-stop(100%,#e87f35)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, #fcef79 1%,#e87f35 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #fcef79 1%,#e87f35 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #fcef79 1%,#e87f35 100%); /* IE10+ */
-    background: linear-gradient(to bottom, #fcef79 1%,#e87f35 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcef79', endColorstr='#e87f35',GradientType=0 ); /* IE6-9 */
-    box-shadow: 1px 1px 7px rgba(0,0,0,0.65);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1%, #fcef79), color-stop(100%, #e87f35)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #fcef79 1%, #e87f35 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #fcef79 1%, #e87f35 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #fcef79 1%, #e87f35 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #fcef79 1%, #e87f35 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fcef79', endColorstr='#e87f35', GradientType=0); /* IE6-9 */
+    box-shadow: 1px 1px 7px rgba(0, 0, 0, 0.65);
 }
-
 
 
 .AXMFileDrop {
     box-sizing: border-box;
-    padding:9px;
-    font-size:13px;
-    text-align:center;
-    color:#666;
-    background-color:#eee;
-    border:2px dashed #aaa;
-    border-radius:10px;
-    width:250px;
-    height:100px;
+    padding: 9px;
+    font-size: 13px;
+    text-align: center;
+    color: #666;
+    background-color: #eee;
+    border: 2px dashed #aaa;
+    border-radius: 10px;
+    width: 250px;
+    height: 100px;
 }
+
 .AXMFileDropDragOver {
     background-color: #a2e6ee;
-    border:2px dashed #7d7d7d;
+    border: 2px dashed #7d7d7d;
 }
 
 
@@ -435,13 +430,19 @@ body {
     text-shadow: 1px 1px 8px rgba(0, 0, 0, 1);
     font-size: 44px;
     display: inline-block;
-    padding-top:4px;
-    padding-right:8px;
+    padding-top: 4px;
+    padding-right: 8px;
     vertical-align: top;
 }
 
+/*Override of AXMPopupHeaderIcon class with div child used in case of undocking views*/
+.AXMPopupHeaderIcon div i {
+    vertical-align: top;
+    margin-top: -1px;
+}
+
 .AXMDisabledText {
-    color: rgb(150,150,150);
+    color: rgb(150, 150, 150);
 }
 
 .AXMHyperLinkButton {
@@ -452,7 +453,7 @@ body {
 .flexTabWrapperFull {
     width: 100%;
     height: 100%;
-    background-color: rgb(230,230,230);
+    background-color: rgb(230, 230, 230);
     /*border-right: 1px solid rgb(160,160,160);*/
     /*box-sizing: border-box;*/
     /*box-shadow: inset 0px 0px 15px rgba(0, 0, 0, 0.32);*/
@@ -460,41 +461,41 @@ body {
 
 .flexTabWrapper {
     width: 100%;
-    background-color: rgb(230,230,230);
+    background-color: rgb(230, 230, 230);
 }
 
 .AXMFlexTab {
-    width:100%;
+    width: 100%;
     height: 50px;
-    margin-right:-10px;
-    position:relative;
+    margin-right: -10px;
+    position: relative;
     box-sizing: border-box;
     z-index: 0;
     margin-left: 3px;
     border-top-left-radius: 7px;
     border-bottom-left-radius: 7px;
     cursor: pointer;
-    transition:background-color 0.25s linear;
+    transition: background-color 0.25s linear;
 }
 
 .AXMFlexTabContent {
-    padding-left:5px;
-    padding:10px;
-    white-space:nowrap;
+    padding-left: 5px;
+    padding: 10px;
+    white-space: nowrap;
     vertical-align: top;
 }
 
 
 .AXMFlexTabIcon {
-    display:inline-block;
-    padding-right:8px;
+    display: inline-block;
+    padding-right: 8px;
     vertical-align: top;
     color: rgb(41, 139, 163);
     opacity: 0.45;
 }
 
 .AXMFlexTabText {
-    display:inline-block;
+    display: inline-block;
     vertical-align: top;
 }
 
@@ -504,7 +505,7 @@ body {
     /*border-left: 1px solid rgb(220,220,220);*/
     /*border-top: 1px solid rgb(220,220,220);*/
     /*border-bottom: 1px solid rgb(220,220,220);*/
-    box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.35);
+    box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.35);
     z-index: 1;
 }
 
@@ -520,7 +521,7 @@ body {
 }
 
 .AXMFlexTabInActive:hover {
-    background-color: rgb(250,242,235);
+    background-color: rgb(250, 242, 235);
 }
 
 .AXMFlexTabInActiveHighlight {
@@ -529,25 +530,25 @@ body {
 }
 
 .AXMFlexTabCloser, .AXMFlexTabToPopup {
-    position:absolute;
-    right:5px;
-    top:4px;
-    cursor:pointer;
+    position: absolute;
+    right: 5px;
+    top: 4px;
+    cursor: pointer;
     font-size: 20px;
     /*color: rgb(102, 102, 102);*/
     /*visibility: hidden;*/
-    opacity:0;
+    opacity: 0;
     color: rgb(0, 97, 158);
-    transition:opacity 0.5s linear;
+    transition: opacity 0.5s linear;
 }
 
 .AXMFlexTabToPopup {
-    right:25px;
+    right: 25px;
 }
 
 .AXMFlexTab:hover .AXMFlexTabCloser, .AXMFlexTab:hover .AXMFlexTabToPopup {
     visibility: visible;
-    opacity:0.25;
+    opacity: 0.25;
 }
 
 span.AXMBadge {
@@ -560,7 +561,7 @@ span.AXMBadge {
     font-size: 75%;
     padding: 5px 10px;
     margin: 0px 5px;
-  }
+}
 
 textarea.CodeEditor {
     font-family: monospace;
@@ -582,9 +583,9 @@ textarea.CodeEditor {
     cursor: pointer;
     background-color: #707070;
     transition: background-color ease 0.3s;
-  }
-  
-  .toggle-control input:before {
+}
+
+.toggle-control input:before {
     content: "";
     display: block;
     position: absolute;
@@ -598,14 +599,14 @@ textarea.CodeEditor {
     /* font: 10px/28px;  ??? */
     color: #fff;
     white-space: nowrap;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     transition: all linear 0.1s;
-  }
-  
-  .toggle-control input:checked {
+}
+
+.toggle-control input:checked {
     background-color: #4CD964;
-  }
-  
-  .toggle-control input:checked:before {
+}
+
+.toggle-control input:checked:before {
     left: 55%;
-  }
+}
