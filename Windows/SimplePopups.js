@@ -53,8 +53,8 @@ define([
                     onProceed();
             };
 
-            var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
+            var grp = Controls.Compound.GroupVert({separator: 12});
+            grp.add(Controls.Static({text: content}));
 
             var btOK = Controls.Button({
                 text: _TRL('OK'),
@@ -98,8 +98,8 @@ define([
                 autoCenter: true
             });
 
-            var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
+            var grp = Controls.Compound.GroupVert({separator: 12});
+            grp.add(Controls.Static({text: content}));
 
             var btOK = Controls.Button({
                 text: settings.textOK || _TRL('OK'),
@@ -158,8 +158,8 @@ define([
                 autoCenter: true
             });
 
-            var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: typeof content === "object" ? content : content +'<p/>'}));
+            var grp = Controls.Compound.GroupVert({separator: 12});
+            grp.add(Controls.Static({text: content}));
 
             var btYes = Controls.Button({
                 text: settings.textYes || _TRL('Yes'),
@@ -221,8 +221,8 @@ define([
                 autoCenter: true
             });
 
-            var grp = Controls.Compound.GroupVert({});
-            grp.add(Controls.Static({text: typeof intro === "object" ? intro : intro +'<p/>'}));
+            var grp = Controls.Compound.GroupVert({separator: 12});
+            grp.add(Controls.Static({text: intro}));
 
             var buttons = [];
             $.each(actions, function(idx, action) {
@@ -442,10 +442,10 @@ define([
                 })
             );
 
-            var grp2 = Controls.Compound.GroupVert({});
+            var grp2 = Controls.Compound.GroupVert({separator: 12});
             grp1.add(grp2);
             grp2.add(
-                Controls.Static({ text: typeof content === "object" ? content : content + "<p/>" })
+                Controls.Static({ text: content })
             );
 
             var btOK = Controls.Button({

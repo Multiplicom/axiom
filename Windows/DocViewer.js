@@ -39,7 +39,7 @@ define([
                 .done(function (data) {
                     if (busyid)
                         SimplePopups.stopBlockingBusy(busyid);
-                    var content = $('<div/>').append(data).find('.AXMDocContent').html();
+                    var content = $('<div></div>').append(data).find('.AXMDocContent').html();
                     content = _TRL(content);
                     onCompleted(content);
                 })
@@ -167,7 +167,7 @@ define([
                 $.get(url, {})
                     .done(function (data) {
                         SimplePopups.stopBlockingBusy(busyid);
-                        var content = $('<div/>').append(data).find('.AXMDocContent').html();
+                        var content = $('<div></div>').append(data).find('.AXMDocContent').html();
                         content = _TRL(content);
                         win._loadContent('<div class="AXMDocContent">' + content + '</div>', scrollPos);
                     })
