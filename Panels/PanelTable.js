@@ -346,7 +346,7 @@ define([
                 if (colInfo.isOpener) {
                     var cell = `<div class="AXMPgTableLinkCell" title="${_TRL('Open this item')}">`;
                     cell += '<div class="AXMPgTableLinkIcon"><i class="fa fa-external-link-square"></i></div>';
-                    cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"/>';
+                    cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"></div>';
                     cell += '</div>';
                     return cell;
                 }
@@ -357,7 +357,7 @@ define([
                         cell += '<div class="AXMPgTableSelectorIcon"><i class="fa fa-circle-thin"></i></div>';
                     else
                         cell += '<div class="AXMPgTableSelectorIconActive"><i class="fa fa-check-circle"></i></div>';
-                    cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"/>';
+                    cell += '<div style="display:inline-block;height:100%;width:1px;vertical-align:middle"></div>';
                     cell += '</div>';
                     return cell;
                 }
