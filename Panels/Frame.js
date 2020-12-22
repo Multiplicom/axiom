@@ -1373,7 +1373,7 @@ define([
                     .removeClass('AXMFrameTabElementInActive')
                     .addClass('AXMFrameTabElementActive');
 
-                Msg.broadcast("tab_opened_index", fnr);
+                Msg.broadcast("frame_activated", frame.getActiveMemberFrame());
             };
 
             var _super_setPositionClient = frame.setPositionClient;
