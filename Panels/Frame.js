@@ -1372,8 +1372,6 @@ define([
                 $('#'+frame._getTabId(fnr))
                     .removeClass('AXMFrameTabElementInActive')
                     .addClass('AXMFrameTabElementActive');
-
-                ;
             };
 
             var _super_setPositionClient = frame.setPositionClient;
