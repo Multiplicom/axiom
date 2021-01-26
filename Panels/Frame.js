@@ -1162,7 +1162,7 @@ define([
              * Updates the visibility of the member frames
              * @private
              */
-            frame._updateMemberVisibility = function() {
+            frame._updateMemberVisibility = function(onVisible) {
                 if (frame._firstVisibilityUpdate) {
                     $.each(frame._memberFrames, function(idx, memberFrame) {
                         memberFrame.$ElContainer.css('display',
@@ -1185,7 +1185,7 @@ define([
                                 if (newVisible) {
                                     newVisible.$ElContainer.css('display','');
                                     frame.repositionSubFrames();//done here because elements in an initially invisible tab may not be measured correctly for positioning
-                                    newVisible.$ElContainer.fadeTo(200,1)
+                                    newVisible.$ElContainer.fadeTo(200,1,onVisible)
                                 }
                             })
                         }
@@ -1194,7 +1194,7 @@ define([
                                 newVisible.$ElContainer.css('opacity','0');
                                 newVisible.$ElContainer.css('display','');
                                 frame.repositionSubFrames();//done here because elements in an initially invisible tab may not be measured correctly for positioning
-                                newVisible.$ElContainer.fadeTo(200,1)
+                                newVisible.$ElContainer.fadeTo(200,1,onVisible)
                             }
                         }
                     }
@@ -1365,14 +1365,13 @@ define([
                 if ((fnr<0) || (fnr>=frame._memberFrames.length))
                     AXMUtils.reportBug('Invalid TAB nr');
                 frame._activeMemberNr = fnr;
-                frame._updateMemberVisibility();
+                frame._updateMemberVisibility( () => Msg.broadcast("frame_activated", frame.getActiveMemberFrame().getId()));
                 frame._getTabContainer().children('.AXMFrameTabContainerInner').children('.AXMFrameTabElement')
                     .removeClass('AXMFrameTabElementActive')
                     .addClass('AXMFrameTabElementInActive');
                 $('#'+frame._getTabId(fnr))
                     .removeClass('AXMFrameTabElementInActive')
                     .addClass('AXMFrameTabElementActive');
-
             };
 
             var _super_setPositionClient = frame.setPositionClient;
