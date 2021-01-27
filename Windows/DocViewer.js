@@ -55,10 +55,11 @@ define([
         /**
          * Creates a popup window that is displaying static documentation content
          * @param {string} docId - identifier of the documentation item to be shown
+         * @param {string} queryParams - query parameters
          * @returns {{}} - popup window instance
          * @constructor
          */
-        Module.create = function(docId) {
+        Module.create = function(docId, queryParams) {
 
             Module.topicStack = [];
             Module.topicStackPointer = -1;
@@ -136,9 +137,16 @@ define([
             /**
              * Loads the content of the documentation item
              * @param {string} docId - documentation item id
+             * @param {object} queryParams - query parameters.
              */
-            win.loadDocId = function(docId) {
-                win.loadDocUrl(Module._docRoot + `/${docId}.html`);
+            win.loadDocId = function(docId, queryParams) {
+                let url = Module._docRoot + `/${docId}.html`
+
+                if (queryParams) {
+                    let param = $.param(queryParams);
+                    url = `${url}?${param}`;
+                }
+                win.loadDocUrl(url);
             };
 
             /**
@@ -203,7 +211,7 @@ define([
 
             _init();
 
-            win.loadDocId(docId);
+            win.loadDocId(docId, queryParams);
         };
 
 
