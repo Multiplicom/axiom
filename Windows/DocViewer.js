@@ -55,7 +55,7 @@ define([
         /**
          * Creates a popup window that is displaying static documentation content
          * @param {string} docId - identifier of the documentation item to be shown
-         * @param {string} queryParams - query parameters
+         * @param {{}} queryParams - query parameters (optional)
          * @returns {{}} - popup window instance
          * @constructor
          */
@@ -137,7 +137,7 @@ define([
             /**
              * Loads the content of the documentation item
              * @param {string} docId - documentation item id
-             * @param {object} queryParams - query parameters.
+             * @param {{}} queryParams - query parameters (optional)
              */
             win.loadDocId = function(docId, queryParams) {
                 let url = Module._docRoot + `/${docId}.html`
