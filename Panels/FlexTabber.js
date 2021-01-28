@@ -16,10 +16,10 @@
 
 define([
         "require", "jquery", "_",
-        "AXM/AXMUtils", "AXM/Panels/Frame", "AXM/Panels/PanelHtml", "AXM/Controls/Controls", "AXM/Controls/Compound", "AXM/Windows/PopupWindow", "AXM/DOM"],
+        "AXM/AXMUtils", "AXM/Panels/Frame", "AXM/Panels/PanelHtml", "AXM/Controls/Controls", "AXM/Controls/Compound", "AXM/Windows/PopupWindow", "AXM/DOM", "AXM/Msg"],
     function (
         require, $, _,
-        AXMUtils, Frame, PanelHtml, Controls, ControlsCompound, PopupWindow, DOM) {
+        AXMUtils, Frame, PanelHtml, Controls, ControlsCompound, PopupWindow, DOM, Msg) {
 
         /**
          * Module implementing FlexTabber classes, used to organise the web application client area in a dynamic way
@@ -217,7 +217,9 @@ define([
                     tabInfo.get$El().removeClass('AXMFlexTabInActiveHighlight');
                 });
 
-                    tabInfo.attachEventHandlers();
+                tabInfo.attachEventHandlers();
+                Msg.broadcast("FlexTabAdded", tabInfo.tabId);
+
                 if (settings.autoActivate!==false)
                     frame.activateTab_byID(tabInfo.tabId);
                 return tabInfo.tabId;
@@ -349,6 +351,7 @@ define([
                     }
                 }
                 frame._history_tabId.push(tabInfo.tabId);
+                Msg.broadcast("FlexTabActivated", tabInfo.tabId);
                 return true;
             };
 
@@ -494,6 +497,7 @@ define([
                         if (tabNr<frame._activeTab)
                             frame._activeTab--;
                     }
+                    Msg.broadcast("FlexTabClosed", tabInfo.tabId);
                     if (onCompleted)
                         onCompleted();
                 };
