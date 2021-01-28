@@ -142,7 +142,7 @@ define([
             win.loadDocId = function(docId, queryParams) {
                 let url = Module._docRoot + `/${docId}.html`
 
-                if (queryParams) {
+                if (queryParams && !_.isEmpty(queryParams)) {
                     let param = $.param(queryParams);
                     url = `${url}?${param}`;
                 }
