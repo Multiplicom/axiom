@@ -438,7 +438,7 @@ body {
 /*Override of AXMPopupHeaderIcon class with div child used in case of undocking views*/
 .AXMPopupHeaderIcon div i {
     vertical-align: top;
-    margin-top: -1px;
+    margin-top: 1px;
 }
 
 .AXMDisabledText {
