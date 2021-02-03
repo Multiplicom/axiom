@@ -106,7 +106,6 @@ define([
          * @param {boolean} settings.minSizeX - minimum X popup size
          * @param {boolean} settings.minSizeY - minimum Y popup size
          * @param {Object} settings.labels - map with labels to be displayed
-         * @param {Function} settings.helpQueryParamsFunc - function for obtain query parameters for help link.
          * @returns {PopupWindow} - popup window class instance
          */
         Module.create = function(settings) {
@@ -136,7 +135,6 @@ define([
             window.overflowAllowed = settings.overflowAllowed || false;
             window._listeners = [];
             window._labels = settings.labels || {};
-            window._helpQueryParamsFunc = settings.helpQueryParamsFunc || null;
 
             window.setHeaderInfo = function(headerInfo) {
                 window._headerInfo = headerInfo;
@@ -382,8 +380,7 @@ define([
 
                 if (window._helpID)
                     window._$ElContainer.find('.SWXPopupWindowHelpBox').click(function() {
-                        let queryParams = window._helpQueryParamsFunc ? window._helpQueryParamsFunc() : null;
-                        require('AXM/Windows/DocViewer').create(window._helpID, queryParams);
+                        require('AXM/Windows/DocViewer').create(window._helpID);
                     });
 
                 if (window._canClose)
@@ -649,7 +646,6 @@ define([
 
                 }
 
-                Msg.broadcast("PopupWindowClose", window._id);
                 $.each(window._listeners, function(idx, eventid) {
                     Msg.delListener(eventid);
                 });

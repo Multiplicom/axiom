@@ -585,11 +585,10 @@ define([
         /**
          * Creates a standard template button
          * @param {string} helpId - doc id of the help text
-         * @param {Function} queryParamsFunc - function for obtaining query parameters (optional)
          * @returns {Object} - control instance
          * @constructor
          */
-        Module.HelpButton = function(helpId, queryParamsFunc) {
+        Module.HelpButton = function(helpId) {
             var control = Module.Button({
                 icon: 'fa-question-circle',
                 buttonClass: 'AXMButtonHelp',
@@ -599,8 +598,7 @@ define([
 
             });
             control.addNotificationHandler(function() {
-                let queryParams = queryParamsFunc ? queryParamsFunc() : null;
-                require('AXM/Windows/DocViewer').create(helpId, queryParams);
+                require('AXM/Windows/DocViewer').create(helpId);
             });
             return control;
         };

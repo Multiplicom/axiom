@@ -14,14 +14,24 @@ define([
 
 
         Module._docRoot = '/static/docs';
+        Module._queryParamsFunc = null;
 
         /**
          * Sets the root folder where documentation is located
-         * @param {string docRoot - documentation root
+         * @param {string} docRoot - documentation root
          */
         Module.setDocRoot = function(docRoot) {
             Module._docRoot = docRoot
         };
+
+        /**
+         * Sets the function that will be used to retrieve query parameters for
+         * the help document request.
+         * @param {function} queryParamsFunc - function for retrieving query parameters
+         */
+        Module.setQueryParamsFunc = function(queryParamsFunc) {
+            Module._queryParamsFunc = queryParamsFunc;
+        }
 
         /**
          * Fetches a document from the server in an async way
@@ -33,9 +43,10 @@ define([
          */
         Module.fetchDocument = function(docId, onCompleted, onFailed, settings) {
             var url = Module._docRoot + `/${docId}.html`;
+            let queryParams = Module._queryParamsFunc ? Module._queryParamsFunc() : {};
             if (settings.blocking)
                 var busyid = SimplePopups.setBlockingBusy('Fetching document');
-            $.get(url, {})
+            $.get(url, queryParams)
                 .done(function (data) {
                     if (busyid)
                         SimplePopups.stopBlockingBusy(busyid);
@@ -55,11 +66,10 @@ define([
         /**
          * Creates a popup window that is displaying static documentation content
          * @param {string} docId - identifier of the documentation item to be shown
-         * @param {{}} queryParams - query parameters (optional)
          * @returns {{}} - popup window instance
          * @constructor
          */
-        Module.create = function(docId, queryParams) {
+        Module.create = function(docId) {
 
             Module.topicStack = [];
             Module.topicStackPointer = -1;
@@ -137,10 +147,10 @@ define([
             /**
              * Loads the content of the documentation item
              * @param {string} docId - documentation item id
-             * @param {{}} queryParams - query parameters (optional)
              */
-            win.loadDocId = function(docId, queryParams) {
+            win.loadDocId = function(docId) {
                 let url = Module._docRoot + `/${docId}.html`
+                let queryParams = Module._queryParamsFunc ? Module._queryParamsFunc() : null;
 
                 if (queryParams && !_.isEmpty(queryParams)) {
                     let param = $.param(queryParams);
@@ -211,7 +221,7 @@ define([
 
             _init();
 
-            win.loadDocId(docId, queryParams);
+            win.loadDocId(docId);
         };
 
 
