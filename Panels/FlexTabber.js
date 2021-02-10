@@ -497,7 +497,9 @@ define([
                         if (tabNr<frame._activeTab)
                             frame._activeTab--;
                     }
-                    Msg.broadcast("FlexTabClosed", tabInfo.tabId);
+                    if (!doNotRemoveFrame) {
+                        Msg.broadcast("FlexTabClosed", tabInfo.tabId);
+                    }
                     if (onCompleted)
                         onCompleted();
                 };
@@ -544,6 +546,7 @@ define([
 
                 AXMUtils.animateBoxTransition(tabInfo.get$El(), popup.get$El(), {}, function() {
                     frame.closeTab_byID(tabId, false, true);
+                    Msg.broadcast("FlexTabToPopup", tabId);
                 });
             };
 
