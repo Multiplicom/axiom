@@ -149,7 +149,7 @@ define([
              * @param {string} docId - documentation item id
              */
             win.loadDocId = function(docId) {
-                let url = Module._docRoot + `/${docId}.html`
+                let url = `${Module._docRoot}/${docId}.html`
                 let queryParams = Module._queryParamsFunc ? Module._queryParamsFunc() : null;
 
                 if (queryParams && !_.isEmpty(queryParams)) {
