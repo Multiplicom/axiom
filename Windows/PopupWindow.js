@@ -673,6 +673,11 @@ define([
                     });
                     if (winNr>=0)
                         Module._activeWindows.splice(winNr,1);
+
+                    if (window.__originalFlexTabberId) {
+                        let msg = doNotRemoveFrame ? 'FlexPopupToTab' : 'FlexPopupClosed';
+                        Msg.broadcast(msg, window.__originalFlexTabberId);
+                    }
                 });
 
             };
@@ -689,6 +694,9 @@ define([
                 });
                 window.zIndex = AXMUtils.getNextZIndex();
                 window._$ElContainer.css('z-index',window.zIndex);
+                if (window.__originalFlexTabberId) {
+                    Msg.broadcast('FlexPopupFocus', window.__originalFlexTabberId);
+                }
             };
 
             /**
@@ -886,6 +894,11 @@ define([
                 $.each(Module._activeWindows, function(idx, window) {
                     if ((window._$ElContainer[0]==clicked$El[0]) || ($.contains(window._$ElContainer[0], clicked$El[0]))) {
                         window.bringToTop();
+                    }
+                    else {
+                        if (window.__originalFlexTabberId) {
+                            Msg.broadcast('FlexPopupNoFocus', window.__originalFlexTabberId);
+                        }
                     }
                 });
 
