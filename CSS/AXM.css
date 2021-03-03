@@ -422,7 +422,7 @@ body {
 .AXMBigIcon {
     color: rgb(148, 202, 212);
     text-shadow: 1px 1px 1px rgba(100, 100, 100, 0.25);
-    font-size: 60px
+    font-size: 60px !important;
 }
 
 .AXMPopupHeaderIcon {
