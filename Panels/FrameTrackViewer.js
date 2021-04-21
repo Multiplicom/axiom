@@ -31,7 +31,7 @@ define([
          */
         var Module = {};
 
-        Module._trackOffsetLeft = 20;
+        Module._trackOffsetLeft = 0;
         Module._trackOffsetRight = 0;
         Module._leftRightOffsetMarginH = 1;
         Module._trackMarginV = 2;
