@@ -590,8 +590,8 @@ define([
             track.drawMessage = function(drawInfo, content) {
                 var ctx = drawInfo.ctx;
                 ctx.save();
-                ctx.font = "18px Arial";
-                ctx.fillStyle = "rgba(0,0,0,0.5)";
+                ctx.font = "14px sans-serif";
+                ctx.fillStyle = "rgba(0,0,0,0.3)";
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(content, drawInfo.sizeX/2, drawInfo.sizeY/2);
