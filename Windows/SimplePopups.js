@@ -341,16 +341,29 @@ define([
 
             var grp = Controls.Compound.GroupVert({separator:5});
 
-            if (settings.useTransientPopup && (!header) && title)
-                grp.add(title);
-
-            if (settings.helpId)
+            let addElementWithHelpId = function(element, helpId){
                 grp.add(Controls.Compound.GroupHor({verticalAlignCenter: true}, [
-                    header,
-                    Controls.HelpButton(settings.helpId)
+                    element,
+                    Controls.HelpButton(helpId)
                 ]) );
-            else
-                grp.add(header);
+            };
+
+            if (settings.useTransientPopup && (!header) && title){
+                if(settings.helpId){
+                    addElementWithHelpId(title, settings.helpId);
+                }
+                else{
+                    grp.add(title);
+                }
+            }
+            else{
+                if (settings.helpId){
+                    addElementWithHelpId(header, settings.helpId);
+                }
+                else{
+                    grp.add(header);
+                }
+            }
 
             var btOK = Controls.Button({
                 text: _TRL('OK'),
