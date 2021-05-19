@@ -740,6 +740,10 @@ define([
                 }
             };
 
+            panel.clearSelection = function() {
+                panel.setSelection(-1, -2);
+            };
+
             /**
              * Sets the minimum size of a single scale unit, in logical coordinates
              * @param {value} minSize
