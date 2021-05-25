@@ -703,6 +703,7 @@ define([
             panel._maxZoomFactor = 1.0e99;
             panel._isrunning = false;
             panel._canScrollY = false;
+            panel._scrollbarAlwaysShown = false;
 
             panel._notificationHandlersPositionChanged = [];
             panel._notificationHandlersSelectionChanged = [];
@@ -772,10 +773,11 @@ define([
             /**
              * Call the function to enable vertical scrolling of tracks if height becomes larger than the viewport
              */
-            panel.enableScrollY = function() {
+            panel.enableScrollY = function(scrollbarAlwaysShown = true) {
                 if (panel._isrunning)
                     AXMUtils.Test.reportBug("Cannot perform this action when viewer is running");
                 panel._canScrollY = true;
+                panel._scrollbarAlwaysShown = scrollbarAlwaysShown;
             };
 
 
@@ -851,7 +853,12 @@ define([
                 rootDiv.addStyle('height', '100%');
                 rootDiv.addStyle('overflow-x', 'hidden');
                 if (panel._canScrollY)
-                    rootDiv.addStyle('overflow-y', 'scroll');
+                    if (panel._scrollbarAlwaysShown) {
+                        rootDiv.addStyle('overflow-y', 'scroll');
+                    }
+                    else {
+                        rootDiv.addStyle('overflow-y', 'auto');
+                    }
                 else
                     rootDiv.addStyle('overflow-y', 'hidden');
 
