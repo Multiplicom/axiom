@@ -14,7 +14,6 @@
 //DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 //ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/Events"], function(require, $, _, AXMUtils, AXMEvents) {
-    const delegate = require("delegate");
     const { kebabCase: paramCase }  = require("lodash");
 
     /**
@@ -256,13 +255,14 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/Events"], function(requir
 
                 for (var eventType in this.listeners) {
                     // Event delegation
-                    delegate(
-                        // This is the root of the component
-                        // tree, events don't need to bubble any
-                        // further.
-                        ".AXMContainer",
-                        `${this.myType}#${this.getID()}`,
+                    $(`.AXMContainer`).off(
                         eventType.slice(2).toLowerCase(),
+                        `${this.myType}#${this.getID()}`
+                    );
+
+                    $(`.AXMContainer`).on(
+                        eventType.slice(2).toLowerCase(),
+                        `${this.myType}#${this.getID()}`,
                         this.listeners[eventType]
                     );
                 }
