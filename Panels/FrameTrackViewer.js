@@ -1139,6 +1139,7 @@ define([
          */
         Module.PanelSplitTrackViewer = function (leftPanel, rightPanel) {
 
+            const paddingPx = 10;
             const panel = PanelBase.create();
 
             panel.leftPanel = leftPanel;
@@ -1169,8 +1170,8 @@ define([
                 rootDiv.addCssClass('AXMHtmlPanelBody');
                 rootDiv.addStyle('display', 'flex');
 
-                const leftContainer = DOM.Div({style: {'padding-right': '30px', width: '50%'}});
-                const rightContainer = DOM.Div({style: {width: '50%'}});
+                const leftContainer = DOM.Div({style: {'padding-right': `${paddingPx}px`, width: '50%'}});
+                const rightContainer = DOM.Div({style: {'padding-left': `${paddingPx}px`, width: '50%'}});
 
                 leftContainer.addElem(panel.leftPanel.render());
                 rightContainer.addElem(panel.rightPanel.render());
@@ -1182,8 +1183,9 @@ define([
             }
 
             panel.resize = (xl, yl, params) => {
-                leftPanel.resize(xl, yl, params);
-                rightPanel.resize(xl, yl, params);
+                const panelXl = xl / 2 - paddingPx;
+                leftPanel.resize(panelXl, yl, params);
+                rightPanel.resize(panelXl, yl, params);
             }
 
             return panel;
