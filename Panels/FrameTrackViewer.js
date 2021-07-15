@@ -19,7 +19,7 @@ define([
         "AXM/AXMUtils", "AXM/DOM", "AXM/Panels/PanelBase", "AXM/Panels/Frame",
         "AXM/Canvas", "AXM/DrawUtils", "AXM/Color", "AXM/Icon", "AXM/Controls/Controls"
     ],
-    function (require, $, _,
+    function(require, $, _,
               AXMUtils, DOM, PanelBase, Frame,
               Canvas, DrawUtils, Color, Icon, Controls
     ) {
@@ -37,7 +37,7 @@ define([
         Module._trackMarginV = 2;
         Module._scrollYArrowSize = 20;
 
-        Module.Track = function (settings) {
+        Module.Track = function(settings) {
             var track = AXMUtils.object('@TrackViewTrack');
             track._id = AXMUtils.getUniqueID();
             track._visible = settings.defaultVisible || false;
@@ -50,23 +50,23 @@ define([
             track._offsetY = 0;
             track._toolTipInfo = {ID: null};
 
-            track.getOffsetY = function () {
+            track.getOffsetY = function() {
                 return track._offsetY;
             };
 
-            track.setName = function (name) {
+            track.setName = function(name) {
                 track._name = name;
             };
 
-            track.getName = function () {
+            track.getName = function() {
                 return track._name;
             };
 
-            track.canHide = function () {
+            track.canHide = function() {
                 return track._canHide;
             };
 
-            track.isVisible = function () {
+            track.isVisible = function() {
                 return track._visible;
             };
 
@@ -75,7 +75,7 @@ define([
              * Returns the Y range for vertical scrolling. To be overridden
              * @returns {number}
              */
-            track.getYRange = function () {
+            track.getYRange = function() {
                 return 0;
             };
 
@@ -87,7 +87,7 @@ define([
              * @param {int} py - y position
              * @returns {{ID, px, py, content}} - tooltip info (may be null if no tooltip is to be shown)
              */
-            track.getToolTipInfo = function (px, py) {
+            track.getToolTipInfo = function(px, py) {
                 return null;
             };
 
@@ -101,19 +101,19 @@ define([
              * @param {int} info.pageX - mouse x full page position
              * @param {int} info.pageY - mouse y full page position
              */
-            track.onMouseClick = function (ev, info) {
+            track.onMouseClick = function(ev, info) {
 
             };
 
 
-            track.setOffsetY = function (newVal, donotUpdate) {
+            track.setOffsetY = function(newVal, donotUpdate) {
                 track._offsetY = newVal;
                 if (!donotUpdate)
                     track.paint();
             };
 
 
-            track.shiftOffsetY = function (shft, donotUpdate) {
+            track.shiftOffsetY = function(shft, donotUpdate) {
                 track._offsetY += shft;
                 track._offsetY = Math.max(track._offsetY, 0);
                 track._offsetY = Math.min(track._offsetY, track.getYRange());
@@ -121,45 +121,45 @@ define([
                     track.paint();
             };
 
-            track.getId = function () {
+            track.getId = function() {
                 return track._id;
             };
 
-            track.setViewerPanel = function (panel) {
+            track.setViewerPanel = function(panel) {
                 track._panel = panel;
             };
 
-            track.getViewerPanel = function () {
+            track.getViewerPanel = function() {
                 if (!track._panel)
                     AXMUtils.Test.reportBug("Track panel not assigned");
                 return track._panel;
             };
 
-            track.setFixedHeight = function (h) {
+            track.setFixedHeight = function(h) {
                 track._fixedHeight = h;
             };
 
-            track.hasFixedHeight = function () {
+            track.hasFixedHeight = function() {
                 return track._fixedHeight > 0;
             };
 
-            track.getFixedHeight = function () {
+            track.getFixedHeight = function() {
                 if (track._fixedHeight < 0)
                     AXMUtils.Test.reportBug("Track does not have fixed height");
                 return track._fixedHeight;
             };
 
-            track.getWidth = function () {
+            track.getWidth = function() {
                 return track._width;
             };
 
 
-            track.getHeight = function () {
+            track.getHeight = function() {
                 return track._height;
             };
 
 
-            track.render = function () {
+            track.render = function() {
                 var rootDiv = DOM.Div({id: 'track_' + track.getId()});
                 if (!track.isVisible())
                     rootDiv.addStyle("display", "none");
@@ -195,7 +195,7 @@ define([
                 return rootDiv.toString();
             };
 
-            track.setVisible = function (status) {
+            track.setVisible = function(status) {
                 track._visible = status;
                 var $El = $('#track_' + track.getId());
                 if (!status)
@@ -213,7 +213,7 @@ define([
              * @param tooltipInfo
              * @private
              */
-            track._showToolTip = function (tooltipInfo) {
+            track._showToolTip = function(tooltipInfo) {
                 track._hideToolTip();
                 track._toolTipInfo = tooltipInfo;
                 if (tooltipInfo && tooltipInfo.content) {
@@ -243,7 +243,7 @@ define([
              * Hides a displayed tooltip, if any
              * @private
              */
-            track._hideToolTip = function () {
+            track._hideToolTip = function() {
                 track._toolTipInfo.ID = null;
                 $('.AXMContainer').find('.AXMToolTip').remove();
             };
@@ -252,10 +252,10 @@ define([
             /**
              * Attached the html event handlers after DOM insertion
              */
-            track.attachEventHandlers = function () {
+            track.attachEventHandlers = function() {
                 var clickLayer$El = track.cnvs.getCanvas$El('selection');
                 var viewerPanel = track.getViewerPanel();
-                AXMUtils.create$ElScrollHandler(clickLayer$El, function (params) {
+                AXMUtils.create$ElScrollHandler(clickLayer$El, function(params) {
                     viewerPanel._handleScrolled(params, track)
                 }, true);
                 AXMUtils.create$ElDragHandler(
@@ -267,7 +267,7 @@ define([
                 clickLayer$El.mousemove(track._onMouseMove);
                 clickLayer$El.click(track._onClick);
 
-                clickLayer$El.mouseleave(function () {
+                clickLayer$El.mouseleave(function() {
                     track._hideToolTip();
                 });
             };
@@ -275,7 +275,7 @@ define([
             /**
              * Detach the html event handlers
              */
-            track.detachEventHandlers = function () {
+            track.detachEventHandlers = function() {
                 if (track && track.cnvs) {
                     var clickLayer$El = track.cnvs.getCanvas$El('selection');
                     if (clickLayer$El) {
@@ -289,7 +289,7 @@ define([
             };
 
 
-            track.resize = function (xl, yl, params) {
+            track.resize = function(xl, yl, params) {
                 track._width = xl;
                 track._height = yl;
                 if (track.hasFixedHeight())
@@ -307,19 +307,19 @@ define([
                     params);
             };
 
-            track.paint = function () {
+            track.paint = function() {
                 track._maxOffsetY = track.getYRange() - track.cnvs.getHeight();
                 track._offsetY = Math.max(Math.min(track._offsetY, track._maxOffsetY), 0);
                 track.cnvs.paint();
             };
 
-            track.renderLayer = function (layerId) {
+            track.renderLayer = function(layerId) {
                 track._maxOffsetY = track.getYRange() - track.cnvs.getHeight();
                 track._offsetY = Math.max(Math.min(track._offsetY, track._maxOffsetY), 0);
                 track.cnvs.renderLayer(layerId);
             };
 
-            track.DrawTicks = function (drawInfo) {
+            track.DrawTicks = function(drawInfo) {
                 var viewerPanel = track.getViewerPanel();
                 var zoomFactor = viewerPanel.getZoomFactor();
                 var XPosLogic2Display = viewerPanel.XPosLogic2Display;
@@ -343,7 +343,7 @@ define([
                     ticks.push(tick);
                 }
                 ctx.strokeStyle = "rgba(0,0,0,0.04)";
-                $.each(ticks, function (idx, tick) {
+                $.each(ticks, function(idx, tick) {
                     if ((tick.value >= plotLimitXMin) && (tick.value <= plotLimitXMax)) {
                         var px = Math.round(XPosLogic2Display(tick.value)) - 0.5;
                         //if (tick.label) {
@@ -363,7 +363,7 @@ define([
              * Draws the main view of the track - to be overridden
              * @param drawInfo
              */
-            track.drawMain = function (drawInfo) {
+            track.drawMain = function(drawInfo) {
                 drawInfo.ctx.fillStyle = "#FFFFFF";
                 drawInfo.ctx.fillRect(0, 0, drawInfo.sizeX, drawInfo.sizeY);
                 drawInfo.ctx.beginPath();
@@ -376,7 +376,7 @@ define([
              * Draws the selection the track
              * @param drawInfo
              */
-            track.drawSelection = function (drawInfo) {
+            track.drawSelection = function(drawInfo) {
                 var viewerPanel = track.getViewerPanel();
                 var zoomFactor = viewerPanel.getZoomFactor();
                 var XPosLogic2Display = viewerPanel.XPosLogic2Display;
@@ -403,7 +403,7 @@ define([
             };
 
 
-            track.drawYScrollArrows = function (drawInfo) {
+            track.drawYScrollArrows = function(drawInfo) {
                 var ctx = drawInfo.ctx;
                 var sizeX = drawInfo.sizeX;
                 var sizeY = drawInfo.sizeY;
@@ -439,7 +439,7 @@ define([
             };
 
 
-            track.cnvs.draw = function (drawInfo) {
+            track.cnvs.draw = function(drawInfo) {
                 track._drawSizeY = drawInfo.sizeY;
                 if (drawInfo.layerId == "main") {
                     track.drawMain(drawInfo);
@@ -451,7 +451,7 @@ define([
             };
 
 
-            track._getEventPos = function (ev) {
+            track._getEventPos = function(ev) {
                 var ev1 = ev;
                 if (ev.originalEvent)
                     ev1 = ev.originalEvent;
@@ -462,7 +462,7 @@ define([
             };
 
 
-            track._isInsidescrollYArrowUp = function (posit) {
+            track._isInsidescrollYArrowUp = function(posit) {
                 if (!track._hasArrowScrollYUp)
                     return false;
                 if (Math.abs(posit.x - track._arrowScrollYCenterX) > Module._scrollYArrowSize)
@@ -473,7 +473,7 @@ define([
             };
 
 
-            track._isInsidescrollYArrowDown = function (posit) {
+            track._isInsidescrollYArrowDown = function(posit) {
                 if (!track._hasArrowScrollYDown)
                     return false;
                 if (Math.abs(posit.x - track._arrowScrollYCenterX) > Module._scrollYArrowSize)
@@ -484,7 +484,7 @@ define([
             };
 
 
-            track._panningStart = function (params) {
+            track._panningStart = function(params) {
                 track._hideToolTip();
                 var posit = track._getEventPos(params.event);
 
@@ -493,7 +493,7 @@ define([
 
                 if (track._isInsidescrollYArrowUp(posit)) {
                     track.clickScrollingYUp = true;
-                    var _repeater = function () {
+                    var _repeater = function() {
                         if (!track.clickScrollingYUp)
                             return;
                         track.shiftOffsetY(30);
@@ -505,7 +505,7 @@ define([
 
                 if (track._isInsidescrollYArrowDown(posit)) {
                     track.clickScrollingYDown = true;
-                    var _repeater = function () {
+                    var _repeater = function() {
                         if (!track.clickScrollingYDown)
                             return;
                         track.shiftOffsetY(-30);
@@ -522,14 +522,14 @@ define([
 
             };
 
-            track._panningDo = function (params) {
+            track._panningDo = function(params) {
                 if ((!track.clickScrollingYUp) && (!track.clickScrollingYDown)) {
                     var viewerPanel = track.getViewerPanel();
                     viewerPanel._panningDo(params);
                 }
             };
 
-            track._panningStop = function (params) {
+            track._panningStop = function(params) {
                 track.clickScrollingYUp = false;
                 track.clickScrollingYDown = false;
                 if ((!track.clickScrollingYUp) && (!track.clickScrollingYDown)) {
@@ -538,7 +538,7 @@ define([
                 }
             };
 
-            track._onMouseMove = function (ev) {
+            track._onMouseMove = function(ev) {
                 var viewerPanel = track.getViewerPanel();
                 if (_AXM_HasTransientPopups && _AXM_HasTransientPopups()) {
                     track._hideToolTip();
@@ -568,7 +568,7 @@ define([
                 track.cnvs.getCanvas$El('selection').css('cursor', pointerType);
             };
 
-            track._onClick = function (ev) {
+            track._onClick = function(ev) {
                 var viewerPanel = track.getViewerPanel();
                 if (viewerPanel.hasDragged())
                     return;
@@ -586,7 +586,7 @@ define([
             };
 
 
-            track.drawMessage = function (drawInfo, content) {
+            track.drawMessage = function(drawInfo, content) {
                 var ctx = drawInfo.ctx;
                 ctx.save();
                 ctx.font = "14px sans-serif";
@@ -604,16 +604,16 @@ define([
         };
 
 
-        Module.Track_Position = function () {
+        Module.Track_Position = function() {
             var track = Module.Track({canHide: true, defaultVisible: true, name: "Position"});
             track.setFixedHeight(20);
             track._customLabelConvertor = null;
 
-            track.setCustomLabelConvertor = function (handler) {
+            track.setCustomLabelConvertor = function(handler) {
                 track._customLabelConvertor = handler;
             };
 
-            track.drawMain = function (drawInfo) {
+            track.drawMain = function(drawInfo) {
                 var viewerPanel = track.getViewerPanel();
                 var zoomFactor = viewerPanel.getZoomFactor();
                 var XPosLogic2Display = viewerPanel.XPosLogic2Display;
@@ -644,7 +644,7 @@ define([
                     }
                     ticks.push(tick);
                 }
-                $.each(ticks, function (idx, tick) {
+                $.each(ticks, function(idx, tick) {
                     if ((tick.value >= plotLimitXMin) && (tick.value <= plotLimitXMax)) {
                         var px = Math.round(XPosLogic2Display(tick.value)) - 0.5;
                         if (tick.label) {
@@ -680,7 +680,7 @@ define([
          * @returns {Object} - panel instance
          * @constructor
          */
-        Module.PanelTrackViewer = function (id) {
+        Module.PanelTrackViewer = function(id) {
             var panel = PanelBase.create(id);
 
 
@@ -701,12 +701,12 @@ define([
             panel._notificationHandlersSelectionChanged = [];
 
 
-            panel.getCenterPosition = function () {
+            panel.getCenterPosition = function() {
                 var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 return -panel._offset + displayWidth / 2 / panel._zoomfactor;
             };
 
-            panel.setViewPosition = function (position, zoomFactor) {
+            panel.setViewPosition = function(position, zoomFactor) {
                 panel._zoomfactor = Math.min(zoomFactor, panel._maxZoomFactor);
                 if (!panel._isrunning)
                     AXMUtils.Test.reportBug("Unable to set track viewer position: not initialised");
@@ -717,14 +717,14 @@ define([
                 panel._notifyPosChanged();
             };
 
-            panel.setOffsetAndZoom = function (offset, zoomFactor) {
+            panel.setOffsetAndZoom = function(offset, zoomFactor) {
                 panel._offset = offset;
                 panel._zoomfactor = zoomFactor;
                 panel.draw();
 
             };
 
-            panel.setSelection = function (posStart, posEnd) {
+            panel.setSelection = function(posStart, posEnd) {
                 if ((panel._selStart != posStart) || (panel._selEnd != posEnd)) {
                     panel._selStart = posStart;
                     panel._selEnd = posEnd;
@@ -733,7 +733,7 @@ define([
                 }
             };
 
-            panel.clearSelection = function () {
+            panel.clearSelection = function() {
                 panel.setSelection(-1, -2);
             };
 
@@ -741,7 +741,7 @@ define([
              * Sets the minimum size of a single scale unit, in logical coordinates
              * @param {value} minSize
              */
-            panel.setMinScaleUnit = function (minSize) {
+            panel.setMinScaleUnit = function(minSize) {
                 panel._minScaleUnit = minSize;
             };
 
@@ -750,22 +750,22 @@ define([
              * Sets the maximum horizontal zoom factor
              * @param {value} fact
              */
-            panel.setMaxZoomFactor = function (fact) {
+            panel.setMaxZoomFactor = function(fact) {
                 panel._maxZoomFactor = fact;
             };
 
-            panel.addNotificationHandlersPositionChanged = function (handler) {
+            panel.addNotificationHandlersPositionChanged = function(handler) {
                 panel._notificationHandlersPositionChanged.push(handler);
             };
 
-            panel.addNotificationHandlersSelectionChanged = function (handler) {
+            panel.addNotificationHandlersSelectionChanged = function(handler) {
                 panel._notificationHandlersSelectionChanged.push(handler);
             };
 
             /**
              * Call the function to enable vertical scrolling of tracks if height becomes larger than the viewport
              */
-            panel.enableScrollY = function (scrollbarAlwaysShown = true) {
+            panel.enableScrollY = function(scrollbarAlwaysShown = true) {
                 if (panel._isrunning)
                     AXMUtils.Test.reportBug("Cannot perform this action when viewer is running");
                 panel._canScrollY = true;
@@ -778,25 +778,25 @@ define([
              * @param {value} rangeMin
              * @param {value} rangeMax
              */
-            panel.setRange = function (rangeMin, rangeMax) {
+            panel.setRange = function(rangeMin, rangeMax) {
                 panel._rangeMin = rangeMin;
                 panel._rangeMax = rangeMax;
                 panel._restrictViewToRange();
                 panel.draw();
             };
 
-            panel.addTrack = function (itrack) {
+            panel.addTrack = function(itrack) {
                 AXMUtils.Test.checkIsType(itrack, '@TrackViewTrack');
                 itrack.setViewerPanel(panel);
                 panel._tracks.push(itrack);
             };
 
 
-            panel.getRangeMin = function () {
+            panel.getRangeMin = function() {
                 return panel._rangeMin;
             };
 
-            panel.getRangeMax = function () {
+            panel.getRangeMax = function() {
                 return panel._rangeMax;
             };
 
@@ -805,32 +805,32 @@ define([
              * @param {number} xval - logical x position
              * @returns {number} - clipped value
              */
-            panel.clipToRange = function (xval) {
+            panel.clipToRange = function(xval) {
                 return Math.max(panel._rangeMin, Math.min(panel._rangeMax, xval));
             };
 
-            panel.getOffset = function () {
+            panel.getOffset = function() {
                 return panel._offset;
             };
 
-            panel.getZoomFactor = function () {
+            panel.getZoomFactor = function() {
                 return panel._zoomfactor;
             };
 
-            panel.XDisplay2Logic = function (xdisp) {
+            panel.XDisplay2Logic = function(xdisp) {
                 return xdisp / panel._zoomfactor - panel._offset;
             };
 
-            panel.XPosLogic2Display = function (xposlogic) {
+            panel.XPosLogic2Display = function(xposlogic) {
                 return (xposlogic + panel._offset) * panel._zoomfactor;
             };
 
-            panel.XLenLogic2Display = function (xlenlogic) {
+            panel.XLenLogic2Display = function(xlenlogic) {
                 return xlenlogic * panel._zoomfactor;
             };
 
 
-            panel.getXScale = function () {
+            panel.getXScale = function() {
                 return DrawUtils.getScaleJump(30 / panel.getZoomFactor());
             };
 
@@ -838,7 +838,7 @@ define([
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.render = function () {
+            panel.render = function() {
                 var rootDiv = DOM.Div({id: panel.getId() + '_content'});
                 rootDiv.addCssClass('AXMHtmlPanelBody');
                 rootDiv.addStyle('width', '100%');
@@ -864,9 +864,9 @@ define([
             /**
              * Attached html event handlers after DOM insertion
              */
-            panel.attachEventHandlers = function () {
+            panel.attachEventHandlers = function() {
                 panel._isrunning = true;
-                $.each(panel._tracks, function (idx, track) {
+                $.each(panel._tracks, function(idx, track) {
                     track.attachEventHandlers();
                 });
             };
@@ -874,9 +874,9 @@ define([
             /**
              * Detach html event handlers
              */
-            panel.detachEventHandlers = function () {
+            panel.detachEventHandlers = function() {
                 if (panel) {
-                    $.each(panel._tracks, function (idx, track) {
+                    $.each(panel._tracks, function(idx, track) {
                         track.detachEventHandlers();
                     });
                 }
@@ -888,18 +888,18 @@ define([
              * @param {int} yl - new y dimension
              * @param params
              */
-            panel.resize = function (xl, yl, params) {
+            panel.resize = function(xl, yl, params) {
                 panel._width = xl;
                 panel._height = yl;
                 panel._restrictViewToRange();
                 panel.rescale(params);
             };
 
-            panel.rescale = function (params) {
+            panel.rescale = function(params) {
                 var fixedPortionH = 0;
                 var variablePortionBudget = 0;
                 var hasVariableHeightTracks = false;
-                $.each(panel._tracks, function (idx, track) {
+                $.each(panel._tracks, function(idx, track) {
                     if (track.isVisible()) {
                         fixedPortionH += Module._trackMarginV;
                         if (track.hasFixedHeight())
@@ -913,7 +913,7 @@ define([
                 if (panel._canScrollY && hasVariableHeightTracks)
                     AXMUtils.Test.reportBug("Vertical scroll on track viewer is not compatible with auo scalable tracks");
 
-                $.each(panel._tracks, function (idx, track) {
+                $.each(panel._tracks, function(idx, track) {
                     var tyl = null;
                     if (!track.hasFixedHeight())
                         tyl = (panel._height - fixedPortionH) * 1.0 / variablePortionBudget;
@@ -922,7 +922,7 @@ define([
                 panel.draw();
             };
 
-            panel.draw = function () {
+            panel.draw = function() {
                 if (!panel._isrunning) {
                     return;
                 }
@@ -933,7 +933,7 @@ define([
                 }
             };
 
-            panel.renderLayer = function (layerId) {
+            panel.renderLayer = function(layerId) {
                 if (!panel._isrunning) {
                     return;
                 }
@@ -949,7 +949,7 @@ define([
              * Modifies zoom & offset in order to fit it into the view range
              * @private
              */
-            panel._restrictViewToRange = function () {
+            panel._restrictViewToRange = function() {
                 if (!panel._isrunning || (panel._width < 5))
                     return;
                 var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
@@ -960,7 +960,7 @@ define([
                 panel._offset = Math.min(panel._offset, -panel._rangeMin + displayWidth / 30.0 / panel._zoomfactor);
             };
 
-            panel._handleZoom = function (scaleFactor, centralPx) {
+            panel._handleZoom = function(scaleFactor, centralPx) {
                 var z1 = panel._zoomfactor;
                 var z2 = panel._zoomfactor * scaleFactor;
                 z2 = Math.min(z2, panel._maxZoomFactor);
@@ -971,7 +971,7 @@ define([
                 panel._notifyPosChanged();
             };
 
-            panel._handleMoveX = function (offsetDiff, donotUpdate) {
+            panel._handleMoveX = function(offsetDiff, donotUpdate) {
                 panel._offset += offsetDiff;
                 panel._restrictViewToRange();
                 if (!donotUpdate) {
@@ -985,7 +985,7 @@ define([
              * @param {{}} ev - html event object
              * @returns {number} - returns the X position
              */
-            panel._getEventPosX = function (ev) {
+            panel._getEventPosX = function(ev) {
                 //todo: improve (a bit of a hack right now)
                 var ev1 = ev;
                 if (ev.originalEvent)
@@ -994,7 +994,7 @@ define([
             };
 
 
-            panel._handleScrolled = function (params, track) {
+            panel._handleScrolled = function(params, track) {
                 var deltaY = params.deltaY;
                 if (!params.controlPressed) { // Scroll action used for zoom
                     if (deltaY != 0) {
@@ -1014,7 +1014,7 @@ define([
                 }
             };
 
-            panel._panningStart = function (params, panningTrack) {
+            panel._panningStart = function(params, panningTrack) {
                 panel._hasDragged = false;
                 panel._hasPannedX = false;
                 panel._hasPannedY = false;
@@ -1023,7 +1023,7 @@ define([
                 panel._panningTrack = panningTrack;
             };
 
-            panel._panningDo = function (dragInfo) {
+            panel._panningDo = function(dragInfo) {
                 var movedY = false;
                 var movedX = false;
                 if (Math.abs(dragInfo.diffTotalX) > 5)
@@ -1046,30 +1046,30 @@ define([
                     panel._hasDragged = true;
             };
 
-            panel._panningStop = function () {
+            panel._panningStop = function() {
                 panel._hasPannedX = false;
                 panel._hasPannedY = false;
-                setTimeout(function () {
+                setTimeout(function() {
                     panel._hasDragged = false
                 }, 250);
             };
 
-            panel.isPanning = function () {
+            panel.isPanning = function() {
                 return panel._hasPannedX || panel._hasPannedY;
             };
 
-            panel.hasDragged = function () {
+            panel.hasDragged = function() {
                 return !!panel._hasDragged;
             };
 
-            panel._notifyPosChanged = function () {
-                $.each(panel._notificationHandlersPositionChanged, function (idx, handler) {
+            panel._notifyPosChanged = function() {
+                $.each(panel._notificationHandlersPositionChanged, function(idx, handler) {
                     handler();
                 });
             };
 
-            panel._notifySelectionChanged = function () {
-                $.each(panel._notificationHandlersSelectionChanged, function (idx, handler) {
+            panel._notifySelectionChanged = function() {
+                $.each(panel._notificationHandlersSelectionChanged, function(idx, handler) {
                     handler();
                 });
             };
@@ -1078,7 +1078,7 @@ define([
             return panel;
         };
 
-        Module.FrameTrackViewer = function (toolBoxWidth) {
+        Module.FrameTrackViewer = function(toolBoxWidth) {
             var thePanel = Module.PanelTrackViewer();
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
@@ -1094,7 +1094,7 @@ define([
 
             theFrame.setToolBox(toolBox);
 
-            theFrame.getPanel = function () {
+            theFrame.getPanel = function() {
                 return thePanel;
             };
 
@@ -1103,7 +1103,7 @@ define([
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom in")
-            }, function () {
+            }, function() {
                 var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 thePanel._handleZoom(1.2, displayWidth / 2);
             });
@@ -1111,18 +1111,18 @@ define([
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-minus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom out")
-            }, function () {
+            }, function() {
                 var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 thePanel._handleZoom(0.8, displayWidth / 2);
             });
 
 
-            theFrame.addExtraPopupMenuControl = function (ctrl) {
+            theFrame.addExtraPopupMenuControl = function(ctrl) {
                 theFrame._popupMenuExtraControlsGroup.add(ctrl);
             };
 
 
-            theFrame.addTrack = function (track) {
+            theFrame.addTrack = function(track) {
                 addTrack(theFrame, track, thePanel);
             };
 
@@ -1137,7 +1137,7 @@ define([
          * @returns {*}
          * @constructor
          */
-        Module.PanelSplitTrackViewer = function (leftPanel, rightPanel) {
+        Module.PanelSplitTrackViewer = function(leftPanel, rightPanel) {
 
             const paddingPx = 10;
             const panel = PanelBase.create();
@@ -1148,7 +1148,7 @@ define([
             /**
              * Attached html event handlers after DOM insertion
              */
-            panel.attachEventHandlers = function () {
+            panel.attachEventHandlers = function() {
                 panel._isrunning = true;
                 panel.leftPanel.attachEventHandlers();
                 panel.rightPanel.attachEventHandlers();
@@ -1157,7 +1157,7 @@ define([
             /**
              * Detach html event handlers
              */
-            panel.detachEventHandlers = function () {
+            panel.detachEventHandlers = function() {
                 if (panel) {
                     panel.leftPanel.detachEventHandlers();
                     panel.rightPanel.detachEventHandlers();
@@ -1198,7 +1198,7 @@ define([
          * @returns {*}
          * @constructor
          */
-        Module.FrameSplitTrackViewer = function (toolBoxWidth) {
+        Module.FrameSplitTrackViewer = function(toolBoxWidth) {
 
             const theLeftPanel = Module.PanelTrackViewer('left');
             const theRightPanel = Module.PanelTrackViewer('right');
@@ -1220,11 +1220,11 @@ define([
             );
             theFrame.setToolBox(toolBox);
 
-            theFrame.getLeftPanel = function () {
+            theFrame.getLeftPanel = function() {
                 return theLeftPanel;
             };
 
-            theFrame.getRightPanel = function () {
+            theFrame.getRightPanel = function() {
                 return theRightPanel;
             };
 
@@ -1233,7 +1233,7 @@ define([
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom in")
-            }, function () {
+            }, function() {
                 const displayWidth = theLeftPanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 theLeftPanel._handleZoom(1.2, displayWidth / 2);
                 theRightPanel._handleZoom(1.2, displayWidth / 2);
@@ -1242,21 +1242,21 @@ define([
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-minus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom out")
-            }, function () {
+            }, function() {
                 const displayWidth = theLeftPanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
                 theLeftPanel._handleZoom(0.8, displayWidth / 2);
                 theRightPanel._handleZoom(0.8, displayWidth / 2);
             });
 
-            theFrame.addExtraPopupMenuControl = function (ctrl) {
+            theFrame.addExtraPopupMenuControl = function(ctrl) {
                 theFrame._popupMenuExtraControlsGroup.add(ctrl);
             };
 
-            theFrame.addLeftTrack = function (track) {
+            theFrame.addLeftTrack = function(track) {
                 addTrack(theFrame, track, theLeftPanel);
             };
 
-            theFrame.addRightTrack = function (track) {
+            theFrame.addRightTrack = function(track) {
                 addTrack(theFrame, track, theRightPanel);
             };
 
@@ -1277,7 +1277,7 @@ define([
                 iTrack.__ctrl_visible = Controls.Check({text: iTrack.getName(), checked: iTrack.isVisible()});
                 iFrame.trackControlsGroup.add(iTrack.__ctrl_visible);
                 iFrame.trackControlsGroup.liveUpdate();
-                iTrack.__ctrl_visible.addNotificationHandler(function () {
+                iTrack.__ctrl_visible.addNotificationHandler(function() {
                     iTrack.setVisible(iTrack.__ctrl_visible.getValue());
                     iPanel.rescale({resizing: false});
                 });
