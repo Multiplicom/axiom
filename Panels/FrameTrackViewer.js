@@ -19,7 +19,7 @@ define([
         "AXM/AXMUtils", "AXM/DOM", "AXM/Panels/PanelBase", "AXM/Panels/Frame",
         "AXM/Canvas", "AXM/DrawUtils", "AXM/Color", "AXM/Icon", "AXM/Controls/Controls"
     ],
-    function (require, $, _,
+    function(require, $, _,
               AXMUtils, DOM, PanelBase, Frame,
               Canvas, DrawUtils, Color, Icon, Controls
     ) {
@@ -37,7 +37,7 @@ define([
         Module._trackMarginV = 2;
         Module._scrollYArrowSize = 20;
 
-        Module.Track = function (settings) {
+        Module.Track = function(settings) {
             var track = AXMUtils.object('@TrackViewTrack');
             track._id = AXMUtils.getUniqueID();
             track._visible = settings.defaultVisible || false;
@@ -48,7 +48,7 @@ define([
             track.cnvs = Canvas.create(track._id, ['main', 'selection']);
 
             track._offsetY = 0;
-            track._toolTipInfo = { ID: null };
+            track._toolTipInfo = {ID: null};
 
             track.getOffsetY = function() {
                 return track._offsetY;
@@ -87,7 +87,7 @@ define([
              * @param {int} py - y position
              * @returns {{ID, px, py, content}} - tooltip info (may be null if no tooltip is to be shown)
              */
-            track.getToolTipInfo = function (px, py) {
+            track.getToolTipInfo = function(px, py) {
                 return null;
             };
 
@@ -106,7 +106,6 @@ define([
             };
 
 
-
             track.setOffsetY = function(newVal, donotUpdate) {
                 track._offsetY = newVal;
                 if (!donotUpdate)
@@ -122,7 +121,7 @@ define([
                     track.paint();
             };
 
-            track.getId = function () {
+            track.getId = function() {
                 return track._id;
             };
 
@@ -160,7 +159,7 @@ define([
             };
 
 
-            track.render = function () {
+            track.render = function() {
                 var rootDiv = DOM.Div({id: 'track_' + track.getId()});
                 if (!track.isVisible())
                     rootDiv.addStyle("display", "none");
@@ -175,7 +174,7 @@ define([
                 var leftDiv = DOM.Div({parent: rootDiv});
                 leftDiv.addStyle("display", "inline-block");
                 leftDiv.addStyle('vertical-align', "top");
-                leftDiv.addStyle("width", (Module._trackOffsetLeft-1) + "px");
+                leftDiv.addStyle("width", (Module._trackOffsetLeft - 1) + "px");
                 leftDiv.addStyle("height", "100%");
                 leftDiv.addStyle("border-right", "1px solid rgb(220,220,220)");
 
@@ -189,7 +188,7 @@ define([
                 var rightDiv = DOM.Div({parent: rootDiv});
                 rightDiv.addStyle("display", "inline-block");
                 rightDiv.addStyle('vertical-align', "top");
-                rightDiv.addStyle("width", (Module._trackOffsetRight-1) + "px");
+                rightDiv.addStyle("width", (Module._trackOffsetRight - 1) + "px");
                 rightDiv.addStyle("border-left", "1px solid rgb(220,220,220)");
                 rightDiv.addStyle("height", "100%");
 
@@ -203,7 +202,7 @@ define([
                     $El.hide();
                 else
                     $El.show();
-                if(track.__ctrl_visible){
+                if (track.__ctrl_visible) {
                     track.__ctrl_visible.setValue(status, true);
                 }
             };
@@ -228,14 +227,14 @@ define([
                     tooltip.addElem(track._toolTipInfo.content);
 
                     // To place the tooltip nicely we must first know it's dimensions
-                    var $tooltip = $( $.parseHTML(tooltip.toString()) );
+                    var $tooltip = $($.parseHTML(tooltip.toString()));
                     $('.AXMContainer').append($tooltip);
 
                     var screenX = track.cnvs.posXCanvas2Screen(track._toolTipInfo.px);
                     var screenY = track.cnvs.posYCanvas2Screen(track._toolTipInfo.py);
-                    screenX += ($tooltip.width()  + 10 + screenX > $(window).width())  ? -($tooltip.width()+10)  : 10;
-                    screenY += ($tooltip.height() + 10 + screenY > $(window).height()) ? -($tooltip.height()+10) : 10;
-                    $tooltip.css({top: screenY, left: screenX, position:'absolute'});
+                    screenX += ($tooltip.width() + 10 + screenX > $(window).width()) ? -($tooltip.width() + 10) : 10;
+                    screenY += ($tooltip.height() + 10 + screenY > $(window).height()) ? -($tooltip.height() + 10) : 10;
+                    $tooltip.css({top: screenY, left: screenX, position: 'absolute'});
                 }
             };
 
@@ -256,7 +255,9 @@ define([
             track.attachEventHandlers = function() {
                 var clickLayer$El = track.cnvs.getCanvas$El('selection');
                 var viewerPanel = track.getViewerPanel();
-                AXMUtils.create$ElScrollHandler(clickLayer$El, function(params) { viewerPanel._handleScrolled(params,track) }, true);
+                AXMUtils.create$ElScrollHandler(clickLayer$El, function(params) {
+                    viewerPanel._handleScrolled(params, track)
+                }, true);
                 AXMUtils.create$ElDragHandler(
                     clickLayer$El,
                     track._panningStart,
@@ -275,9 +276,9 @@ define([
              * Detach the html event handlers
              */
             track.detachEventHandlers = function() {
-                if(track && track.cnvs){
+                if (track && track.cnvs) {
                     var clickLayer$El = track.cnvs.getCanvas$El('selection');
-                    if(clickLayer$El){
+                    if (clickLayer$El) {
                         AXMUtils.remove$ElScrollHandler(clickLayer$El);
                         AXMUtils.remove$ElDragHandler(clickLayer$El);
                         clickLayer$El.unbind('mousemove');
@@ -288,13 +289,13 @@ define([
             };
 
 
-            track.resize = function (xl, yl, params) {
+            track.resize = function(xl, yl, params) {
                 track._width = xl;
                 track._height = yl;
                 if (track.hasFixedHeight())
                     track._height = track._fixedHeight;
 
-                var centerWidth = xl-Module._trackOffsetLeft-Module._trackOffsetRight-2*Module._leftRightOffsetMarginH;
+                var centerWidth = xl - Module._trackOffsetLeft - Module._trackOffsetRight - 2 * Module._leftRightOffsetMarginH;
 
                 var root$El = $('#track_' + track.getId());
                 root$El.height(track._height);
@@ -307,13 +308,13 @@ define([
             };
 
             track.paint = function() {
-                track._maxOffsetY = track.getYRange()-track.cnvs.getHeight();
+                track._maxOffsetY = track.getYRange() - track.cnvs.getHeight();
                 track._offsetY = Math.max(Math.min(track._offsetY, track._maxOffsetY), 0);
                 track.cnvs.paint();
             };
 
             track.renderLayer = function(layerId) {
-                track._maxOffsetY = track.getYRange()-track.cnvs.getHeight();
+                track._maxOffsetY = track.getYRange() - track.cnvs.getHeight();
                 track._offsetY = Math.max(Math.min(track._offsetY, track._maxOffsetY), 0);
                 track.cnvs.renderLayer(layerId);
             };
@@ -325,24 +326,24 @@ define([
                 var ctx = drawInfo.ctx;
                 var sizeX = drawInfo.sizeX;
                 var sizeY = drawInfo.sizeY;
-                var plotLimitXMin = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(0-50));
-                var plotLimitXMax = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(sizeX+50));
+                var plotLimitXMin = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(0 - 50));
+                var plotLimitXMax = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(sizeX + 50));
 
                 var scale = viewerPanel.getXScale();
 
                 var ticks = [];
                 scale.Jump1 = Math.max(viewerPanel._minScaleUnit, scale.Jump1);
                 scale.Jump2 = Math.max(viewerPanel._minScaleUnit, scale.Jump2);
-                for (var i=Math.ceil(plotLimitXMin/scale.Jump1); i<=Math.floor(plotLimitXMax/scale.Jump1); i++) {
+                for (var i = Math.ceil(plotLimitXMin / scale.Jump1); i <= Math.floor(plotLimitXMax / scale.Jump1); i++) {
                     var tick = {};
-                    tick.value = i*scale.Jump1;
-                    if (i%scale.JumpReduc==0) {
+                    tick.value = i * scale.Jump1;
+                    if (i % scale.JumpReduc == 0) {
                         tick.label = scale.value2String(tick.value);
                     }
                     ticks.push(tick);
                 }
                 ctx.strokeStyle = "rgba(0,0,0,0.04)";
-                $.each(ticks, function (idx, tick) {
+                $.each(ticks, function(idx, tick) {
                     if ((tick.value >= plotLimitXMin) && (tick.value <= plotLimitXMax)) {
                         var px = Math.round(XPosLogic2Display(tick.value)) - 0.5;
                         //if (tick.label) {
@@ -363,11 +364,11 @@ define([
              * @param drawInfo
              */
             track.drawMain = function(drawInfo) {
-                drawInfo.ctx.fillStyle="#FFFFFF";
+                drawInfo.ctx.fillStyle = "#FFFFFF";
                 drawInfo.ctx.fillRect(0, 0, drawInfo.sizeX, drawInfo.sizeY);
                 drawInfo.ctx.beginPath();
                 drawInfo.ctx.moveTo(0, 0);
-                drawInfo.ctx.lineTo(drawInfo.sizeX/2, drawInfo.sizeY);
+                drawInfo.ctx.lineTo(drawInfo.sizeX / 2, drawInfo.sizeY);
                 drawInfo.ctx.stroke();
             };
 
@@ -385,8 +386,8 @@ define([
                 ctx.clearRect(0, 0, drawInfo.sizeX, drawInfo.sizeY);
 
                 ctx.font = "11px Arial";
-                ctx.fillStyle="rgba(255,255,255,0.5)";
-                ctx.fillRect(0, 0, ctx.measureText(track._name).width+10,  15);
+                ctx.fillStyle = "rgba(255,255,255,0.5)";
+                ctx.fillRect(0, 0, ctx.measureText(track._name).width + 10, 15);
                 ctx.fillStyle = "rgba(0,0,0,0.7)";
                 ctx.textAlign = 'left';
                 ctx.fillText(track._name, 5, 10);
@@ -394,8 +395,8 @@ define([
 
                 if (viewerPanel._selEnd >= viewerPanel._selStart) {
                     var x1 = XPosLogic2Display(viewerPanel._selStart);
-                    var x2 = XPosLogic2Display(viewerPanel._selEnd+1);
-                    ctx.fillStyle="rgba(0,128,255,0.3)";
+                    var x2 = XPosLogic2Display(viewerPanel._selEnd + 1);
+                    ctx.fillStyle = "rgba(0,128,255,0.3)";
                     ctx.fillRect(x1, 0, 1, sizeY);
                     ctx.fillRect(x2, 0, 1, sizeY);
                 }
@@ -406,34 +407,34 @@ define([
                 var ctx = drawInfo.ctx;
                 var sizeX = drawInfo.sizeX;
                 var sizeY = drawInfo.sizeY;
-                track._arrowScrollYCenterX = sizeX/2;
+                track._arrowScrollYCenterX = sizeX / 2;
                 var sz = Module._scrollYArrowSize;
                 track._hasArrowScrollYDown = false;
                 track._hasArrowScrollYUp = false;
-                ctx.fillStyle=AXMBaseStyling.color1.changeOpacity(0.4).toStringCanvas();
-                ctx.strokeStyle = Color.Color(0,0,0).changeOpacity(0.1).toStringCanvas();
-                if (track._offsetY>0) {
+                ctx.fillStyle = AXMBaseStyling.color1.changeOpacity(0.4).toStringCanvas();
+                ctx.strokeStyle = Color.Color(0, 0, 0).changeOpacity(0.1).toStringCanvas();
+                if (track._offsetY > 0) {
                     track._hasArrowScrollYDown = true;
                     ctx.beginPath();
                     ctx.moveTo(track._arrowScrollYCenterX, sizeY);
-                    ctx.lineTo(track._arrowScrollYCenterX+sz, sizeY-sz);
-                    ctx.lineTo(track._arrowScrollYCenterX-sz, sizeY-sz);
+                    ctx.lineTo(track._arrowScrollYCenterX + sz, sizeY - sz);
+                    ctx.lineTo(track._arrowScrollYCenterX - sz, sizeY - sz);
                     ctx.closePath();
                     ctx.fill();
                     ctx.stroke();
                 }
-                if (track._offsetY<track._maxOffsetY) {
+                if (track._offsetY < track._maxOffsetY) {
                     track._hasArrowScrollYUp = true;
                     ctx.beginPath();
                     ctx.moveTo(track._arrowScrollYCenterX, 0);
-                    ctx.lineTo(track._arrowScrollYCenterX+sz, 0+sz);
-                    ctx.lineTo(track._arrowScrollYCenterX-sz, 0+sz);
+                    ctx.lineTo(track._arrowScrollYCenterX + sz, 0 + sz);
+                    ctx.lineTo(track._arrowScrollYCenterX - sz, 0 + sz);
                     ctx.closePath();
                     ctx.fill();
                     ctx.stroke();
                 }
-                if (track._maxOffsetY>0) {
-                    ctx.fillRect(sizeX-7, sizeY-sizeY*(track._offsetY+sizeY)*1.0/(track._maxOffsetY+sizeY), 7, sizeY*sizeY*1.0/(track._maxOffsetY+sizeY));
+                if (track._maxOffsetY > 0) {
+                    ctx.fillRect(sizeX - 7, sizeY - sizeY * (track._offsetY + sizeY) * 1.0 / (track._maxOffsetY + sizeY), 7, sizeY * sizeY * 1.0 / (track._maxOffsetY + sizeY));
                 }
             };
 
@@ -450,7 +451,7 @@ define([
             };
 
 
-            track._getEventPos = function (ev) {
+            track._getEventPos = function(ev) {
                 var ev1 = ev;
                 if (ev.originalEvent)
                     ev1 = ev.originalEvent;
@@ -464,22 +465,22 @@ define([
             track._isInsidescrollYArrowUp = function(posit) {
                 if (!track._hasArrowScrollYUp)
                     return false;
-                if (Math.abs(posit.x-track._arrowScrollYCenterX)>Module._scrollYArrowSize)
+                if (Math.abs(posit.x - track._arrowScrollYCenterX) > Module._scrollYArrowSize)
                     return false;
-                if (posit.y>Module._scrollYArrowSize)
+                if (posit.y > Module._scrollYArrowSize)
                     return false;
-                return (posit.y >= Math.abs(posit.x-track._arrowScrollYCenterX));
+                return (posit.y >= Math.abs(posit.x - track._arrowScrollYCenterX));
             };
 
 
             track._isInsidescrollYArrowDown = function(posit) {
                 if (!track._hasArrowScrollYDown)
                     return false;
-                if (Math.abs(posit.x-track._arrowScrollYCenterX)>Module._scrollYArrowSize)
+                if (Math.abs(posit.x - track._arrowScrollYCenterX) > Module._scrollYArrowSize)
                     return false;
-                if (posit.y<track._drawSizeY-Module._scrollYArrowSize)
+                if (posit.y < track._drawSizeY - Module._scrollYArrowSize)
                     return false;
-                return (posit.y <= track._drawSizeY-Math.abs(posit.x-track._arrowScrollYCenterX));
+                return (posit.y <= track._drawSizeY - Math.abs(posit.x - track._arrowScrollYCenterX));
             };
 
 
@@ -552,19 +553,17 @@ define([
                 if (track._isInsidescrollYArrowUp(posit) || track._isInsidescrollYArrowDown(posit)) {
                     track._hideToolTip();
                     showPointer = true;
-                }
-                else {
+                } else {
                     var newToolTipInfo = track.getToolTipInfo(posit.x, posit.y);
                     if (newToolTipInfo) {
                         if (newToolTipInfo.showPointer)
                             showPointer = true;
                         if (track._toolTipInfo.ID != AXMReq(newToolTipInfo.ID))
                             track._showToolTip(newToolTipInfo);
-                    }
-                    else
+                    } else
                         track._hideToolTip();
                 }
-                var pointerType = showPointer?"pointer":"auto";
+                var pointerType = showPointer ? "pointer" : "auto";
                 track.cnvs.getCanvas$El('main').css('cursor', pointerType);
                 track.cnvs.getCanvas$El('selection').css('cursor', pointerType);
             };
@@ -594,7 +593,7 @@ define([
                 ctx.fillStyle = "rgba(0,0,0,0.3)";
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(content, drawInfo.sizeX/2, drawInfo.sizeY/2);
+                ctx.fillText(content, drawInfo.sizeX / 2, drawInfo.sizeY / 2);
 
                 ctx.restore();
 
@@ -605,10 +604,7 @@ define([
         };
 
 
-
-
-
-        Module.Track_Position = function () {
+        Module.Track_Position = function() {
             var track = Module.Track({canHide: true, defaultVisible: true, name: "Position"});
             track.setFixedHeight(20);
             track._customLabelConvertor = null;
@@ -625,11 +621,11 @@ define([
                 var sizeX = drawInfo.sizeX;
                 var sizeY = drawInfo.sizeY;
 
-                ctx.fillStyle="#FFFFFF";
+                ctx.fillStyle = "#FFFFFF";
                 ctx.fillRect(0, 0, sizeX, sizeY);
 
-                var plotLimitXMin = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(0-50));
-                var plotLimitXMax = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(sizeX+50));
+                var plotLimitXMin = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(0 - 50));
+                var plotLimitXMax = viewerPanel.clipToRange(viewerPanel.XDisplay2Logic(sizeX + 50));
 
                 var scale = viewerPanel.getXScale();
 
@@ -640,15 +636,15 @@ define([
                 var ticks = [];
                 scale.Jump1 = Math.max(viewerPanel._minScaleUnit, scale.Jump1);
                 scale.Jump2 = Math.max(viewerPanel._minScaleUnit, scale.Jump2);
-                for (var i=Math.ceil(plotLimitXMin/scale.Jump1); i<=Math.floor(plotLimitXMax/scale.Jump1); i++) {
+                for (var i = Math.ceil(plotLimitXMin / scale.Jump1); i <= Math.floor(plotLimitXMax / scale.Jump1); i++) {
                     var tick = {};
-                    tick.value = i*scale.Jump1;
-                    if (i%scale.JumpReduc==0) {
+                    tick.value = i * scale.Jump1;
+                    if (i % scale.JumpReduc == 0) {
                         tick.label = scale.value2String(tick.value);
                     }
                     ticks.push(tick);
                 }
-                $.each(ticks, function (idx, tick) {
+                $.each(ticks, function(idx, tick) {
                     if ((tick.value >= plotLimitXMin) && (tick.value <= plotLimitXMax)) {
                         var px = Math.round(XPosLogic2Display(tick.value)) - 0.5;
                         if (tick.label) {
@@ -659,8 +655,7 @@ define([
                             //    ctx.fillText(tick.label2, px, drawInfo.sizeY - panel.scaleMarginY + 23);
                             ctx.strokeStyle = "rgba(0,0,0,0.3)";
                             var ticklen = 7;
-                        }
-                        else {
+                        } else {
                             ctx.strokeStyle = "rgba(0,0,0,0.2)";
                             var ticklen = 4;
                         }
@@ -679,16 +674,13 @@ define([
         };
 
 
-
-
-
         /**
          * Implements a panel that contains a html5 canvas element
          * @param {string} id - panel type id
          * @returns {Object} - panel instance
          * @constructor
          */
-        Module.PanelTrackViewer = function (id) {
+        Module.PanelTrackViewer = function(id) {
             var panel = PanelBase.create(id);
 
 
@@ -711,7 +703,7 @@ define([
 
             panel.getCenterPosition = function() {
                 var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
-                return -panel._offset + displayWidth/2/panel._zoomfactor;
+                return -panel._offset + displayWidth / 2 / panel._zoomfactor;
             };
 
             panel.setViewPosition = function(position, zoomFactor) {
@@ -719,7 +711,7 @@ define([
                 if (!panel._isrunning)
                     AXMUtils.Test.reportBug("Unable to set track viewer position: not initialised");
                 var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
-                panel._offset = -position+displayWidth/2/panel._zoomfactor;
+                panel._offset = -position + displayWidth / 2 / panel._zoomfactor;
                 panel._restrictViewToRange();
                 panel.draw();
                 panel._notifyPosChanged();
@@ -733,7 +725,7 @@ define([
             };
 
             panel.setSelection = function(posStart, posEnd) {
-                if ((panel._selStart!=posStart) || (panel._selEnd!=posEnd)) {
+                if ((panel._selStart != posStart) || (panel._selEnd != posEnd)) {
                     panel._selStart = posStart;
                     panel._selEnd = posEnd;
                     panel.renderLayer('selection');
@@ -793,7 +785,7 @@ define([
                 panel.draw();
             };
 
-            panel.addTrack = function (itrack) {
+            panel.addTrack = function(itrack) {
                 AXMUtils.Test.checkIsType(itrack, '@TrackViewTrack');
                 itrack.setViewerPanel(panel);
                 panel._tracks.push(itrack);
@@ -826,27 +818,27 @@ define([
             };
 
             panel.XDisplay2Logic = function(xdisp) {
-                return xdisp/panel._zoomfactor - panel._offset;
+                return xdisp / panel._zoomfactor - panel._offset;
             };
 
             panel.XPosLogic2Display = function(xposlogic) {
-                return (xposlogic+panel._offset)*panel._zoomfactor;
+                return (xposlogic + panel._offset) * panel._zoomfactor;
             };
 
             panel.XLenLogic2Display = function(xlenlogic) {
-                return xlenlogic*panel._zoomfactor;
+                return xlenlogic * panel._zoomfactor;
             };
 
 
             panel.getXScale = function() {
-                return DrawUtils.getScaleJump(30/panel.getZoomFactor());
+                return DrawUtils.getScaleJump(30 / panel.getZoomFactor());
             };
 
             /**
              * Returns the html implementing the panel
              * @returns {string}
              */
-            panel.render = function () {
+            panel.render = function() {
                 var rootDiv = DOM.Div({id: panel.getId() + '_content'});
                 rootDiv.addCssClass('AXMHtmlPanelBody');
                 rootDiv.addStyle('width', '100%');
@@ -855,8 +847,7 @@ define([
                 if (panel._canScrollY)
                     if (panel._scrollbarAlwaysShown) {
                         rootDiv.addStyle('overflow-y', 'scroll');
-                    }
-                    else {
+                    } else {
                         rootDiv.addStyle('overflow-y', 'auto');
                     }
                 else
@@ -873,9 +864,9 @@ define([
             /**
              * Attached html event handlers after DOM insertion
              */
-            panel.attachEventHandlers = function () {
+            panel.attachEventHandlers = function() {
                 panel._isrunning = true;
-                $.each(panel._tracks, function (idx, track) {
+                $.each(panel._tracks, function(idx, track) {
                     track.attachEventHandlers();
                 });
             };
@@ -883,9 +874,9 @@ define([
             /**
              * Detach html event handlers
              */
-            panel.detachEventHandlers = function () {
-                if(panel){
-                    $.each(panel._tracks, function (idx, track) {
+            panel.detachEventHandlers = function() {
+                if (panel) {
+                    $.each(panel._tracks, function(idx, track) {
                         track.detachEventHandlers();
                     });
                 }
@@ -897,18 +888,18 @@ define([
              * @param {int} yl - new y dimension
              * @param params
              */
-            panel.resize = function (xl, yl, params) {
+            panel.resize = function(xl, yl, params) {
                 panel._width = xl;
                 panel._height = yl;
                 panel._restrictViewToRange();
                 panel.rescale(params);
             };
 
-            panel.rescale = function (params) {
+            panel.rescale = function(params) {
                 var fixedPortionH = 0;
                 var variablePortionBudget = 0;
                 var hasVariableHeightTracks = false;
-                $.each(panel._tracks, function (idx, track) {
+                $.each(panel._tracks, function(idx, track) {
                     if (track.isVisible()) {
                         fixedPortionH += Module._trackMarginV;
                         if (track.hasFixedHeight())
@@ -922,10 +913,10 @@ define([
                 if (panel._canScrollY && hasVariableHeightTracks)
                     AXMUtils.Test.reportBug("Vertical scroll on track viewer is not compatible with auo scalable tracks");
 
-                $.each(panel._tracks, function (idx, track) {
+                $.each(panel._tracks, function(idx, track) {
                     var tyl = null;
                     if (!track.hasFixedHeight())
-                        tyl = (panel._height - fixedPortionH)*1.0/variablePortionBudget;
+                        tyl = (panel._height - fixedPortionH) * 1.0 / variablePortionBudget;
                     track.resize(panel._width, tyl, params);
                 });
                 panel.draw();
@@ -959,22 +950,22 @@ define([
              * @private
              */
             panel._restrictViewToRange = function() {
-                if (!panel._isrunning || (panel._width<5))
+                if (!panel._isrunning || (panel._width < 5))
                     return;
                 var displayWidth = panel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
-                panel._zoomfactor = Math.max(panel._zoomfactor, displayWidth/1.1/(panel._rangeMax-panel._rangeMin));
+                panel._zoomfactor = Math.max(panel._zoomfactor, displayWidth / 1.1 / (panel._rangeMax - panel._rangeMin));
 
-                panel._offset = Math.max(panel._offset, -panel._rangeMax+displayWidth*29.0/30.0/panel._zoomfactor);
+                panel._offset = Math.max(panel._offset, -panel._rangeMax + displayWidth * 29.0 / 30.0 / panel._zoomfactor);
 
-                panel._offset = Math.min(panel._offset, -panel._rangeMin+displayWidth/30.0/panel._zoomfactor);
+                panel._offset = Math.min(panel._offset, -panel._rangeMin + displayWidth / 30.0 / panel._zoomfactor);
             };
 
             panel._handleZoom = function(scaleFactor, centralPx) {
                 var z1 = panel._zoomfactor;
                 var z2 = panel._zoomfactor * scaleFactor;
-                z2 = Math.min(z2,panel._maxZoomFactor);
+                z2 = Math.min(z2, panel._maxZoomFactor);
                 panel._zoomfactor = z2;
-                panel._offset = panel._offset + (1.0/z2-1.0/z1)*centralPx;
+                panel._offset = panel._offset + (1.0 / z2 - 1.0 / z1) * centralPx;
                 panel._restrictViewToRange();
                 panel.draw();
                 panel._notifyPosChanged();
@@ -994,7 +985,7 @@ define([
              * @param {{}} ev - html event object
              * @returns {number} - returns the X position
              */
-            panel._getEventPosX = function (ev) {
+            panel._getEventPosX = function(ev) {
                 //todo: improve (a bit of a hack right now)
                 var ev1 = ev;
                 if (ev.originalEvent)
@@ -1006,7 +997,7 @@ define([
             panel._handleScrolled = function(params, track) {
                 var deltaY = params.deltaY;
                 if (!params.controlPressed) { // Scroll action used for zoom
-                    if (deltaY!=0) {
+                    if (deltaY != 0) {
                         if (deltaY < 0)//zoom out
                             var scaleFactor = 1.0 / (1.0 + 0.2 * Math.abs(deltaY));
                         else//zoom in
@@ -1015,12 +1006,11 @@ define([
                         panel._handleZoom(scaleFactor, px);
                     }
                     var deltaX = params.deltaX;
-                    if (deltaX!=0) {
-                        panel._handleMoveX(deltaX*30/panel._zoomfactor);
+                    if (deltaX != 0) {
+                        panel._handleMoveX(deltaX * 30 / panel._zoomfactor);
                     }
-                }
-                else { // Scroll action used for vertical scrolling
-                    track.shiftOffsetY(deltaY*20);
+                } else { // Scroll action used for vertical scrolling
+                    track.shiftOffsetY(deltaY * 20);
                 }
             };
 
@@ -1036,17 +1026,17 @@ define([
             panel._panningDo = function(dragInfo) {
                 var movedY = false;
                 var movedX = false;
-                if (Math.abs(dragInfo.diffTotalX)>5)
+                if (Math.abs(dragInfo.diffTotalX) > 5)
                     panel._hasPannedX = true;
-                if (Math.abs(dragInfo.diffTotalY)>5)
+                if (Math.abs(dragInfo.diffTotalY) > 5)
                     panel._hasPannedY = true;
                 if (panel._hasPannedY) {
-                    panel._panningTrack.shiftOffsetY(dragInfo.diffTotalY-panel._panning_y0, false);
+                    panel._panningTrack.shiftOffsetY(dragInfo.diffTotalY - panel._panning_y0, false);
                     panel._panning_y0 = dragInfo.diffTotalY;
                     movedY = true;
                 }
                 if (panel._hasPannedX) {
-                    panel._handleMoveX((dragInfo.diffTotalX-panel._panning_x0)/panel._zoomfactor, false);
+                    panel._handleMoveX((dragInfo.diffTotalX - panel._panning_x0) / panel._zoomfactor, false);
                     panel._panning_x0 = dragInfo.diffTotalX;
                     movedX = true;
                 }
@@ -1059,7 +1049,9 @@ define([
             panel._panningStop = function() {
                 panel._hasPannedX = false;
                 panel._hasPannedY = false;
-                setTimeout(function() { panel._hasDragged=false}, 250);
+                setTimeout(function() {
+                    panel._hasDragged = false
+                }, 250);
             };
 
             panel.isPanning = function() {
@@ -1083,13 +1075,10 @@ define([
             };
 
 
-
-
             return panel;
         };
 
-
-        Module.FrameTrackViewer = function (toolBoxWidth) {
+        Module.FrameTrackViewer = function(toolBoxWidth) {
             var thePanel = Module.PanelTrackViewer();
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
@@ -1101,11 +1090,11 @@ define([
                 Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(Controls.Compound.GroupVert({separator: 10}, [
                     theFrame.trackControlsGroup,
                     theFrame._popupMenuExtraControlsGroup
-                ]) ), toolBoxWidth));
+                ])), toolBoxWidth));
 
             theFrame.setToolBox(toolBox);
 
-            theFrame.getPanel = function () {
+            theFrame.getPanel = function() {
                 return thePanel;
             };
 
@@ -1114,17 +1103,17 @@ define([
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom in")
-            }, function () {
+            }, function() {
                 var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
-                thePanel._handleZoom(1.2, displayWidth/2);
+                thePanel._handleZoom(1.2, displayWidth / 2);
             });
 
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-minus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
                 hint: _TRL("Zoom out")
-            }, function () {
+            }, function() {
                 var displayWidth = thePanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
-                thePanel._handleZoom(0.8, displayWidth/2);
+                thePanel._handleZoom(0.8, displayWidth / 2);
             });
 
 
@@ -1133,34 +1122,170 @@ define([
             };
 
 
-
             theFrame.addTrack = function(track) {
-                var $El = $('#' + thePanel.getId() + '_content');
-                var isLive = thePanel._isrunning;
-                thePanel.addTrack(track);
-
-                if (isLive) {
-                    $El.append(track.render());
-                    track.attachEventHandlers();
-                }
-
-                if (track.canHide()) {
-                    track.__ctrl_visible = Controls.Check({text: track.getName(), checked: track.isVisible()});
-                    theFrame.trackControlsGroup.add(track.__ctrl_visible);
-                    theFrame.trackControlsGroup.liveUpdate();
-                    track.__ctrl_visible.addNotificationHandler(function() {
-                        track.setVisible(track.__ctrl_visible.getValue());
-                        thePanel.rescale({resizing: false});
-                    });
-                }
-                if (isLive) {
-                    thePanel.rescale({resizing: false});
-                }
+                addTrack(theFrame, track, thePanel);
             };
 
             return theFrame;
         };
 
+        /**
+         * Container that groups the left and right panel track viewers next to each other.
+         *
+         * @param leftPanel the panel track viewer position on the left of the view.
+         * @param rightPanel the panel track viewer position on the right of the view.
+         * @returns {*}
+         * @constructor
+         */
+        Module.PanelSplitTrackViewer = function(leftPanel, rightPanel) {
+
+            const paddingPx = 10;
+            const panel = PanelBase.create();
+
+            panel.leftPanel = leftPanel;
+            panel.rightPanel = rightPanel;
+
+            /**
+             * Attached html event handlers after DOM insertion
+             */
+            panel.attachEventHandlers = function() {
+                panel._isrunning = true;
+                panel.leftPanel.attachEventHandlers();
+                panel.rightPanel.attachEventHandlers();
+            };
+
+            /**
+             * Detach html event handlers
+             */
+            panel.detachEventHandlers = function() {
+                if (panel) {
+                    panel.leftPanel.detachEventHandlers();
+                    panel.rightPanel.detachEventHandlers();
+                }
+            };
+
+            panel.render = () => {
+
+                const rootDiv = DOM.Div({id: panel.getId() + '_content'});
+                rootDiv.addCssClass('AXMHtmlPanelBody');
+                rootDiv.addStyle('display', 'flex');
+
+                const leftContainer = DOM.Div({style: {'padding-right': `${paddingPx}px`, width: '50%'}});
+                const rightContainer = DOM.Div({style: {'padding-left': `${paddingPx}px`, width: '50%'}});
+
+                leftContainer.addElem(panel.leftPanel.render());
+                rightContainer.addElem(panel.rightPanel.render());
+
+                rootDiv.addElem(leftContainer);
+                rootDiv.addElem(rightContainer);
+
+                return rootDiv.toString();
+            }
+
+            panel.resize = (xl, yl, params) => {
+                const panelXl = xl / 2 - paddingPx;
+                leftPanel.resize(panelXl, yl, params);
+                rightPanel.resize(panelXl, yl, params);
+            }
+
+            return panel;
+        }
+
+        /**
+         * Frame that uses the PanelSplitTrackViewer to show the two PanelTrackViewers.
+         *
+         * @param toolBoxWidth the width of the toolbox.
+         * @returns {*}
+         * @constructor
+         */
+        Module.FrameSplitTrackViewer = function(toolBoxWidth) {
+
+            const theLeftPanel = Module.PanelTrackViewer('left');
+            const theRightPanel = Module.PanelTrackViewer('right');
+
+            const splitTrackPanel = Module.PanelSplitTrackViewer(theLeftPanel, theRightPanel);
+
+            const theFrame = Frame.FrameFinalCommands(splitTrackPanel);
+            theLeftPanel._setFrame(theFrame);
+            theRightPanel._setFrame(theFrame);
+
+            theFrame.trackControlsGroup = Controls.Compound.GroupVert({separator: 3});
+            theFrame._popupMenuExtraControlsGroup = Controls.Compound.GroupVert({separator: 3});
+
+            const toolBox = Frame.ToolBox.create(
+                Icon.createFA('fa-bars'),
+                Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(
+                    Controls.Compound.GroupVert({separator: 10}, [theFrame.trackControlsGroup, theFrame._popupMenuExtraControlsGroup])
+                ), toolBoxWidth)
+            );
+            theFrame.setToolBox(toolBox);
+
+            theFrame.getLeftPanel = function() {
+                return theLeftPanel;
+            };
+
+            theFrame.getRightPanel = function() {
+                return theRightPanel;
+            };
+
+            theFrame.addCommandSpacer(40);
+
+            theFrame.addCommand({
+                icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
+                hint: _TRL("Zoom in")
+            }, function() {
+                const displayWidth = theLeftPanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
+                theLeftPanel._handleZoom(1.2, displayWidth / 2);
+                theRightPanel._handleZoom(1.2, displayWidth / 2);
+            });
+
+            theFrame.addCommand({
+                icon: Icon.createFA("fa-search-minus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
+                hint: _TRL("Zoom out")
+            }, function() {
+                const displayWidth = theLeftPanel._width - Module._trackOffsetLeft - Module._trackOffsetRight;
+                theLeftPanel._handleZoom(0.8, displayWidth / 2);
+                theRightPanel._handleZoom(0.8, displayWidth / 2);
+            });
+
+            theFrame.addExtraPopupMenuControl = function(ctrl) {
+                theFrame._popupMenuExtraControlsGroup.add(ctrl);
+            };
+
+            theFrame.addLeftTrack = function(track) {
+                addTrack(theFrame, track, theLeftPanel);
+            };
+
+            theFrame.addRightTrack = function(track) {
+                addTrack(theFrame, track, theRightPanel);
+            };
+
+            return theFrame;
+        };
+
+        function addTrack(iFrame, iTrack, iPanel) {
+            const $El = $('#' + iPanel.getId() + '_content');
+            const isLive = iPanel._isrunning;
+            iPanel.addTrack(iTrack);
+
+            if (isLive) {
+                $El.append(iTrack.render());
+                iTrack.attachEventHandlers();
+            }
+
+            if (iTrack.canHide()) {
+                iTrack.__ctrl_visible = Controls.Check({text: iTrack.getName(), checked: iTrack.isVisible()});
+                iFrame.trackControlsGroup.add(iTrack.__ctrl_visible);
+                iFrame.trackControlsGroup.liveUpdate();
+                iTrack.__ctrl_visible.addNotificationHandler(function() {
+                    iTrack.setVisible(iTrack.__ctrl_visible.getValue());
+                    iPanel.rescale({resizing: false});
+                });
+            }
+            if (isLive) {
+                iPanel.rescale({resizing: false});
+            }
+        }
 
         return Module;
     })
