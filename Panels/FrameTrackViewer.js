@@ -1260,10 +1260,24 @@ define([
                 addTrack(theFrame, track, theRightPanel);
             };
 
+            /**
+             * Add left and right track that have the same functionality on left and right and are enabled/disabled
+             * add the same time
+             */
+            theFrame.addLeftRightTrack = function (leftTrack, rightTrack) {
+                addTracks(
+                    theFrame,
+                    [
+                        [leftTrack, theLeftPanel],
+                        [rightTrack, theRightPanel]
+                    ]
+                );
+            };
+
             return theFrame;
         };
 
-        function addTrack(iFrame, iTrack, iPanel) {
+        function addTrackToPanel(iTrack, iPanel) {
             const $El = $('#' + iPanel.getId() + '_content');
             const isLive = iPanel._isrunning;
             iPanel.addTrack(iTrack);
@@ -1272,6 +1286,12 @@ define([
                 $El.append(iTrack.render());
                 iTrack.attachEventHandlers();
             }
+            return isLive
+
+        }
+
+        function addTrack(iFrame, iTrack, iPanel) {
+            const isLive = addTrackToPanel(iTrack, iPanel);
 
             if (iTrack.canHide()) {
                 iTrack.__ctrl_visible = Controls.Check({text: iTrack.getName(), checked: iTrack.isVisible()});
@@ -1282,9 +1302,52 @@ define([
                     iPanel.rescale({resizing: false});
                 });
             }
+
             if (isLive) {
                 iPanel.rescale({resizing: false});
             }
+        }
+
+        /**
+         * Add tracks to panels in the frame
+         * @param iFrame - the frame
+         * @param trackPanels - list of tuples. Each tuple is a track - panel combo
+         */
+        function addTracks(iFrame, trackPanels) {
+
+            const iTracks = trackPanels.map(trackPanelTuple => trackPanelTuple[0]);
+            const iPanels = trackPanels.map(trackPanelTuple => trackPanelTuple[1]);
+
+            const livePanels = [];
+            for([iTrack, iPanel] of trackPanels) {
+                livePanels.push(addTrackToPanel(iTrack, iPanel));
+            }
+
+            const firstTrack = iTracks[0];
+            if (iTracks.length > 0 && firstTrack.canHide()) {
+
+                // Sanity check for equal track  hidden feature, names and visibility
+                if(iTracks.some((iTrack) => iTrack.canHide() !== firstTrack.canHide() || iTrack.getName() !== firstTrack.getName())){
+                    AXMUtils.Test.reportBug("Some tracks have different names or inconsistent hider properties");
+                }
+
+                const hider = Controls.Check({text: firstTrack.getName(), checked: firstTrack.isVisible()});
+                iFrame.trackControlsGroup.add(hider);
+                iFrame.trackControlsGroup.liveUpdate();
+                iTracks.forEach((iTrack) => iTrack.__ctrl_visible = hider);
+
+                hider.addNotificationHandler(function() {
+                    for([iTrack, iPanel] of trackPanels) {
+                        iTrack.setVisible(hider.getValue());
+                        iPanel.rescale({resizing: false});
+                    }
+                });
+            }
+
+            iPanels
+                .filter((iPanel, idx) => livePanels[idx])
+                .forEach((iPanel) => iPanel.rescale({resizing: false}));
+
         }
 
         return Module;
