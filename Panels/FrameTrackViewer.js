@@ -724,6 +724,32 @@ define([
 
             };
 
+            /**
+             * Zooms to the range posStart-posEnd, with some additional space
+             * on both sides of the range, as specified with marginFraction.
+             *
+             * @param posStart Range start position (inclusive).
+             * @param posEnd Range end position (inclusive).
+             * @param marginFraction Fraction of the total range width to leave
+             *        as margin on both sides.
+             */
+            panel.zoomToRange = function(posStart, posEnd, marginFraction = 0.1) {
+
+                // expand position range size to include margin
+                const rangeSize = posEnd - posStart + 1;
+                const expandSize = Math.ceil(marginFraction * rangeSize);
+                const pos0 = posStart - expandSize;
+                const pos1 = posEnd + expandSize;
+
+                // calculate px dimensions
+                const displayWidth = panel._width;
+                const zoom = displayWidth / (pos1 - pos0);
+                const center = Math.floor((pos0 + pos1) / 2);
+
+                // pan / zoom to range
+                panel.setViewPosition(center, zoom);
+            };
+
             panel.setSelection = function(posStart, posEnd) {
                 if ((panel._selStart != posStart) || (panel._selEnd != posEnd)) {
                     panel._selStart = posStart;
