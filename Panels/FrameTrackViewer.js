@@ -1220,7 +1220,9 @@ define([
         /**
          * Frame that uses the PanelSplitTrackViewer to show the two PanelTrackViewers.
          *
-         * @param toolBoxWidth the width of the toolbox.
+         * @param toolBoxWidth the width of the toolbox. The toolbox menu button
+         * (hamburger button at the top left) and the corresponding popup
+         * toolbox is not included if the toolbox width is undefined or <= 0.
          * @returns {*}
          * @constructor
          */
@@ -1235,16 +1237,20 @@ define([
             theLeftPanel._setFrame(theFrame);
             theRightPanel._setFrame(theFrame);
 
+            theFrame.includesToolBox = toolBoxWidth > 0;
             theFrame.trackControlsGroup = Controls.Compound.GroupVert({separator: 3});
             theFrame._popupMenuExtraControlsGroup = Controls.Compound.GroupVert({separator: 3});
 
-            const toolBox = Frame.ToolBox.create(
-                Icon.createFA('fa-bars'),
-                Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(
-                    Controls.Compound.GroupVert({separator: 10}, [theFrame.trackControlsGroup, theFrame._popupMenuExtraControlsGroup])
-                ), toolBoxWidth)
-            );
-            theFrame.setToolBox(toolBox);
+            if (theFrame.includesToolBox) {
+                const toolBox = Frame.ToolBox.create(
+                    Icon.createFA('fa-bars'),
+                    Controls.Compound.FixedWidth(Controls.Compound.StandardMargin(
+                        Controls.Compound.GroupVert({separator: 10}, [theFrame.trackControlsGroup, theFrame._popupMenuExtraControlsGroup])
+                    ), toolBoxWidth)
+                );
+                theFrame.setToolBox(toolBox);
+                theFrame.addCommandSpacer(40);
+            }
 
             theFrame.getLeftPanel = function() {
                 return theLeftPanel;
@@ -1253,8 +1259,6 @@ define([
             theFrame.getRightPanel = function() {
                 return theRightPanel;
             };
-
-            theFrame.addCommandSpacer(40);
 
             theFrame.addCommand({
                 icon: Icon.createFA("fa-search-plus").addDecorator('fa-arrows-h', 'left', 0, 'bottom', -7, 0.6),
@@ -1275,7 +1279,12 @@ define([
             });
 
             theFrame.addExtraPopupMenuControl = function(ctrl) {
-                theFrame._popupMenuExtraControlsGroup.add(ctrl);
+                if (theFrame.includesToolBox) {
+                    theFrame._popupMenuExtraControlsGroup.add(ctrl);
+                }
+                else {
+                    console.error('Trying to add control to non-existing popup menu.');
+                }
             };
 
             theFrame.addLeftTrack = function(track) {
@@ -1319,7 +1328,7 @@ define([
         function addTrack(iFrame, iTrack, iPanel) {
             const isLive = addTrackToPanel(iTrack, iPanel);
 
-            if (iTrack.canHide()) {
+            if (iFrame.includesToolBox && iTrack.canHide()) {
                 iTrack.__ctrl_visible = Controls.Check({text: iTrack.getName(), checked: iTrack.isVisible()});
                 iFrame.trackControlsGroup.add(iTrack.__ctrl_visible);
                 iFrame.trackControlsGroup.liveUpdate();
@@ -1357,17 +1366,19 @@ define([
                     AXMUtils.Test.reportBug("Some tracks have different names or inconsistent hider properties");
                 }
 
-                const hider = Controls.Check({text: firstTrack.getName(), checked: firstTrack.isVisible()});
-                iFrame.trackControlsGroup.add(hider);
-                iFrame.trackControlsGroup.liveUpdate();
-                iTracks.forEach((iTrack) => iTrack.__ctrl_visible = hider);
+                if (iFrame.includesToolBox) {
+                    const hider = Controls.Check({text: firstTrack.getName(), checked: firstTrack.isVisible()});
+                    iFrame.trackControlsGroup.add(hider);
+                    iFrame.trackControlsGroup.liveUpdate();
+                    iTracks.forEach((iTrack) => iTrack.__ctrl_visible = hider);
 
-                hider.addNotificationHandler(function() {
-                    for([iTrack, iPanel] of trackPanels) {
-                        iTrack.setVisible(hider.getValue());
-                        iPanel.rescale({resizing: false});
-                    }
-                });
+                    hider.addNotificationHandler(function() {
+                        for([iTrack, iPanel] of trackPanels) {
+                            iTrack.setVisible(hider.getValue());
+                            iPanel.rescale({resizing: false});
+                        }
+                    });
+                }
             }
 
             iPanels
@@ -1379,4 +1390,3 @@ define([
         return Module;
     })
 ;
-
