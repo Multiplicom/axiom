@@ -1237,7 +1237,7 @@ define([
             theLeftPanel._setFrame(theFrame);
             theRightPanel._setFrame(theFrame);
 
-            theFrame.includesToolBox = toolBoxWidth && toolBoxWidth > 0;
+            theFrame.includesToolBox = toolBoxWidth > 0;
             theFrame.trackControlsGroup = Controls.Compound.GroupVert({separator: 3});
             theFrame._popupMenuExtraControlsGroup = Controls.Compound.GroupVert({separator: 3});
 
@@ -1390,4 +1390,3 @@ define([
         return Module;
     })
 ;
-
