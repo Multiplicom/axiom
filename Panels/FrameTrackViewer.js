@@ -1108,6 +1108,7 @@ define([
             var thePanel = Module.PanelTrackViewer();
             var theFrame = Frame.FrameFinalCommands(thePanel);
 
+            theFrame.includesToolBox = true;
             theFrame.trackControlsGroup = Controls.Compound.GroupVert({separator: 3});
             theFrame._popupMenuExtraControlsGroup = Controls.Compound.GroupVert({separator: 3});
 
