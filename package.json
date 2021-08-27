@@ -1,9 +1,9 @@
 {
   "name": "@agilent/axiom",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "main": "index.js",
   "repository": "git@github.com:Multiplicom/axiom.git",
-  "author": "Michiel Vermeir <michiel.vermeir@agilent.com>",
+  "author": "Agilent Genomics SW team <pdl-gsst-gnt-software@agilent.com>",
   "license": "MIT",
   "dependencies": {
     "awesomplete": "1.1.5",
