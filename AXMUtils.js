@@ -239,9 +239,17 @@ define([
          */
         String.prototype.AXMInterpolate = function (args) {
             var newStr = this;
+            const replacer = function(match){
+                if(match.includes(':,')){
+                    return args[key].toLocaleString('en-US');
+                }
+                else{
+                    return args[key];
+                }
+            };
             for (var key in args) {
-                var regex = new RegExp('{' + key + '}', 'g');
-                 newStr = newStr.replace(regex, args[key]);//keep replacing until all instances of the keys are replaced
+                var regex = new RegExp('{' + key + ':,}|{' + key + '}', 'g');
+                newStr = newStr.replace(regex, replacer);//keep replacing until all instances of the keys are replaced
             }
             return newStr;
         };
@@ -868,4 +876,3 @@ define([
 
         return Module;
     });
-
