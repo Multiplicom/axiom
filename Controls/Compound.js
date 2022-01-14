@@ -227,7 +227,7 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
              * @returns {string}
              */
             compound.render = function() {
-                var div = DOM.Div();
+                var div = DOM.Div({ id: compound._id + "_wrapper"});
                 if (compound._noWrap)
                     div.addStyle('white-space', 'nowrap');
                 var maxElem = compound._members.length - 1;
@@ -245,6 +245,22 @@ define(["require", "jquery", "_", "AXM/AXMUtils", "AXM/DOM", "AXM/Units"],
                     elemDiv.addElem(member.render());
                 });
                 return div;
+            };
+
+            compound.liveUpdate = function() {
+                var el = document.getElementById(compound._id + "_wrapper");
+
+                if (el) {
+                    el.innerHTML = '';
+
+                    var updatedControl = compound.render();
+                    var documentFragment = document.createDocumentFragment();
+                    documentFragment.appendChild(updatedControl.node$);
+
+                    el.appendChild(documentFragment);
+                }
+
+                compound.attachEventHandlers();
             };
 
             return compound;
