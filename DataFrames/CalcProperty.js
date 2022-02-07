@@ -67,7 +67,7 @@ define([
             win.ctrlType = Controls.DropList({width: 150, value: DataTypes.typeFloat.id});
             grp.add(Controls.Compound.GroupHor({}, ['Property type:&nbsp;&nbsp;', win.ctrlType]));
             $.each(DataTypes.typesMap, function(id, val) {
-                win.ctrlType.addState(id, val.getName);
+                win.ctrlType.addState(id, val.getName());
             });
 
             win.ctrlName = Controls.Edit({width: 150, value: Module.lastName});
