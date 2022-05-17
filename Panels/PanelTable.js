@@ -810,7 +810,11 @@ define([
                         if (colInfo.getName().length > 0) {
                             if (line.length > 0)
                                 line += '\t';
-                            line += colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
+                            const content = colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
+
+                            // escape characters such as line feeds for TSV files,
+                            // but remove the begin and end quotes added by JSON stringify
+                            line += JSON.stringify(content).slice(1, -1);
                         }
                     });
                     data += line + '\n';
