@@ -803,14 +803,19 @@ define([
                     }
                 });
                 data += line + '\n';
+                const escapeMap = {'\n': '\\n', '\t': '\\t', '\r': '\\r', '\\': ''};
                 for (var rowNr = 0; rowNr < cnt; rowNr++) {
                     var rowData = panel._tableData.getRow(rowNr);
                     var line = '';
                     $.each(panel._columns, function addRows(colNr, colInfo) {
                         if (colInfo.getName().length > 0) {
-                            if (line.length > 0)
+                            if (line.length > 0) {
                                 line += '\t';
-                            line += colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
+                            }
+                            const content = colInfo.content2DisplayString(rowData[colInfo.getId()], rowData);
+
+                            // We create a TSV file, so content shouldn't contain these escape characters
+                            line += content.replace(/[\n\t\r\\]/g, x => escapeMap[x]);
                         }
                     });
                     data += line + '\n';
