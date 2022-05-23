@@ -1,6 +1,6 @@
 {
   "name": "@agilent/axiom",
-  "version": "1.5.0",
+  "version": "1.5.3",
   "main": "index.js",
   "repository": "git@github.com:Multiplicom/axiom.git",
   "author": "Agilent Genomics SW team <pdl-gsst-gnt-software@agilent.com>",
